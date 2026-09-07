@@ -31,6 +31,8 @@ public final class EngineItem extends Item {
     @Override public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> lines,TooltipFlag flag){
         super.appendHoverText(stack,context,lines,flag);
         int parts=parts(stack);
+        var condition=ConditionData.fromItem(stack);
+        for(var p:VehicleCondition.Part.values())if(p.assembly==Assembly.ENGINE && condition.health(p)<99.95)lines.add(Component.literal(p.title+": "+Math.round(condition.health(p))+"%"));
         for(var slot:EnginePart.values())lines.add(Component.literal(slot.title+": "+slot.label(slot.variant(parts))));
         String problem=EnginePart.problem(parts);if(!problem.isEmpty())lines.add(Component.literal(problem));
     }

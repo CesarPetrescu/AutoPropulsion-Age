@@ -18,6 +18,15 @@ public record EngineCraftingRecipe(ShapedRecipe delegate) implements CraftingRec
         for(int i=0;i<input.size();i++)if(input.getItem(i).getItem() instanceof EngineItem){
             var data=input.getItem(i).get(DataComponents.CUSTOM_DATA);if(data!=null)result.set(DataComponents.CUSTOM_DATA,data);break;
         }
+        var merged=result.getOrDefault(DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+        var condition=merged.getCompound("PartCondition");
+        for(int i=0;i<input.size();i++){
+            var donor=input.getItem(i);
+            if(AutoPropulsionAge.PART_ITEMS.values().stream().noneMatch(item->donor.is(item.get())))continue;
+            var data=donor.getOrDefault(DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.EMPTY).copyTag().getCompound("PartCondition");
+            for(String key:data.getAllKeys())if(!key.equals("Version"))condition.put(key,data.get(key).copy());
+        }
+        if(!condition.isEmpty()){condition.putInt("Version",1);merged.put("PartCondition",condition);result.set(DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.of(merged));}
         return result;
     }
     @Override public boolean canCraftInDimensions(int width,int height){return delegate.canCraftInDimensions(width,height);}

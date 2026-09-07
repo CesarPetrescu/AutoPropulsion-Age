@@ -7,5 +7,585 @@
         "stream": false
       }
     ]
+  },
+  "engine_i4_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_i4_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_i4_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_i4_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_i4_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_i4_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_i4_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_i4_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_v6_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_v6_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_v6_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_flat4_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_flat4_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_flat4_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor1_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor1_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor1_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor2_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor2_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor2_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor3_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor3_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor3_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_stock_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_stock_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_stock_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_stock_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_stock_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_stock_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_sport_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_sport_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_sport_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_sport_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_sport_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_sport_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_open_low": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_open_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_open_low",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_rotor4_open_high": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_rotor4_open_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_rotor4_open_high",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "turbo": {
+    "subtitle": "subtitles.sparkmotors.vehicle.turbo",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/turbo",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "supercharger": {
+    "subtitle": "subtitles.sparkmotors.vehicle.supercharger",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/supercharger",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "tire_roll": {
+    "subtitle": "subtitles.sparkmotors.vehicle.tire_roll",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/tire_roll",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "tire_skid": {
+    "subtitle": "subtitles.sparkmotors.vehicle.tire_skid",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/tire_skid",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "brake_squeal": {
+    "subtitle": "subtitles.sparkmotors.vehicle.brake_squeal",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/brake_squeal",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "brake_grind": {
+    "subtitle": "subtitles.sparkmotors.vehicle.brake_grind",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/brake_grind",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "damage_rattle": {
+    "subtitle": "subtitles.sparkmotors.vehicle.damage_rattle",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/damage_rattle",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "intake": {
+    "subtitle": "subtitles.sparkmotors.vehicle.intake",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/intake",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "starter": {
+    "subtitle": "subtitles.sparkmotors.vehicle.starter",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/starter",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_stop": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_stop",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_stop",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "shift": {
+    "subtitle": "subtitles.sparkmotors.vehicle.shift",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/shift",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "bov": {
+    "subtitle": "subtitles.sparkmotors.vehicle.bov",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/bov",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "impact": {
+    "subtitle": "subtitles.sparkmotors.vehicle.impact",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/impact",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "tire_burst": {
+    "subtitle": "subtitles.sparkmotors.vehicle.tire_burst",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/tire_burst",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "engine_failure": {
+    "subtitle": "subtitles.sparkmotors.vehicle.engine_failure",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/engine_failure",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "part_break": {
+    "subtitle": "subtitles.sparkmotors.vehicle.part_break",
+    "sounds": [
+      {
+        "name": "sparkmotors:vehicle/part_break",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
   }
 }

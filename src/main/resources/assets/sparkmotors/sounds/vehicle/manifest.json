@@ -1,0 +1,528 @@
+{
+  "generator": "generate_vehicle_audio.py v1",
+  "license": "CC0-1.0",
+  "sounds": {
+    "engine_i4_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "92c9d8d137c2607d16d88cbb8b472d5ffbad0acaee5f1183564c2e1c1c31baae",
+      "rms": 0.14,
+      "peak": 0.1743,
+      "loop": true
+    },
+    "engine_i4_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "281320d575d75786e86d7ea5f47b0bbfcc33947cc26c18f5604833651ece2494",
+      "rms": 0.14,
+      "peak": 0.1743,
+      "loop": true
+    },
+    "engine_i4_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "4c1165ac0642e6bbbf1475ae13eefc341e98dec06709d8a00679f90208d5b380",
+      "rms": 0.14,
+      "peak": 0.1756,
+      "loop": true
+    },
+    "engine_i4_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "77984d1e8a474fef734b68fb574b9efe7e1a40bb536558614b39677d1a12fcf0",
+      "rms": 0.14,
+      "peak": 0.1756,
+      "loop": true
+    },
+    "engine_i4_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "86f0b67db2673da1bff9f1e814f7337bf0fac650bc727ebe776bf129af77d92c",
+      "rms": 0.14,
+      "peak": 0.1846,
+      "loop": true
+    },
+    "engine_i4_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "390458ffeac4e1f9e46e15975a95785ae803ccc608388616e1668603c7d58995",
+      "rms": 0.14,
+      "peak": 0.1846,
+      "loop": true
+    },
+    "engine_v6_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a6e378bebde4a729959b283757b1b3ce0c00ff851c4a8c457970da580ce72c6e",
+      "rms": 0.14,
+      "peak": 0.1794,
+      "loop": true
+    },
+    "engine_v6_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "d3315bbcc40ba7c9f2577d6cbfdcfd9a3f4e24aa96fc9878fac3eebf781f2e34",
+      "rms": 0.14,
+      "peak": 0.1794,
+      "loop": true
+    },
+    "engine_v6_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "c67eaeb24b112250ea57191a9908c2c8cc7eab8edaf5ea974f07e4876bd8bf28",
+      "rms": 0.14,
+      "peak": 0.1791,
+      "loop": true
+    },
+    "engine_v6_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "9acc85f02830eed7c9bff1f8cd15653eb70ca4fda5d5e8dd4f122abcba6d7fd1",
+      "rms": 0.14,
+      "peak": 0.1791,
+      "loop": true
+    },
+    "engine_v6_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a146215b864948bf3ba9f4f75510039dd6890abb9e665b9605d7fc8a0fe1306b",
+      "rms": 0.14,
+      "peak": 0.1851,
+      "loop": true
+    },
+    "engine_v6_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a573ed0f0821f3fe39e63eda96c1fcae23cb77579df3fe657381c8fa4613b748",
+      "rms": 0.14,
+      "peak": 0.185,
+      "loop": true
+    },
+    "engine_flat4_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "dd00783406e23fec06015dde7f26cbc837336fba414fd051e1889a5a4dfe450f",
+      "rms": 0.14,
+      "peak": 0.1943,
+      "loop": true
+    },
+    "engine_flat4_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "817142d03edd319bcfc20469d4b1830eaf318f4cc2844f331bfd1cea5a4c0453",
+      "rms": 0.14,
+      "peak": 0.1943,
+      "loop": true
+    },
+    "engine_flat4_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "19eeefff2366eff9cc2aa665892ecfa645796e6b47010127f5ac3cf02b56d3f2",
+      "rms": 0.14,
+      "peak": 0.1911,
+      "loop": true
+    },
+    "engine_flat4_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "147e52ece0822ec25d4192fac278fd028387dc5f43869aee91037a185c0e6695",
+      "rms": 0.14,
+      "peak": 0.1911,
+      "loop": true
+    },
+    "engine_flat4_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "0182c2da1ac8a66842aa7c9a1f656f7eede354601dddc45e0a2bfaaf77237bdc",
+      "rms": 0.14,
+      "peak": 0.1999,
+      "loop": true
+    },
+    "engine_flat4_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "6782273be691e44081a3f35dc74400271a9a14db29b433edd9d34985e7bbc6a5",
+      "rms": 0.14,
+      "peak": 0.1999,
+      "loop": true
+    },
+    "engine_rotor1_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "9b68726f3471666e18ef615a81d212a704b8b15ab7b920a8f0a9710f3ee79fc5",
+      "rms": 0.14,
+      "peak": 0.1924,
+      "loop": true
+    },
+    "engine_rotor1_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "2a97f19c90dfef909f651221eaef3c9ca5e8d979e2b935edbbdfd0aefe259b2d",
+      "rms": 0.14,
+      "peak": 0.1929,
+      "loop": true
+    },
+    "engine_rotor1_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "71dfa02022a034e1c3084992b2271fa9c5736fbe828aefb15a0a9ab8ee81b798",
+      "rms": 0.14,
+      "peak": 0.193,
+      "loop": true
+    },
+    "engine_rotor1_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a99862e778e76bdf8d836540bb7b226741d2fd51930ab8adbb97827f42f6a8d3",
+      "rms": 0.14,
+      "peak": 0.1932,
+      "loop": true
+    },
+    "engine_rotor1_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "f19a9b3c3acb29481610c8cb66dbe4fedf020108ab4d94485b6a960fe45d5771",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor1_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "831d2399d308a8355c69790324c7c323e73012769f01069cef576d8674ab399c",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor2_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "7eeb626c9fc01877e3f6a58b2fa99932b39e816e43ac71c6b97cdcb7ae40439e",
+      "rms": 0.14,
+      "peak": 0.1924,
+      "loop": true
+    },
+    "engine_rotor2_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "5e1f47a999fb2dba9036d3baf916afd23fec0ba37b251ea83fa0a668a381eafb",
+      "rms": 0.14,
+      "peak": 0.1929,
+      "loop": true
+    },
+    "engine_rotor2_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "958c99afc98cd2cd436457570caa5801171d5f106214d48ea18122f169c120e9",
+      "rms": 0.14,
+      "peak": 0.193,
+      "loop": true
+    },
+    "engine_rotor2_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "337db9db68a1c06e41e7d57e2fa1077ace9c0090476269d319055771ddc9c4c4",
+      "rms": 0.14,
+      "peak": 0.1932,
+      "loop": true
+    },
+    "engine_rotor2_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "3365104daabccc4be88fad48bc0382f7f5c2eec034094d888cfdacb0de9ea3ce",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor2_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "1531b11f0fbeae2d7f7d6cd34becbf30f5b5058c8fc893a311c8a0fd3a58e3e7",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor3_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a7bcfb13ea1fe58ca38c88282e52152e35fbbc4c8ad842b1013ab98145426407",
+      "rms": 0.14,
+      "peak": 0.1924,
+      "loop": true
+    },
+    "engine_rotor3_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "f8a746564252afbf48be115c2cd0722aa3489f105617f13976528f63139aeeac",
+      "rms": 0.14,
+      "peak": 0.1929,
+      "loop": true
+    },
+    "engine_rotor3_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "fe477958cbeb7117e19f55ae9664caeed7747ae060342a74b404efdae0661b9e",
+      "rms": 0.14,
+      "peak": 0.193,
+      "loop": true
+    },
+    "engine_rotor3_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "d6a986cd99c74bc8d52b76223815b25d6dc822a14508979ca577b17c7e8dcdd9",
+      "rms": 0.14,
+      "peak": 0.1931,
+      "loop": true
+    },
+    "engine_rotor3_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "f0d4ba87ce1910787dde9a6b27d5b682479e892c90a4be671cb97ccd6ef150be",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor3_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "252e9481d3f79811b56dc7ae20f5b59e2b1ddf6d1397d4db31543edfd93c90e7",
+      "rms": 0.14,
+      "peak": 0.2011,
+      "loop": true
+    },
+    "engine_rotor4_stock_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "ee1f22039491f91c60ecbc6f50c285a9cb887f9f024ee48e37fb7840978dbd24",
+      "rms": 0.14,
+      "peak": 0.1924,
+      "loop": true
+    },
+    "engine_rotor4_stock_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a546f4c8248666cfd8921e71f5a707aa93ed94a3c1a886b6f8729638c11ae5cd",
+      "rms": 0.14,
+      "peak": 0.1929,
+      "loop": true
+    },
+    "engine_rotor4_sport_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "857e745dc6650b0ed67f4e38262a12a43f94f6cac12bd7a87f9e360e799c6339",
+      "rms": 0.14,
+      "peak": 0.193,
+      "loop": true
+    },
+    "engine_rotor4_sport_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "8e072d67ccad65381dcea68dcbadbba8e427e15e10e9ed2ff3eadc83515c9893",
+      "rms": 0.14,
+      "peak": 0.1932,
+      "loop": true
+    },
+    "engine_rotor4_open_low": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "13062d4c71abfe175c09b3e7c35cb797394074247e8bb58432941dbd812739f6",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "engine_rotor4_open_high": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "d133e16761cbef6f70470bec2c4be142defc1f4f6040cad592632c5509fd8146",
+      "rms": 0.14,
+      "peak": 0.2012,
+      "loop": true
+    },
+    "turbo": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "4a5f46a6b7da6e27697c78f52eb9adb3f5105a38b35bd7084368a23d52381f6a",
+      "rms": 0.14,
+      "peak": 0.2843,
+      "loop": true
+    },
+    "supercharger": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "b66e1182796035ee8d6a5f361fde89ad8483270e4d3b5fd33720079e0868c367",
+      "rms": 0.14,
+      "peak": 0.2072,
+      "loop": true
+    },
+    "tire_roll": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "724a159cac514a1199ec6b625340308244e842fb72425ab1adeb00d758753795",
+      "rms": 0.14,
+      "peak": 0.5337,
+      "loop": true
+    },
+    "tire_skid": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "578ffc1df9cf1348774315540383092d8bddad977d9e96d56e7e74a849a2f485",
+      "rms": 0.14,
+      "peak": 0.3237,
+      "loop": true
+    },
+    "brake_squeal": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "6ec29dc3e5fe516f0e94a00e049753503ae4346f24d8f95e58a1978631789ff2",
+      "rms": 0.14,
+      "peak": 0.2718,
+      "loop": true
+    },
+    "brake_grind": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "13bcc70a365e3ea52b608587635f55068b70ae860bcb239ccf664b0e87836062",
+      "rms": 0.14,
+      "peak": 0.5515,
+      "loop": true
+    },
+    "damage_rattle": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "5ae47356270fabbf573ba204a8b89d0d33a4596fee022aad3b8bf52228fc60f0",
+      "rms": 0.1269,
+      "peak": 0.79,
+      "loop": true
+    },
+    "intake": {
+      "samples": 22050,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "4d1b4243bc2a7b862e5b6b00268c51b986ae470cc5481b568e22ee624957592a",
+      "rms": 0.14,
+      "peak": 0.4482,
+      "loop": true
+    },
+    "starter": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "a88c729114df419e7b9e8730307e206c9ea982e5adbb076a2cf1c18e57cf89d2",
+      "rms": 0.19,
+      "peak": 0.7331,
+      "loop": false
+    },
+    "engine_stop": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "25a5855c81a7ed131d9d73a5c300196f6e1d101539d6b6f28e746dd38f84ee39",
+      "rms": 0.1609,
+      "peak": 0.79,
+      "loop": false
+    },
+    "shift": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "db6d023dd9e20337a9641cc0d01db0d950e0c67c3fbcfb4490e02a58a016e11e",
+      "rms": 0.0565,
+      "peak": 0.79,
+      "loop": false
+    },
+    "bov": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "d69e96a7e53d85d871a09c379a4faa544a1a465c10b47c02ca016dd96e9db6a0",
+      "rms": 0.0801,
+      "peak": 0.79,
+      "loop": false
+    },
+    "impact": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "e2855d69ce6a03d1e73e1ff51c4a42e6bd300d0416c937810edb0e89d661af59",
+      "rms": 0.085,
+      "peak": 0.79,
+      "loop": false
+    },
+    "tire_burst": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "b669f1ad83620832ffcd0b245d6e4b74b507a8d1d6e1ca4d5487e1937fe00ac0",
+      "rms": 0.0629,
+      "peak": 0.79,
+      "loop": false
+    },
+    "engine_failure": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "3a85181d2e85befd7287ad71810e5e42eb74bb440c17825237b76616acce667a",
+      "rms": 0.0972,
+      "peak": 0.79,
+      "loop": false
+    },
+    "part_break": {
+      "samples": 16537,
+      "sample_rate": 22050,
+      "channels": 1,
+      "pcm_sha256": "212f796591b8b05fe4c558455c57dc606053c8669ae1a7dd166aeb2a89e4363b",
+      "rms": 0.0628,
+      "peak": 0.79,
+      "loop": false
+    }
+  }
+}

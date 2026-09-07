@@ -12,11 +12,14 @@ public final class EngineBuild {
         };
     }
     public static double torque(double rpm,EngineFamily family,int grade,int parts,int limiter,double temperature){
+        return torque(rpm,family,grade,parts,limiter,temperature,1);
+    }
+    public static double torque(double rpm,EngineFamily family,int grade,int parts,int limiter,double temperature,double boostEfficiency){
         if(grade==0||!EnginePart.ready(parts)||!Double.isFinite(rpm)||rpm>=limiter||rpm<0)return 0;
         double base=PistonEngine.torque(rpm*family.rpmScale,grade==2,7200)*family.torqueScale;
         double intake=EnginePart.INTAKE.variant(parts)==2?1.08:1;
         double ignition=EnginePart.IGNITION.variant(parts)==2?1.03:1;
-        double charge=1+boost(rpm,parts)*.85-(EnginePart.INDUCTION.variant(parts)==2?.04:0);
+        double charge=1+boost(rpm,parts)*VehicleDynamics.clamp(boostEfficiency,0,1)*.85-(EnginePart.INDUCTION.variant(parts)==2?.04:0);
         double heat=1-VehicleDynamics.clamp((temperature-110)/35,0,.6);
         return base*intake*ignition*charge*heat;
     }
@@ -24,8 +27,12 @@ public final class EngineBuild {
         return torque(rpm,family,grade,parts,limiter,90)*rpm*Math.PI/30000;
     }
     public static double temperature(double current,double rpm,double throttle,double boost,boolean running,int parts,double dt){
+        return temperature(current,rpm,throttle,boost,running,parts,dt,1);
+    }
+    public static double temperature(double current,double rpm,double throttle,double boost,boolean running,int parts,double dt,double cooling){
         current=VehicleDynamics.clamp(current,20,150);
-        double target=running?82+throttle*24+boost*42-(EnginePart.COOLING.variant(parts)==2?22:0):20;
+        dt=VehicleDynamics.clamp(dt,0,.25); cooling=VehicleDynamics.clamp(cooling,0,1);
+        double target=running?82+throttle*24+boost*42+(1-cooling)*70-(EnginePart.COOLING.variant(parts)==2?22:0):20;
         double rate=running?(EnginePart.COOLING.variant(parts)==2?.045:.025):.012;
         return current+(target-current)*(1-Math.exp(-rate*dt));
     }

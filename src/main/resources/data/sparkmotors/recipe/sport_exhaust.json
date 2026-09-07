@@ -1,0 +1,21 @@
+{
+  "type": "sparkmotors:engine_crafting",
+  "category": "misc",
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "sparkmotors:stock_exhaust"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:sport_exhaust",
+    "count": 1
+  }
+}

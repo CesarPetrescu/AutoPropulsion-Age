@@ -1,0 +1,11 @@
+Original synthesized vehicle audio for AutoPropulsion Age.
+SPDX-License-Identifier: CC0-1.0
+
+These 58 generated audio assets and their original waveform designs are dedicated
+to the public domain under CC0 1.0 Universal. They may be used, modified and
+redistributed, including commercially, without attribution requirements.
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+No third-party recordings are included. This notice applies to sounds in this
+vehicle directory; it does not relicense Minecraft, NeoForge, other repository
+assets or the rest of this repository.

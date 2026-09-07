@@ -38,13 +38,13 @@ public final class AutoPropulsionAge {
     public static final Map<String,DeferredItem<Item>> PART_ITEMS = new LinkedHashMap<>();
     static {
         for (Assembly slot : Assembly.values()) for (int v=1; v<=2; v++) {
-            String key=slot.itemName(v); PART_ITEMS.put(key, slot==Assembly.ENGINE?ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))):ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+            String key=slot.itemName(v); PART_ITEMS.put(key, slot==Assembly.ENGINE?ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))):ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ConditionedPartItem(new Item.Properties().stacksTo(16))));
         }
         for(var family:EngineFamily.values())if(family!=EngineFamily.I4)for(int v=1;v<=2;v++){
             String key=family.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))));
         }
         for(var part:EnginePart.values())for(int v=1;v<=2;v++){
-            String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+            String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ConditionedPartItem(new Item.Properties().stacksTo(16))));
         }
     }
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ID);
@@ -55,6 +55,7 @@ public final class AutoPropulsionAge {
     public static IntConsumer openGarage = id -> {};
     public static IntConsumer openEngine = id -> {};
     public AutoPropulsionAge(IEventBus bus) {
+        com.photonspark.sparkmotors.sound.VehicleSounds.register();
         ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);
         bus.addListener(CarPackets::register);
     }

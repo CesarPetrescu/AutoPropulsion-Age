@@ -1,6 +1,9 @@
 package com.photonspark.sparkmotors.entity;
 
 import com.photonspark.sparkmotors.AutoPropulsionAge;
+import com.photonspark.sparkmotors.item.ConditionData;
+import com.photonspark.sparkmotors.sim.VehicleCondition.Part;
+import com.photonspark.sparkmotors.sound.VehicleSounds;
 import com.photonspark.sparkmotors.net.CarPackets;
 import com.photonspark.sparkmotors.sim.*;
 import net.minecraft.core.BlockPos;
@@ -21,8 +24,12 @@ import java.util.*;
 
 public final class CarEntity extends Entity {
     private static final EntityDataAccessor<Float> SPEED=data(EntityDataSerializers.FLOAT),RPM=data(EntityDataSerializers.FLOAT),FUEL=data(EntityDataSerializers.FLOAT),
-        HEALTH=data(EntityDataSerializers.FLOAT),STEER=data(EntityDataSerializers.FLOAT),PITCH=data(EntityDataSerializers.FLOAT),ROLL=data(EntityDataSerializers.FLOAT),FINAL_DRIVE=data(EntityDataSerializers.FLOAT),TEMPERATURE=data(EntityDataSerializers.FLOAT),BOOST=data(EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Integer> FLAGS=data(EntityDataSerializers.INT),CONFIG=data(EntityDataSerializers.INT),PAINT=data(EntityDataSerializers.INT),GEAR=data(EntityDataSerializers.INT),LIMITER=data(EntityDataSerializers.INT),ENGINE_FAMILY=data(EntityDataSerializers.INT),ENGINE_PARTS=data(EntityDataSerializers.INT);
+        HEALTH=data(EntityDataSerializers.FLOAT),STEER=data(EntityDataSerializers.FLOAT),PITCH=data(EntityDataSerializers.FLOAT),ROLL=data(EntityDataSerializers.FLOAT),FINAL_DRIVE=data(EntityDataSerializers.FLOAT),TEMPERATURE=data(EntityDataSerializers.FLOAT),BOOST=data(EntityDataSerializers.FLOAT),SLIP=data(EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> FLAGS=data(EntityDataSerializers.INT),CONFIG=data(EntityDataSerializers.INT),PAINT=data(EntityDataSerializers.INT),GEAR=data(EntityDataSerializers.INT),LIMITER=data(EntityDataSerializers.INT),ENGINE_FAMILY=data(EntityDataSerializers.INT),ENGINE_PARTS=data(EntityDataSerializers.INT),CONTROLS=data(EntityDataSerializers.INT);
+    private static final EntityDataAccessor<CompoundTag> CONDITION=data(EntityDataSerializers.COMPOUND_TAG);
+    private VehicleCondition condition=new VehicleCondition();
+    private CompoundTag lastConditionTag;
+    private int lastImpactTick=-100;
     private static final EntityDataAccessor<Optional<UUID>> OWNER=data(EntityDataSerializers.OPTIONAL_UUID);
     private static <T> EntityDataAccessor<T> data(EntityDataSerializer<T> serializer){return SynchedEntityData.defineId(CarEntity.class,serializer);}
     private double speed,verticalSpeed,lerpX,lerpY,lerpZ;
@@ -36,18 +43,31 @@ public final class CarEntity extends Entity {
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
         b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(FINAL_DRIVE,3.7f);b.define(FLAGS,0);b.define(CONFIG,Assembly.stock());b.define(PAINT,0x168A91);b.define(GEAR,1);b.define(LIMITER,6800);b.define(OWNER,Optional.empty());
-        b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);
+        b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);b.define(SLIP,0f);b.define(CONTROLS,0);b.define(CONDITION,new CompoundTag());
     }
     public float speed(){return entityData.get(SPEED);} public float rpm(){return entityData.get(RPM);} public float fuel(){return entityData.get(FUEL);}
     public float health(){return entityData.get(HEALTH);} public int config(){return entityData.get(CONFIG);} public int paint(){return entityData.get(PAINT);}
     public int gear(){return entityData.get(GEAR);} public int limiter(){return entityData.get(LIMITER);} public float finalDrive(){return entityData.get(FINAL_DRIVE);}
     public float steer(){return entityData.get(STEER);} public float roadPitch(){return entityData.get(PITCH);} public float roadRoll(){return entityData.get(ROLL);}
     public boolean ignition(){return flag(1);} public boolean lights(){return flag(2);} public boolean panels(){return flag(4);}
+    public boolean grounded(){return flag(16);}
     public boolean hoodOpen(){return flag(8);}
     public EngineFamily engineFamily(){return EngineFamily.byId(entityData.get(ENGINE_FAMILY));}
     public int engineParts(){return entityData.get(ENGINE_PARTS);}
     public float temperature(){return entityData.get(TEMPERATURE);}public float boost(){return entityData.get(BOOST);}
-    public String engineProblem(){return Assembly.ENGINE.variant(config())==0?"No engine installed.":EnginePart.problem(engineParts());}
+    public VehicleCondition condition(){
+        if(level().isClientSide){var tag=entityData.get(CONDITION);if(tag!=lastConditionTag){condition=ConditionData.load(tag);lastConditionTag=tag;}}
+        return condition;
+    }
+    public void syncCondition(){if(!level().isClientSide){entityData.set(CONDITION,ConditionData.save(condition,p->true));entityData.set(HEALTH,(float)condition.average(config(),engineParts()));}}
+    public float throttle(){return (entityData.get(CONTROLS)&1)!=0?1:0;}
+    public boolean braking(){return (entityData.get(CONTROLS)&6)!=0;}
+    public boolean handbrake(){return (entityData.get(CONTROLS)&4)!=0;}
+    public float slip(){return entityData.get(SLIP);}
+    public String engineProblem(){
+        if(Assembly.ENGINE.variant(config())==0)return "No engine installed.";
+        String missing=EnginePart.problem(engineParts());return missing.isEmpty()?condition().problem(config(),engineParts()):missing;
+    }
     private boolean flag(int flag){return (entityData.get(FLAGS)&flag)!=0;}
     private void flag(int flag,boolean value){entityData.set(FLAGS,value?entityData.get(FLAGS)|flag:entityData.get(FLAGS)&~flag);}
     public void setOwner(UUID owner){entityData.set(OWNER,Optional.of(owner));}
@@ -69,6 +89,10 @@ public final class CarEntity extends Entity {
                 setYRot(getYRot()+Mth.wrapDegrees(lerpYaw-getYRot())/lerpSteps);setXRot(lerpPitch);lerpSteps--;
                 setBoundingBox(makeBoundingBox());
             }
+            if(ignition()&&tickCount%5==0&&(temperature()>115||condition().health(Part.ENGINE_BLOCK)<40||condition().health(Part.COOLING)<30)){
+                Vec3 point=position().add(new Vec3(0,1.1,1.4).yRot((float)-Math.toRadians(getYRot())));
+                level().addParticle(temperature()>115?net.minecraft.core.particles.ParticleTypes.CLOUD:net.minecraft.core.particles.ParticleTypes.SMOKE,point.x,point.y,point.z,0,.025,0);
+            }
             return;
         }
         boolean driver=getControllingPassenger() instanceof Player;
@@ -78,8 +102,10 @@ public final class CarEntity extends Entity {
         if(speed>1)reverse=false;
         if(speed< -1)reverse=true;
         boolean braking=(inputKeys&6)!=0;
-        var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse);
-        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature());
+        entityData.set(CONTROLS,inputKeys);
+        var effects=condition.effects(config(),engineParts());
+        var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,(inputKeys&2)!=0,reverse,(inputKeys&4)!=0);
+        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),effects);
         double[] contact=wheelContacts();
         int contactCount=0;for(double h:contact)if(Double.isFinite(h))contactCount++;
         boolean grounded=onGround()||contactCount>=2;
@@ -87,7 +113,7 @@ public final class CarEntity extends Entity {
         float currentFuel=fuel();
         for(int i=0;i<4;i++){
             var state=VehicleDynamics.step(speed,currentFuel,ignition(),input,setup,grip,grounded,.0125);
-            speed=state.speed();currentFuel=(float)state.fuel();
+            speed=state.speed();currentFuel=(float)state.fuel();entityData.set(SLIP,(float)state.slip());
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
             float previousYaw=getYRot();
             setYRot(previousYaw+(float)Math.toDegrees(state.yawDelta()));
@@ -99,17 +125,25 @@ public final class CarEntity extends Entity {
             Vec3 move=new Vec3(-Math.sin(yaw)*speed*.0125,verticalSpeed*.0125,Math.cos(yaw)*speed*.0125);
             double oldX=getX(),oldZ=getZ(),impact=Math.abs(speed);
             move(MoverType.SELF,move);
-            if(verticalCollision)verticalSpeed=0;
+            if(verticalCollision){if(verticalSpeed< -4)applyImpact(VehicleCondition.Zone.UNDERBODY,-verticalSpeed);verticalSpeed=0;}
             if(horizontalCollision&&Math.hypot(getX()-oldX,getZ()-oldZ)<Math.hypot(move.x,move.z)*.5){
                 speed=0;
-                if(impact>5){entityData.set(HEALTH,Math.max(0,health()-(float)(impact-5)*1.3f));playSound(SoundEvents.ANVIL_LAND,.45f,1.3f);}
+                if(impact>3){
+                    Vec3 blocked=new Vec3(move.x-(getX()-oldX),0,move.z-(getZ()-oldZ)).yRot((float)Math.toRadians(getYRot()));
+                    applyImpact(zone(blocked),impact);
+                }
             }
             grounded=onGround()||contactCount>=2;
         }
+        flag(16,grounded);
         entityData.set(FUEL,currentFuel);entityData.set(SPEED,(float)speed);entityData.set(STEER,inputSteer);
         float throttle=(inputKeys&1)!=0?1:0;
-        entityData.set(BOOST,ignition()?(float)EngineBuild.boost(rpm(),engineParts())*throttle:0);
-        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),ignition(),engineParts(),.05));
+        entityData.set(BOOST,ignition()?(float)EngineBuild.boost(rpm(),engineParts())*throttle*(float)effects.boost():0);
+        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),ignition(),engineParts(),.05,effects.cooling()));
+        var failedBefore=condition.failed();
+        condition.step(config(),engineParts(),ignition(),rpm(),throttle,speed,braking,temperature(),slip(),.05);
+        var failedNow=condition.failed();failedNow.removeAll(failedBefore);playFailures(failedNow);
+        if(tickCount%10==0||!failedNow.isEmpty())syncCondition();
         setDeltaMovement(-Math.sin(Math.toRadians(getYRot()))*speed/20,verticalSpeed/20,Math.cos(Math.toRadians(getYRot()))*speed/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
@@ -188,18 +222,18 @@ public final class CarEntity extends Entity {
         if(action==CarPackets.LIGHTS){flag(2,!lights());return;}
         if(action==CarPackets.HORN){playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(),1,.8f);return;}
         if(action==CarPackets.IGNITION){
-            if(ignition()){flag(1,false);return;}
+            if(ignition()){flag(1,false);playSound(VehicleSounds.get("engine_stop"),.5f,1);return;}
             if(!Assembly.canDrive(config())){message(player,"Install an engine, transmission, wheel set, brakes and suspension first.");return;}
             if(!engineProblem().isEmpty()){message(player,engineProblem());return;}
             if(temperature()>=125){message(player,"Engine too hot. Let it cool before restarting.");return;}
             if(fuel()<=0||health()<=0||isInWater()){message(player,"Refuel or repair the car before starting.");return;}
-            flag(1,true);playSound(SoundEvents.PISTON_EXTEND,.7f,.7f);return;
+            flag(1,true);playSound(VehicleSounds.get("starter"),.6f,1);return;
         }
         if(Math.abs(speed())>.3){message(player,"Stop the car before servicing it.");return;}
         if(action==CarPackets.PANELS){boolean open=!panels();flag(4,open);flag(8,open);return;}
         if(action==CarPackets.HOOD){flag(8,!hoodOpen());return;}
         if(ignition()){message(player,"Switch the engine off before servicing.");return;}
-        boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
+        boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||(action==CarPackets.REPAIR_PART&&a>=0&&a<Part.values().length&&Part.values()[a].assembly==Assembly.ENGINE)||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
         if(engineWork&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before working on the engine.");return;}
         switch(action){
             case CarPackets.ENGINE_SWAP -> {
@@ -208,14 +242,17 @@ public final class CarEntity extends Entity {
             }
             case CarPackets.ENGINE_PART -> {
                 if(a<0||a>=EnginePart.values().length||b<0||b>2||Assembly.ENGINE.variant(config())==0)return;
-                EnginePart part=EnginePart.values()[a];int old=part.variant(engineParts());if(old==b)return;
+                EnginePart part=EnginePart.values()[a];int old=part.variant(engineParts());if(old==b&&b==0)return;
                 int next=part.with(engineParts(),b);
                 // Disassembly is allowed. A complete but incompatible boost build is rejected.
                 String problem=part.installationProblem(engineParts(),b);
                 if(!problem.isEmpty()){message(player,problem);return;}
-                if(b>0&&!consume(player,AutoPropulsionAge.enginePartItem(part,b),1)){message(player,"Required engine part is missing from your inventory.");return;}
-                entityData.set(ENGINE_PARTS,next);
-                if(old>0&&!player.isCreative())give(player,new ItemStack(AutoPropulsionAge.enginePartItem(part,old)));
+                ItemStack incoming=b==0?ItemStack.EMPTY:takePart(player,AutoPropulsionAge.enginePartItem(part,b));
+                if(b>0&&incoming.isEmpty()){message(player,"Required engine part is missing from your inventory.");return;}
+                ItemStack removed=old==0?ItemStack.EMPTY:ConditionData.toItem(new ItemStack(AutoPropulsionAge.enginePartItem(part,old)),condition,p->p.enginePart==part);
+                condition.copyFrom(ConditionData.fromItem(incoming),p->p.enginePart==part);
+                entityData.set(ENGINE_PARTS,next);syncCondition();
+                if(!removed.isEmpty()&&!player.isCreative())give(player,removed);
                 message(player,part.title+": "+part.label(b));
             }
             case CarPackets.REFUEL -> {
@@ -224,17 +261,23 @@ public final class CarEntity extends Entity {
                 else message(player,"You need a fuel can in your inventory.");
             }
             case CarPackets.REPAIR -> {
-                if(health()>=100)break;
-                if(consume(player,Items.IRON_INGOT,4)){entityData.set(HEALTH,100f);message(player,"Car repaired.");}
-                else message(player,"Repair requires 4 iron ingots.");
+                Part worst=Arrays.stream(Part.values()).filter(p->p.installed(config(),engineParts()))
+                    .min(Comparator.comparingDouble(condition::health)).orElse(Part.FRAME);
+                repairPart(player,worst);
+            }
+            case CarPackets.REPAIR_PART -> {
+                if(a>=0&&a<Part.values().length)repairPart(player,Part.values()[a]);
             }
             case CarPackets.INSTALL -> {
                 if(a<0||a>=Assembly.values().length||b<0||b>2)return;
-                Assembly slot=Assembly.values()[a];int old=slot.variant(config());if(old==b)return;
+                Assembly slot=Assembly.values()[a];int old=slot.variant(config());if(old==b&&b==0)return;
                 if(slot==Assembly.ENGINE){swapEngine(player,engineFamily(),b);return;}
-                if(b>0&&!consume(player,AutoPropulsionAge.partItem(slot,b),1)){message(player,"Required assembly is missing from your inventory.");return;}
-                setConfiguration(slot.with(config(),b));
-                if(old>0&&!player.isCreative())give(player,new ItemStack(AutoPropulsionAge.partItem(slot,old)));
+                ItemStack incoming=b==0?ItemStack.EMPTY:takePart(player,AutoPropulsionAge.partItem(slot,b));
+                if(b>0&&incoming.isEmpty()){message(player,"Required assembly is missing from your inventory.");return;}
+                ItemStack removed=old==0?ItemStack.EMPTY:ConditionData.toItem(new ItemStack(AutoPropulsionAge.partItem(slot,old)),condition,p->p.assembly==slot);
+                condition.copyFrom(ConditionData.fromItem(incoming),p->p.assembly==slot);
+                setConfiguration(slot.with(config(),b));syncCondition();
+                if(!removed.isEmpty()&&!player.isCreative())give(player,removed);
                 message(player,slot.title+": "+(b==0?"removed":b==1?"stock installed":"sport installed"));
             }
             case CarPackets.PAINT -> {
@@ -254,7 +297,7 @@ public final class CarEntity extends Entity {
     }
     private void swapEngine(ServerPlayer player,EngineFamily family,int grade){
         int old=Assembly.ENGINE.variant(config());
-        if(old==grade&&engineFamily()==family)return;
+        if(old==grade&&grade==0)return;
         ItemStack incoming=ItemStack.EMPTY;
         if(grade>0){
             Item wanted=AutoPropulsionAge.engineItem(family,grade);
@@ -265,12 +308,13 @@ public final class CarEntity extends Entity {
             if(incoming.isEmpty()){message(player,"Required engine assembly is missing from your inventory.");return;}
         }
         ItemStack removed=old==0?ItemStack.EMPTY:com.photonspark.sparkmotors.item.EngineItem.withParts(new ItemStack(AutoPropulsionAge.engineItem(engineFamily(),old)),engineParts());
-        if(!removed.isEmpty())com.photonspark.sparkmotors.item.EngineItem.withTemperature(removed,temperature());
+        if(!removed.isEmpty()){com.photonspark.sparkmotors.item.EngineItem.withTemperature(removed,temperature());ConditionData.toItem(removed,condition,p->p.assembly==Assembly.ENGINE);}
+        condition.copyFrom(ConditionData.fromItem(incoming),p->p.assembly==Assembly.ENGINE);
         setConfiguration(Assembly.ENGINE.with(config(),grade));entityData.set(ENGINE_FAMILY,family.ordinal());
         entityData.set(ENGINE_PARTS,grade==0?EnginePart.stock():com.photonspark.sparkmotors.item.EngineItem.parts(incoming));
         entityData.set(TEMPERATURE,grade==0?20f:com.photonspark.sparkmotors.item.EngineItem.temperature(incoming));entityData.set(BOOST,0f);
         if(!removed.isEmpty()&&!player.isCreative())give(player,removed);
-        player.getInventory().setChanged();message(player,grade==0?"Engine removed with its installed parts.":family.title+" engine installed.");
+        syncCondition();player.getInventory().setChanged();message(player,grade==0?"Engine removed with its installed parts.":family.title+" engine installed.");
     }
     private static boolean consume(Player p,Item item,int amount){
         if(p.isCreative())return true;
@@ -286,16 +330,53 @@ public final class CarEntity extends Entity {
     @Override public boolean hurt(DamageSource source,float amount){
         if(level().isClientSide||isInvulnerableTo(source))return false;
         if(source.getEntity() instanceof Player p&&p.isCreative()&&mayModify(p)&&getPassengers().isEmpty()){discard();return true;}
-        entityData.set(HEALTH,Math.max(0,health()-Math.min(amount,50)));return true;
+        if(!Float.isFinite(amount)||amount<=0)return false;
+        Vec3 origin=source.getSourcePosition();
+        VehicleCondition.Zone hit=origin==null?VehicleCondition.Zone.FRONT:zone(origin.subtract(position()).yRot((float)Math.toRadians(getYRot())));
+        var failed=condition.impact(hit,Math.sqrt(Math.min(amount,50)/.15+9),config(),engineParts());
+        playFailures(failed);syncCondition();return true;
+    }
+    private static VehicleCondition.Zone zone(Vec3 local){
+        return Math.abs(local.z)>=Math.abs(local.x)?(local.z>=0?VehicleCondition.Zone.FRONT:VehicleCondition.Zone.REAR):
+            (local.x<0?VehicleCondition.Zone.LEFT:VehicleCondition.Zone.RIGHT);
+    }
+    private void applyImpact(VehicleCondition.Zone zone,double deltaV){
+        if(tickCount-lastImpactTick<6)return;lastImpactTick=tickCount;
+        var failed=condition.impact(zone,deltaV,config(),engineParts());
+        playSound(VehicleSounds.get("impact"),(float)Math.min(.85,deltaV/25),1);playFailures(failed);syncCondition();
+    }
+    private void playFailures(Set<Part> failed){
+        if(failed.isEmpty())return;
+        String sound=failed.stream().anyMatch(p->p.assembly==Assembly.WHEELS)?"tire_burst":
+            failed.stream().anyMatch(p->p.assembly==Assembly.ENGINE)?"engine_failure":"part_break";
+        playSound(VehicleSounds.get(sound),.65f,1);
+        if(!condition.problem(config(),engineParts()).isEmpty())flag(1,false);
+    }
+    private void repairPart(ServerPlayer player,Part part){
+        if(!part.installed(config(),engineParts())){message(player,"Install this component before repairing it.");return;}
+        if(condition.health(part)>=99.999){message(player,"This component does not need repair.");return;}
+        if(part.assembly==Assembly.ENGINE&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before engine repairs.");return;}
+        if(!consume(player,Items.IRON_INGOT,part.repairCost)){message(player,"Repair requires "+part.repairCost+" iron ingots.");return;}
+        condition.repair(part);syncCondition();message(player,part.title+" repaired. Other components are unchanged.");
+    }
+    private static ItemStack takePart(Player player,Item item){
+        if(player.isCreative())return new ItemStack(item);
+        for(int i=0;i<player.getInventory().getContainerSize();i++){
+            var stack=player.getInventory().getItem(i);if(stack.is(item)){
+                var one=stack.copyWithCount(1);stack.shrink(1);player.getInventory().setChanged();return one;
+            }
+        }
+        return ItemStack.EMPTY;
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putInt("DataVersion",2);tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putInt("DataVersion",3);tag.put("PartCondition",ConditionData.save(condition,p->true));tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());
         tag.putInt("Limiter",limiter());tag.putFloat("FinalDrive",finalDrive());tag.putBoolean("Lights",lights());entityData.get(OWNER).ifPresent(id->tag.putUUID("Owner",id));
     }
     @Override protected void readAdditionalSaveData(CompoundTag tag){
         if(tag.contains("Assemblies"))setConfiguration(tag.getInt("Assemblies"));
+        if(tag.getInt("DataVersion")<3)setConfiguration(Assembly.EXHAUST.with(config(),1));
         entityData.set(ENGINE_FAMILY,EngineFamily.byId(tag.getInt("EngineFamily")).ordinal());
         entityData.set(ENGINE_PARTS,tag.contains("EngineParts")?EnginePart.sanitize(tag.getInt("EngineParts")):EnginePart.stock());
         entityData.set(TEMPERATURE,tag.contains("EngineTemperature")?(float)VehicleDynamics.clamp(tag.getFloat("EngineTemperature"),20,150):20f);
@@ -306,6 +387,9 @@ public final class CarEntity extends Entity {
         if(tag.contains("Limiter"))entityData.set(LIMITER,Mth.clamp(tag.getInt("Limiter"),4000,7000));
         if(tag.contains("FinalDrive"))entityData.set(FINAL_DRIVE,(float)VehicleDynamics.clamp(tag.getFloat("FinalDrive"),2.8,4.8));
         if(tag.hasUUID("Owner"))setOwner(tag.getUUID("Owner"));
+        condition=tag.contains("PartCondition",10)?ConditionData.load(tag.getCompound("PartCondition")):new VehicleCondition();
+        if(!tag.contains("PartCondition",10))condition.migrateLegacy(tag.contains("Health")?tag.getFloat("Health"):100,config(),engineParts());
+        syncCondition();entityData.set(CONTROLS,0);entityData.set(SLIP,0f);
         flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;flag(1,false);
     }
 }

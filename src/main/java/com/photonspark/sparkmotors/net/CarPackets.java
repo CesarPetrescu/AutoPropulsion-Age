@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public final class CarPackets {
     public static final int OPEN=0, IGNITION=1, LIGHTS=2, PANELS=3, HORN=4, REFUEL=5, REPAIR=6, INSTALL=7, PAINT=8, TUNE=9,
-        HOOD=10,ENGINE_SWAP=11,ENGINE_PART=12,OPEN_ENGINE=13;
+        HOOD=10,ENGINE_SWAP=11,ENGINE_PART=12,OPEN_ENGINE=13,REPAIR_PART=14;
     public record Input(int entity,int keys,float steer) implements CustomPacketPayload {
         public static final Type<Input> TYPE=new Type<>(AutoPropulsionAge.id("input"));
         public static final StreamCodec<RegistryFriendlyByteBuf,Input> CODEC=new StreamCodec<>() {
@@ -36,7 +36,7 @@ public final class CarPackets {
         public Type<Open> type(){return TYPE;}
     }
     public static void register(RegisterPayloadHandlersEvent event) {
-        var r=event.registrar("2");
+        var r=event.registrar("3");
         r.playToServer(Input.TYPE,Input.CODEC,(p,ctx)->{
             if(ctx.player().level().getEntity(p.entity) instanceof CarEntity car && car.getControllingPassenger()==ctx.player())
                 car.receiveInput(p.keys,p.steer);

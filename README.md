@@ -1,5 +1,7 @@
 # AutoPropulsion Age
 
+> **0.3.0 feature preview:** independent component wear/damage, muffler-dependent layered audio, and a native inspection screen. [Controls, architecture, and verification](docs/COMPONENT-DAMAGE-AUDIO.md). Build this branch or use its Vehicle validation artifact; the older 0.2.0 downloads and screenshots below are historical.
+
 **Playable alpha 0.2.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
 Drive a modular sedan, open its hood, build or swap its engine, repaint it and adjust its tune through a native Minecraft garage. **Seven engine families, stock/sport grades, six service slots, and natural/turbo/supercharger configurations are playable.** The alpha includes a driving HUD, automatic gears, reverse, fuel, repairs, opening panels, engine sound, survival recipes and saved car configurations.

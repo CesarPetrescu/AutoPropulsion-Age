@@ -50,6 +50,7 @@ lang['item.sparkmotors.performance_fuel_system']='High-flow Fuel System'
 lang['item.sparkmotors.performance_cooling']='Heavy-duty Cooling Kit'
 lang['item.sparkmotors.turbo_kit']='Complete Turbo Kit'
 lang['item.sparkmotors.supercharger_kit']='Complete Supercharger Kit'
+lang.update({'item.sparkmotors.stock_exhaust':'Stock Exhaust / Muffler','item.sparkmotors.sport_exhaust':'Sport Exhaust / Muffler'})
 js(assets/'lang/en_us.json',lang)
 def recipe(name,pattern,keys,count=1):
     js(data/'recipe'/f'{name}.json',{'type':'minecraft:crafting_shaped','category':'misc','pattern':pattern,'key':{k:{'item':v} for k,v in keys.items()},'result':{'id':'sparkmotors:'+name,'count':count}})
@@ -57,7 +58,7 @@ recipe('sedan_crate',['III','EWT','III'],{'I':'minecraft:iron_block','E':'sparkm
 recipe('garage_wrench',[' I ',' II','I  '],{'I':'minecraft:iron_ingot'})
 recipe('garage_controller',['III','RCR','III'],{'I':'minecraft:iron_ingot','R':'minecraft:redstone','C':'minecraft:crafting_table'})
 recipe('fuel_can',[' I ','ICI',' I '],{'I':'minecraft:iron_nugget','C':'minecraft:coal'})
-centers={'engine':'minecraft:piston','transmission':'minecraft:iron_block','wheels':'minecraft:coal_block','brakes':'minecraft:copper_ingot','suspension':'minecraft:string','body':'minecraft:glass'}
+centers={'engine':'minecraft:piston','transmission':'minecraft:iron_block','wheels':'minecraft:coal_block','brakes':'minecraft:copper_ingot','suspension':'minecraft:string','body':'minecraft:glass','exhaust':'minecraft:copper_ingot'}
 for slot,center in centers.items():
     recipe('stock_'+slot,['III','ICI','III'],{'I':'minecraft:iron_ingot','C':center})
     recipe('sport_'+slot,['GRG','RSR','GRG'],{'G':'minecraft:gold_ingot','R':'minecraft:redstone','S':'sparkmotors:stock_'+slot})
@@ -72,7 +73,7 @@ for name,center in [('turbo_kit','diamond'),('supercharger_kit','gold_block')]:
     recipe(name,['IRI','PCP','IRI'],{'I':'minecraft:iron_ingot','R':'minecraft:redstone','P':'minecraft:piston','C':'minecraft:'+center})
 for path in (data/'recipe').glob('*.json'):
     value=json.loads(path.read_text());name=value['result']['id'].split(':')[1]
-    if name=='sedan_crate' or name.endswith('_engine') and name!='stock_engine':value['type']='sparkmotors:engine_crafting';js(path,value)
+    if name=='sedan_crate' or name.endswith('_engine') and name!='stock_engine' or name.startswith(('sport_', 'performance_')):value['type']='sparkmotors:engine_crafting';js(path,value)
 # A clean one-second periodic four-cylinder-style pulse loop. Original synthesized audio.
 sound=assets/'sounds';sound.mkdir(parents=True,exist_ok=True)
 wav=repo/'.codex-reference/engine_loop.wav';rate=44100
@@ -90,3 +91,7 @@ with wave.open(str(wav),'wb') as f:
 subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(wav),'-c:a','libvorbis','-q:a','5',str(sound/'engine_loop.ogg')],check=True)
 js(assets/'sounds.json',{'engine_loop':{'subtitle':'subtitles.sparkmotors.engine','sounds':[{'name':'sparkmotors:engine_loop','stream':False}]}})
 print(f'Generated {len(icons)} icons and recipes, block resources, translations and engine_loop.ogg')
+
+# Preserve and rebuild the vehicle audio catalog after the legacy asset pass.
+import generate_vehicle_audio
+generate_vehicle_audio.main()

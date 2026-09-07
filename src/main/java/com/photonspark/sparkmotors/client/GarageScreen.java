@@ -4,6 +4,7 @@ import com.photonspark.sparkmotors.AutoPropulsionAge;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.net.CarPackets;
 import com.photonspark.sparkmotors.sim.*;
+import com.photonspark.sparkmotors.sim.VehicleCondition.Part;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
@@ -21,7 +22,9 @@ public final class GarageScreen extends Screen {
     private int lastConfig,lastPaint;
     private int lastEngineParts,lastFamily,engineScroll,engineRows;
     private EngineFamily selectedFamily;
-    private float engineViewYaw=325;
+    private float engineViewYaw=325,viewPitch=23,viewZoom=1;
+    private int conditionScroll,conditionRows;
+    private boolean heatmap=true;
     private boolean cutaway;
     private final Map<Button,java.util.function.BooleanSupplier> serviceButtons=new LinkedHashMap<>();
     private static final int INK=0xFFE7F0F4,MUTED=0xFF9FB1BE,ACCENT=0xFF42D2C6;
@@ -43,12 +46,12 @@ public final class GarageScreen extends Screen {
         clearWidgets();serviceButtons.clear();w=Math.min(780,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;
         previewWidth=Math.max(120,(int)(w*.38));rx=x+previewWidth+20;rw=w-previewWidth-32;
         button("X",x+w-29,y+9,20,20,this::onClose,"Close garage",false);
-        String[] names={"Garage","Paint","Tuner","Car","Engine"};
-        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/5,y+43,rw/5-3,20,()->{tab=selected;init();},null,false).active=i!=tab;}
+        String[] names={"Garage","Paint","Tuner","Car","Engine","Inspect"};
+        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{tab=selected;init();},null,false).active=i!=tab;}
         int top=y+82;
         switch(tab){
             case 0 -> {
-                rows=Math.max(1,Math.min(6,(h-142)/44));scroll=Math.clamp(scroll,0,6-rows);
+                rows=Math.max(1,Math.min(Assembly.values().length,(h-142)/44));scroll=Math.clamp(scroll,0,Assembly.values().length-rows);
                 for(int i=0;i<rows;i++){
                     Assembly slot=Assembly.values()[scroll+i];int by=top+i*44,bw=(rw-6)/3;
                     for(int v=0;v<=2;v++){
@@ -56,11 +59,11 @@ public final class GarageScreen extends Screen {
                         int bx=rx+(v==0?2:v-1)*(bw+3);
                         var b=button(label,bx,by+14,bw,20,()->request(CarPackets.INSTALL,slot.ordinal(),variant),
                             v==0?"Returns the installed assembly to your inventory. Engines retain their service parts.":"Requires "+assemblyItem(slot,v).getDescription().getString()+". Engines need the hood open.",true);
-                        java.util.function.BooleanSupplier available=()->serviceAllowed()&&(slot!=Assembly.ENGINE||engineServiceAllowed())&&slot.variant(car.config())!=variant&&(variant==0||minecraft.player.isCreative()||count(assemblyItem(slot,variant))>0);
+                        java.util.function.BooleanSupplier available=()->serviceAllowed()&&(slot!=Assembly.ENGINE||engineServiceAllowed())&&(slot.variant(car.config())!=variant||variant>0&&assemblyDamaged(slot))&&(variant==0||minecraft.player.isCreative()||count(assemblyItem(slot,variant))>0);
                         serviceButtons.put(b,available);b.active=available.getAsBoolean();
                     }
                 }
-                if(rows<6){button("<",rx,y+h-49,23,18,()->{scroll=Math.max(0,scroll-rows);init();},"Previous assemblies",false);button(">",rx+27,y+h-49,23,18,()->{scroll=Math.min(6-rows,scroll+rows);init();},"More assemblies",false);}
+                if(rows<Assembly.values().length){button("<",rx,y+h-49,23,18,()->{scroll=Math.max(0,scroll-rows);init();},"Previous assemblies",false);button(">",rx+27,y+h-49,23,18,()->{scroll=Math.min(Assembly.values().length-rows,scroll+rows);init();},"More assemblies",false);}
             }
             case 1 -> {
                 int columns=rw<280?2:4,bw=(rw-9)/columns;
@@ -82,8 +85,25 @@ public final class GarageScreen extends Screen {
                 button("Headlights",rx+bw+5,top,bw,23,()->request(CarPackets.LIGHTS,0,0),"Toggle head and tail lights.",false);
                 button("Open / close panels",rx,top+32,rw,23,()->request(CarPackets.PANELS,0,0),"Open all doors, hood and trunk while parked.",false);
                 button("Refuel +10 L",rx,top+64,bw,23,()->request(CarPackets.REFUEL,0,0),"Requires one fuel can. Maximum tank capacity: 50 L.",true);
-                button("Repair",rx+bw+5,top+64,bw,23,()->request(CarPackets.REPAIR,0,0),"Requires four iron ingots.",true);
+                button("Repair worst",rx+bw+5,top+64,bw,23,()->request(CarPackets.REPAIR,0,0),"Repairs only the worst installed component, at its listed iron cost. Engine parts need the hood open. See Inspect for individual repairs.",true);
                 button("Open / close hood",rx,top+94,rw,22,()->request(CarPackets.HOOD,0,0),"Operate just the hood. Park before opening it.",false);
+            }
+            case 5 -> {
+                button(cutaway?"Show body":"Cutaway",x+18,y+72,(previewWidth-39)/2,19,()->{cutaway=!cutaway;init();},"Inspection-only cutaway. Installed inventory parts are not removed.",false);
+                button(heatmap?"Material":"Health map",x+21+(previewWidth-39)/2,y+72,(previewWidth-39)/2,19,()->{heatmap=!heatmap;init();},"Green: healthy. Amber: worn. Red: failed. Cosmetic inspection overlay only.",false);
+                conditionRows=Math.max(1,Math.min(Part.values().length,(h-174)/42));
+                conditionScroll=Math.clamp(conditionScroll,0,Part.values().length-conditionRows);
+                for(int i=0;i<conditionRows;i++){
+                    Part part=Part.values()[conditionScroll+i];int by=top+22+i*42;
+                    var repair=button("Repair",rx+rw-65,by+6,65,21,()->request(CarPackets.REPAIR_PART,part.ordinal(),0),
+                        part.title+": "+part.repairCost+" iron ingot(s). Repairs only this part. Wear and impact damage remain on removed parts.",true);
+                    serviceButtons.put(repair,()->serviceAllowed()&&(part.assembly!=Assembly.ENGINE||engineServiceAllowed())&&
+                        part.installed(car.config(),car.engineParts())&&car.condition().health(part)<99.99&&
+                        (minecraft.player.isCreative()||count(net.minecraft.world.item.Items.IRON_INGOT)>=part.repairCost));
+                }
+                button("<",rx,y+h-49,23,18,()->{conditionScroll=Math.max(0,conditionScroll-conditionRows);init();},"Previous components",false);
+                button(">",rx+27,y+h-49,23,18,()->{conditionScroll=Math.min(Part.values().length-conditionRows,conditionScroll+conditionRows);init();},"More components",false);
+                button(car.hoodOpen()?"Close hood":"Open hood",rx+58,y+h-49,rw-58,18,()->request(CarPackets.HOOD,0,0),"Engine repairs need the hood fully open.",false);
             }
             case 4 -> {
                 button(cutaway?"Show covers":"Inspect internals",x+18,y+71,previewWidth-36,19,()->{cutaway=!cutaway;init();},"Inspection view hides covers without removing inventory parts.",false);
@@ -92,7 +112,7 @@ public final class GarageScreen extends Screen {
                 for(int v=1;v<=2;v++){
                     final int grade=v;var fit=button(v==1?"Fit stock":"Fit sport",rx+(v-1)*(rw/2+2),top+22,rw/2-2,20,
                         ()->request(CarPackets.ENGINE_SWAP,selectedFamily.ordinal(),grade),"Swaps the whole engine. Removed engines retain their installed parts.",true);
-                    serviceButtons.put(fit,()->engineServiceAllowed()&&(car.engineFamily()!=selectedFamily||Assembly.ENGINE.variant(car.config())!=grade)&&
+                    serviceButtons.put(fit,()->engineServiceAllowed()&&(car.engineFamily()!=selectedFamily||Assembly.ENGINE.variant(car.config())!=grade||assemblyDamaged(Assembly.ENGINE))&&
                         (minecraft.player.isCreative()||count(AutoPropulsionAge.engineItem(selectedFamily,grade))>0));
                 }
                 engineRows=Math.max(1,Math.min(6,(h-202)/37));engineScroll=Math.clamp(engineScroll,0,6-engineRows);
@@ -103,7 +123,7 @@ public final class GarageScreen extends Screen {
                         int column=slot==EnginePart.INDUCTION?v:(v==0?2:v-1);
                         var partButton=button(label,rx+column*(bw+3),by+12,bw,19,()->request(CarPackets.ENGINE_PART,slot.ordinal(),variant),
                             "Select "+slot.label(v)+". Boost needs high-flow fuel and forged internals. Missing required parts prevent starting.",true);
-                        serviceButtons.put(partButton,()->engineServiceAllowed()&&Assembly.ENGINE.variant(car.config())>0&&slot.variant(car.engineParts())!=variant&&slot.installationProblem(car.engineParts(),variant).isEmpty()&&
+                        serviceButtons.put(partButton,()->engineServiceAllowed()&&Assembly.ENGINE.variant(car.config())>0&&(slot.variant(car.engineParts())!=variant||variant>0&&enginePartDamaged(slot))&&slot.installationProblem(car.engineParts(),variant).isEmpty()&&
                             (variant==0||minecraft.player.isCreative()||count(AutoPropulsionAge.enginePartItem(slot,variant))>0));
                     }
                 }
@@ -112,6 +132,10 @@ public final class GarageScreen extends Screen {
             }
         }
     }
+    private boolean assemblyDamaged(Assembly slot){return Arrays.stream(Part.values()).anyMatch(p->p.assembly==slot&&p.installed(car.config(),car.engineParts())&&car.condition().health(p)<99.99);}
+    private boolean enginePartDamaged(EnginePart slot){return Arrays.stream(Part.values()).anyMatch(p->p.enginePart==slot&&car.condition().health(p)<99.99);}
+    private int conditionColor(double health){return health<=0?0xFFFF6969:health<35?0xFFFFA45C:health<70?0xFFF5D779:0xFF6CDDB0;}
+    private double assemblyHealth(Assembly slot){return Arrays.stream(Part.values()).filter(p->p.assembly==slot&&p.installed(car.config(),car.engineParts())).mapToDouble(p->car.condition().health(p)).average().orElse(100);}
     private int count(Item item){int count=0;if(minecraft.player!=null)for(var s:minecraft.player.getInventory().items)if(s.is(item))count+=s.getCount();return count;}
     @Override public void tick(){
         if(car.isRemoved()||minecraft.player==null||car.distanceToSqr(minecraft.player)>160){onClose();return;}
@@ -119,17 +143,19 @@ public final class GarageScreen extends Screen {
             if(lastFamily!=car.engineFamily().ordinal())selectedFamily=car.engineFamily();
             lastConfig=car.config();lastPaint=car.paint();lastEngineParts=car.engineParts();lastFamily=car.engineFamily().ordinal();init();
         }
-        if(tab==4)for(var widget:children())if(widget instanceof Button b&&(b.getMessage().getString().equals("Open hood")||b.getMessage().getString().equals("Close hood")))b.setMessage(Component.literal(car.hoodOpen()?"Close hood":"Open hood"));
+        if(tab==4||tab==5)for(var widget:children())if(widget instanceof Button b&&(b.getMessage().getString().equals("Open hood")||b.getMessage().getString().equals("Close hood")))b.setMessage(Component.literal(car.hoodOpen()?"Close hood":"Open hood"));
         // Re-evaluate parked/engine state without rebuilding the screen or losing focus.
         serviceButtons.forEach((button,available)->button.active=available.getAsBoolean());
     }
     @Override public boolean mouseScrolled(double mx,double my,double horizontal,double vertical){
-        if(tab==0&&mx>=rx){scroll=Math.clamp(scroll-(int)Math.signum(vertical),0,6-rows);init();return true;}
+        if(mx>=x+10&&mx<rx-10){viewZoom=Math.clamp(viewZoom+(float)vertical*.12f,.6f,2.6f);return true;}
+        if(tab==5&&mx>=rx){conditionScroll=Math.clamp(conditionScroll-(int)Math.signum(vertical),0,Part.values().length-conditionRows);init();return true;}
+        if(tab==0&&mx>=rx){scroll=Math.clamp(scroll-(int)Math.signum(vertical),0,Assembly.values().length-rows);init();return true;}
         if(tab==4&&mx>=rx){engineScroll=Math.clamp(engineScroll-(int)Math.signum(vertical),0,6-engineRows);init();return true;}
         return super.mouseScrolled(mx,my,horizontal,vertical);
     }
     @Override public boolean mouseDragged(double mx,double my,int button,double dx,double dy){
-        if(tab==4&&button==0&&mx>=x+10&&mx<rx-10){engineViewYaw+=(float)dx;return true;}
+        if(button==0&&mx>=x+10&&mx<rx-10){engineViewYaw+=(float)dx;viewPitch=Math.clamp(viewPitch+(float)dy,-65,80);return true;}
         return super.mouseDragged(mx,my,button,dx,dy);
     }
     @Override public void render(GuiGraphics g,int mouseX,int mouseY,float partial){
@@ -137,7 +163,7 @@ public final class GarageScreen extends Screen {
         g.drawString(font,"AUTOPROPULSION",x+13,y+11,ACCENT,false);g.drawString(font,"GARAGE / SEDAN 01",x+13,y+25,MUTED,false);
         g.fill(x+previewWidth+8,y+43,x+previewWidth+9,y+h-14,0xFF2D4050);
         g.fill(x+10,y+44,x+previewWidth,y+h-94,0xFF152735);
-        g.drawString(font,tab==4?"ENGINE / DRAG TO ORBIT":"LIVE VEHICLE",x+20,y+54,MUTED,false);
+        g.drawString(font,tab==4?"ENGINE / DRAG TO ORBIT":"DRAG: ORBIT / SCROLL: ZOOM",x+20,y+54,MUTED,false);
         drawPreview(g,partial);
         int stats=y+h-83;
         g.drawString(font,car.ignition()?"ENGINE RUNNING":"ENGINE OFF",x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
@@ -149,8 +175,8 @@ public final class GarageScreen extends Screen {
             case 0 -> {
                 for(int i=0;i<rows;i++){
                     Assembly slot=Assembly.values()[scroll+i];int variant=slot.variant(car.config());
-                    g.drawString(font,slot.title,rx,top+i*44,INK,false);
-                    String current=variant==0?"EMPTY":variant==1?"STOCK":"SPORT";
+                    g.drawString(font,font.plainSubstrByWidth(slot.title,rw-105),rx,top+i*44,INK,false);
+                    String current=variant==0?(slot==Assembly.EXHAUST?"OPEN PIPE":"EMPTY"):(variant==1?"STOCK":"SPORT")+" "+Math.round(assemblyHealth(slot))+"%";
                     g.drawString(font,current,rx+rw-font.width(current),top+i*44,variant==0?0xFFFFA776:ACCENT,false);
                 }
             }
@@ -171,12 +197,28 @@ public final class GarageScreen extends Screen {
                     for(int i=0;i<lines.length;i++)g.drawString(font,lines[i],rx,top+139+i*13,MUTED,false);
                 }
             }
+            case 5 -> {
+                g.drawString(font,"COMPONENTS "+(conditionScroll+1)+"-"+(conditionScroll+conditionRows)+" / "+Part.values().length,rx,top,ACCENT,false);
+                for(int i=0;i<conditionRows;i++){
+                    Part part=Part.values()[conditionScroll+i];int by=top+22+i*42,tw=rw-74;
+                    var state=car.condition().state(part);boolean installed=part.installed(car.config(),car.engineParts());
+                    String status=!installed?"ABSENT":state.health()<=0?"FAILED":String.format(Locale.ROOT,"%.0f%%",state.health());
+                    int color=installed?conditionColor(state.health()):MUTED;
+                    g.drawString(font,font.plainSubstrByWidth(part.title,Math.max(20,tw-font.width(status)-6)),rx,by,INK,false);
+                    g.drawString(font,status,rx+tw-font.width(status),by,color,false);
+                    g.fill(rx,by+12,rx+tw,by+16,0xFF30424F);
+                    if(installed)g.fill(rx,by+12,rx+(int)(tw*state.health()/100),by+16,color);
+                    String detail=installed?String.format(Locale.ROOT,"Wear %.1f / Impact %.1f | %d iron",state.wear(),state.damage(),part.repairCost):"No installed part to repair";
+                    g.drawString(font,font.plainSubstrByWidth(detail,tw),rx,by+21,MUTED,false);
+                }
+            }
             case 4 -> {
                 g.drawCenteredString(font,selectedFamily.title,rx+rw/2,top+3,INK);
                 for(int i=0;i<engineRows;i++){
                     var slot=EnginePart.values()[engineScroll+i];int by=top+55+i*37;
                     g.drawString(font,slot.title,rx,by,INK,false);
                     String state=slot.label(slot.variant(car.engineParts()));
+                    if(slot.variant(car.engineParts())>0)state+=" "+Math.round(Arrays.stream(Part.values()).filter(p->p.enginePart==slot).mapToDouble(p->car.condition().health(p)).average().orElse(100))+"%";
                     g.drawString(font,state,rx+rw-font.width(state),by,ACCENT,false);
                 }
                 String label=car.engineFamily().title+" / "+(Assembly.ENGINE.variant(car.config())==2?"SPORT":"STOCK");
@@ -186,6 +228,7 @@ public final class GarageScreen extends Screen {
         }
         String footer=serviceAllowed()?"Changes save automatically. Survival uses items from your inventory.":"Park and switch off the engine to change parts, paint or tuning.";
         if(tab==4)footer=!engineServiceAllowed()?"Park, stop the engine and open the hood fully to work.":!car.engineProblem().isEmpty()?car.engineProblem():"Ready to start. Boost kits include their pipes and fittings.";
+        if(tab==5)footer="Wear + impact = condition lost. Repairs affect one part; engine work needs an open hood.";
         String clipped=font.plainSubstrByWidth(footer,w-26);
         g.drawString(font,clipped,x+13,y+h-15,serviceAllowed()?MUTED:0xFFFFC675,false);
         super.render(g,mouseX,mouseY,partial);
@@ -195,14 +238,14 @@ public final class GarageScreen extends Screen {
         // Calling Screen's blur here would blur those already-rendered panels.
     }
     private void drawPreview(GuiGraphics g,float partial){
-        int top=y+72,bottom=y+h-97;if(bottom-top<24)return;
+        int top=y+(tab==4||tab==5?94:72),bottom=y+h-97;if(bottom-top<24)return;
         g.enableScissor(x+11,top,x+previewWidth-1,bottom);
         g.pose().pushPose();
         g.pose().translate(x+previewWidth/2.0,(top+bottom)/2.0+16,150);
         float scale=tab==4?Math.min((previewWidth-22)/1.8f,(bottom-top)/1.45f):Math.min((previewWidth-22)/5.5f,(bottom-top)/3.3f);
-        g.pose().scale(scale,-scale,scale);g.pose().mulPose(Axis.XP.rotationDegrees(tab==4?30:23));g.pose().mulPose(Axis.YP.rotationDegrees(tab==4?engineViewYaw:325));g.pose().translate(0,tab==4?-.75:-.65,tab==4?-1.4:0);
+        scale*=viewZoom;g.pose().scale(scale,-scale,scale);g.pose().mulPose(Axis.XP.rotationDegrees(viewPitch));g.pose().mulPose(Axis.YP.rotationDegrees(engineViewYaw));g.pose().translate(0,tab==4?-.75:-.65,tab==4?-1.4:0);
         Lighting.setupForEntityInInventory();RenderSystem.enableDepthTest();
-        CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,tab==4,cutaway);g.flush();
+        CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,tab==4,cutaway&&(tab==4||tab==5),tab==5&&heatmap);g.flush();
         g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
     }
     private void drawCurve(GuiGraphics g,int bx,int by,int bw,int bh){
@@ -216,7 +259,7 @@ public final class GarageScreen extends Screen {
             int height=(int)Math.min(bh-18,kw/(maxPower*1.12)*(bh-18));
             g.fill(bx+i,by+bh-5-height,bx+i+1,by+bh-4-height,ACCENT);
         }
-        g.drawString(font,String.format(Locale.ROOT,"Estimated %.0f hp",peak*1.341),bx+5,by+5,INK,false);
+        g.drawString(font,String.format(Locale.ROOT,"Healthy estimate %.0f hp",peak*1.341),bx+5,by+5,INK,false);
         g.drawString(font,"800",bx,by+bh+4,MUTED,false);g.drawString(font,"RPM 7000",bx+bw-font.width("RPM 7000"),by+bh+4,MUTED,false);
     }
 }

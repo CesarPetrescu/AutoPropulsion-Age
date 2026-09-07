@@ -101,6 +101,26 @@ public final class ClientSmoke {
         }
     }
     private static void engineMatrix(Minecraft mc,CarEntity car){
+        if(phase>=15)return;
+        if(phase==14){
+            if(ticks==1)mc.getSingleplayerServer().execute(()->{
+                var c=(CarEntity)mc.getSingleplayerServer().overworld().getEntity(carId);
+                c.condition().damage(VehicleCondition.Part.LEFT_BODY,70);c.condition().damage(VehicleCondition.Part.ENGINE_BLOCK,65);
+                c.condition().damage(VehicleCondition.Part.TIRE_FL,80);c.condition().damage(VehicleCondition.Part.COOLING,60);c.syncCondition();
+            });
+            if(ticks==10)CarClient.send(car,CarPackets.OPEN,0,0);
+            if(ticks==25)press(mc,"Inspect",0);
+            if(ticks==40)pendingScreenshot="damage-inspection.png";
+            if(ticks==45)press(mc,"Cutaway",0);
+            if(ticks==55)pendingScreenshot="damage-cutaway.png";
+            if(ticks==60)press(mc,"Repair",3);
+            if(ticks==80){
+                if(car.condition().health(VehicleCondition.Part.LEFT_BODY)<99.99||car.condition().health(VehicleCondition.Part.ENGINE_BLOCK)>36){write(mc,"FAILED: selective repair did not synchronize");mc.stop();return;}
+                pendingScreenshot="damage-selective-repair.png";
+            }
+            if(ticks==95){write(mc,"PASS: driving, garage, all 21 family/induction layouts and active audio sources, damaged component synchronization, native inspection/cutaway, and selective repair checked. Screenshots captured.");mc.stop();phase=15;}
+            return;
+        }
         if(phase==10){
             if(ticks==10)CarClient.send(car,CarPackets.HOOD,0,0);
             if(ticks==20){
@@ -126,9 +146,12 @@ public final class ClientSmoke {
             if(ticks==70&&EnginePart.INDUCTION.variant(car.engineParts())!=induction)press(mc,new String[]{"Natural","Turbo","Blower"}[induction],0);
             if(ticks==90){phase=13;ticks=0;}
         }else if(phase==13){
+            if(ticks==1)CarClient.send(car,CarPackets.IGNITION,0,0);
+            if(ticks==55)CarClient.send(car,CarPackets.IGNITION,0,0);
             String label=wanted.id+"-"+new String[]{"natural","turbo","supercharger"}[induction];
             if(ticks==20){
                 var visible=CarMesh.visibleEngineParts(car);
+                if(!car.ignition()||CarAudioController.activeSourceCount(car.getId())==0){write(mc,"FAILED: engine audio source did not start for "+label);mc.stop();return;}
                 if(car.engineFamily()!=wanted||EnginePart.INDUCTION.variant(car.engineParts())!=induction||!car.engineProblem().isEmpty()||CarMesh.visibleEngineFamilies(car)!=(1<<wanted.ordinal())||
                     visible.containsKey("turbocharger")!=(induction==1)||visible.containsKey("supercharger")!=(induction==2)){
                     write(mc,"FAILED: client engine configuration or renderer visibility mismatch: "+label);mc.stop();return;
@@ -144,7 +167,7 @@ public final class ClientSmoke {
             if(ticks==85){
                 mc.options.hideGui=false;
                 engineJob++;
-                if(engineJob==21){write(mc,"PASS: original driving/garage checks plus all 21 engine family/induction layouts installed through native GUI buttons, synchronized over real packets, and checked for exclusive renderer visibility. Hood, internals and in-world screenshots captured.");mc.stop();phase=14;}
+                if(engineJob==21){phase=14;ticks=0;}
                 else{CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=11;ticks=0;}
             }
         }

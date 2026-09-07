@@ -3,7 +3,7 @@ package com.photonspark.sparkmotors.sim;
 /** Two bits per slot: 0 absent, 1 stock, 2 sport. Stable save/network encoding. */
 public enum Assembly {
     ENGINE("Engine"), TRANSMISSION("Transmission"), WHEELS("Wheel set"),
-    BRAKES("Brake set"), SUSPENSION("Suspension"), BODY("Body kit");
+    BRAKES("Brake set"), SUSPENSION("Suspension"), BODY("Body kit"), EXHAUST("Exhaust / muffler");
     public final String title;
     Assembly(String title) { this.title = title; }
     public int variant(int config) { return (config >>> (ordinal() * 2)) & 3; }
