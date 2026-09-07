@@ -1,0 +1,25 @@
+package com.photonspark.sparkmotors.item;
+import com.photonspark.sparkmotors.AutoPropulsionAge;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.network.chat.Component;
+public final class CarCrateItem extends Item {
+    public CarCrateItem(Properties properties) { super(properties); }
+    @Override public InteractionResult useOn(UseOnContext ctx) {
+        if(ctx.getLevel().isClientSide) return InteractionResult.SUCCESS;
+        var player=ctx.getPlayer();if(player==null)return InteractionResult.FAIL;
+        var pos=ctx.getClickedPos().relative(ctx.getClickedFace());
+        var car=AutoPropulsionAge.CAR.get().create(ctx.getLevel());
+        if(car==null)return InteractionResult.FAIL;
+        car.moveTo(pos.getX()+.5,pos.getY()+.05,pos.getZ()+.5,player.getYRot(),0);
+        car.setOwner(player.getUUID());
+        if(!ctx.getLevel().noCollision(car,car.getBoundingBox())) {
+            player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
+        }
+        ctx.getLevel().addFreshEntity(car);
+        if(!player.isCreative())ctx.getItemInHand().shrink(1);
+        player.displayClientMessage(Component.literal("Right-click to drive. G: garage · R: ignition · H: lights · Shift: exit"),false);
+        return InteractionResult.CONSUME;
+    }
+}

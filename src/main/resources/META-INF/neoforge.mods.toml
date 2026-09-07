@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+[[mods]]
+modId="sparkmotors"
+version="${version}"
+displayName="AutoPropulsion Age"
+authors="CesarPetrescu"
+displayURL="https://github.com/CesarPetrescu/AutoPropulsion-Age"
+description='''Drive and customize a modular sedan. Playable alpha with garage, paint, tuning and a driving HUD.'''
+[[dependencies.sparkmotors]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.249,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.sparkmotors]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"

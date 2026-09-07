@@ -1,49 +1,89 @@
 # AutoPropulsion Age
 
-A modular vehicle simulation mod targeting **Minecraft 1.21.1**, **NeoForge 21.1.x**, and **Java 21**.
+**Playable alpha 0.1.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
-The first Blender asset kit is available below: an assembled sedan, removable mechanical parts, engine and transmission variants, upgrades, and garage equipment. **Current delivery: 3D authoring assets. The playable mod and simulation are not implemented yet.**
+Drive a modular sedan, swap six types of assembly, repaint it and adjust its tune through a native Minecraft garage. The alpha includes a driving HUD, automatic gears, reverse, fuel, repairs, opening panels, engine sound, survival recipes and saved car configurations.
 
-The models currently use the working asset namespace `sparkmotors`. No affiliation with Mojang or Microsoft.
+**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.1.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Build and test results](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
 
-## Download and inspect
+Put the JAR in your NeoForge instance's `mods` folder. In a Creative world, take a **Sedan Crate** from the **AutoPropulsion Age** tab and use it on open, flat ground. Right-click the car, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. **F5** changes the camera.
+
+## In-game driving
+
+![The actual car driving in Minecraft with speed, gear, RPM and fuel HUD](docs/screenshots/alpha-driving.png)
+
+## Garage
+
+Install, remove and exchange stock or sport assemblies. Survival changes consume inventory items and return the previous part; Creative changes are free.
+
+![Native garage with live car preview and six assembly slots](docs/screenshots/alpha-garage.png)
+
+## Paint
+
+Choose from eight colors. Survival painting costs one dye.
+
+![Paint interface with crimson body color](docs/screenshots/alpha-paint.png)
+
+## Tuner
+
+Set the RPM limiter and final drive, then apply the tune. The curve is calculated from the current engine model.
+
+![Tuner interface and calculated power curve](docs/screenshots/alpha-tuner.png)
+
+## Car controls and opening panels
+
+Refuel, repair and operate the car from the Car tab. Doors, hood and trunk open together.
+
+![Car controls and opened panels](docs/screenshots/alpha-car-controls.png)
+
+![Customized sedan with gold sport wheels and open hood, doors and trunk](docs/screenshots/alpha-customized.png)
+
+## Cockpit
+
+![First-person cockpit and driving HUD](docs/screenshots/alpha-interior.png)
+
+These are native Minecraft captures from the client integration test. **8 simulation tests, 5 dedicated-server GameTests and the client driving/garage test pass.** The release builds with Java 21. See the [verification record](docs/DEVELOPMENT.md).
+
+This is a playable alpha with simplified driving physics and one seat. Physical dyno equipment, independent suspension forces, manual clutch controls, per-component engine building, more engine families, liveries and the rest of the workshop are future work. Lamps glow on the model without dynamic world lighting. Dedicated-server startup and integrated client/server traffic are tested; separate-machine multiplayer and other modpacks still need playtesting. [Detailed scope and limits](docs/PLAYING.md#alpha-limits-and-next-work).
+
+## Editable model kit
+
+The complete Blender kit remains available, including **471 named parts and assemblies across 43 categories**. These include repeated components and workshop/upgrade assets beyond the playable alpha's implemented subset. Every model preview is in the expandable gallery below.
 
 | File | Contents |
 |---|---|
-| [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, all previews, scripts, manifests, fit report and gallery. |
-| [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, exploded engine, upgrade catalog, workshop, service cutaway and interchange scenes. |
-| [Stock car GLB](assets/modular_car_kit/stock_car.glb) | Materials, part hierarchy and six opening-panel animation channels. |
-| [Authoring and rebuild guide](assets/modular_car_kit/README.md) | Scene controls, measurements, variant handling and rebuild commands. |
-| [Parts manifest](assets/modular_car_kit/parts_manifest.json) / [gallery index](assets/modular_car_kit/gallery_index.json) | All 471 model IDs and their preview paths, bounds and mounting metadata. |
-| [Requirements and architecture](docs/modular-car-requirements.md) | Original supplied design and planned game systems. |
-| [Early studies](assets/early_studies) | Original square and simple car Blender files, plus the initial car render. |
+| [Playable mod JAR](downloads/autopropulsion-age-0.1.0-alpha.jar) | Install this in Minecraft with NeoForge. |
+| [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, previews, scripts, manifests, fit report and portable gallery. |
+| [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, engine, upgrade catalog, workshop and service scenes. |
+| [Stock car GLB](assets/modular_car_kit/stock_car.glb) | Interchange geometry, hierarchy, materials and six opening-panel animation channels. |
+| [Authoring and rebuild guide](assets/modular_car_kit/README.md) | Scene controls, measurements and rebuild commands. |
+| [Parts manifest](assets/modular_car_kit/parts_manifest.json) / [gallery index](assets/modular_car_kit/gallery_index.json) | IDs, previews, bounds and mounting metadata. |
+| [Original requirements](docs/modular-car-requirements.md) | Full design and longer-term architecture. |
+| [Early studies](assets/early_studies) | Original square and simple car Blender files and first render. |
 
-## Assembled car
+### Assembled car
 
-![Assembled modular sedan](assets/modular_car_kit/assembled.png)
+![Assembled modular sedan in Blender](assets/modular_car_kit/assembled.png)
 
-## Service cutaway
+### Service cutaway
 
-![Open-panel service view showing the cabin and engine bay](assets/modular_car_kit/service.png)
+![Open-panel service view in Blender](assets/modular_car_kit/service.png)
 
-## Exploded engine
+### Exploded engine
 
 ![Exploded inline-four engine and removable internals](assets/modular_car_kit/engine_exploded.png)
 
-## Upgrade catalog
+### Upgrade catalog
 
 ![Engine, transmission, wheel and performance upgrade assemblies](assets/modular_car_kit/upgrade_catalog.png)
 
-## Workshop equipment
+### Workshop equipment
 
 ![Garage equipment and service items](assets/modular_car_kit/workshop.png)
 
-## Fit and development status
+The original asset delivery passed **22 selected geometric checks** and a fresh Blender rebuild. The car is 4.5 m long, 1.9 m wide excluding mirrors, with a 2.65 m wheelbase. Authoring axes are +X right, -Y front, +Z up. Fit checks cover selected relationships, not every possible combination. See the [fit report](assets/modular_car_kit/fit_report.json) and [runtime conversion report](docs/runtime-assets.json).
 
-- **22 selected geometric checks pass**; a fresh Blender rebuild reproduced 471 part roots and a 68,400-triangle stock export. See the [fit report](assets/modular_car_kit/fit_report.json), [export report](assets/modular_car_kit/export_report.json) and [rebuild record](assets/modular_car_kit/rebuild_check/result.json).
-- The sedan is 4.5 m long, 1.9 m wide excluding mirrors, with a 2.65 m wheelbase. Authoring axes: +X right, -Y front, +Z up. Frame 1 closes the panels, frame 50 opens them, and frame 100 closes them.
-- Alternate engines and transmissions are fitting models with simplified internals. Shared accessories and routing need configuration-specific integration. Options are mutually exclusive where indicated; the checks do not exhaust every collision or combination.
-- Materials and basic projected UVs are included. Texture atlases, livery UVs, LODs, Minecraft model conversion and runtime integration remain to be built. The GLB is an interchange file, not an installable mod.
+The working asset and registry namespace is `sparkmotors`. No affiliation with Mojang or Microsoft.
 
 ## Every model
 

@@ -1,0 +1,9 @@
+{
+  "format": "APA1 gzip, big endian",
+  "source": "assets/modular_car_kit/sparkmotors_modular.blend",
+  "chunks": 189,
+  "triangles": 65520,
+  "runtime_file": "src/main/resources/assets/sparkmotors/models/entity/sedan.mesh.gz",
+  "bytes": 948300,
+  "scope": "Stock visible components and selected sport assemblies; tiny enclosed internals omitted. Export adds a rear valance closure behind the lamps."
+}

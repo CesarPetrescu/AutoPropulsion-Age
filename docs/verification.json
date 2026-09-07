@@ -1,0 +1,33 @@
+{
+  "version": "0.1.0-alpha",
+  "date": "2026-09-07",
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.249",
+  "java": "21.0.11",
+  "unit_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "dedicated_gametests": {
+    "passed": 5,
+    "failed": 0
+  },
+  "client_integration": "PASS: native GUI installation, paint, tuning, network sync, driving, braking, fuel and screenshots",
+  "release_jar": {
+    "path": "downloads/autopropulsion-age-0.1.0-alpha.jar",
+    "bytes": 1061428,
+    "sha256": "a876c39ecc4682bd3163153cd377accf2c3bb0432a46e6fe06d978d2a504cc0d",
+    "simulation_included": true,
+    "development_harness_excluded": true,
+    "recipes": 16
+  },
+  "screenshots": [
+    "screenshots/alpha-car-controls.png",
+    "screenshots/alpha-customized.png",
+    "screenshots/alpha-driving.png",
+    "screenshots/alpha-garage.png",
+    "screenshots/alpha-interior.png",
+    "screenshots/alpha-paint.png",
+    "screenshots/alpha-tuner.png"
+  ]
+}

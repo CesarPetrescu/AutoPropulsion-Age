@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "sparkmotors:block/garage_controller"
+    }
+  }
+}

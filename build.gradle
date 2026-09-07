@@ -1,0 +1,47 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.146'
+}
+version = mod_version
+group = 'com.photonspark.sparkmotors'
+base { archivesName = 'autopropulsion-age' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+repositories { mavenCentral() }
+dependencies { implementation project(':sim') }
+// Include the pure simulation classes in the mod's development and release
+// outputs. FML does not load an ordinary project dependency as a mod module.
+sourceSets.main.output.dir([builtBy: ':sim:classes'], project(':sim').layout.buildDirectory.dir('classes/java/main'))
+if (providers.gradleProperty('withGameTests').isPresent()) {
+    sourceSets.main.java.srcDir 'src/gametest/java'
+    sourceSets.main.resources.srcDir 'src/gametest/resources'
+}
+neoForge {
+    version = project.neo_version
+    runs {
+        client { client() }
+        clientSmoke {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientSmoke', 'true'
+        }
+        server { server(); programArgument '--nogui' }
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = file('run/gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'sparkmotors'
+        }
+        configureEach { logLevel = org.slf4j.event.Level.INFO }
+    }
+    mods {
+        sparkmotors {
+            sourceSet sourceSets.main
+        }
+    }
+}
+tasks.named('processResources') {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/neoforge.mods.toml') { expand version: project.version }
+}
+tasks.named('jar') { exclude '**/gametest/**'; exclude '**/structure/test_track.nbt' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('check') { dependsOn ':sim:test' }

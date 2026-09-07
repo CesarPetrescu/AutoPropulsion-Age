@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "EWT",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "E": {
+      "item": "sparkmotors:stock_engine"
+    },
+    "W": {
+      "item": "sparkmotors:stock_wheels"
+    },
+    "T": {
+      "item": "sparkmotors:stock_transmission"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:sedan_crate",
+    "count": 1
+  }
+}

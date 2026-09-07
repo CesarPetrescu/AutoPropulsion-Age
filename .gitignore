@@ -5,3 +5,10 @@ __pycache__/
 *.pyc
 assets/modular_car_kit/gallery_progress.json
 assets/modular_car_kit/rebuild_check/temporary/
+.codex-*/
+.gradle/
+**/build/
+run/
+runs/
+.idea/
+*.iml

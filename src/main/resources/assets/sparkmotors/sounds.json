@@ -1,0 +1,11 @@
+{
+  "engine_loop": {
+    "subtitle": "subtitles.sparkmotors.engine",
+    "sounds": [
+      {
+        "name": "sparkmotors:engine_loop",
+        "stream": false
+      }
+    ]
+  }
+}
