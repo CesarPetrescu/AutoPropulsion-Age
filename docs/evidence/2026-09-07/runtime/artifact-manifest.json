@@ -1,0 +1,20 @@
+{
+  "source_commit": "4ed59ca2f03e29e342c60692a63cd85ecc8c9a4c",
+  "source_run": 34147283568,
+  "artifact_id": 10028210660,
+  "jar": "autopropulsion-age-neoforge-1.21.1-0.1.0-alpha.1.jar",
+  "jar_sha256": "1445c2dcb70a26e0b268306070c74fccdc4e92bd36892413cbafc6c78f12caaf",
+  "screenshots_sha256": {
+    "autopropulsion-default-01-showroom.png": "42a52e376f7ac02887959f55bf40d200a9c32788ea5e2990a8e6c8a4d7143306",
+    "autopropulsion-default-02-garage.png": "bd7d5b83d6b6a11131a93512c7116fa1240338f2cf3c7cb49c92d95f6904a7cb",
+    "autopropulsion-default-03-dyno.png": "4d6668034aa10b0882737f36a4f3e07edfbbf783ca3eac2ef909a1a7ab2afec4",
+    "autopropulsion-default-04-driving-hud.png": "76c7caebde21f422bb0c7447b4faef7e6d3d7931049d027443f2838463cf0d31",
+    "autopropulsion-default-05-braking.png": "1e903190f279b6aa0ed0da9157b7b313089f7bcb0e64c30cb4d35f0c4d9ecf00",
+    "autopropulsion-minimal-01-showroom.png": "c0721b75f10234efbd912caf08f7a95b2c30500bd9aa1b0ff081d7155ae53415",
+    "autopropulsion-minimal-02-garage.png": "74f8737086bd5ca0f2b33037a604803542196527fce4c608e2d13e09fac562c2",
+    "autopropulsion-minimal-03-dyno.png": "1eb52262590f5b9b2e203618640c75b0524a5339a2592b8f963d3cd4cf8fccf6",
+    "autopropulsion-minimal-04-driving-hud.png": "8ede67e072da9cea202c88e1dd61c6aa9998ee6c636130d809b98a3607b1f267",
+    "autopropulsion-minimal-05-braking.png": "0171800e58fcfe9a437bdf7894083c8910f999806117907a13605fa08ab32a6b"
+  },
+  "note": "Exact CI output copied; no Minecraft binaries, account data or build caches committed."
+}
