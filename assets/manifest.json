@@ -148,8 +148,9 @@
   "preview_render": {
     "engine": "CYCLES",
     "device": "CPU",
-    "samples": 32,
-    "denoising": false
+    "samples": 96,
+    "denoising": false,
+    "view_transform": "AgX"
   },
   "provenance": "Original procedural meshes; category-level reuse and proxy geometry, not hand-sculpted production art.",
   "runtime_formats": [
@@ -161,5 +162,20 @@
     "assets/source/h1-hatchback.blend",
     "assets/source/component-catalogue.blend",
     "assets/source/h1-hatchback.glb"
-  ]
+  ],
+  "quality_pass": {
+    "script": "assets/blender/finalize_assets.py",
+    "closed_hood_clearance_m": 0.03,
+    "engine_vertical_adjustment_m": -0.18,
+    "car_framing": {
+      "all_mesh_bounds_inside_margin": true,
+      "margin": 0.055,
+      "ortho_scale": 5.054471015930176
+    },
+    "catalogue_framing": {
+      "all_mesh_bounds_inside_margin": true,
+      "margin": 0.055,
+      "ortho_scale": 25.54767417907715
+    }
+  }
 }
