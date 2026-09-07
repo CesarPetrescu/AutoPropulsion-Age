@@ -4,6 +4,12 @@
 .idea/
 *.iml
 __pycache__/
+*.pyc
 .local-test/
-*.blend1
-*.blend2
+# Blender backups and local batch-render progress
+*.blend[0-9]*
+*.log
+# Selected test logs are intentional, permanent repository evidence.
+!docs/evidence/**/*.log
+assets/modular_car_kit/gallery_progress.json
+assets/modular_car_kit/rebuild_check/temporary/

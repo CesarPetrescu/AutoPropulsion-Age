@@ -2,7 +2,7 @@
 
 Modular cars for **Minecraft Java Edition 1.21.1**, built on **NeoForge 21.1.249** and **Java 21**.
 
-> **Development alpha, not the completed modular-car specification.** This branch contains the first vehicle implementation, original procedural assets, a standalone simulation, and executable test harnesses. Use a disposable world. Save compatibility is not promised. Read [test evidence](docs/testing.md) and [feature status](docs/roadmap.md) before treating an implementation as verified.
+> **Development alpha, not the completed modular-car specification.** This branch contains the first vehicle implementation, original procedural assets, a standalone simulation, and executable test harnesses. Use a disposable world. Save compatibility is not promised. Read [test evidence](docs/test-report-2026-09-07.md) and [feature status](docs/roadmap.md) before treating an implementation as verified.
 
 ![H1 hatchback Blender preview, not a Minecraft screenshot](docs/images/h1-hatchback.png)
 
@@ -10,9 +10,24 @@ Modular cars for **Minecraft Java Edition 1.21.1**, built on **NeoForge 21.1.249
 
 One H1 hatchback with two passenger positions, server-controlled driving, five forward gears and reverse, clutch and braking, a garage diagnostics screen, boost adjustment, fuel consumption, cooling, engine condition, persistence, ownership checks and replaceable starter components.
 
-The catalogue contains **140 component definitions and exported item models**. **16 definitions are installable in this alpha**; the other 124 are explicitly catalogue-only. A model or creative-tab entry does not mean the corresponding mechanical system has been implemented. The [parts guide](docs/parts-and-addons.md) explains the distinction.
+The runtime catalogue contains **140 component definitions and exported item models**. **16 definitions are installable in this alpha**; the other 124 are explicitly catalogue-only. A model or creative-tab entry does not mean the corresponding mechanical system has been implemented. The [parts guide](docs/parts-and-addons.md) explains the distinction.
 
 The independent `sim/` library supplies engine curves, longitudinal drivetrain simulation, steering rate, fuel/thermal/damage state and tested assembly utilities. The in-game adapter currently uses a flat seven-slot assembly and raycast surface grip. It does **not** yet implement full per-wheel suspension, per-cylinder internals, rotary operation, ECU map flashing or a measured roller dyno.
+
+## Separate modular Blender art kit
+
+The richer **Spark Motors modular sedan kit** added independently to `main` is preserved unchanged alongside this runtime foundation. It is an authoring/interchange kit, **not the H1 mesh currently loaded by the mod**. Its 471 named part/assembly roots include repeated and grouped components; they are not 471 unique designs or additional implemented gameplay parts.
+
+| Resource | Purpose |
+| --- | --- |
+| [Modular kit guide](assets/modular_car_kit/README.md) | Scene controls, authoring conventions, variants, limitations and rebuild instructions |
+| [Complete model gallery](assets/modular_car_kit/GALLERY.md) | Individually previewed kit parts and assemblies |
+| [Blender source](assets/modular_car_kit/sparkmotors_modular.blend) / [stock GLB](assets/modular_car_kit/stock_car.glb) | Editable sedan kit and interchange export |
+| [Complete art-kit ZIP](downloads/modular-car-kit.zip) | Source, previews, scripts, manifests and the kit's supplied fit/rebuild reports |
+| [Original requirements](docs/modular-car-requirements.md) | The intended full mod, not a list of finished features |
+| [Early studies](assets/early_studies) | Preserved earlier Blender work |
+
+The [archived asset-only README and embedded gallery](ART_GALLERY_2026-09-07.md) preserve the exact concurrent `main` document and all its relative image links. Its statement that no mod is implemented describes that earlier asset-only snapshot, not this branch. [ADR 0003](docs/decisions/0003-preserve-concurrent-art.md) records the integration boundary. The kit's supplied fit results are not reclassified as tests performed by this mod's CI.
 
 ## Requirements
 
@@ -66,23 +81,24 @@ python3 scripts/validate-content.py --assets
 python3 scripts/check-jar.py
 ```
 
-[Testing and evidence](docs/testing.md) documents server GameTests, actual graphical client smoke runs, exact assertions, configurations and limitations. A successful build alone is not a client/server test.
+[Testing and evidence](docs/testing.md) documents server GameTests, actual graphical client smoke runs, exact assertions, configurations and limitations. A successful build alone is not a client/server test. [The dated report](docs/test-report-2026-09-07.md) records 37 local/CI simulation checks, eight dedicated-server GameTests, two graphical profiles, exact artifacts and remaining unverified environments.
 
 ## Project map
 
 ```text
-sim/              Minecraft-independent Java simulation and regression suites
-mod/              NeoForge registry, entity, packets, persistence, UI and rendering
-tools/            Standalone analytical dyno CLI
-assets/catalog.json   Explicit component catalogue and stable model indices
-assets/blender/   Original procedural Blender authoring pipeline
-assets/source/    Editable .blend scenes, GLB and audio source
-scripts/          Content generation, validation, packaging and runtime tests
-docs/             Architecture, decisions, evidence and remaining work
+sim/                  Minecraft-independent Java simulation and regression suites
+mod/                  NeoForge registry, entity, packets, persistence, UI and rendering
+tools/                Analytical dyno CLI and preserved art-kit packaging helpers
+assets/catalog.json   Runtime component catalogue and stable model indices
+assets/blender/       Runtime H1 authoring/export pipeline
+assets/source/        Runtime H1/component .blend scenes, GLB and audio source
+assets/modular_car_kit/ Separate modular sedan authoring kit; not yet runtime-integrated
+scripts/              Content generation, validation, packaging and runtime tests
+docs/                 Requirements, architecture, decisions, evidence and remaining work
 ```
 
 Start with [Development](docs/development.md), [Architecture](docs/architecture.md), [Assets](docs/assets.md), [Parts and addons](docs/parts-and-addons.md), and [Roadmap](docs/roadmap.md). Contributor expectations are in [CONTRIBUTING.md](CONTRIBUTING.md); implementation agents should also read [AGENTS.md](AGENTS.md).
 
 ## Licensing and attribution
 
-The mod metadata currently says **All Rights Reserved**. This work does not silently replace that with an open-source licence. The repository owner must choose a distribution licence before a public release. The procedural meshes and synthetic engine loop were created for this repository; category-level geometry is reused and some models are proxies. Minecraft, NeoForge and Blender retain their respective ownership and licences. This project is not affiliated with Mojang or Microsoft.
+The mod metadata currently says **All Rights Reserved**. This work does not silently replace that with an open-source licence. The repository owner must choose a distribution licence before a public release. The procedural meshes and synthetic engine loop were created for this repository; category-level geometry is reused and some models are proxies. The separate kit retains its supplied documentation and provenance. Minecraft, NeoForge and Blender retain their respective ownership and licences. This project is not affiliated with Mojang or Microsoft.

@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "blender_version": "5.1.2",
+  "parts": 471,
+  "fit_checks": 22,
+  "export_triangles": 68400,
+  "animation_channels": 6,
+  "portable_output_override": true
+}
