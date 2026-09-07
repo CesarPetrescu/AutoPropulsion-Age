@@ -2,10 +2,13 @@ name: Bootstrap assets and test mod
 on:
   push:
     branches: ['feat/neoforge-1.21.1-vehicle-foundation']
-    paths: ['.bootstrap/**', '.github/workflows/bootstrap.yml']
+    paths: ['.bootstrap/**', '.github/workflows/bootstrap.yml', 'assets/blender/**']
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: autopropulsion-bootstrap
+  cancel-in-progress: false
 jobs:
   bootstrap:
     runs-on: ubuntu-24.04
@@ -24,9 +27,12 @@ jobs:
           cache-read-only: false
       - name: Install Blender and isolated graphical runtime
         run: sudo apt-get update && sudo apt-get install -y blender python3-numpy ffmpeg xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64
-      - name: Generate original content and editable Blender models
+      - name: Record execution environment
         run: |
           mkdir -p build/reports
+          { git rev-parse HEAD; uname -a; java -version; blender --version; gradle --version; } > build/reports/environment.txt 2>&1
+      - name: Generate original content and editable Blender models
+        run: |
           test -f assets/catalog.json || python3 scripts/seed-catalog.py
           python3 scripts/generate-content.py
           set -o pipefail
@@ -46,20 +52,34 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add assets/catalog.json assets/manifest.json assets/source docs/images mod/src/main/resources mod/src/main/java/com/photonspark/autopropulsion/BuiltinCatalog.java gradle gradlew gradlew.bat
           if ! git diff --cached --quiet; then
-            git commit -m 'assets: generate Blender scenes, 140 component models and Gradle wrapper'
+            git commit -m 'assets: generate editable Blender scenes, component models and Gradle wrapper'
             git push origin HEAD:feat/neoforge-1.21.1-vehicle-foundation
           fi
-      - name: Build and dedicated server GameTests
+      - name: Build and simulation tests
         run: |
-          mkdir -p build/reports mod/run/gametest
+          set -o pipefail
+          ./gradlew build --no-daemon --console=plain 2>&1 | tee build/reports/build.log
+          python3 scripts/check-jar.py
+      - name: Dedicated server GameTests
+        run: |
+          mkdir -p mod/run/gametest
           printf 'eula=true\n' > mod/run/gametest/eula.txt
           set -o pipefail
-          ./gradlew build :mod:runGameTestServer --no-daemon --console=plain 2>&1 | tee build/reports/build-and-gametest.log
-          python3 scripts/check-jar.py
+          ./gradlew :mod:runGameTestServer --no-daemon --console=plain 2>&1 | tee build/reports/gametest.log
       - name: Actual client and server smoke matrix
         env:
           ACCEPT_MINECRAFT_EULA: 'true'
         run: python3 scripts/test-runtime.py
+      - name: Package source for independent local inspection
+        if: always()
+        run: |
+          tar --exclude='./.git' --exclude='./.gradle' --exclude='./build' --exclude='*/build' --exclude='*/run' -czf "$RUNNER_TEMP/autopropulsion-source.tar.gz" .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autopropulsion-source-${{ github.run_number }}
+          path: ${{ runner.temp }}/autopropulsion-source.tar.gz
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -68,6 +88,7 @@ jobs:
             mod/build/libs/*.jar
             build/reports/**
             sim/build/reports/**
+            sim/build/test-results/**
             mod/run/gametest/logs/**
             mod/run/**/crash-reports/**
             docs/images/**
