@@ -15,7 +15,8 @@ public final class CarCrateItem extends Item {
         car.moveTo(pos.getX()+.5,pos.getY()+.05,pos.getZ()+.5,player.getYRot(),0);
         car.setOwner(player.getUUID());
         var state=new net.minecraft.nbt.CompoundTag();car.saveWithoutId(state);
-        state.putInt("EngineParts",EngineItem.parts(ctx.getItemInHand()));state.putFloat("EngineTemperature",EngineItem.temperature(ctx.getItemInHand()));car.load(state);
+        state.putInt("EngineParts",EngineItem.parts(ctx.getItemInHand()));state.putFloat("EngineTemperature",EngineItem.temperature(ctx.getItemInHand()));
+        state.putFloat("OilTemperature",EngineItem.oilTemperature(ctx.getItemInHand()));state.putFloat("EngineHealth",EngineItem.health(ctx.getItemInHand()));car.load(state);
         if(!ctx.getLevel().noCollision(car,car.getBoundingBox())) {
             player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
         }

@@ -28,7 +28,8 @@ public final class ClientSmoke {
     private static String pendingScreenshot;
     private static boolean creating;
     private static float maxSpeed;
-    private static int engineJob;
+    private static int engineJob,hardwareJob;
+    private static final String[] MODES={"natural","turbo","supercharger","large-turbo","twin-turbo","roots","twin-screw"};
     private static final long started=System.nanoTime();
     @SubscribeEvent public static void tick(ClientTickEvent.Post e){
         if(!Boolean.getBoolean("sparkmotors.clientSmoke"))return;
@@ -36,7 +37,7 @@ public final class ClientSmoke {
         GLFW.glfwHideWindow(mc.getWindow().getWindow());mc.options.pauseOnLostFocus=false;
         mc.options.tutorialStep=net.minecraft.client.tutorial.TutorialSteps.NONE;
         if(mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen){mc.options.onboardAccessibility=false;mc.setScreen(new TitleScreen());}
-        if((System.nanoTime()-started)/1e9>600){write(mc,"FAILED: client smoke timed out at phase "+phase+", engine layout "+engineJob);mc.stop();return;}
+        if((System.nanoTime()-started)/1e9>1000){write(mc,"FAILED: client smoke timed out at phase "+phase+", engine layout "+engineJob);mc.stop();return;}
         if(!creating&&mc.screen instanceof TitleScreen){
             creating=true;mc.options.guiScale().set(2);mc.options.renderDistance().set(4);mc.options.simulationDistance().set(5);mc.options.framerateLimit().set(60);
             mc.createWorldOpenFlows().createFreshLevel("alpha-smoke-"+System.currentTimeMillis(),
@@ -113,24 +114,21 @@ public final class ClientSmoke {
             if(ticks==60){mc.options.hideGui=false;CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=11;ticks=0;}
             return;
         }
-        EngineFamily wanted=EngineFamily.values()[engineJob/3];int induction=engineJob%3;
+        if(phase>=14){hardwareMatrix(mc,car);return;}
+        EngineFamily wanted=EngineFamily.values()[engineJob/7];int induction=engineJob%7;
         if(phase==11&&ticks>=15){
             if(car.engineFamily()!=wanted){press(mc,">",0);press(mc,"Fit stock",0);}
             phase=12;ticks=0;
         }else if(phase==12){
-            if(ticks==15&&EnginePart.FUEL.variant(car.engineParts())!=2)press(mc,"Upgrade",1);
-            if(ticks==25&&EnginePart.INTERNALS.variant(car.engineParts())!=2)press(mc,"Upgrade",4);
-            if(ticks==35&&EnginePart.COOLING.variant(car.engineParts())!=2)press(mc,"Upgrade",3);
-            if(ticks==45&&EnginePart.INTAKE.variant(car.engineParts())!=2)press(mc,"Upgrade",0);
-            if(ticks==55&&EnginePart.IGNITION.variant(car.engineParts())!=2)press(mc,"Upgrade",2);
-            if(ticks==70&&EnginePart.INDUCTION.variant(car.engineParts())!=induction)press(mc,new String[]{"Natural","Turbo","Blower"}[induction],0);
-            if(ticks==90){phase=13;ticks=0;}
+            int[] slots={0,1,2,3,4,6,7,8,9,5},choices={2,3,2,3,4,3,2,2,3,induction};
+            if(ticks>=8&&ticks<=80&&ticks%8==0){int index=ticks/8-1;choosePart(mc,car,EnginePart.values()[slots[index]],choices[index]);}
+            if(ticks==94){phase=13;ticks=0;}
         }else if(phase==13){
-            String label=wanted.id+"-"+new String[]{"natural","turbo","supercharger"}[induction];
+            String label=wanted.id+"-"+MODES[induction];
             if(ticks==20){
                 var visible=CarMesh.visibleEngineParts(car);
                 if(car.engineFamily()!=wanted||EnginePart.INDUCTION.variant(car.engineParts())!=induction||!car.engineProblem().isEmpty()||CarMesh.visibleEngineFamilies(car)!=(1<<wanted.ordinal())||
-                    visible.containsKey("turbocharger")!=(induction==1)||visible.containsKey("supercharger")!=(induction==2)){
+                    !exclusiveCompressor(visible,induction)){
                     write(mc,"FAILED: client engine configuration or renderer visibility mismatch: "+label);mc.stop();return;
                 }
                 System.out.println("ENGINE_LAYOUT_PASS "+label+" parts="+car.engineParts()+" triangles="+visible.values().stream().mapToInt(Integer::intValue).sum());
@@ -144,9 +142,62 @@ public final class ClientSmoke {
             if(ticks==85){
                 mc.options.hideGui=false;
                 engineJob++;
-                if(engineJob==21){write(mc,"PASS: original driving/garage checks plus all 21 engine family/induction layouts installed through native GUI buttons, synchronized over real packets, and checked for exclusive renderer visibility. Hood, internals and in-world screenshots captured.");mc.stop();phase=14;}
+                if(engineJob==(Boolean.getBoolean("sparkmotors.clientQuick")?7:49)){CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=14;ticks=0;}
                 else{CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=11;ticks=0;}
             }
+        }
+    }
+    private static boolean exclusiveCompressor(java.util.Map<String,Integer> visible,int mode){
+        String[] names={"turbocharger","supercharger","large_turbo","twin_turbo","roots_blower","twin_screw"};
+        for(int i=0;i<names.length;i++)if(visible.containsKey(names[i])!=(mode==i+1))return false;return true;
+    }
+    private static void choosePart(Minecraft mc,CarEntity car,EnginePart slot,int value){
+        if(slot.variant(car.engineParts())==value)return;
+        if(!(mc.screen instanceof GarageScreen))throw new IllegalStateException("Engine workshop is not open");
+        // Drive the same arrow and Fit widgets as a player. Scroll only changes which rows are visible.
+        for(int i=0;i<10;i++)mc.screen.mouseScrolled(mc.screen.width-30,150,0,1);
+        int rows=Math.max(1,Math.min(10,(Math.min(430,mc.screen.height-16)-232)/40));
+        int scroll=Math.min(slot.ordinal(),10-rows);
+        for(int i=0;i<scroll;i++)mc.screen.mouseScrolled(mc.screen.width-30,150,0,-1);
+        int clicks=(value-slot.variant(car.engineParts())+slot.maxVariant()+1)%(slot.maxVariant()+1);
+        for(int i=0;i<clicks;i++)press(mc,">",1+slot.ordinal()-scroll);
+        String label=value==0?(slot==EnginePart.INDUCTION?"Naturally aspirated":"Remove"):"Fit: "+slot.label(value);
+        var matches=mc.screen.children().stream().filter(c->c instanceof net.minecraft.client.gui.components.Button).map(c->(net.minecraft.client.gui.components.Button)c).filter(b->label.startsWith(b.getMessage().getString())&&b.active).toList();
+        if(matches.isEmpty())throw new IllegalStateException("No enabled fit button for "+slot+"="+value);matches.getFirst().onPress();
+    }
+    private static void hardwareMatrix(Minecraft mc,CarEntity car){
+        if(phase==14){
+            if(ticks==15)choosePart(mc,car,EnginePart.INDUCTION,0);
+            if(ticks==30){phase=15;ticks=0;}return;
+        }
+        if(phase==15){
+            int index=hardwareJob;EnginePart slot=null;int choice=0;
+            for(var p:EnginePart.values()){if(index<p.maxVariant()){slot=p;choice=index+1;break;}index-=p.maxVariant();}
+            if(slot==null){phase=16;ticks=0;return;}
+            if(ticks==8)choosePart(mc,car,slot,choice);
+            if(ticks==20){
+                if(slot.variant(car.engineParts())!=choice)throw new IllegalStateException("Hardware did not synchronize: "+slot+choice);
+                pendingScreenshot="hardware-ui-"+slot.itemName(choice)+".png";System.out.println("HARDWARE_UI_PASS "+slot.itemName(choice));
+            }
+            if(ticks==25){
+                // Reset on each category boundary so the next choice has a compatible road baseline.
+                if(choice==slot.maxVariant()){phase=17;ticks=0;}else{hardwareJob++;ticks=0;}
+            }return;
+        }
+        if(phase==17){
+            int[] slots={5,1,4,2,3},choices={0,3,4,2,3};
+            if(ticks>=8&&ticks<=40&&ticks%8==0)choosePart(mc,car,EnginePart.values()[slots[ticks/8-1]],choices[ticks/8-1]);
+            if(ticks==52){hardwareJob++;phase=15;ticks=0;}return;
+        }
+        if(phase==16){
+            if(ticks==8)press(mc,"Live",0);
+            if(ticks==16)press(mc,"Start / stop",0);
+            if(ticks==24)press(mc,"Rev test / 2s",0);
+            if(ticks==35){if(car.rpm()<1500||Math.abs(car.speed())>.1)throw new IllegalStateException("Parked rev test failed");pendingScreenshot="powertrain-live.png";}
+            if(ticks==45)press(mc,"Start / stop",0);
+            if(ticks==55){press(mc,"Tuner",0);press(mc,"-",2);press(mc,"Apply boost",0);}
+            if(ticks==70){if(Math.abs(car.boostTarget()-1.3)>.01)throw new IllegalStateException("Boost tune failed over the real packet path");pendingScreenshot="powertrain-tuner.png";}
+            if(ticks==85){write(mc,"PASS: driving/garage/paint/tune plus "+engineJob+" family/induction layouts and all 42 hardware choices installed through native GUI buttons and real packets. Exclusive compressors, live rev test, diagnostics, boost tuning and screenshots verified.");mc.stop();phase=18;}
         }
     }
     @SubscribeEvent public static void frame(RenderFrameEvent.Post e){

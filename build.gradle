@@ -24,6 +24,12 @@ neoForge {
             programArguments.addAll '--width', '1440', '--height', '900'
             systemProperty 'sparkmotors.clientSmoke', 'true'
         }
+        clientSmokeQuick {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientSmoke', 'true'
+            systemProperty 'sparkmotors.clientQuick', 'true'
+        }
         server { server(); programArgument '--nogui' }
         gameTestServer {
             type = 'gameTestServer'

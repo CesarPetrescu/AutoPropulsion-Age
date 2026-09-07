@@ -1,0 +1,1773 @@
+{
+  "scope": "Every catalog choice selects nonempty, distinct vertex positions in every engine family. Hashes exclude names, normals and colors. Geometry fit and intersection tests are separate.",
+  "checks": 294,
+  "passed": 294,
+  "hardware_choices": 42,
+  "families": 7,
+  "details": [
+    {
+      "family": 0,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "dc0165ca0f00e0c64aa3712f1378614e71df14fca7b18eefd7c59f84412f5a4a"
+    },
+    {
+      "family": 0,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "927bd3743226af66bd1d80130f32359b3760d02cfcbf7c4668734c81f2bbfac9"
+    },
+    {
+      "family": 0,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "c8990323728ff585c5e93329267643cad8f365395bf563e7f626175abc5212c4"
+    },
+    {
+      "family": 0,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "1a983d81d45ef220e61e72134205f6ebf1a9639f39a633efb9ae97bd50304e92"
+    },
+    {
+      "family": 0,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "0811926bd3f61209f1ecf04bfbf901ec59b204686bc4666bacdb998cd8eb2edd"
+    },
+    {
+      "family": 0,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8ecb1ba48ef08cdf512af540844726bfcc418ffd3a015ee543b09bea19f79083"
+    },
+    {
+      "family": 0,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "2c745f1dfe2b4bd05320e17f73e47538c85695e521f70a8e538b432555212a61"
+    },
+    {
+      "family": 0,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "201e3636f13923a6c185c67e6b802eb177d2d618936c41fa22cd7bd4df1c4411"
+    },
+    {
+      "family": 0,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "f72126f687ae6461f4e61defefa79b89a6b629668b9a156481c635d061fe6a62"
+    },
+    {
+      "family": 0,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "e0967cccff3b8d6bd148ccd2ec8f16686aff94a8ff90dc39a3d67c064ebb1fca"
+    },
+    {
+      "family": 0,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "c1cd63112957db4cb7058ac30f4085f2a7de2d653c0ad534151ab4dd2e389033"
+    },
+    {
+      "family": 0,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "1cda902f592ba240a2047c8ffc2fbee200f42c0f595699d6a770705850e22489"
+    },
+    {
+      "family": 0,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "b6e30568594c2974f747207ea675bc58229195edf760fd3f42b61dcadd11ef57"
+    },
+    {
+      "family": 0,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "3ba323deb0a69f10e6d282a3de6ba7da5b9f756068abe122f29f0daed9a5f6db"
+    },
+    {
+      "family": 0,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "2305d37d05bc8d8b888ab8b04ad93d97db0ac91ba2d0b1ffc9235b1e42f225f3"
+    },
+    {
+      "family": 0,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "b22f4fd1ea9d8180839fb6781490e94892690a33648d0b650dac3eed932328e8"
+    },
+    {
+      "family": 0,
+      "item": "stock_internals",
+      "triangles": 18584,
+      "position_sha256": "c7789151bebf4df287e3417f12a8682ee39d841889069208d16b7606d5b9a513"
+    },
+    {
+      "family": 0,
+      "item": "performance_internals",
+      "triangles": 18584,
+      "position_sha256": "3b5210a819b9dbc5124fcbbe53d92ca3892be645f547f24f78ce47d3432922d6"
+    },
+    {
+      "family": 0,
+      "item": "internals_3",
+      "triangles": 19064,
+      "position_sha256": "e436560de2182d84d8fcf8042a598208d4268c4a9f5abe6aa54f5ef786d9687f"
+    },
+    {
+      "family": 0,
+      "item": "internals_4",
+      "triangles": 18696,
+      "position_sha256": "b6103916285dca3acf8b760823b3af911e20c5e53d63f4beaeb635dccf3700a4"
+    },
+    {
+      "family": 0,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "b62ef4c5cf4c5e260ef6fec9908477d86b878cadc45c7e15086451fb681b13c9"
+    },
+    {
+      "family": 0,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 0,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "ba44a423376d2a8d521379e4d022a474b15e19c4c5eddd60c27949d692d8c798"
+    },
+    {
+      "family": 0,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "0f25ca4d43f9a1ebea6a80dd26aa6b39f2cf2197cf08fd85358afd1c698f7b90"
+    },
+    {
+      "family": 0,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 0,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 0,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "c7078767400e34d9f33679af06b52b361be85df47b8839926c6811bfead2d18d"
+    },
+    {
+      "family": 0,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "dd844f9573147f3c7b9284856ed5fd2bc5defe0dad6465679e4152d07991b008"
+    },
+    {
+      "family": 0,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "1424a0da8601b23451fd24467294d1a56f0cf1c3d66a9726b2bc1eec1810d8cb"
+    },
+    {
+      "family": 0,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "7a502e7b85779f04e592070308ff757096c904f61161dd7b24defec87cfe1445"
+    },
+    {
+      "family": 0,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 0,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 0,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 0,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 0,
+      "item": "stock_headwork",
+      "triangles": 744,
+      "position_sha256": "58d5042313324ad6b00c8d0c4b3fc318d3f9a0d8dd3c404ee1b3ea40565d5a2c"
+    },
+    {
+      "family": 0,
+      "item": "performance_headwork",
+      "triangles": 744,
+      "position_sha256": "235fab1b278b537a88a9dddab1a4291a1a586028bc5132a76ccfb823e69bd019"
+    },
+    {
+      "family": 0,
+      "item": "headwork_3",
+      "triangles": 744,
+      "position_sha256": "a303cf4265dbcd317ff74176452b5bfa348a57e32cfd4c011627e9794409f8ab"
+    },
+    {
+      "family": 0,
+      "item": "headwork_4",
+      "triangles": 744,
+      "position_sha256": "e4ccce71e475991483130abc39406ebc3a438f008e30fc78051f4193d0a6aa1e"
+    },
+    {
+      "family": 0,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 0,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 0,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 0,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 1,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "248411f1e601b3e78bd962e4065d57f0d5a51583f7089b220e4e7e7e54124a49"
+    },
+    {
+      "family": 1,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "13a0c4dbcc49dc7e997c1ffa962bfd01eb62e6a1ac0be838178c9f1af13b8fa9"
+    },
+    {
+      "family": 1,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "3234ded18ce20cb20048dad01ad5a80ecc91d28dd3f2cc3145264c91e73d546a"
+    },
+    {
+      "family": 1,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "1880699e2216fb88f41e2f1e0ec902f04d85b25b7363a7ab20a9d49259e6705e"
+    },
+    {
+      "family": 1,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "6e9a13449916add427b18b8b0501aa16fd9e2431435a7845effafdc4c8cd53f1"
+    },
+    {
+      "family": 1,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "a070c4922ffebe6a8099c9001789fe90eb96cc55f22570311c5193bf5f31c3c5"
+    },
+    {
+      "family": 1,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "8f2760265d103881efc133987e94f831e73c5c57efbbfa7dba1c316a2dbe1ef5"
+    },
+    {
+      "family": 1,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "1745da2481894836b79839d148b1f8773bba6af803427cf6beffdb015c6eaab3"
+    },
+    {
+      "family": 1,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "b123e986eb913848e1f8d0a2c97672c8e102d4fafbbf23f5209aa5b5d4e08341"
+    },
+    {
+      "family": 1,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "3b57484a7857bf62908faf7673c7d16842fccf9d4afd1ba4507cef286d5eaba9"
+    },
+    {
+      "family": 1,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "367ea4b020c7c8450b5c30d1c74247ae589cbe7f2038e1291ebadef77777631c"
+    },
+    {
+      "family": 1,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "50fbd802791e55981c180ce53f06facd6d3f4a1034e868712b4ba7d913df9403"
+    },
+    {
+      "family": 1,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "c3610cdc06bbd7c4362ca06e2a09dde9fb35c958cf556d90e1cbc2de83ec83a3"
+    },
+    {
+      "family": 1,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "4f515409941652816f205c542ae46376958b56939881b798ca72eb73f0227435"
+    },
+    {
+      "family": 1,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "5e10ab38443bcfa1fbcd3410beb3a006867c01c381a391dd331c6eedc5b8ee8d"
+    },
+    {
+      "family": 1,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "e98045ef1c78b023ae15f8baace6f08eaf3a3c3ac8531ab3ac34cf80c8a0cb5c"
+    },
+    {
+      "family": 1,
+      "item": "stock_internals",
+      "triangles": 1696,
+      "position_sha256": "4c919357046ea58fb241fddc5b0f3f7eec9baec05498e27a89cf4a5bf362b1c5"
+    },
+    {
+      "family": 1,
+      "item": "performance_internals",
+      "triangles": 1696,
+      "position_sha256": "947aff895416cdcf443c67d27fd605e501e4efb145b2a14dc5ecb5aae836a8ed"
+    },
+    {
+      "family": 1,
+      "item": "internals_3",
+      "triangles": 2176,
+      "position_sha256": "3602a38b5f983cf57082ffafd6060d652d80c813b25b49e541f6a01ec20501c4"
+    },
+    {
+      "family": 1,
+      "item": "internals_4",
+      "triangles": 1808,
+      "position_sha256": "cd196ddef5a2b2f20cfb480c40fa783a2d1a03369b43dfaa04a8a782e812a4ed"
+    },
+    {
+      "family": 1,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "fe52829610d8ac2cafd2500c6096b4c1624edf4e334bfbbc6c45320bede96760"
+    },
+    {
+      "family": 1,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 1,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "0837702adac15b111c98ddd63385ae36d038d5e9ca1ea87f54deb65bf6d678d0"
+    },
+    {
+      "family": 1,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "5a36e7b78d554b4150dae88b6db066cabfd9c34204377393a120c05bb7060a30"
+    },
+    {
+      "family": 1,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 1,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 1,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "304d2d5e88505b9a49a58a1ffd54672837fb19ca8b65509d1446901e5d9c31b7"
+    },
+    {
+      "family": 1,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "00a6d04fd875ad94fa64d1b99ba5ae0e7ef41020ad73e127c34ff90a742d1aaa"
+    },
+    {
+      "family": 1,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "ddb8e89bec63662f143b4c38ca9f6d5124e755c043a7546d351b6d00d32eb3cc"
+    },
+    {
+      "family": 1,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "ba508d79e0019c096bdb926abc4d6f08f4588bdcb4a20a51f0d836ab177caab7"
+    },
+    {
+      "family": 1,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 1,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 1,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 1,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 1,
+      "item": "stock_headwork",
+      "triangles": 744,
+      "position_sha256": "a21a906ea187ee820a8b5c3b49cf98be167371d9056030ac1d1f650f9d02a17f"
+    },
+    {
+      "family": 1,
+      "item": "performance_headwork",
+      "triangles": 744,
+      "position_sha256": "81d596ab528a2adcd06fcd55dfe0839269890488934df6b949aece72a673ce35"
+    },
+    {
+      "family": 1,
+      "item": "headwork_3",
+      "triangles": 744,
+      "position_sha256": "472f73f775238e8f467685fff61c09cebc9a7dac0eb2d2f50995a9893fe27076"
+    },
+    {
+      "family": 1,
+      "item": "headwork_4",
+      "triangles": 744,
+      "position_sha256": "df6be1eedf8f5950a22180791bf510cfff216e550262fc5c3fcc0f2c9c5c76a3"
+    },
+    {
+      "family": 1,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 1,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 1,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 1,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 2,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "d71187a577ec34f3d27475c3b97df41efe4a70dcf0c3afe44fa07cce145ebc5d"
+    },
+    {
+      "family": 2,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "7a02804e2f631b2c62aed66c650f7b1a75b33f69f74920bb766153f2dfe085ab"
+    },
+    {
+      "family": 2,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "2e3620995ca622c077b03bf9ab3c1446ac14cd236894aac058b5afc8c4611576"
+    },
+    {
+      "family": 2,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "7c65d52d5673cea665b67d42ded50d4ca5a4812d2ccf4231e6f78d776d902e5d"
+    },
+    {
+      "family": 2,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8762cdba0a6808da0806ab7a6e18fc33c3cd3a70131c0dc1e3605668ee059735"
+    },
+    {
+      "family": 2,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "6c9a1c0b0e072cbb6b38965e597d58dab23bf49332745458dbe2e8d022dea934"
+    },
+    {
+      "family": 2,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "5b0895a696e3088e246d1aaabb190489dd8bb07ab06eb8e6bb34d9ee507df5d3"
+    },
+    {
+      "family": 2,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "2cabbb8377e3cbb304dbf53ca1e0435b67b0ba75db695f8ab743716c0718e9d4"
+    },
+    {
+      "family": 2,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "7fe042decd1a493bd5f391137a889e427580f84bfdf38e3841758d6000efcd1b"
+    },
+    {
+      "family": 2,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "b56346ea5a457f78db1c9840c46114ff5c3450d93bcf5177de15c92d05c26de6"
+    },
+    {
+      "family": 2,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "e3278af3e6f0da60977d7c953163ae928a7fc2c9cefc57b4b443ad35c24db2b8"
+    },
+    {
+      "family": 2,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "a8cf28f41a711278100f782ec613caf1ceb687ffcd55a910eb0b035889e85869"
+    },
+    {
+      "family": 2,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "43a2d11357add6a3a5610936477088f90bf6db3f215d1c3efcb3535125e07e4c"
+    },
+    {
+      "family": 2,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "6a360c6b3edb4b2e0fd6a52fd50959d46095863dcda322158a0c03531434d598"
+    },
+    {
+      "family": 2,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "6afeb0978f91d06e4705782c386f3d43bcefdd3c058dc891f8c23930c90923b0"
+    },
+    {
+      "family": 2,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "c490772cdd0e85ff8e3a43582936c855f2df5f11f4b25a56d34bee58152f66e9"
+    },
+    {
+      "family": 2,
+      "item": "stock_internals",
+      "triangles": 1608,
+      "position_sha256": "49464a38b9cfc92a1e83e01219a4faa42453659f03aed78089daae028921b3d2"
+    },
+    {
+      "family": 2,
+      "item": "performance_internals",
+      "triangles": 1608,
+      "position_sha256": "5382b7346e411494b6965fb26f6fa63dc942cb976e015afc71522be7cc7d6780"
+    },
+    {
+      "family": 2,
+      "item": "internals_3",
+      "triangles": 2088,
+      "position_sha256": "95d85e6940c100b8c2f021ee6fe21367fa82bb35e2e2f50826d5ccf325bf6e5e"
+    },
+    {
+      "family": 2,
+      "item": "internals_4",
+      "triangles": 1720,
+      "position_sha256": "930d51d3312ba0783454e71b1dd53b9b255ba63902283c2126c738e7b8bc70f2"
+    },
+    {
+      "family": 2,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "706865a0e076a1ed4df74d396491aadbac2b9768d5ca32c50144253eb877759c"
+    },
+    {
+      "family": 2,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 2,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "6ab253672315b5137d4abfb6eeef800852537910c34c47c36a2cae5afab2456e"
+    },
+    {
+      "family": 2,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "edaad9d3ccd7a4ad996f788ab71ab474a79ca5f199181e1239a28c3d0a946580"
+    },
+    {
+      "family": 2,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 2,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 2,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "afe9c25ad22fa1cfe6958e663b51c9b9cf01d883eef471af9d04881b833c391b"
+    },
+    {
+      "family": 2,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "ead9ebb8fba2405b8d76749414b40e3ad818dac05dfe39a534ab0e8b2377ae87"
+    },
+    {
+      "family": 2,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "dc6119dea3e5b1e815dc9b45ccfff7c01ddb8d17b3c72721d382c93663b8fc66"
+    },
+    {
+      "family": 2,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "ca7eeca57edc7584048ac0cbf57d960541ac72e4147788d0f2e60230ed9feef7"
+    },
+    {
+      "family": 2,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 2,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 2,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 2,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 2,
+      "item": "stock_headwork",
+      "triangles": 744,
+      "position_sha256": "9b23562524cb1ed429a6833e8356cc25f40b07a0d952747cf8119556399e1191"
+    },
+    {
+      "family": 2,
+      "item": "performance_headwork",
+      "triangles": 744,
+      "position_sha256": "2b7f0c728b9cbf4729dc596525e1435037127ed2c0bb4cd3bc89a137ffde18c4"
+    },
+    {
+      "family": 2,
+      "item": "headwork_3",
+      "triangles": 744,
+      "position_sha256": "4b0211e96c99044ae811ca0fa766cbfa2a74ece340f7ab55a923a04b8e9b925d"
+    },
+    {
+      "family": 2,
+      "item": "headwork_4",
+      "triangles": 744,
+      "position_sha256": "b6b2ceb2806f153b8cd82a29b051537d81d2630ada980f7dc44b0f8055a72c45"
+    },
+    {
+      "family": 2,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 2,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 2,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 2,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 3,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "172c9e216dc8d5c02b184f1d8afe4578fd6a00e7cd56c635db509803c941467a"
+    },
+    {
+      "family": 3,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "f111b32fd278b0d4195ab24e80da4adebbfd3b836e8c8084a35862e580941bac"
+    },
+    {
+      "family": 3,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "4e508f841b670215d26311a45563b102d28ebc4e0387f05befdc68d073ef4ced"
+    },
+    {
+      "family": 3,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "5fc580143843c91122e0d56adf2c2d197ef830e7c9bedd857f67c217a4b80721"
+    },
+    {
+      "family": 3,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "086cb6cd59acf7c8469be84609fc2fdc4d90592d8c59f6f9466c68a90d2da678"
+    },
+    {
+      "family": 3,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8f3012dece1640064e6a6b7b146372a5708e7cc87514359ebed9614966c67da0"
+    },
+    {
+      "family": 3,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "61b9524020bcc740a90ac91b2c781366cc63ef2c6858f86864e22c6da7fbfa88"
+    },
+    {
+      "family": 3,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "ca5eeb3a34e99df370d4436b88071f6ef1f2a1f3b0653b8a5d472fe2043f22b9"
+    },
+    {
+      "family": 3,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "5e5b4f57fb2dd4d3f147ee4f33fa83df65e43e6b4e1ebb510155460cff379bc9"
+    },
+    {
+      "family": 3,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "4be04be9ae9e8de4db029d4403d27d5bcf36a35e63b86dcb46b6e46786fc5479"
+    },
+    {
+      "family": 3,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "ae3eaeb01f532289d76dae7901c752ad843b421d456777328b73893802ca1839"
+    },
+    {
+      "family": 3,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "1854a201e3ed2be29aa9fd5d287fe290fcc271b95070812978c9215d797e250d"
+    },
+    {
+      "family": 3,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "f26d3002be80979f9f225ffd9c4e5dda930253950dc77d6a44a077c062073e91"
+    },
+    {
+      "family": 3,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "895bc57ed998a765233f00402d117a36ae6253078554d8f1c61581e6b3868655"
+    },
+    {
+      "family": 3,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "2fc8d29aae40a3d82784d8ffdecf3790dad8c58d8f6e60997fd40f2cf4321d67"
+    },
+    {
+      "family": 3,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "b4ee85ebea2b4afbc9e1b7de6924637a943961fbbc6acf45be4cc8e9b5ac6591"
+    },
+    {
+      "family": 3,
+      "item": "stock_internals",
+      "triangles": 764,
+      "position_sha256": "71bd1ffe0df676a0c6c8f7095ce070b1b2d0bfa3e7ddfad1b52fae2a234f4259"
+    },
+    {
+      "family": 3,
+      "item": "performance_internals",
+      "triangles": 764,
+      "position_sha256": "a194103c1e317d8868828e6a5be3de0e9c7bfd10f98c8e7c9d0615c324650cdf"
+    },
+    {
+      "family": 3,
+      "item": "internals_3",
+      "triangles": 1244,
+      "position_sha256": "36f73b97e9ed2e8035563fc67c6ba212931b359a7aa9a12c9419a5fa073b4515"
+    },
+    {
+      "family": 3,
+      "item": "internals_4",
+      "triangles": 876,
+      "position_sha256": "a59bd8094e046dc12a4fd1977e798f192650bb4d8aea0295c6742e8676d984f7"
+    },
+    {
+      "family": 3,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "5fa1009ed059f01f9b298004be82ed480dbf38c2a4fd4ebc55b963e02e693609"
+    },
+    {
+      "family": 3,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 3,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "20ddf575ff86d6792dede4427acc1a7733c75717d50b1a700e1300d885752634"
+    },
+    {
+      "family": 3,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "1010ae8f634d1424364b2e411a2d9859fc70e1ec3318703d45a08135957f451d"
+    },
+    {
+      "family": 3,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 3,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 3,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "b509b419a8f40b31ca0488cfcad4beb73f5d49a14c2006c7e0bae6fdc9435be1"
+    },
+    {
+      "family": 3,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "8576292533fd1884b2dad53d1fa3c7413e8a0f579334b81dff1313fa42ed555d"
+    },
+    {
+      "family": 3,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "76cbe36fbedd7f22c9fc808431765dac71d21499a92715478f178c5d306b0c36"
+    },
+    {
+      "family": 3,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "c307e4924bf88ac1fa87e469e981f79b7fa4cdc12c2776d782455e04128774f4"
+    },
+    {
+      "family": 3,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 3,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 3,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 3,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 3,
+      "item": "stock_headwork",
+      "triangles": 576,
+      "position_sha256": "30cd4e7ff5ef619d7765faab47e12460cb661538dbd93603e0948f51ae72f831"
+    },
+    {
+      "family": 3,
+      "item": "performance_headwork",
+      "triangles": 576,
+      "position_sha256": "3b21cf3c6d68e68e8eb89290fa3901be47b7879b89a1505857ba97496a9e1e2d"
+    },
+    {
+      "family": 3,
+      "item": "headwork_3",
+      "triangles": 612,
+      "position_sha256": "7dd61aa0a1a3b94583003fc7460f11788e2e4eef25b50d94ad116589d578a2ec"
+    },
+    {
+      "family": 3,
+      "item": "headwork_4",
+      "triangles": 612,
+      "position_sha256": "79005dccbdbf7ad2086469352b79898fb5ed6721a934a61a67d3b56b8d8580d4"
+    },
+    {
+      "family": 3,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 3,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 3,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 3,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 4,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "172c9e216dc8d5c02b184f1d8afe4578fd6a00e7cd56c635db509803c941467a"
+    },
+    {
+      "family": 4,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "f111b32fd278b0d4195ab24e80da4adebbfd3b836e8c8084a35862e580941bac"
+    },
+    {
+      "family": 4,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "4e508f841b670215d26311a45563b102d28ebc4e0387f05befdc68d073ef4ced"
+    },
+    {
+      "family": 4,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "5fc580143843c91122e0d56adf2c2d197ef830e7c9bedd857f67c217a4b80721"
+    },
+    {
+      "family": 4,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "086cb6cd59acf7c8469be84609fc2fdc4d90592d8c59f6f9466c68a90d2da678"
+    },
+    {
+      "family": 4,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8f3012dece1640064e6a6b7b146372a5708e7cc87514359ebed9614966c67da0"
+    },
+    {
+      "family": 4,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "61b9524020bcc740a90ac91b2c781366cc63ef2c6858f86864e22c6da7fbfa88"
+    },
+    {
+      "family": 4,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "ca5eeb3a34e99df370d4436b88071f6ef1f2a1f3b0653b8a5d472fe2043f22b9"
+    },
+    {
+      "family": 4,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "5e5b4f57fb2dd4d3f147ee4f33fa83df65e43e6b4e1ebb510155460cff379bc9"
+    },
+    {
+      "family": 4,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "4be04be9ae9e8de4db029d4403d27d5bcf36a35e63b86dcb46b6e46786fc5479"
+    },
+    {
+      "family": 4,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "ae3eaeb01f532289d76dae7901c752ad843b421d456777328b73893802ca1839"
+    },
+    {
+      "family": 4,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "1854a201e3ed2be29aa9fd5d287fe290fcc271b95070812978c9215d797e250d"
+    },
+    {
+      "family": 4,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "f26d3002be80979f9f225ffd9c4e5dda930253950dc77d6a44a077c062073e91"
+    },
+    {
+      "family": 4,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "895bc57ed998a765233f00402d117a36ae6253078554d8f1c61581e6b3868655"
+    },
+    {
+      "family": 4,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "2fc8d29aae40a3d82784d8ffdecf3790dad8c58d8f6e60997fd40f2cf4321d67"
+    },
+    {
+      "family": 4,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "b4ee85ebea2b4afbc9e1b7de6924637a943961fbbc6acf45be4cc8e9b5ac6591"
+    },
+    {
+      "family": 4,
+      "item": "stock_internals",
+      "triangles": 1084,
+      "position_sha256": "4aca0672ff9525fdfabfcc2d1e154bb4aee9b6baab94daad6c833ffcd482291a"
+    },
+    {
+      "family": 4,
+      "item": "performance_internals",
+      "triangles": 1084,
+      "position_sha256": "26bd9588bc39eb5c7229df0c08044cf7338f13269edd69b362b11b652f04039d"
+    },
+    {
+      "family": 4,
+      "item": "internals_3",
+      "triangles": 1564,
+      "position_sha256": "2a0c00f842c47f147f1ff3712a0e4c3e2c681354fe8ef29360f758da2ab6d414"
+    },
+    {
+      "family": 4,
+      "item": "internals_4",
+      "triangles": 1196,
+      "position_sha256": "e33909d81a2e010616ea61cdf2d79028e48e887a40dcec856d4ac4dd139c494f"
+    },
+    {
+      "family": 4,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "5fa1009ed059f01f9b298004be82ed480dbf38c2a4fd4ebc55b963e02e693609"
+    },
+    {
+      "family": 4,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 4,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "20ddf575ff86d6792dede4427acc1a7733c75717d50b1a700e1300d885752634"
+    },
+    {
+      "family": 4,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "1010ae8f634d1424364b2e411a2d9859fc70e1ec3318703d45a08135957f451d"
+    },
+    {
+      "family": 4,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 4,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 4,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "b509b419a8f40b31ca0488cfcad4beb73f5d49a14c2006c7e0bae6fdc9435be1"
+    },
+    {
+      "family": 4,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "8576292533fd1884b2dad53d1fa3c7413e8a0f579334b81dff1313fa42ed555d"
+    },
+    {
+      "family": 4,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "76cbe36fbedd7f22c9fc808431765dac71d21499a92715478f178c5d306b0c36"
+    },
+    {
+      "family": 4,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "c307e4924bf88ac1fa87e469e981f79b7fa4cdc12c2776d782455e04128774f4"
+    },
+    {
+      "family": 4,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 4,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 4,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 4,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 4,
+      "item": "stock_headwork",
+      "triangles": 576,
+      "position_sha256": "30cd4e7ff5ef619d7765faab47e12460cb661538dbd93603e0948f51ae72f831"
+    },
+    {
+      "family": 4,
+      "item": "performance_headwork",
+      "triangles": 576,
+      "position_sha256": "3b21cf3c6d68e68e8eb89290fa3901be47b7879b89a1505857ba97496a9e1e2d"
+    },
+    {
+      "family": 4,
+      "item": "headwork_3",
+      "triangles": 612,
+      "position_sha256": "7dd61aa0a1a3b94583003fc7460f11788e2e4eef25b50d94ad116589d578a2ec"
+    },
+    {
+      "family": 4,
+      "item": "headwork_4",
+      "triangles": 612,
+      "position_sha256": "79005dccbdbf7ad2086469352b79898fb5ed6721a934a61a67d3b56b8d8580d4"
+    },
+    {
+      "family": 4,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 4,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 4,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 4,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 5,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "172c9e216dc8d5c02b184f1d8afe4578fd6a00e7cd56c635db509803c941467a"
+    },
+    {
+      "family": 5,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "f111b32fd278b0d4195ab24e80da4adebbfd3b836e8c8084a35862e580941bac"
+    },
+    {
+      "family": 5,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "4e508f841b670215d26311a45563b102d28ebc4e0387f05befdc68d073ef4ced"
+    },
+    {
+      "family": 5,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "5fc580143843c91122e0d56adf2c2d197ef830e7c9bedd857f67c217a4b80721"
+    },
+    {
+      "family": 5,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "086cb6cd59acf7c8469be84609fc2fdc4d90592d8c59f6f9466c68a90d2da678"
+    },
+    {
+      "family": 5,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8f3012dece1640064e6a6b7b146372a5708e7cc87514359ebed9614966c67da0"
+    },
+    {
+      "family": 5,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "61b9524020bcc740a90ac91b2c781366cc63ef2c6858f86864e22c6da7fbfa88"
+    },
+    {
+      "family": 5,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "ca5eeb3a34e99df370d4436b88071f6ef1f2a1f3b0653b8a5d472fe2043f22b9"
+    },
+    {
+      "family": 5,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "5e5b4f57fb2dd4d3f147ee4f33fa83df65e43e6b4e1ebb510155460cff379bc9"
+    },
+    {
+      "family": 5,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "4be04be9ae9e8de4db029d4403d27d5bcf36a35e63b86dcb46b6e46786fc5479"
+    },
+    {
+      "family": 5,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "ae3eaeb01f532289d76dae7901c752ad843b421d456777328b73893802ca1839"
+    },
+    {
+      "family": 5,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "1854a201e3ed2be29aa9fd5d287fe290fcc271b95070812978c9215d797e250d"
+    },
+    {
+      "family": 5,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "f26d3002be80979f9f225ffd9c4e5dda930253950dc77d6a44a077c062073e91"
+    },
+    {
+      "family": 5,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "895bc57ed998a765233f00402d117a36ae6253078554d8f1c61581e6b3868655"
+    },
+    {
+      "family": 5,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "2fc8d29aae40a3d82784d8ffdecf3790dad8c58d8f6e60997fd40f2cf4321d67"
+    },
+    {
+      "family": 5,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "b4ee85ebea2b4afbc9e1b7de6924637a943961fbbc6acf45be4cc8e9b5ac6591"
+    },
+    {
+      "family": 5,
+      "item": "stock_internals",
+      "triangles": 1404,
+      "position_sha256": "842eebcc1b0b640f1eaba3478c14b7dc19c3bd2c03f6224933fc781c09dec103"
+    },
+    {
+      "family": 5,
+      "item": "performance_internals",
+      "triangles": 1404,
+      "position_sha256": "7f8c9333644a737020a9d18e28d0b2889098ae5fdb72d5d5fbfeac59f70a3fee"
+    },
+    {
+      "family": 5,
+      "item": "internals_3",
+      "triangles": 1884,
+      "position_sha256": "5b3285c81c091e2ce64317cc09db05c88f23e9f057b97442fefaab2bf808a6ac"
+    },
+    {
+      "family": 5,
+      "item": "internals_4",
+      "triangles": 1516,
+      "position_sha256": "f8b15dfa4fb51c4fc8bf557ba53a2fbcf64736ddf39fe2b44c54dd52db499907"
+    },
+    {
+      "family": 5,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "5fa1009ed059f01f9b298004be82ed480dbf38c2a4fd4ebc55b963e02e693609"
+    },
+    {
+      "family": 5,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 5,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "20ddf575ff86d6792dede4427acc1a7733c75717d50b1a700e1300d885752634"
+    },
+    {
+      "family": 5,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "1010ae8f634d1424364b2e411a2d9859fc70e1ec3318703d45a08135957f451d"
+    },
+    {
+      "family": 5,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 5,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 5,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "b509b419a8f40b31ca0488cfcad4beb73f5d49a14c2006c7e0bae6fdc9435be1"
+    },
+    {
+      "family": 5,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "8576292533fd1884b2dad53d1fa3c7413e8a0f579334b81dff1313fa42ed555d"
+    },
+    {
+      "family": 5,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "76cbe36fbedd7f22c9fc808431765dac71d21499a92715478f178c5d306b0c36"
+    },
+    {
+      "family": 5,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "c307e4924bf88ac1fa87e469e981f79b7fa4cdc12c2776d782455e04128774f4"
+    },
+    {
+      "family": 5,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 5,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 5,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 5,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 5,
+      "item": "stock_headwork",
+      "triangles": 576,
+      "position_sha256": "30cd4e7ff5ef619d7765faab47e12460cb661538dbd93603e0948f51ae72f831"
+    },
+    {
+      "family": 5,
+      "item": "performance_headwork",
+      "triangles": 576,
+      "position_sha256": "3b21cf3c6d68e68e8eb89290fa3901be47b7879b89a1505857ba97496a9e1e2d"
+    },
+    {
+      "family": 5,
+      "item": "headwork_3",
+      "triangles": 612,
+      "position_sha256": "7dd61aa0a1a3b94583003fc7460f11788e2e4eef25b50d94ad116589d578a2ec"
+    },
+    {
+      "family": 5,
+      "item": "headwork_4",
+      "triangles": 612,
+      "position_sha256": "79005dccbdbf7ad2086469352b79898fb5ed6721a934a61a67d3b56b8d8580d4"
+    },
+    {
+      "family": 5,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 5,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 5,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 5,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    },
+    {
+      "family": 6,
+      "item": "stock_intake",
+      "triangles": 824,
+      "position_sha256": "172c9e216dc8d5c02b184f1d8afe4578fd6a00e7cd56c635db509803c941467a"
+    },
+    {
+      "family": 6,
+      "item": "performance_intake",
+      "triangles": 2144,
+      "position_sha256": "f111b32fd278b0d4195ab24e80da4adebbfd3b836e8c8084a35862e580941bac"
+    },
+    {
+      "family": 6,
+      "item": "intake_3",
+      "triangles": 1992,
+      "position_sha256": "4e508f841b670215d26311a45563b102d28ebc4e0387f05befdc68d073ef4ced"
+    },
+    {
+      "family": 6,
+      "item": "intake_4",
+      "triangles": 1804,
+      "position_sha256": "5fc580143843c91122e0d56adf2c2d197ef830e7c9bedd857f67c217a4b80721"
+    },
+    {
+      "family": 6,
+      "item": "stock_fuel_system",
+      "triangles": 480,
+      "position_sha256": "086cb6cd59acf7c8469be84609fc2fdc4d90592d8c59f6f9466c68a90d2da678"
+    },
+    {
+      "family": 6,
+      "item": "performance_fuel_system",
+      "triangles": 480,
+      "position_sha256": "8f3012dece1640064e6a6b7b146372a5708e7cc87514359ebed9614966c67da0"
+    },
+    {
+      "family": 6,
+      "item": "fuel_system_3",
+      "triangles": 648,
+      "position_sha256": "61b9524020bcc740a90ac91b2c781366cc63ef2c6858f86864e22c6da7fbfa88"
+    },
+    {
+      "family": 6,
+      "item": "fuel_system_4",
+      "triangles": 740,
+      "position_sha256": "ca5eeb3a34e99df370d4436b88071f6ef1f2a1f3b0653b8a5d472fe2043f22b9"
+    },
+    {
+      "family": 6,
+      "item": "stock_ignition",
+      "triangles": 440,
+      "position_sha256": "5e5b4f57fb2dd4d3f147ee4f33fa83df65e43e6b4e1ebb510155460cff379bc9"
+    },
+    {
+      "family": 6,
+      "item": "performance_ignition",
+      "triangles": 896,
+      "position_sha256": "4be04be9ae9e8de4db029d4403d27d5bcf36a35e63b86dcb46b6e46786fc5479"
+    },
+    {
+      "family": 6,
+      "item": "ignition_3",
+      "triangles": 968,
+      "position_sha256": "ae3eaeb01f532289d76dae7901c752ad843b421d456777328b73893802ca1839"
+    },
+    {
+      "family": 6,
+      "item": "ignition_4",
+      "triangles": 968,
+      "position_sha256": "1854a201e3ed2be29aa9fd5d287fe290fcc271b95070812978c9215d797e250d"
+    },
+    {
+      "family": 6,
+      "item": "stock_cooling",
+      "triangles": 1332,
+      "position_sha256": "f26d3002be80979f9f225ffd9c4e5dda930253950dc77d6a44a077c062073e91"
+    },
+    {
+      "family": 6,
+      "item": "performance_cooling",
+      "triangles": 1092,
+      "position_sha256": "895bc57ed998a765233f00402d117a36ae6253078554d8f1c61581e6b3868655"
+    },
+    {
+      "family": 6,
+      "item": "cooling_3",
+      "triangles": 1520,
+      "position_sha256": "2fc8d29aae40a3d82784d8ffdecf3790dad8c58d8f6e60997fd40f2cf4321d67"
+    },
+    {
+      "family": 6,
+      "item": "cooling_4",
+      "triangles": 1580,
+      "position_sha256": "b4ee85ebea2b4afbc9e1b7de6924637a943961fbbc6acf45be4cc8e9b5ac6591"
+    },
+    {
+      "family": 6,
+      "item": "stock_internals",
+      "triangles": 1724,
+      "position_sha256": "232bd5312e32679dd8165cb684f5b104745a0f2653478392253e58f41989ffdb"
+    },
+    {
+      "family": 6,
+      "item": "performance_internals",
+      "triangles": 1724,
+      "position_sha256": "bf66d0a08eaf5df3bbda9bfc2395944f850bc90f207874ccb2cba1f4b5b413da"
+    },
+    {
+      "family": 6,
+      "item": "internals_3",
+      "triangles": 2204,
+      "position_sha256": "16a571722addc2831644a9a62e9e5a5df726839a9506f979f26f234062bbf917"
+    },
+    {
+      "family": 6,
+      "item": "internals_4",
+      "triangles": 1836,
+      "position_sha256": "4b392adab09a9b36691a46e797a5158cc96de1d286139b9ae438f66eb552dc34"
+    },
+    {
+      "family": 6,
+      "item": "turbo_kit",
+      "triangles": 1360,
+      "position_sha256": "5fa1009ed059f01f9b298004be82ed480dbf38c2a4fd4ebc55b963e02e693609"
+    },
+    {
+      "family": 6,
+      "item": "supercharger_kit",
+      "triangles": 888,
+      "position_sha256": "867ce62661a4012c8239d85353ac5f9cec843f99046efe10453fbd38acb5aa32"
+    },
+    {
+      "family": 6,
+      "item": "large_turbo_kit",
+      "triangles": 1920,
+      "position_sha256": "20ddf575ff86d6792dede4427acc1a7733c75717d50b1a700e1300d885752634"
+    },
+    {
+      "family": 6,
+      "item": "twin_turbo_kit",
+      "triangles": 3032,
+      "position_sha256": "1010ae8f634d1424364b2e411a2d9859fc70e1ec3318703d45a08135957f451d"
+    },
+    {
+      "family": 6,
+      "item": "roots_blower_kit",
+      "triangles": 4700,
+      "position_sha256": "edf647f664ed6f1aed06e010434b6ee3314636e97fa8995c59f7ae5e2defeaf5"
+    },
+    {
+      "family": 6,
+      "item": "twin_screw_kit",
+      "triangles": 4736,
+      "position_sha256": "7d8ed39aa83ef6378156a45539c3dbf839ee710d9bead846e58d47eeb376bd98"
+    },
+    {
+      "family": 6,
+      "item": "stock_exhaust",
+      "triangles": 208,
+      "position_sha256": "b509b419a8f40b31ca0488cfcad4beb73f5d49a14c2006c7e0bae6fdc9435be1"
+    },
+    {
+      "family": 6,
+      "item": "performance_exhaust",
+      "triangles": 948,
+      "position_sha256": "8576292533fd1884b2dad53d1fa3c7413e8a0f579334b81dff1313fa42ed555d"
+    },
+    {
+      "family": 6,
+      "item": "exhaust_3",
+      "triangles": 948,
+      "position_sha256": "76cbe36fbedd7f22c9fc808431765dac71d21499a92715478f178c5d306b0c36"
+    },
+    {
+      "family": 6,
+      "item": "exhaust_4",
+      "triangles": 948,
+      "position_sha256": "c307e4924bf88ac1fa87e469e981f79b7fa4cdc12c2776d782455e04128774f4"
+    },
+    {
+      "family": 6,
+      "item": "stock_flywheel",
+      "triangles": 1536,
+      "position_sha256": "f734025690aeb4305527a7c0851db022db3e6178f5c0aa98da3d56905fa3e3db"
+    },
+    {
+      "family": 6,
+      "item": "performance_flywheel",
+      "triangles": 2880,
+      "position_sha256": "0da3e5573e74d039752151074130caba83d2dfb25c2e7e4e3db26c7906d9bc22"
+    },
+    {
+      "family": 6,
+      "item": "flywheel_3",
+      "triangles": 3072,
+      "position_sha256": "f98c68df4b2d0b817f6a6c0c8a0ab2bc92b6ea5f3359d11a66896f3d49708003"
+    },
+    {
+      "family": 6,
+      "item": "flywheel_4",
+      "triangles": 3264,
+      "position_sha256": "0fa840264562096fccc6f8a2fc66ead96f5ae1a2e0129db8f4909c552dbcfbee"
+    },
+    {
+      "family": 6,
+      "item": "stock_headwork",
+      "triangles": 576,
+      "position_sha256": "30cd4e7ff5ef619d7765faab47e12460cb661538dbd93603e0948f51ae72f831"
+    },
+    {
+      "family": 6,
+      "item": "performance_headwork",
+      "triangles": 576,
+      "position_sha256": "3b21cf3c6d68e68e8eb89290fa3901be47b7879b89a1505857ba97496a9e1e2d"
+    },
+    {
+      "family": 6,
+      "item": "headwork_3",
+      "triangles": 612,
+      "position_sha256": "7dd61aa0a1a3b94583003fc7460f11788e2e4eef25b50d94ad116589d578a2ec"
+    },
+    {
+      "family": 6,
+      "item": "headwork_4",
+      "triangles": 612,
+      "position_sha256": "79005dccbdbf7ad2086469352b79898fb5ed6721a934a61a67d3b56b8d8580d4"
+    },
+    {
+      "family": 6,
+      "item": "stock_oil_system",
+      "triangles": 148,
+      "position_sha256": "4ee295345bd7cdcb2e908690488deb2d849440c1a5e32cb1f9e23800f29303a1"
+    },
+    {
+      "family": 6,
+      "item": "performance_oil_system",
+      "triangles": 304,
+      "position_sha256": "abe29ab0bd162594bce77d89af4d9504445d9716a8a6b68fbd884fe59b52d68d"
+    },
+    {
+      "family": 6,
+      "item": "oil_system_3",
+      "triangles": 640,
+      "position_sha256": "215ab7a363505cd4c3024848b7195fd6edccc49ff92f4960ac517944a7845cb4"
+    },
+    {
+      "family": 6,
+      "item": "oil_system_4",
+      "triangles": 1104,
+      "position_sha256": "a8d48904dc2ecdb52cee5b4001255a6b8b1932a542765d863cf4d2f886392d8a"
+    }
+  ]
+}

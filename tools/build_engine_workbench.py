@@ -2,7 +2,7 @@
 The game's committed APA2 mesh is the source for this snapshot. Shared mesh data
 keeps this small. Authoring rebuilds still use the original kit + runtime exporter.
 """
-import bpy,gzip,struct,math
+import bpy,gzip,struct,math,json
 from pathlib import Path
 from mathutils import Vector,Matrix
 repo=Path(__file__).resolve().parent.parent
@@ -35,22 +35,23 @@ with gzip.open(repo/'src/main/resources/assets/sparkmotors/models/entity/sedan.m
         colors={};indices=[]
         for i in range(0,n,3):
             color=0xBF333B if kind==1 else raw[i][6]&0xFFFFFF
-            if 0<=slot<5:color=[0x333E49,0xDAAC4A,0xD24538,0x399BC0,0xD2B26E][slot]
             if color not in colors:colors[color]=len(colors);data.materials.append(material(color))
             indices.append(colors[color])
         for polygon,index in zip(data.polygons,indices):polygon.material_index=index
         if kind==2:
             for m in data.materials:m.node_tree.nodes.get('Principled BSDF').inputs['Transmission Weight'].default_value=.85
         chunks.append(dict(name=name,mesh=data,group=group,variant=variant,hinge=hinge,pivot=xyz((px,py,pz)),angle=angle,family=family,slot=slot,tier=tier,induction=induction))
-names=['I4','V6','Flat4','1Rotor','2Rotor','3Rotor','4Rotor'];modes=['Natural','Turbo','Supercharger'];scenes=[]
+names=['I4','V6','Flat4','1Rotor','2Rotor','3Rotor','4Rotor'];modes=['Natural','Turbo','Supercharger','LargeTurbo','TwinTurbo','Roots','TwinScrew'];scenes=[]
 for family in range(7):
-    for induction in range(3):
+    for induction in range(7):
         s=bpy.data.scenes.new(prefix+names[family]+'_'+modes[induction]);s.unit_settings.system='METRIC';s.unit_settings.scale_length=1
         s.render.engine='BLENDER_EEVEE';s.render.resolution_x=1200;s.render.resolution_y=900;s.render.resolution_percentage=100
         for c in chunks:
             if c['group']>0 and c['variant']>1:continue
             if not c['family']&(1<<family) or not c['induction']&(1<<induction):continue
             if c['slot']==5 and (induction==0 or c['tier'] not in [0,induction]):continue
+            choices=[2,3,2,3,4,induction,3,2,2,3]
+            if c['slot']>=0 and c['tier']>0 and c['tier']!=choices[c['slot']]:continue
             ob=bpy.data.objects.new(prefix+c['name'],c['mesh']);s.collection.objects.link(ob)
             ob['runtime_part']=c['name'];ob['service_slot']=c['slot']
             if c['hinge']==5:
@@ -61,7 +62,24 @@ for family in range(7):
         for loc,power,size in [((2,-4,6),1200,5),((-4,-1,3),800,4),((1,4,4),1000,3)]:
             ld=bpy.data.lights.new(prefix+'area','AREA');ld.energy=power;ld.shape='DISK';ld.size=size;lo=bpy.data.objects.new(prefix+'area',ld);s.collection.objects.link(lo);lo.location=loc;lo.rotation_euler=(Vector((0,-.7,.8))-lo.location).to_track_quat('-Z','Y').to_euler()
         scenes.append(s)
+# Isolated hardware scenes share the exact runtime meshes. These also supply unique item icons.
+catalog=json.loads((repo/'docs/powertrain-catalog.json').read_text())
+for slot in catalog['slots']:
+    for option in slot['options']:
+        s=bpy.data.scenes.new(prefix+'PART_'+option['item']);s.render.engine='BLENDER_EEVEE';s.render.resolution_x=512;s.render.resolution_y=512;s.render.resolution_percentage=100
+        s.render.image_settings.file_format='PNG';s.render.film_transparent=True;s.world=scenes[0].world
+        vs=[]
+        for c in chunks:
+            if c['group']!=0 or c['slot']!=slot['index'] or not c['family']&1 or c['tier'] not in [0,option['value']]:continue
+            if slot['index']!=5 and not c['induction']&1:continue
+            if slot['index']==5 and not c['induction']&(1<<option['value']):continue
+            ob=bpy.data.objects.new(prefix+'PART_'+c['name'],c['mesh']);s.collection.objects.link(ob);vs.extend(v.co for v in c['mesh'].vertices)
+        lo=Vector(tuple(min(v[i] for v in vs) for i in range(3)));hi=Vector(tuple(max(v[i] for v in vs) for i in range(3)));center=(lo+hi)/2
+        cd=bpy.data.cameras.new(prefix+'part camera');camera=bpy.data.objects.new(prefix+'part camera',cd);s.collection.objects.link(camera);camera.location=center+Vector((2,-3,2.2));camera.rotation_euler=(center-camera.location).to_track_quat('-Z','Y').to_euler();cd.type='ORTHO';cd.ortho_scale=max(hi-lo)*1.65;s.camera=camera
+        for offset,power in [((1,-2,3),220),((-2,-1,1),120),((1,2,2),160)]:
+            ld=bpy.data.lights.new(prefix+'part area','AREA');ld.energy=power;ld.size=2;ob=bpy.data.objects.new(prefix+'part area',ld);s.collection.objects.link(ob);ob.location=center+Vector(offset);ob.rotation_euler=(center-ob.location).to_track_quat('-Z','Y').to_euler()
+        s['item_id']=option['item'];s['part_label']=option['label'];scenes.append(s)
 out=repo/'assets/engine_workshop.blend'
 bpy.data.libraries.write(str(out),set(scenes),fake_user=True,compress=True)
 bpy.context.window.scene=scenes[1]
-result={'file':str(out),'scenes':len(scenes),'bytes':out.stat().st_size,'scope':'Editable derived runtime snapshots; each scene shows one of 21 configurations under its open hood.'}
+result={'file':str(out),'scenes':len(scenes),'bytes':out.stat().st_size,'scope':'49 assembled open-hood layouts and 42 isolated hardware scenes; editable snapshots of the runtime geometry.'}

@@ -29,6 +29,34 @@
       "in_world": "screenshots/hood-i4-supercharger.png"
     },
     {
+      "family": "i4",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/i4-large-turbo.png",
+      "screen": "screenshots/engine-i4-large-turbo.png",
+      "in_world": "screenshots/hood-i4-large-turbo.png"
+    },
+    {
+      "family": "i4",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/i4-twin-turbo.png",
+      "screen": "screenshots/engine-i4-twin-turbo.png",
+      "in_world": "screenshots/hood-i4-twin-turbo.png"
+    },
+    {
+      "family": "i4",
+      "induction": "roots",
+      "preview": "engine-gallery/i4-roots.png",
+      "screen": "screenshots/engine-i4-roots.png",
+      "in_world": "screenshots/hood-i4-roots.png"
+    },
+    {
+      "family": "i4",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/i4-twin-screw.png",
+      "screen": "screenshots/engine-i4-twin-screw.png",
+      "in_world": "screenshots/hood-i4-twin-screw.png"
+    },
+    {
       "family": "v6",
       "induction": "natural",
       "preview": "engine-gallery/v6-natural.png",
@@ -48,6 +76,34 @@
       "preview": "engine-gallery/v6-supercharger.png",
       "screen": "screenshots/engine-v6-supercharger.png",
       "in_world": "screenshots/hood-v6-supercharger.png"
+    },
+    {
+      "family": "v6",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/v6-large-turbo.png",
+      "screen": "screenshots/engine-v6-large-turbo.png",
+      "in_world": "screenshots/hood-v6-large-turbo.png"
+    },
+    {
+      "family": "v6",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/v6-twin-turbo.png",
+      "screen": "screenshots/engine-v6-twin-turbo.png",
+      "in_world": "screenshots/hood-v6-twin-turbo.png"
+    },
+    {
+      "family": "v6",
+      "induction": "roots",
+      "preview": "engine-gallery/v6-roots.png",
+      "screen": "screenshots/engine-v6-roots.png",
+      "in_world": "screenshots/hood-v6-roots.png"
+    },
+    {
+      "family": "v6",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/v6-twin-screw.png",
+      "screen": "screenshots/engine-v6-twin-screw.png",
+      "in_world": "screenshots/hood-v6-twin-screw.png"
     },
     {
       "family": "flat4",
@@ -71,6 +127,34 @@
       "in_world": "screenshots/hood-flat4-supercharger.png"
     },
     {
+      "family": "flat4",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/flat4-large-turbo.png",
+      "screen": "screenshots/engine-flat4-large-turbo.png",
+      "in_world": "screenshots/hood-flat4-large-turbo.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/flat4-twin-turbo.png",
+      "screen": "screenshots/engine-flat4-twin-turbo.png",
+      "in_world": "screenshots/hood-flat4-twin-turbo.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "roots",
+      "preview": "engine-gallery/flat4-roots.png",
+      "screen": "screenshots/engine-flat4-roots.png",
+      "in_world": "screenshots/hood-flat4-roots.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/flat4-twin-screw.png",
+      "screen": "screenshots/engine-flat4-twin-screw.png",
+      "in_world": "screenshots/hood-flat4-twin-screw.png"
+    },
+    {
       "family": "rotor1",
       "induction": "natural",
       "preview": "engine-gallery/rotor1-natural.png",
@@ -90,6 +174,34 @@
       "preview": "engine-gallery/rotor1-supercharger.png",
       "screen": "screenshots/engine-rotor1-supercharger.png",
       "in_world": "screenshots/hood-rotor1-supercharger.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/rotor1-large-turbo.png",
+      "screen": "screenshots/engine-rotor1-large-turbo.png",
+      "in_world": "screenshots/hood-rotor1-large-turbo.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/rotor1-twin-turbo.png",
+      "screen": "screenshots/engine-rotor1-twin-turbo.png",
+      "in_world": "screenshots/hood-rotor1-twin-turbo.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "roots",
+      "preview": "engine-gallery/rotor1-roots.png",
+      "screen": "screenshots/engine-rotor1-roots.png",
+      "in_world": "screenshots/hood-rotor1-roots.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/rotor1-twin-screw.png",
+      "screen": "screenshots/engine-rotor1-twin-screw.png",
+      "in_world": "screenshots/hood-rotor1-twin-screw.png"
     },
     {
       "family": "rotor2",
@@ -113,6 +225,34 @@
       "in_world": "screenshots/hood-rotor2-supercharger.png"
     },
     {
+      "family": "rotor2",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/rotor2-large-turbo.png",
+      "screen": "screenshots/engine-rotor2-large-turbo.png",
+      "in_world": "screenshots/hood-rotor2-large-turbo.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/rotor2-twin-turbo.png",
+      "screen": "screenshots/engine-rotor2-twin-turbo.png",
+      "in_world": "screenshots/hood-rotor2-twin-turbo.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "roots",
+      "preview": "engine-gallery/rotor2-roots.png",
+      "screen": "screenshots/engine-rotor2-roots.png",
+      "in_world": "screenshots/hood-rotor2-roots.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/rotor2-twin-screw.png",
+      "screen": "screenshots/engine-rotor2-twin-screw.png",
+      "in_world": "screenshots/hood-rotor2-twin-screw.png"
+    },
+    {
       "family": "rotor3",
       "induction": "natural",
       "preview": "engine-gallery/rotor3-natural.png",
@@ -134,6 +274,34 @@
       "in_world": "screenshots/hood-rotor3-supercharger.png"
     },
     {
+      "family": "rotor3",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/rotor3-large-turbo.png",
+      "screen": "screenshots/engine-rotor3-large-turbo.png",
+      "in_world": "screenshots/hood-rotor3-large-turbo.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/rotor3-twin-turbo.png",
+      "screen": "screenshots/engine-rotor3-twin-turbo.png",
+      "in_world": "screenshots/hood-rotor3-twin-turbo.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "roots",
+      "preview": "engine-gallery/rotor3-roots.png",
+      "screen": "screenshots/engine-rotor3-roots.png",
+      "in_world": "screenshots/hood-rotor3-roots.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/rotor3-twin-screw.png",
+      "screen": "screenshots/engine-rotor3-twin-screw.png",
+      "in_world": "screenshots/hood-rotor3-twin-screw.png"
+    },
+    {
       "family": "rotor4",
       "induction": "natural",
       "preview": "engine-gallery/rotor4-natural.png",
@@ -153,6 +321,34 @@
       "preview": "engine-gallery/rotor4-supercharger.png",
       "screen": "screenshots/engine-rotor4-supercharger.png",
       "in_world": "screenshots/hood-rotor4-supercharger.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "large-turbo",
+      "preview": "engine-gallery/rotor4-large-turbo.png",
+      "screen": "screenshots/engine-rotor4-large-turbo.png",
+      "in_world": "screenshots/hood-rotor4-large-turbo.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "twin-turbo",
+      "preview": "engine-gallery/rotor4-twin-turbo.png",
+      "screen": "screenshots/engine-rotor4-twin-turbo.png",
+      "in_world": "screenshots/hood-rotor4-twin-turbo.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "roots",
+      "preview": "engine-gallery/rotor4-roots.png",
+      "screen": "screenshots/engine-rotor4-roots.png",
+      "in_world": "screenshots/hood-rotor4-roots.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "twin-screw",
+      "preview": "engine-gallery/rotor4-twin-screw.png",
+      "screen": "screenshots/engine-rotor4-twin-screw.png",
+      "in_world": "screenshots/hood-rotor4-twin-screw.png"
     }
   ]
 }

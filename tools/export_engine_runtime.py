@@ -21,7 +21,7 @@ def ancestors(p):
     return [p['id'].split(':')[1] for p in result]
 def xyz(v):return (v[0],v[2],-v[1])
 def srgb(c):return round(max(0,min(1,12.92*c if c<=.0031308 else 1.055*c**(1/2.4)-.055))*255)
-def meta(name,cat=18,group=0,variant=0,hinge=0,pivot=(0,0,0),angle=0,family=127,slot=-1,tier=0,induction=7):
+def meta(name,cat=18,group=0,variant=0,hinge=0,pivot=(0,0,0),angle=0,family=127,slot=-1,tier=0,induction=127):
     return dict(name=name,cat=cat,group=group,variant=variant,hinge=hinge,pivot=xyz(pivot),angle=angle,family=family,slot=slot,tier=tier,induction=induction)
 def collect(ob,m):
     if ob.name.startswith('APA_runtime_'):me=ob.data.copy()
@@ -68,6 +68,7 @@ for part in manifest:
     hinge=next((hinges.index(n)+1 for n in names if n in hinges),0)
     hp=lookup['sparkmotors:'+hinges[hinge-1]] if hinge else part
     m=meta(name,cat,group,variant,hinge,hp['mount_world_m'],hp.get('hinge',{}).get('open_degrees',0) if hinge else 0,1<<family if family is not None else 127,slot)
+    if name in ['radiator','radiator_fan']:m['tier']=1
     root=bpy.data.objects[part['object']]
     for ob in scene.objects:
         if ob.type in {'MESH','CURVE','FONT'} and owner(ob)==root:collect(ob,m)
@@ -98,26 +99,15 @@ def pipe(name,points,radius,mat,m,sides=10):
 
 box('rear_valance',(0,2.115,.92),(1.76,.05,.21),bpy.data.materials['SM_paint'],meta('rear_valance',cat=3,group=-1))
 box('scuttle',(0,-.77,1.008),(1.55,.11,.055),black,meta('scuttle',cat=3,group=-1))
-# Side-mounted kits and adapters to each family's port height and core width.
+# Detailed hardware is generated separately using the same native Blender mesh helpers.
+exec(compile((repo/'tools/build_powertrain_hardware.py').read_text(),str(repo/'tools/build_powertrain_hardware.py'),'exec'))
+# Shared cooling hoses and exhaust adapters to each family's port height and core width.
 for f in range(7):
     fam=1<<f;portz=[.87,.875,.78,.62,.62,.62,.62][f];portx=[.193,.29,.34,.285,.285,.285,.285][f]
-    im=meta('service_intake_'+str(f),family=fam,slot=0)
-    box('plenum_'+str(f),(-.425,-1.31,.91),(.095,.37,.10),metal,im)
-    for yy in [-1.45,-1.32,-1.19]:pipe('intake_runner_'+str(f)+str(yy),[(-.425,yy,.88),(-portx,yy,portz)],.024,metal,im)
-    box('air_filter_'+str(f),(-.45,-1.08,.885),(.12,.11,.105),black,im)
-    pipe('filter_to_plenum_'+str(f),[(-.45,-1.10,.885),(-.425,-1.20,.91)],.027,black,dict(im,induction=1))
-    fm=meta('service_fuel_'+str(f),family=fam,slot=1)
-    pipe('fuel_rail_'+str(f),[(-.37,-1.49,.96),(-.37,-1.12,.96)],.012,metal,fm)
-    for yy in [-1.45,-1.32,-1.19]:pipe('injector_'+str(f)+str(yy),[(-.37,yy,.95),(-portx,yy,portz)],.009,blue,fm)
-    em=meta('service_ignition_'+str(f),family=fam,slot=2)
-    box('coil_pack_'+str(f),(-.43,-1.68,.96),(.12,.08,.06),red,em)
-    for yy in [-1.48,-1.32,-1.16]:pipe('spark_lead_'+str(f)+str(yy),[(-.43,-1.68,.975),(-.43,yy,.99),(-portx,yy,portz+.04)],.005,black,em,sides=6)
     cm=meta('service_coolant_'+str(f),family=fam,slot=3)
     pipe('coolant_feed_'+str(f),[(-.48,-1.90,.83),(-.50,-1.78,.78),(-portx,-1.68,.66)],.019,blue,cm)
     pipe('coolant_return_'+str(f),[(portx,-1.12,.65),(.53,-1.12,.65),(.56,-1.78,.62),(.48,-1.93,.62)],.018,blue,cm)
-    ex=meta('service_exhaust_'+str(f),family=fam,induction=5)
-    pipe('exhaust_header_'+str(f),[(portx,-1.43,portz),(.39,-1.43,.71),(.39,-1.05,.53),(.35,-.90,.29)],.024,metal,ex)
-    tm=meta('turbo_header_'+str(f),family=fam,slot=5,tier=1,induction=2)
+    tm=meta('turbo_header_'+str(f),family=fam,slot=5,induction=26)
     pipe('turbo_feed_'+str(f),[(portx,-1.43,portz),(.405,-1.43,.75),(.47,-1.31,.81)],.023,metal,tm)
     pipe('turbo_downpipe_'+str(f),[(.47,-1.19,.81),(.54,-1.12,.69),(.50,-1.0,.45),(.35,-.90,.29)],.025,metal,tm)
 
@@ -129,18 +119,19 @@ for original,offset,name,mode in [('turbocharger',(.065,0,0),'turbocharger',1),(
         data.transform(ob.matrix_world);data.transform(Matrix.Translation(offset))
         cp=bpy.data.objects.new('APA_runtime_'+ob.name,data);scene.collection.objects.link(cp);temporary.append(cp)
         collect(cp,meta(name,cat=31 if mode==1 else 32,slot=5,tier=mode,induction=1<<mode))
-for mode in [1,2]:
-    m=meta('boost_plumbing_'+str(mode),cat=31 if mode==1 else 32,slot=5,tier=mode,induction=1<<mode)
-    source=(.48,-1.25,.85) if mode==1 else (.48,-1.69,.86)
+for mode in range(1,7):
+    is_turbo=mode in [1,3,4]
+    m=meta('boost_plumbing_'+str(mode),cat=31 if is_turbo else 32,slot=5,tier=mode,induction=1<<mode)
+    source=(.48,-1.25,.85) if is_turbo else (.48,-1.69,.86)
     pipe('compressor_out_'+str(mode),[source,(.59,-1.62,.87),(.60,-1.83,.83),(.60,-2.04,.70),(.48,-2.04,.70)],.023,blue,m)
     box('intercooler_'+str(mode),(0,-2.04,.70),(.98,.038,.25),metal,m)
     for yy in [.61,.66,.71,.76,.81]:box('intercooler_fin_'+str(mode)+str(yy),(0,-2.066,yy),(.94,.01,.01),black,m)
     pipe('charge_return_'+str(mode),[(-.48,-2.04,.70),(-.60,-2.04,.70),(-.61,-1.85,.91),(-.59,-1.56,.98),(-.51,-1.30,.98),(-.425,-1.30,.94)],.023,blue,m)
     inlet=[(-.45,-1.045,.88),(-.43,-.965,.95),(.43,-.965,.95),(.62,-1.07,.97)]
-    if mode==1:inlet.extend([(.62,-1.30,.97),(.48,-1.30,.93)])
+    if is_turbo:inlet.extend([(.62,-1.30,.97),(.48,-1.30,.93)])
     inlet.append(source)
     pipe('filtered_inlet_'+str(mode),inlet,.019,black,m)
-    if mode==1:
+    if is_turbo:
         box('wastegate',(.51,-1.40,.90),(.055,.06,.08),metal,m)
         box('blowoff_valve',(-.60,-1.80,.95),(.045,.05,.055),metal,m)
     else:pipe('supercharger_belt',[(0,-1.805,.55),(.48,-1.805,.89),(.50,-1.805,.84),(0,-1.805,.50),(0,-1.805,.55)],.005,black,m,sides=6)
@@ -158,25 +149,25 @@ with open(output/'sedan.mesh.gz','wb') as raw:
             f.write(struct.pack('>iiii4f6i',cat,group,variant,hinge,px,py,pz,angle,family,slot,tier,induction,kind,len(verts)))
             for v in verts:f.write(struct.pack('>6fI',*v))
 report={'format':'APA2 gzip, big endian','source':'assets/modular_car_kit/sparkmotors_modular.blend','chunks':len(merged),
-        'triangles':sum(len(v)//3 for v in merged.values()),'families':families,'induction':['natural','turbo','supercharger'],
+        'triangles':sum(len(v)//3 for v in merged.values()),'families':families,'induction':['natural','turbo','supercharger','large-turbo','twin-turbo','roots','twin-screw'],
         'runtime_file':'src/main/resources/assets/sparkmotors/models/entity/sedan.mesh.gz','bytes':(output/'sedan.mesh.gz').stat().st_size,
-        'scope':'Seven cores, removable service assemblies, family-specific adapters, three induction configurations; internals retained for inspection.'}
+        'scope':'Seven cores, ten service slots, 42 named hardware choices with distinct geometry, seven induction configurations; internals retained for inspection.'}
 (repo/'docs/runtime-assets.json').write_text(json.dumps(report,indent=2)+'\n')
 checks=[]
 for family in range(7):
-    for induction in range(3):
+    for induction in range(7):
         visible=[c for c in chunks if c['group']==0 and c['family']&(1<<family) and c['induction']&(1<<induction)]
         verts=[v for c in visible for v in c['vertices']]
         hood=min(1.028+(-v[2]+2.105)/1.315*.078-.011-v[1] for v in verts if -2.105<-v[2]<-.79 and abs(v[0])<.865)
         left=min(v[0] for v in verts);right=max(v[0] for v in verts)
         core_front=max(v[2] for c in visible if c['name'] in core_parts for v in c['vertices'])
         core_back=min(v[2] for c in visible if c['name'] in core_parts for v in c['vertices'])
-        check={'family':families[family],'induction':['natural','turbo','supercharger'][induction],
+        check={'family':families[family],'induction':['natural','turbo','supercharger','large-turbo','twin-turbo','roots','twin-screw'][induction],
                'hood_clearance_m':round(hood,6),'side_clearance_m':round(min(left+.72,.72-right),6),
                'core_to_radiator_m':round(1.881-core_front,6),'core_to_firewall_m':round(core_back-.80,6),'triangles':len(verts)//3}
         check['passed']=hood>=.005 and left>=-.72 and right<=.72 and core_front<1.86 and core_back>.81
         checks.append(check)
-fit={'scope':'Every family/induction layout: closed hood plane, side envelope, core/radiator and core/firewall separation. Kit tiers recolor or hide the same fitted geometry; not exhaustive CAD collision proof.',
+fit={'scope':'Union of every hardware alternative for all 49 family/induction layouts: closed hood plane, side envelope and core/radiator/firewall clearance. Pairwise intersection checks are separate.',
      'configurations':len(checks),'passed':sum(c['passed'] for c in checks),'failed':sum(not c['passed'] for c in checks),'checks':checks}
 (repo/'docs/engine-fit-matrix.json').write_text(json.dumps(fit,indent=2)+'\n')
 for ob in temporary:

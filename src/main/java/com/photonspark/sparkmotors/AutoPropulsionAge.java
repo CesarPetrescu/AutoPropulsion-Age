@@ -43,7 +43,7 @@ public final class AutoPropulsionAge {
         for(var family:EngineFamily.values())if(family!=EngineFamily.I4)for(int v=1;v<=2;v++){
             String key=family.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))));
         }
-        for(var part:EnginePart.values())for(int v=1;v<=2;v++){
+        for(var part:EnginePart.values())for(int v=1;v<=part.maxVariant();v++){
             String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
         }
     }

@@ -1,60 +1,65 @@
 # AutoPropulsion Age
 
-**Playable alpha 0.2.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
+**Playable alpha 0.3.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
-Drive a modular sedan, open its hood, build or swap its engine, repaint it and adjust its tune through a native Minecraft garage. **Seven engine families, stock/sport grades, six service slots, and natural/turbo/supercharger configurations are playable.** The alpha includes a driving HUD, automatic gears, reverse, fuel, repairs, opening panels, engine sound, survival recipes and saved car configurations.
+Drive a modular sedan and build its engine under an opening hood. Choose **42 hardware items across ten engine slots**, with **seven engine families and seven induction configurations**. Parts change the actual geometry and the simulated response: turbo lag, blower drive load, flywheel inertia, fuel capacity, cams/ports, cooling and oil systems all matter.
 
-**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.2.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Build and test results](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
+**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.3.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [Build and tests](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
 
-Put the JAR in your NeoForge instance's `mods` folder. In a Creative world, take a **Sedan Crate** from the **AutoPropulsion Age** tab and use it on open, flat ground. Right-click the car, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. **F5** changes the camera.
+Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1/0.2 cars and engine items migrate their installed components.
 
-## Under the hood
+## Build the engine
 
-Open **G → Engine → Open hood** while parked with the engine off. Install high-flow fuel and forged internals before selecting a boost kit. Removed engines retain their installed parts. [Engine workshop instructions](docs/ENGINE-WORKSHOP.md).
+Open **G → Engine → Open hood** while parked with the engine off. Browse the ten service slots with **More parts**, **Previous parts**, or the mouse wheel. Arrows select a named part; **Fit** installs it. Hover the button for its effects and requirements. Whole-engine stock/sport grades remain available alongside the individual hardware choices.
 
-![Engine workshop with fitted inline-four turbo](docs/screenshots/engine-i4-turbo.png)
+![Expanded workshop with a large-turbo inline-four](docs/screenshots/engine-i4-large-turbo.png)
 
-![Four-rotor engine installed under the open hood](docs/screenshots/hood-rotor4-supercharger.png)
+| Engine slot | Hardware choices |
+|---|---|
+| Intake | Airbox / Cold-air / Individual throttles / Ram plenum |
+| Fuel system | Port injection / High-flow rail / Return fuel rail / Race injection |
+| Ignition | Coil pack / Performance coils / CDI ignition / Multi-spark |
+| Cooling | OEM radiator / Aluminium radiator / Dual electric fans / Race radiator |
+| Rotating assembly | Cast assembly / Forged assembly / High compression / Billet assembly |
+| Forced induction | Street turbo / Centrifugal blower / Large turbo / Twin turbos / Roots blower / Twin-screw blower |
+| Exhaust | Cast manifold / 4-2-1 headers / Equal-length tubes / Race collector |
+| Flywheel | OEM flywheel / Light steel / Aluminium flywheel / Billet flywheel |
+| Cams / rotary ports | OEM cams / side ports / Street cams / ports / Race cams / bridge / High-lift / peripheral |
+| Oil system | Wet sump / Baffled sump / Oil cooler / Dry sump |
 
-[Editable Blender file: all 21 open-hood configurations](assets/engine_workshop.blend)
+The induction slot also supports natural aspiration. Street turbo, centrifugal, Roots and twin-screw kits require high-flow fuel and forged/billet internals. Large/twin turbos require return/race fuel, billet internals, upgraded cooling and ignition. High-compression internals are for naturally aspirated builds. Survival swaps consume the incoming item and return the old one; engines retain their parts, coolant/oil temperatures and wear through swaps, crafting and saves.
 
-## In-game driving
+![Four-rotor twin-screw build under the hood](docs/screenshots/hood-rotor4-twin-screw.png)
 
-![The actual car driving in Minecraft with speed, gear, RPM and fuel HUD](docs/screenshots/alpha-driving.png)
+## Test and tune
 
-## Garage
+The crank and flywheel store angular momentum. A slipping automatic clutch couples engine speed to the wheels; hold C to disengage it. Turbo shaft speed and manifold pressure build over time, and a blow-off valve vents pressure on throttle lift. Blowers consume crankshaft power. Fuel capacity limits power and can produce a lean mixture under boost; lean running and excessive coolant/oil heat wear the engine. Oil hardware changes pressure and heat rejection. Cams/ports and exhausts trade low-end torque for high-RPM flow.
 
-Install, remove and exchange stock or sport assemblies. Survival changes consume inventory items and return the previous part; Creative changes are free.
+The **Live** page shows RPM, throttle, turbo speed, boost, AFR, coolant/oil temperatures, oil pressure, shaft torque, blower load and engine condition. Start the engine with its hood open and press **Rev test / 2s** to watch a timed test while the car remains parked. **Rebuild engine** restores wear for twelve iron ingots.
 
-![Native garage with live car preview and six assembly slots](docs/screenshots/alpha-garage.png)
+![Live diagnostics during a native engine rev test](docs/screenshots/powertrain-live.png)
 
-## Paint
+The **Tuner** sets rev limiter, final drive and boost target. Hardware limits still apply. The graph estimates warm, healthy, steady-state output; the running engine additionally responds to lag, throttle, temperature and wear.
 
-Choose from eight colors. Survival painting costs one dye.
+![Boost target and calculated power curve](docs/screenshots/powertrain-tuner.png)
 
-![Paint interface with crimson body color](docs/screenshots/alpha-paint.png)
+## Drive and customize the car
 
-## Tuner
+The alpha includes automatic gears, reverse, collision handling, fuel, repairs, engine sound, eight paint colors, stock/sport car assemblies, opening doors/hood/trunk, one driving seat, seventy recipes and persistent ownership/configurations.
 
-Set the RPM limiter and final drive, then apply the tune. The curve is calculated from the current engine model.
+![Driving HUD with boost, AFR and oil temperature](docs/screenshots/alpha-driving.png)
 
-![Tuner interface and calculated power curve](docs/screenshots/alpha-tuner.png)
+![Garage with live car preview](docs/screenshots/alpha-garage.png)
 
-## Car controls and opening panels
+![Paint customization](docs/screenshots/alpha-paint.png)
 
-Refuel, repair and operate the car from the Car tab. Doors, hood and trunk open together.
+![Opening panels and car controls](docs/screenshots/alpha-car-controls.png)
 
-![Car controls and opened panels](docs/screenshots/alpha-car-controls.png)
+## Verification and scope
 
-![Customized sedan with gold sport wheels and open hood, doors and trunk](docs/screenshots/alpha-customized.png)
+The reproducible checks cover **1,835,008 populated hardware combinations**, **7,308 continuous driving/braking cases**, **98 native in-world engine layouts**, all **42 hardware item recipes and inventory transactions**, and all **49 rendered family/induction layouts**. Every hardware choice selects distinct vertex geometry in each engine family (**294 checks**). Blender clearance and selected triangle-intersection checks pass for all 49 layouts through five hood positions. See the exact results and test counts in the [verification record](docs/verification.json).
 
-## Cockpit
-
-![First-person cockpit and driving HUD](docs/screenshots/alpha-interior.png)
-
-These are native Minecraft captures from the client integration test. **13 simulation tests and 13 dedicated-server GameTests pass.** Coverage includes **10,206 engine states**, **64,512 engine/car/tune driving cases**, all **42 family/grade/induction layouts driving in-world**, and all **21 family/induction layouts installed with native client buttons**. The 21 layouts also pass targeted Blender fit and hood-sweep intersection checks. The release builds with Java 21. See the [verification record](docs/DEVELOPMENT.md).
-
-This is a playable alpha with simplified driving physics and one seat. Physical dyno equipment, independent suspension forces, manual clutch controls, a full individual-piston/valve/rotor parts tree, liveries and the rest of the workshop are future work. Engine curves and thermal behavior are gameplay calibrations. Lamps glow on the model without dynamic world lighting. Dedicated-server startup and integrated client/server traffic are tested; separate-machine multiplayer and other modpacks still need playtesting. [Detailed scope and limits](docs/PLAYING.md#alpha-limits-and-next-work).
+This is a playable alpha with calibrated gameplay physics. Engine families use shared reference torque curves with family scaling; combustion cycles, per-cylinder damage, full suspension force simulation, compound charging, nitrous, individual body-panel choices and liveries remain future work. Stock/sport still describes the six large car assemblies. The 42 new choices are engine hardware. [Detailed scope](docs/ENGINE-WORKSHOP.md).
 
 <!-- ENGINE-GALLERY-START -->
 ## Engine configuration gallery
@@ -71,7 +76,139 @@ Native game previews. Click an engine to see it installed under the open hood. [
 | 3 rotors | [![3 rotors natural](docs/engine-gallery/rotor3-natural.png)](docs/screenshots/hood-rotor3-natural.png) | [![3 rotors turbo](docs/engine-gallery/rotor3-turbo.png)](docs/screenshots/hood-rotor3-turbo.png) | [![3 rotors supercharger](docs/engine-gallery/rotor3-supercharger.png)](docs/screenshots/hood-rotor3-supercharger.png) |
 | 4 rotors | [![4 rotors natural](docs/engine-gallery/rotor4-natural.png)](docs/screenshots/hood-rotor4-natural.png) | [![4 rotors turbo](docs/engine-gallery/rotor4-turbo.png)](docs/screenshots/hood-rotor4-turbo.png) | [![4 rotors supercharger](docs/engine-gallery/rotor4-supercharger.png)](docs/screenshots/hood-rotor4-supercharger.png) |
 
+| Engine | Large Turbo | Twin Turbo | Roots | Twin Screw |
+|---|---|---|---|---|
+| Inline-4 | [![Inline-4 large-turbo](docs/engine-gallery/i4-large-turbo.png)](docs/screenshots/hood-i4-large-turbo.png) | [![Inline-4 twin-turbo](docs/engine-gallery/i4-twin-turbo.png)](docs/screenshots/hood-i4-twin-turbo.png) | [![Inline-4 roots](docs/engine-gallery/i4-roots.png)](docs/screenshots/hood-i4-roots.png) | [![Inline-4 twin-screw](docs/engine-gallery/i4-twin-screw.png)](docs/screenshots/hood-i4-twin-screw.png) |
+| V6 | [![V6 large-turbo](docs/engine-gallery/v6-large-turbo.png)](docs/screenshots/hood-v6-large-turbo.png) | [![V6 twin-turbo](docs/engine-gallery/v6-twin-turbo.png)](docs/screenshots/hood-v6-twin-turbo.png) | [![V6 roots](docs/engine-gallery/v6-roots.png)](docs/screenshots/hood-v6-roots.png) | [![V6 twin-screw](docs/engine-gallery/v6-twin-screw.png)](docs/screenshots/hood-v6-twin-screw.png) |
+| Flat-four | [![Flat-four large-turbo](docs/engine-gallery/flat4-large-turbo.png)](docs/screenshots/hood-flat4-large-turbo.png) | [![Flat-four twin-turbo](docs/engine-gallery/flat4-twin-turbo.png)](docs/screenshots/hood-flat4-twin-turbo.png) | [![Flat-four roots](docs/engine-gallery/flat4-roots.png)](docs/screenshots/hood-flat4-roots.png) | [![Flat-four twin-screw](docs/engine-gallery/flat4-twin-screw.png)](docs/screenshots/hood-flat4-twin-screw.png) |
+| 1 rotor | [![1 rotor large-turbo](docs/engine-gallery/rotor1-large-turbo.png)](docs/screenshots/hood-rotor1-large-turbo.png) | [![1 rotor twin-turbo](docs/engine-gallery/rotor1-twin-turbo.png)](docs/screenshots/hood-rotor1-twin-turbo.png) | [![1 rotor roots](docs/engine-gallery/rotor1-roots.png)](docs/screenshots/hood-rotor1-roots.png) | [![1 rotor twin-screw](docs/engine-gallery/rotor1-twin-screw.png)](docs/screenshots/hood-rotor1-twin-screw.png) |
+| 2 rotors | [![2 rotors large-turbo](docs/engine-gallery/rotor2-large-turbo.png)](docs/screenshots/hood-rotor2-large-turbo.png) | [![2 rotors twin-turbo](docs/engine-gallery/rotor2-twin-turbo.png)](docs/screenshots/hood-rotor2-twin-turbo.png) | [![2 rotors roots](docs/engine-gallery/rotor2-roots.png)](docs/screenshots/hood-rotor2-roots.png) | [![2 rotors twin-screw](docs/engine-gallery/rotor2-twin-screw.png)](docs/screenshots/hood-rotor2-twin-screw.png) |
+| 3 rotors | [![3 rotors large-turbo](docs/engine-gallery/rotor3-large-turbo.png)](docs/screenshots/hood-rotor3-large-turbo.png) | [![3 rotors twin-turbo](docs/engine-gallery/rotor3-twin-turbo.png)](docs/screenshots/hood-rotor3-twin-turbo.png) | [![3 rotors roots](docs/engine-gallery/rotor3-roots.png)](docs/screenshots/hood-rotor3-roots.png) | [![3 rotors twin-screw](docs/engine-gallery/rotor3-twin-screw.png)](docs/screenshots/hood-rotor3-twin-screw.png) |
+| 4 rotors | [![4 rotors large-turbo](docs/engine-gallery/rotor4-large-turbo.png)](docs/screenshots/hood-rotor4-large-turbo.png) | [![4 rotors twin-turbo](docs/engine-gallery/rotor4-twin-turbo.png)](docs/screenshots/hood-rotor4-twin-turbo.png) | [![4 rotors roots](docs/engine-gallery/rotor4-roots.png)](docs/screenshots/hood-rotor4-roots.png) | [![4 rotors twin-screw](docs/engine-gallery/rotor4-twin-screw.png)](docs/screenshots/hood-rotor4-twin-screw.png) |
+
+
 <!-- ENGINE-GALLERY-END -->
+
+<!-- HARDWARE-GALLERY-START -->
+## Every new engine hardware model
+
+42 selectable items, with distinct geometry. These are Blender renders of the exact game meshes; click any image to inspect it. Parts are framed independently. The Engine tab adapts mounts and ports for all seven families.
+
+### Intake
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_intake.png"><img src="docs/hardware-gallery/stock_intake.png" width="180" alt="Airbox"></a><br>Airbox</td>
+<td align="center"><a href="docs/hardware-gallery/performance_intake.png"><img src="docs/hardware-gallery/performance_intake.png" width="180" alt="Cold-air"></a><br>Cold-air</td>
+<td align="center"><a href="docs/hardware-gallery/intake_3.png"><img src="docs/hardware-gallery/intake_3.png" width="180" alt="Individual throttles"></a><br>Individual throttles</td>
+<td align="center"><a href="docs/hardware-gallery/intake_4.png"><img src="docs/hardware-gallery/intake_4.png" width="180" alt="Ram plenum"></a><br>Ram plenum</td>
+</tr>
+</table>
+
+### Fuel system
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_fuel_system.png"><img src="docs/hardware-gallery/stock_fuel_system.png" width="180" alt="Port injection"></a><br>Port injection</td>
+<td align="center"><a href="docs/hardware-gallery/performance_fuel_system.png"><img src="docs/hardware-gallery/performance_fuel_system.png" width="180" alt="High-flow rail"></a><br>High-flow rail</td>
+<td align="center"><a href="docs/hardware-gallery/fuel_system_3.png"><img src="docs/hardware-gallery/fuel_system_3.png" width="180" alt="Return fuel rail"></a><br>Return fuel rail</td>
+<td align="center"><a href="docs/hardware-gallery/fuel_system_4.png"><img src="docs/hardware-gallery/fuel_system_4.png" width="180" alt="Race injection"></a><br>Race injection</td>
+</tr>
+</table>
+
+### Ignition
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_ignition.png"><img src="docs/hardware-gallery/stock_ignition.png" width="180" alt="Coil pack"></a><br>Coil pack</td>
+<td align="center"><a href="docs/hardware-gallery/performance_ignition.png"><img src="docs/hardware-gallery/performance_ignition.png" width="180" alt="Performance coils"></a><br>Performance coils</td>
+<td align="center"><a href="docs/hardware-gallery/ignition_3.png"><img src="docs/hardware-gallery/ignition_3.png" width="180" alt="CDI ignition"></a><br>CDI ignition</td>
+<td align="center"><a href="docs/hardware-gallery/ignition_4.png"><img src="docs/hardware-gallery/ignition_4.png" width="180" alt="Multi-spark"></a><br>Multi-spark</td>
+</tr>
+</table>
+
+### Cooling
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_cooling.png"><img src="docs/hardware-gallery/stock_cooling.png" width="180" alt="OEM radiator"></a><br>OEM radiator</td>
+<td align="center"><a href="docs/hardware-gallery/performance_cooling.png"><img src="docs/hardware-gallery/performance_cooling.png" width="180" alt="Aluminium radiator"></a><br>Aluminium radiator</td>
+<td align="center"><a href="docs/hardware-gallery/cooling_3.png"><img src="docs/hardware-gallery/cooling_3.png" width="180" alt="Dual electric fans"></a><br>Dual electric fans</td>
+<td align="center"><a href="docs/hardware-gallery/cooling_4.png"><img src="docs/hardware-gallery/cooling_4.png" width="180" alt="Race radiator"></a><br>Race radiator</td>
+</tr>
+</table>
+
+### Rotating assembly
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_internals.png"><img src="docs/hardware-gallery/stock_internals.png" width="180" alt="Cast assembly"></a><br>Cast assembly</td>
+<td align="center"><a href="docs/hardware-gallery/performance_internals.png"><img src="docs/hardware-gallery/performance_internals.png" width="180" alt="Forged assembly"></a><br>Forged assembly</td>
+<td align="center"><a href="docs/hardware-gallery/internals_3.png"><img src="docs/hardware-gallery/internals_3.png" width="180" alt="High compression"></a><br>High compression</td>
+<td align="center"><a href="docs/hardware-gallery/internals_4.png"><img src="docs/hardware-gallery/internals_4.png" width="180" alt="Billet assembly"></a><br>Billet assembly</td>
+</tr>
+</table>
+
+### Forced induction
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/turbo_kit.png"><img src="docs/hardware-gallery/turbo_kit.png" width="180" alt="Street turbo"></a><br>Street turbo</td>
+<td align="center"><a href="docs/hardware-gallery/supercharger_kit.png"><img src="docs/hardware-gallery/supercharger_kit.png" width="180" alt="Centrifugal blower"></a><br>Centrifugal blower</td>
+<td align="center"><a href="docs/hardware-gallery/large_turbo_kit.png"><img src="docs/hardware-gallery/large_turbo_kit.png" width="180" alt="Large turbo"></a><br>Large turbo</td>
+<td align="center"><a href="docs/hardware-gallery/twin_turbo_kit.png"><img src="docs/hardware-gallery/twin_turbo_kit.png" width="180" alt="Twin turbos"></a><br>Twin turbos</td>
+</tr>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/roots_blower_kit.png"><img src="docs/hardware-gallery/roots_blower_kit.png" width="180" alt="Roots blower"></a><br>Roots blower</td>
+<td align="center"><a href="docs/hardware-gallery/twin_screw_kit.png"><img src="docs/hardware-gallery/twin_screw_kit.png" width="180" alt="Twin-screw blower"></a><br>Twin-screw blower</td>
+</tr>
+</table>
+
+### Exhaust
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_exhaust.png"><img src="docs/hardware-gallery/stock_exhaust.png" width="180" alt="Cast manifold"></a><br>Cast manifold</td>
+<td align="center"><a href="docs/hardware-gallery/performance_exhaust.png"><img src="docs/hardware-gallery/performance_exhaust.png" width="180" alt="4-2-1 headers"></a><br>4-2-1 headers</td>
+<td align="center"><a href="docs/hardware-gallery/exhaust_3.png"><img src="docs/hardware-gallery/exhaust_3.png" width="180" alt="Equal-length tubes"></a><br>Equal-length tubes</td>
+<td align="center"><a href="docs/hardware-gallery/exhaust_4.png"><img src="docs/hardware-gallery/exhaust_4.png" width="180" alt="Race collector"></a><br>Race collector</td>
+</tr>
+</table>
+
+### Flywheel
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_flywheel.png"><img src="docs/hardware-gallery/stock_flywheel.png" width="180" alt="OEM flywheel"></a><br>OEM flywheel</td>
+<td align="center"><a href="docs/hardware-gallery/performance_flywheel.png"><img src="docs/hardware-gallery/performance_flywheel.png" width="180" alt="Light steel"></a><br>Light steel</td>
+<td align="center"><a href="docs/hardware-gallery/flywheel_3.png"><img src="docs/hardware-gallery/flywheel_3.png" width="180" alt="Aluminium flywheel"></a><br>Aluminium flywheel</td>
+<td align="center"><a href="docs/hardware-gallery/flywheel_4.png"><img src="docs/hardware-gallery/flywheel_4.png" width="180" alt="Billet flywheel"></a><br>Billet flywheel</td>
+</tr>
+</table>
+
+### Cams / rotary ports
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_headwork.png"><img src="docs/hardware-gallery/stock_headwork.png" width="180" alt="OEM cams / side ports"></a><br>OEM cams / side ports</td>
+<td align="center"><a href="docs/hardware-gallery/performance_headwork.png"><img src="docs/hardware-gallery/performance_headwork.png" width="180" alt="Street cams / ports"></a><br>Street cams / ports</td>
+<td align="center"><a href="docs/hardware-gallery/headwork_3.png"><img src="docs/hardware-gallery/headwork_3.png" width="180" alt="Race cams / bridge"></a><br>Race cams / bridge</td>
+<td align="center"><a href="docs/hardware-gallery/headwork_4.png"><img src="docs/hardware-gallery/headwork_4.png" width="180" alt="High-lift / peripheral"></a><br>High-lift / peripheral</td>
+</tr>
+</table>
+
+### Oil system
+
+<table>
+<tr>
+<td align="center"><a href="docs/hardware-gallery/stock_oil_system.png"><img src="docs/hardware-gallery/stock_oil_system.png" width="180" alt="Wet sump"></a><br>Wet sump</td>
+<td align="center"><a href="docs/hardware-gallery/performance_oil_system.png"><img src="docs/hardware-gallery/performance_oil_system.png" width="180" alt="Baffled sump"></a><br>Baffled sump</td>
+<td align="center"><a href="docs/hardware-gallery/oil_system_3.png"><img src="docs/hardware-gallery/oil_system_3.png" width="180" alt="Oil cooler"></a><br>Oil cooler</td>
+<td align="center"><a href="docs/hardware-gallery/oil_system_4.png"><img src="docs/hardware-gallery/oil_system_4.png" width="180" alt="Dry sump"></a><br>Dry sump</td>
+</tr>
+</table>
+
+<!-- HARDWARE-GALLERY-END -->
 
 ## Editable model kit
 
@@ -79,9 +216,9 @@ The complete Blender kit remains available, including **471 named parts and asse
 
 | File | Contents |
 |---|---|
-| [Playable mod JAR](downloads/autopropulsion-age-0.2.0-alpha.jar) | Install this in Minecraft with NeoForge. |
+| [Playable mod JAR](downloads/autopropulsion-age-0.3.0-alpha.jar) | Install this in Minecraft with NeoForge. |
 | [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, previews, scripts, manifests, fit report and portable gallery. |
-| [Engine workshop Blender file](assets/engine_workshop.blend) | Editable derived runtime snapshots: 21 open-hood configurations. |
+| [Engine workshop Blender file](assets/engine_workshop.blend) | Editable derived runtime snapshots: 49 open-hood layouts plus 42 isolated hardware scenes. |
 | [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, engine, upgrade catalog, workshop and service scenes. |
 | [Stock car GLB](assets/modular_car_kit/stock_car.glb) | Interchange geometry, hierarchy, materials and six opening-panel animation channels. |
 | [Authoring and rebuild guide](assets/modular_car_kit/README.md) | Scene controls, measurements and rebuild commands. |

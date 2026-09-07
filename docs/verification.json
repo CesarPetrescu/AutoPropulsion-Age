@@ -1,43 +1,80 @@
 {
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-alpha",
   "date": "2026-09-08",
   "minecraft": "1.21.1",
   "neoforge": "21.1.249",
   "java": "21.0.11",
   "unit_tests": {
-    "passed": 13,
+    "passed": 22,
     "failed": 0,
-    "engine_states": 10206,
-    "ready_builds": 672,
-    "blocked_states": 9534,
-    "engine_car_tune_drive_brake_cases": 64512
+    "tests": [
+      "com.photonspark.sparkmotors.sim.EngineConfigurationTest.allHardwareOptionsDriveAcrossFamiliesGradesInductionAndTuneBounds()",
+      "com.photonspark.sparkmotors.sim.EngineConfigurationTest.allLegacyEncodingsMigrateWithoutChangingTheOriginalSixSlots()",
+      "com.photonspark.sparkmotors.sim.EngineConfigurationTest.continuousDynamicsAreDeterministicAndSafeOnLowGripReverseAndInTheAir()",
+      "com.photonspark.sparkmotors.sim.EngineConfigurationTest.missingSlotsAndAllPairsRejectUnsupportedInstallations()",
+      "com.photonspark.sparkmotors.sim.EngineConfigurationTest.allPopulatedCombinationsHaveCorrectCompatibilityAndFiniteSteadyTorque()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.wastegateCapsBoostAndThrottleReleaseIsFiltered()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.turboNeedsTimeToSpoolAndLargeTurboLagsStreetTurbo()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.blowoffDumpsPressureWhileTheTurboRetainsShaftSpeed()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.raceCamsTradeLowEndTorqueForHighEndAndLimiterCutsFuel()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.fuelCapacityLimitsPowerAndLeanBoostWearsTheEngine()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.flywheelInertiaChangesFreeRevAccelerationAndClutchPreventsVehicleMotion()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.coolingOilSystemsAndOverheatAffectCondition()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.stationaryBrakesHoldWhenARevTestReconnectsTheClutch()",
+      "com.photonspark.sparkmotors.sim.EnginePhysicsTest.rootsRespondsAtLowRpmAndBeltLoadIsReal()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.missingAssembliesAndEmptyTankPreventDriving()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.sportEngineActuallyChangesAcceleration()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.deterministicAndFinite()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.configEncodingDoesNotChangeOtherSlots()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.referenceEngine()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.reverseAndBrakes()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.reachesRoadSpeedAndUsesFuel()",
+      "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.suspensionChangesSteeringResponse()"
+    ],
+    "exhaustive_populated_hardware_combinations": 1835008,
+    "ready": 692224,
+    "correctly_blocked": 1142784,
+    "stateful_drive_brake_cases": 7308,
+    "distinct_dynamic_baseline_builds": 174
   },
   "dedicated_gametests": {
-    "passed": 13,
+    "passed": 18,
     "failed": 0,
-    "engine_layouts_driven": 42,
-    "engine_item_roundtrips": 42,
-    "engine_crafting_conversions": 13,
-    "sedan_crate_donor_preservation": true
+    "family_grade_induction_layouts_driven": 98,
+    "engine_item_serialized_roundtrips": 98,
+    "hardware_recipe_and_inventory_transactions": 42,
+    "donor_engine_conversions": 13,
+    "donor_crate_preservation": true,
+    "legacy_car_and_item_migration": true,
+    "clutch_and_timed_parked_rev_test": true,
+    "condition_and_temperature_preservation": true
   },
   "client_integration": {
-    "status": "PASS",
-    "engine_layouts_installed_with_gui_and_checked": 21,
-    "original_driving_garage_checks": true,
+    "full_suite": "PASS",
+    "native_family_induction_layouts": 49,
+    "native_hardware_options": 42,
+    "final_build_focused_suite": "PASS",
+    "final_i4_induction_layouts": 7,
+    "final_hardware_options": 42,
+    "live_rev_test_and_boost_tune": true,
     "screenshots": "engine-gallery.json"
   },
   "blender": {
-    "fit_layouts_passed": 21,
-    "intersection_layouts_passed": 21,
-    "hood_positions_per_layout": 5,
-    "inspection_file": "assets/engine_workshop.blend"
+    "fit_layouts_passed": 49,
+    "intersection_layouts_passed": 49,
+    "hood_positions": 5,
+    "distinct_hardware_geometry_checks": 294,
+    "hardware_renders": 42,
+    "editable_inspection_scenes": 91,
+    "file": "assets/engine_workshop.blend"
   },
   "release_jar": {
-    "path": "downloads/autopropulsion-age-0.2.0-alpha.jar",
-    "bytes": 1778386,
-    "sha256": "7b93342685bfcc6016f7c1d9263f9e25f39f6d01eb0d51eaf21cec1eeb214179",
+    "path": "downloads/autopropulsion-age-0.3.0-alpha.jar",
+    "bytes": 3363321,
+    "sha256": "bde83c02351af728f9e20ff704a3ffe1cce28c32d8a8380fd31e3df174a1a329",
     "simulation_included": true,
     "development_harness_excluded": true,
-    "recipes": 40
-  }
+    "recipes": 70
+  },
+  "scope": "Exhaustive discrete populated-hardware compatibility; targeted stateful driving, native integration and selected geometry intersections. Not exhaustive transient or every pairwise CAD contact testing."
 }

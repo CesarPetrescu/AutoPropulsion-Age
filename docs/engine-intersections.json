@@ -1,6 +1,6 @@
 {
-  "scope": "Exact runtime triangle intersections: 21 layouts \u00d7 5 hood positions, compressors versus core, boost plumbing versus battery/radiator/reservoir. Intended internal mating surfaces are excluded.",
-  "layouts": 21,
+  "scope": "Exact runtime triangle intersections: all 49 layouts \u00d7 5 hood positions with the union of all 42 hardware choices, compressors versus core, boost plumbing versus battery/all radiator variants/reservoir. Intended internal mating surfaces are excluded.",
+  "layouts": 49,
   "hood_positions": [
     0,
     0.25,
@@ -8,7 +8,7 @@
     0.75,
     1
   ],
-  "passed": 21,
+  "passed": 49,
   "failed": 0,
   "checks": [
     {
@@ -66,6 +66,78 @@
       "passed": true
     },
     {
+      "family": 0,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 0,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 0,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 0,
+      "induction": 6,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
       "family": 1,
       "induction": 0,
       "hood_intersections": [
@@ -104,6 +176,78 @@
     {
       "family": 1,
       "induction": 2,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 1,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 1,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 1,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 1,
+      "induction": 6,
       "hood_intersections": [
         0,
         0,
@@ -174,6 +318,78 @@
       "passed": true
     },
     {
+      "family": 2,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 2,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 2,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 2,
+      "induction": 6,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
       "family": 3,
       "induction": 0,
       "hood_intersections": [
@@ -212,6 +428,78 @@
     {
       "family": 3,
       "induction": 2,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 3,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 3,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 3,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 3,
+      "induction": 6,
       "hood_intersections": [
         0,
         0,
@@ -282,6 +570,78 @@
       "passed": true
     },
     {
+      "family": 4,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 4,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 4,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 4,
+      "induction": 6,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
       "family": 5,
       "induction": 0,
       "hood_intersections": [
@@ -336,6 +696,78 @@
       "passed": true
     },
     {
+      "family": 5,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 5,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 5,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 5,
+      "induction": 6,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
       "family": 6,
       "induction": 0,
       "hood_intersections": [
@@ -374,6 +806,78 @@
     {
       "family": 6,
       "induction": 2,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 6,
+      "induction": 3,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 6,
+      "induction": 4,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 6,
+      "induction": 5,
+      "hood_intersections": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "boost_vs_fixed": {
+        "battery": 0,
+        "radiator": 0,
+        "coolant_reservoir": 0
+      },
+      "compressor_vs_core": 0,
+      "passed": true
+    },
+    {
+      "family": 6,
+      "induction": 6,
       "hood_intersections": [
         0,
         0,

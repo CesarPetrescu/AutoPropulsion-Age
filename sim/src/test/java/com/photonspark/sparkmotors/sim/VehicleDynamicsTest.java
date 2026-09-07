@@ -5,7 +5,7 @@ class VehicleDynamicsTest {
     private final VehicleDynamics.Setup stock = new VehicleDynamics.Setup(Assembly.stock(), 6800, 3.7);
     private VehicleDynamics.State drive(VehicleDynamics.Setup setup, boolean reverse) {
         VehicleDynamics.State s = new VehicleDynamics.State(0, 0, 1, 40, 0, 0);
-        for (int i=0; i<800; i++) s=VehicleDynamics.step(s.speed(),s.fuel(),true,new VehicleDynamics.Input(1,0,false,reverse),setup,1,true,.0125);
+        for (int i=0; i<800; i++) s=VehicleDynamics.step(s,true,new VehicleDynamics.Input(1,0,false,reverse),setup,1,true,.0125);
         return s;
     }
     @Test void referenceEngine() {

@@ -21,14 +21,16 @@ import java.util.*;
 
 public final class CarEntity extends Entity {
     private static final EntityDataAccessor<Float> SPEED=data(EntityDataSerializers.FLOAT),RPM=data(EntityDataSerializers.FLOAT),FUEL=data(EntityDataSerializers.FLOAT),
-        HEALTH=data(EntityDataSerializers.FLOAT),STEER=data(EntityDataSerializers.FLOAT),PITCH=data(EntityDataSerializers.FLOAT),ROLL=data(EntityDataSerializers.FLOAT),FINAL_DRIVE=data(EntityDataSerializers.FLOAT),TEMPERATURE=data(EntityDataSerializers.FLOAT),BOOST=data(EntityDataSerializers.FLOAT);
+        HEALTH=data(EntityDataSerializers.FLOAT),STEER=data(EntityDataSerializers.FLOAT),PITCH=data(EntityDataSerializers.FLOAT),ROLL=data(EntityDataSerializers.FLOAT),FINAL_DRIVE=data(EntityDataSerializers.FLOAT),TEMPERATURE=data(EntityDataSerializers.FLOAT),BOOST=data(EntityDataSerializers.FLOAT),
+        OIL_TEMP=data(EntityDataSerializers.FLOAT),OIL_PRESSURE=data(EntityDataSerializers.FLOAT),ENGINE_HEALTH=data(EntityDataSerializers.FLOAT),AFR=data(EntityDataSerializers.FLOAT),THROTTLE=data(EntityDataSerializers.FLOAT),SPOOL=data(EntityDataSerializers.FLOAT),SHAFT_TORQUE=data(EntityDataSerializers.FLOAT),BLOWER_KW=data(EntityDataSerializers.FLOAT),BOOST_TARGET=data(EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> FLAGS=data(EntityDataSerializers.INT),CONFIG=data(EntityDataSerializers.INT),PAINT=data(EntityDataSerializers.INT),GEAR=data(EntityDataSerializers.INT),LIMITER=data(EntityDataSerializers.INT),ENGINE_FAMILY=data(EntityDataSerializers.INT),ENGINE_PARTS=data(EntityDataSerializers.INT);
     private static final EntityDataAccessor<Optional<UUID>> OWNER=data(EntityDataSerializers.OPTIONAL_UUID);
     private static <T> EntityDataAccessor<T> data(EntityDataSerializer<T> serializer){return SynchedEntityData.defineId(CarEntity.class,serializer);}
     private double speed,verticalSpeed,lerpX,lerpY,lerpZ;
     private float lerpYaw,lerpPitch;
-    private int lerpSteps,lastInputTick=-100,inputKeys,lastActionTick=-100;
+    private int lerpSteps,lastInputTick=-100,inputKeys,lastActionTick=-100,benchTicks;
     private float inputSteer;
+    private EnginePhysics.State engineState=EnginePhysics.State.stopped(20,100);
     public float wheelAngle,oldWheelAngle,panelProgress,oldPanelProgress;
     public float hoodProgress,oldHoodProgress,engineAngle,oldEngineAngle;
 
@@ -37,6 +39,7 @@ public final class CarEntity extends Entity {
         b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(FINAL_DRIVE,3.7f);b.define(FLAGS,0);b.define(CONFIG,Assembly.stock());b.define(PAINT,0x168A91);b.define(GEAR,1);b.define(LIMITER,6800);b.define(OWNER,Optional.empty());
         b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);
+        b.define(OIL_TEMP,20f);b.define(OIL_PRESSURE,0f);b.define(ENGINE_HEALTH,100f);b.define(AFR,14.7f);b.define(THROTTLE,0f);b.define(SPOOL,0f);b.define(SHAFT_TORQUE,0f);b.define(BLOWER_KW,0f);b.define(BOOST_TARGET,1.4f);
     }
     public float speed(){return entityData.get(SPEED);} public float rpm(){return entityData.get(RPM);} public float fuel(){return entityData.get(FUEL);}
     public float health(){return entityData.get(HEALTH);} public int config(){return entityData.get(CONFIG);} public int paint(){return entityData.get(PAINT);}
@@ -47,6 +50,10 @@ public final class CarEntity extends Entity {
     public EngineFamily engineFamily(){return EngineFamily.byId(entityData.get(ENGINE_FAMILY));}
     public int engineParts(){return entityData.get(ENGINE_PARTS);}
     public float temperature(){return entityData.get(TEMPERATURE);}public float boost(){return entityData.get(BOOST);}
+    public float oilTemperature(){return entityData.get(OIL_TEMP);}public float oilPressure(){return entityData.get(OIL_PRESSURE);}
+    public float engineHealth(){return entityData.get(ENGINE_HEALTH);}public float afr(){return entityData.get(AFR);}
+    public float throttle(){return entityData.get(THROTTLE);}public float spool(){return entityData.get(SPOOL);}
+    public float shaftTorque(){return entityData.get(SHAFT_TORQUE);}public float blowerKw(){return entityData.get(BLOWER_KW);}public float boostTarget(){return entityData.get(BOOST_TARGET);}
     public String engineProblem(){return Assembly.ENGINE.variant(config())==0?"No engine installed.":EnginePart.problem(engineParts());}
     private boolean flag(int flag){return (entityData.get(FLAGS)&flag)!=0;}
     private void flag(int flag,boolean value){entityData.set(FLAGS,value?entityData.get(FLAGS)|flag:entityData.get(FLAGS)&~flag);}
@@ -55,7 +62,7 @@ public final class CarEntity extends Entity {
     public void setConfiguration(int c){entityData.set(CONFIG,Assembly.sanitize(c));}
     public void receiveInput(int keys,float steer){
         if(!Float.isFinite(steer))return;
-        inputKeys=keys&15;inputSteer=Mth.clamp(steer,-1,1);lastInputTick=tickCount;
+        inputKeys=keys&31;inputSteer=Mth.clamp(steer,-1,1);lastInputTick=tickCount;
     }
     @Override public void tick(){
         super.tick();oldWheelAngle=wheelAngle;oldPanelProgress=panelProgress;oldHoodProgress=hoodProgress;oldEngineAngle=engineAngle;
@@ -73,20 +80,23 @@ public final class CarEntity extends Entity {
         }
         boolean driver=getControllingPassenger() instanceof Player;
         if(!driver||tickCount-lastInputTick>10){inputKeys=4;inputSteer=0;}
-        if(health()<=0||fuel()<=0||isInWater()||!engineProblem().isEmpty()||temperature()>=130)flag(1,false);
+        if(health()<=0||engineHealth()<=5||fuel()<=0||isInWater()||!engineProblem().isEmpty()||temperature()>=130)flag(1,false);
+        if(!ignition())benchTicks=0;
+        if(benchTicks>0){benchTicks--;inputKeys=21;inputSteer=0;}
         boolean reverse=(inputKeys&8)!=0;
         if(speed>1)reverse=false;
         if(speed< -1)reverse=true;
         boolean braking=(inputKeys&6)!=0;
-        var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse);
-        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature());
+        var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse,(inputKeys&16)!=0);
+        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget());
         double[] contact=wheelContacts();
         int contactCount=0;for(double h:contact)if(Double.isFinite(h))contactCount++;
         boolean grounded=onGround()||contactCount>=2;
         double grip=surfaceGrip();
         float currentFuel=fuel();
         for(int i=0;i<4;i++){
-            var state=VehicleDynamics.step(speed,currentFuel,ignition(),input,setup,grip,grounded,.0125);
+            var state=VehicleDynamics.step(speed,currentFuel,engineState,ignition(),input,setup,grip,grounded,.0125);
+            engineState=state.engine();
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
             float previousYaw=getYRot();
@@ -108,8 +118,10 @@ public final class CarEntity extends Entity {
         }
         entityData.set(FUEL,currentFuel);entityData.set(SPEED,(float)speed);entityData.set(STEER,inputSteer);
         float throttle=(inputKeys&1)!=0?1:0;
-        entityData.set(BOOST,ignition()?(float)EngineBuild.boost(rpm(),engineParts())*throttle:0);
-        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),ignition(),engineParts(),.05));
+        entityData.set(BOOST,(float)engineState.boost());entityData.set(OIL_TEMP,(float)engineState.oilTemperature());entityData.set(OIL_PRESSURE,(float)engineState.oilPressure());
+        entityData.set(ENGINE_HEALTH,(float)engineState.health());entityData.set(AFR,(float)engineState.afr());entityData.set(THROTTLE,(float)engineState.throttle());entityData.set(SPOOL,(float)engineState.spool());
+        entityData.set(SHAFT_TORQUE,(float)engineState.shaftTorque());entityData.set(BLOWER_KW,(float)engineState.blowerKw());
+        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),ignition(),engineParts(),speed,.05));
         setDeltaMovement(-Math.sin(Math.toRadians(getYRot()))*speed/20,verticalSpeed/20,Math.cos(Math.toRadians(getYRot()))*speed/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
@@ -187,10 +199,15 @@ public final class CarEntity extends Entity {
         lastActionTick=tickCount;
         if(action==CarPackets.LIGHTS){flag(2,!lights());return;}
         if(action==CarPackets.HORN){playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(),1,.8f);return;}
+        if(action==CarPackets.REV_TEST){
+            if(ignition()&&Math.abs(speed())<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
+            else message(player,"Park, open the hood and start the engine before a rev test.");return;
+        }
         if(action==CarPackets.IGNITION){
             if(ignition()){flag(1,false);return;}
             if(!Assembly.canDrive(config())){message(player,"Install an engine, transmission, wheel set, brakes and suspension first.");return;}
             if(!engineProblem().isEmpty()){message(player,engineProblem());return;}
+            if(engineHealth()<=5){message(player,"Engine worn out. Rebuild it in the engine workshop.");return;}
             if(temperature()>=125){message(player,"Engine too hot. Let it cool before restarting.");return;}
             if(fuel()<=0||health()<=0||isInWater()){message(player,"Refuel or repair the car before starting.");return;}
             flag(1,true);playSound(SoundEvents.PISTON_EXTEND,.7f,.7f);return;
@@ -199,7 +216,7 @@ public final class CarEntity extends Entity {
         if(action==CarPackets.PANELS){boolean open=!panels();flag(4,open);flag(8,open);return;}
         if(action==CarPackets.HOOD){flag(8,!hoodOpen());return;}
         if(ignition()){message(player,"Switch the engine off before servicing.");return;}
-        boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
+        boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||action==CarPackets.ENGINE_REBUILD||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
         if(engineWork&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before working on the engine.");return;}
         switch(action){
             case CarPackets.ENGINE_SWAP -> {
@@ -207,7 +224,7 @@ public final class CarEntity extends Entity {
                 swapEngine(player,EngineFamily.values()[a],b);
             }
             case CarPackets.ENGINE_PART -> {
-                if(a<0||a>=EnginePart.values().length||b<0||b>2||Assembly.ENGINE.variant(config())==0)return;
+                if(a<0||a>=EnginePart.values().length||b<0||b>EnginePart.values()[a].maxVariant()||Assembly.ENGINE.variant(config())==0)return;
                 EnginePart part=EnginePart.values()[a];int old=part.variant(engineParts());if(old==b)return;
                 int next=part.with(engineParts(),b);
                 // Disassembly is allowed. A complete but incompatible boost build is rejected.
@@ -215,6 +232,7 @@ public final class CarEntity extends Entity {
                 if(!problem.isEmpty()){message(player,problem);return;}
                 if(b>0&&!consume(player,AutoPropulsionAge.enginePartItem(part,b),1)){message(player,"Required engine part is missing from your inventory.");return;}
                 entityData.set(ENGINE_PARTS,next);
+                engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());entityData.set(BOOST,0f);
                 if(old>0&&!player.isCreative())give(player,new ItemStack(AutoPropulsionAge.enginePartItem(part,old)));
                 message(player,part.title+": "+part.label(b));
             }
@@ -249,6 +267,12 @@ public final class CarEntity extends Entity {
                 entityData.set(LIMITER,Mth.clamp(a,4000,7000));entityData.set(FINAL_DRIVE,Mth.clamp(b/100f,2.8f,4.8f));
                 message(player,"Tune saved: "+limiter()+" RPM limiter, "+String.format(Locale.ROOT,"%.2f",finalDrive())+" final drive.");
             }
+            case CarPackets.BOOST_TUNE -> {entityData.set(BOOST_TARGET,Mth.clamp(a/1000f,.2f,1.4f));message(player,"Boost target saved. Hardware limits still apply.");}
+            case CarPackets.ENGINE_REBUILD -> {
+                if(engineHealth()>=100||Assembly.ENGINE.variant(config())==0)return;
+                if(consume(player,Items.IRON_INGOT,12)){entityData.set(ENGINE_HEALTH,100f);engineState=EnginePhysics.State.stopped(oilTemperature(),100);message(player,"Engine rebuilt. Temperatures and installed parts retained.");}
+                else message(player,"Engine rebuild requires 12 iron ingots.");
+            }
             default -> {}
         }
     }
@@ -266,9 +290,12 @@ public final class CarEntity extends Entity {
         }
         ItemStack removed=old==0?ItemStack.EMPTY:com.photonspark.sparkmotors.item.EngineItem.withParts(new ItemStack(AutoPropulsionAge.engineItem(engineFamily(),old)),engineParts());
         if(!removed.isEmpty())com.photonspark.sparkmotors.item.EngineItem.withTemperature(removed,temperature());
+        if(!removed.isEmpty())com.photonspark.sparkmotors.item.EngineItem.withCondition(removed,oilTemperature(),engineHealth());
         setConfiguration(Assembly.ENGINE.with(config(),grade));entityData.set(ENGINE_FAMILY,family.ordinal());
         entityData.set(ENGINE_PARTS,grade==0?EnginePart.stock():com.photonspark.sparkmotors.item.EngineItem.parts(incoming));
         entityData.set(TEMPERATURE,grade==0?20f:com.photonspark.sparkmotors.item.EngineItem.temperature(incoming));entityData.set(BOOST,0f);
+        entityData.set(OIL_TEMP,grade==0?20f:com.photonspark.sparkmotors.item.EngineItem.oilTemperature(incoming));entityData.set(ENGINE_HEALTH,grade==0?100f:com.photonspark.sparkmotors.item.EngineItem.health(incoming));
+        engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());
         if(!removed.isEmpty()&&!player.isCreative())give(player,removed);
         player.getInventory().setChanged();message(player,grade==0?"Engine removed with its installed parts.":family.title+" engine installed.");
     }
@@ -290,14 +317,19 @@ public final class CarEntity extends Entity {
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putInt("DataVersion",2);tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putInt("DataVersion",3);tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());
+        tag.putFloat("EngineHealth",engineHealth());tag.putFloat("OilTemperature",oilTemperature());tag.putFloat("BoostTarget",boostTarget());
         tag.putInt("Limiter",limiter());tag.putFloat("FinalDrive",finalDrive());tag.putBoolean("Lights",lights());entityData.get(OWNER).ifPresent(id->tag.putUUID("Owner",id));
     }
     @Override protected void readAdditionalSaveData(CompoundTag tag){
         if(tag.contains("Assemblies"))setConfiguration(tag.getInt("Assemblies"));
         entityData.set(ENGINE_FAMILY,EngineFamily.byId(tag.getInt("EngineFamily")).ordinal());
-        entityData.set(ENGINE_PARTS,tag.contains("EngineParts")?EnginePart.sanitize(tag.getInt("EngineParts")):EnginePart.stock());
+        entityData.set(ENGINE_PARTS,tag.contains("EngineParts")?(tag.getInt("DataVersion")<3?EnginePart.fromLegacy(tag.getInt("EngineParts")):EnginePart.sanitize(tag.getInt("EngineParts"))):EnginePart.stock());
+        entityData.set(ENGINE_HEALTH,tag.contains("EngineHealth")?(float)VehicleDynamics.clamp(tag.getFloat("EngineHealth"),0,100):100f);
+        entityData.set(OIL_TEMP,tag.contains("OilTemperature")?(float)VehicleDynamics.clamp(tag.getFloat("OilTemperature"),20,180):20f);
+        entityData.set(BOOST_TARGET,tag.contains("BoostTarget")?(float)VehicleDynamics.clamp(tag.getFloat("BoostTarget"),.2,1.4):1.4f);
+        engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());entityData.set(BOOST,0f);entityData.set(RPM,0f);entityData.set(SPEED,0f);entityData.set(OIL_PRESSURE,0f);entityData.set(SPOOL,0f);entityData.set(THROTTLE,0f);entityData.set(SHAFT_TORQUE,0f);entityData.set(BLOWER_KW,0f);entityData.set(AFR,14.7f);
         entityData.set(TEMPERATURE,tag.contains("EngineTemperature")?(float)VehicleDynamics.clamp(tag.getFloat("EngineTemperature"),20,150):20f);
         flag(8,tag.getBoolean("HoodOpen"));hoodProgress=oldHoodProgress=hoodOpen()?1:0;
         if(tag.contains("Paint"))entityData.set(PAINT,tag.getInt("Paint")&0xFFFFFF);
@@ -306,6 +338,6 @@ public final class CarEntity extends Entity {
         if(tag.contains("Limiter"))entityData.set(LIMITER,Mth.clamp(tag.getInt("Limiter"),4000,7000));
         if(tag.contains("FinalDrive"))entityData.set(FINAL_DRIVE,(float)VehicleDynamics.clamp(tag.getFloat("FinalDrive"),2.8,4.8));
         if(tag.hasUUID("Owner"))setOwner(tag.getUUID("Owner"));
-        flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;flag(1,false);
+        flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
     }
 }

@@ -6,7 +6,11 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-test { useJUnitPlatform() }
+test {
+    useJUnitPlatform()
+    outputs.file(layout.buildDirectory.file('reports/engine-states.json'))
+    outputs.file(layout.buildDirectory.file('reports/engine-driving-matrix.json'))
+}
 tasks.register('dyno', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.photonspark.sparkmotors.sim.Dyno'

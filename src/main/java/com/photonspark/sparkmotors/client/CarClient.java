@@ -19,14 +19,14 @@ import org.lwjgl.glfw.GLFW;
 @Mod(value=AutoPropulsionAge.ID,dist=Dist.CLIENT)
 public final class CarClient {
     public static final KeyMapping IGNITION=key("ignition",GLFW.GLFW_KEY_R),GARAGE=key("garage",GLFW.GLFW_KEY_G),LIGHTS=key("lights",GLFW.GLFW_KEY_H),
-        PANELS=key("panels",GLFW.GLFW_KEY_O),REVERSE=key("reverse",GLFW.GLFW_KEY_Z),HORN=key("horn",GLFW.GLFW_KEY_B);
+        PANELS=key("panels",GLFW.GLFW_KEY_O),REVERSE=key("reverse",GLFW.GLFW_KEY_Z),HORN=key("horn",GLFW.GLFW_KEY_B),CLUTCH=key("clutch",GLFW.GLFW_KEY_C);
     private static boolean reverse;
     private static int lastCar=-1;
     private static float lastYaw;
     private static final java.util.Map<Integer,CarEngineSound> sounds=new java.util.HashMap<>();
     public CarClient(IEventBus bus){
         bus.addListener((EntityRenderersEvent.RegisterRenderers e)->e.registerEntityRenderer(AutoPropulsionAge.CAR.get(),CarRenderer::new));
-        bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN})e.register(key);});
+        bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN,CLUTCH})e.register(key);});
         bus.addListener((RegisterClientReloadListenersEvent e)->e.registerReloadListener((ResourceManagerReloadListener)CarMesh::reload));
         bus.addListener((RegisterGuiLayersEvent e)->e.registerAboveAll(AutoPropulsionAge.id("dashboard"),(graphics,delta)->hud(graphics)));
         NeoForge.EVENT_BUS.addListener(CarClient::tick);
@@ -63,6 +63,7 @@ public final class CarClient {
                 if(mc.options.keyUp.isDown())keys|=1;
                 if(mc.options.keyDown.isDown())keys|=2;
                 if(mc.options.keyJump.isDown())keys|=4;
+                if(CLUTCH.isDown())keys|=16;
                 steer=(mc.options.keyRight.isDown()?1:0)-(mc.options.keyLeft.isDown()?1:0);
             }else keys|=4;
             PacketDistributor.sendToServer(new CarPackets.Input(car.getId(),keys,steer));
@@ -70,7 +71,7 @@ public final class CarClient {
     }
     private static void hud(GuiGraphics g){
         Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.options.hideGui||mc.screen!=null||!(mc.player.getVehicle() instanceof CarEntity car))return;
-        int w=250,x=(g.guiWidth()-w)/2,y=g.guiHeight()-94;
+        int w=250,x=(g.guiWidth()-w)/2,y=g.guiHeight()-109;
         g.fill(x,y,x+w,y+68,0xE5101A23);g.fill(x,y,x+w,y+2,0xFF31C6C9);
         g.drawString(mc.font,"AUTOPROPULSION / SEDAN",x+10,y+8,0xFF7ECED0,false);
         g.pose().pushPose();g.pose().translate(x+10,y+23,0);g.pose().scale(2.2f,2.2f,1);
@@ -82,6 +83,8 @@ public final class CarClient {
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"FUEL %.1f L",car.fuel()),x+10,y+53,car.fuel()<5?0xFFFFA45C:0xFFD1E2E8,false);
         String status=!Assembly.canDrive(car.config())||!car.engineProblem().isEmpty()?"MISSING PARTS":car.health()<=0?"REPAIR REQUIRED":car.temperature()>=125?"ENGINE TOO HOT":car.ignition()?"ENGINE ON":"R: START ENGINE";
         g.drawString(mc.font,status,x+102,y+53,car.ignition()?0xFF73D8AA:0xFFFFC172,false);
-        g.drawCenteredString(mc.font,"W drive  S brake  Space handbrake  Z reverse  G garage",g.guiWidth()/2,y+74,0xFFDAE6EC);
+        g.fill(x,y+68,x+w,y+83,0xE5101A23);
+        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%.2f bar  AFR %.1f  Oil %.0f C",car.boost(),car.afr(),car.oilTemperature()),x+10,y+71,car.engineHealth()<50?0xFFFF8E60:0xFF7ECED0,false);
+        g.drawCenteredString(mc.font,"W drive  S brake  C clutch  Z reverse  G garage",g.guiWidth()/2,y+89,0xFFDAE6EC);
     }
 }

@@ -1,8 +1,8 @@
 {
   "format": "APA2 gzip, big endian",
   "source": "assets/modular_car_kit/sparkmotors_modular.blend",
-  "chunks": 460,
-  "triangles": 106572,
+  "chunks": 668,
+  "triangles": 266436,
   "families": [
     "i4_engine",
     "v6_engine",
@@ -15,9 +15,13 @@
   "induction": [
     "natural",
     "turbo",
-    "supercharger"
+    "supercharger",
+    "large-turbo",
+    "twin-turbo",
+    "roots",
+    "twin-screw"
   ],
   "runtime_file": "src/main/resources/assets/sparkmotors/models/entity/sedan.mesh.gz",
-  "bytes": 1443154,
-  "scope": "Seven cores, removable service assemblies, family-specific adapters, three induction configurations; internals retained for inspection."
+  "bytes": 3206115,
+  "scope": "Seven cores, ten service slots, 42 named hardware choices with distinct geometry, seven induction configurations; internals retained for inspection."
 }

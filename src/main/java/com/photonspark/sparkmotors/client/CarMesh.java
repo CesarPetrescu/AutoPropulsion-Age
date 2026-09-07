@@ -27,7 +27,7 @@ public final class CarMesh {
                 String name=in.readUTF();int cat=in.readInt(),group=in.readInt(),variant=in.readInt(),hinge=in.readInt();
                 float px=in.readFloat(),py=in.readFloat(),pz=in.readFloat(),angle=in.readFloat();
                 int family=in.readInt(),slot=in.readInt(),tier=in.readInt(),induction=in.readInt(),kind=in.readInt(),n=in.readInt();
-                if(group< -1||group>=Assembly.values().length||slot< -1||slot>=EnginePart.values().length||tier<0||tier>2)throw new IOException("Invalid mesh visibility metadata");
+                if(group< -1||group>=Assembly.values().length||slot< -1||slot>=EnginePart.values().length||tier<0||tier>7)throw new IOException("Invalid mesh visibility metadata");
                 if(n<0||n>2000000||n%3!=0)throw new IOException("Invalid vertex count");
                 float[] v=new float[n*6];int[] colors=new int[n];
                 for(int j=0;j<n;j++){for(int k=0;k<6;k++)v[j*6+k]=in.readFloat();colors[j]=in.readInt();}
@@ -89,9 +89,6 @@ public final class CarMesh {
                     int color=c.kind==1?0xFF000000|car.paint():c.colors[i];
                     if(c.kind==2)color=(color&0xFFFFFF)|0x30000000;
                     if(c.group==0&&selected==2&&(c.category==19||c.name.startsWith("rotor_housing")))color=0xFFDBAC4C;
-                    if(c.slot>=0&&c.slot<5&&EnginePart.values()[c.slot].variant(car.engineParts())==2)color=switch(c.slot){
-                        case 0->0xFF333E49;case 1->0xFFDAAC4A;case 2->0xFFD24538;case 3->0xFF399BC0;default->0xFFD2B26E;
-                    };
                     if(c.group==3&&selected==2&&c.name.startsWith("brake_caliper"))color=0xFF3FA7F5;
                     buffer.addVertex(pose,c.vertices[v],c.vertices[v+1],c.vertices[v+2]).setColor(color).setUv(.5f,.5f)
                         .setOverlay(OverlayTexture.NO_OVERLAY).setLight(brightness).setNormal(pose,c.vertices[v+3],c.vertices[v+4],c.vertices[v+5]);

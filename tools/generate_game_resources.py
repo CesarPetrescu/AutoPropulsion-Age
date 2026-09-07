@@ -18,9 +18,15 @@ for family,model in families.items():
 for slot,model in service.items():
     for grade in ['stock','performance']:icons[f'{grade}_{slot}']=model+'.png'
 icons.update(turbo_kit='turbocharger.png',supercharger_kit='centrifugal_supercharger.png')
+catalog=json.loads((repo/'docs/powertrain-catalog.json').read_text())
+fallback={'intake':'intake_manifold','fuel_system':'fuel_rail','ignition':'coil_-1.5575','cooling':'radiator','internals':'crankshaft_i4','exhaust':'exhaust_header','flywheel':'flywheel','headwork':'camshaft_-1','oil_system':'oil_pan','induction':'turbocharger'}
+for slot in catalog['slots']:
+    for option in slot['options']:icons[option['item']]=fallback[slot['id']]+'.png'
 preview=repo/'assets/modular_car_kit/previews'
 for name,image in icons.items():
     path=repo/'assets/modular_car_kit/assembled.png' if name=='sedan_crate' else preview/image
+    hardware=repo/'docs/hardware-gallery'/f'{name}.png'
+    if hardware.exists():path=hardware
     im=Image.open(path).convert('RGBA');im.thumbnail((128,128))
     dest=assets/'textures/item'/f'{name}.png';dest.parent.mkdir(parents=True,exist_ok=True)
     # Shape icons use transparent backgrounds; the car crate keeps its overview thumbnail.
@@ -50,6 +56,9 @@ lang['item.sparkmotors.performance_fuel_system']='High-flow Fuel System'
 lang['item.sparkmotors.performance_cooling']='Heavy-duty Cooling Kit'
 lang['item.sparkmotors.turbo_kit']='Complete Turbo Kit'
 lang['item.sparkmotors.supercharger_kit']='Complete Supercharger Kit'
+lang['key.sparkmotors.clutch']='Disengage clutch (hold to free-rev)'
+for slot in catalog['slots']:
+    for option in slot['options']:lang['item.sparkmotors.'+option['item']]=option['label']
 js(assets/'lang/en_us.json',lang)
 def recipe(name,pattern,keys,count=1):
     js(data/'recipe'/f'{name}.json',{'type':'minecraft:crafting_shaped','category':'misc','pattern':pattern,'key':{k:{'item':v} for k,v in keys.items()},'result':{'id':'sparkmotors:'+name,'count':count}})
@@ -70,6 +79,14 @@ for slot,center in {'intake':'hopper','fuel_system':'bucket','ignition':'redston
     recipe('performance_'+slot,['GRG','RSR','GRG'],{'G':'minecraft:gold_ingot','R':'minecraft:redstone','S':'sparkmotors:stock_'+slot})
 for name,center in [('turbo_kit','diamond'),('supercharger_kit','gold_block')]:
     recipe(name,['IRI','PCP','IRI'],{'I':'minecraft:iron_ingot','R':'minecraft:redstone','P':'minecraft:piston','C':'minecraft:'+center})
+for slot in catalog['slots']:
+    for option in slot['options']:
+        name=option['item'];v=option['value']
+        if (data/'recipe'/f'{name}.json').exists():continue
+        # Distinct recipes, including choices 3/4, preserve all old registry IDs.
+        center=['iron_block','gold_block','diamond','netherite_ingot','copper_block','amethyst_block'][v-1]
+        ingredient={'exhaust':'hopper','flywheel':'iron_ingot','headwork':'piston','oil_system':'bucket'}.get(slot['id'],'redstone')
+        recipe(name,['ICI','PSP','IRI'],{'I':'minecraft:iron_ingot','C':'minecraft:'+center,'P':'minecraft:'+ingredient,'S':('sparkmotors:'+slot['options'][0]['item']) if v>1 else 'minecraft:iron_block','R':'minecraft:redstone'})
 for path in (data/'recipe').glob('*.json'):
     value=json.loads(path.read_text());name=value['result']['id'].split(':')[1]
     if name=='sedan_crate' or name.endswith('_engine') and name!='stock_engine':value['type']='sparkmotors:engine_crafting';js(path,value)

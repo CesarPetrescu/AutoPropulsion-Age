@@ -45,9 +45,9 @@ public final class EngineGameTests {
     }
     @GameTest(template="test_track") public void allEngineItemsPreserveTheirInstalledParts(GameTestHelper h){
         var c=car(h);var p=owner(h,c);open(c,p);int cases=0;
-        for(var family:EngineFamily.values())for(int grade=1;grade<=2;grade++)for(int induction=0;induction<3;induction++){
+        for(var family:EngineFamily.values())for(int grade=1;grade<=2;grade++)for(int induction=0;induction<7;induction++){
             var state=new CompoundTag();c.saveWithoutId(state);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),grade));state.putInt("EngineFamily",family.ordinal());
-            int expected=EnginePart.INTAKE.with(EnginePart.boosted(induction),2);state.putInt("EngineParts",expected);state.putBoolean("HoodOpen",true);state.putFloat("EngineTemperature",104.5f);c.load(state);
+            int expected=EnginePart.INTAKE.with(EnginePart.boosted(induction),3);state.putInt("EngineParts",expected);state.putBoolean("HoodOpen",true);state.putFloat("EngineTemperature",104.5f);state.putFloat("EngineHealth",67.5f);state.putFloat("OilTemperature",113.25f);c.load(state);
             p.getInventory().clearContent();act(c,p,CarPackets.INSTALL,0,0);
             var item=AutoPropulsionAge.engineItem(family,grade);h.assertTrue(p.getInventory().countItem(item)==1,"Exactly one engine should return: "+family);
             ItemStack removed=p.getInventory().items.stream().filter(s->s.is(item)).findFirst().orElseThrow();
@@ -57,9 +57,10 @@ public final class EngineGameTests {
             act(c,p,CarPackets.ENGINE_SWAP,family.ordinal(),grade);
             h.assertTrue(c.engineFamily()==family&&c.engineParts()==expected&&Assembly.ENGINE.variant(c.config())==grade,"Refit after item serialization must restore exact build");
             h.assertTrue(c.temperature()==104.5f,"Removed engine must retain its temperature");
+            h.assertTrue(c.engineHealth()==67.5f&&c.oilTemperature()==113.25f,"Swapping and serializing cannot repair or cool the engine");
             h.assertTrue(p.getInventory().countItem(item)==0,"Refitting consumes one engine");cases++;
         }
-        h.assertTrue(cases==42,"All family/grade/induction cases tested");h.succeed();
+        h.assertTrue(cases==98,"All family/grade/induction cases tested");h.succeed();
     }
     @GameTest(template="test_track") public void servicePartSwapsConserveInventory(GameTestHelper h){
         var c=car(h);var p=owner(h,c);open(c,p);
@@ -103,21 +104,21 @@ public final class EngineGameTests {
         }
         h.assertTrue(count==13,"All donor-engine recipes checked");h.succeed();
     }
-    @GameTest(template="test_track",timeoutTicks=3100) public void all42EngineLayoutsDriveAndBrakeInWorld(GameTestHelper h){
+    @GameTest(template="test_track",timeoutTicks=12000) public void all98EngineLayoutsDriveAndBrakeInWorld(GameTestHelper h){
         var p=h.makeMockServerPlayerInLevel();CarEntity[] active={null};int[] ticks={0};float[] peak={0};double[] start={0};
         h.onEachTick(()->{
-            int t=ticks[0]++,job=t/70,step=t%70;if(job>=42)return;
+            int t=ticks[0]++,job=t/120,step=t%120;if(job>=98)return;
             if(step==0){
                 if(active[0]!=null){p.stopRiding();active[0].discard();}
                 var c=car(h);active[0]=c;var state=new CompoundTag();c.saveWithoutId(state);
-                state.putInt("EngineFamily",job/6);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/3)%2));state.putInt("EngineParts",EnginePart.boosted(job%3));c.load(state);
+                state.putInt("EngineFamily",job/14);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/7)%2));state.putInt("EngineParts",EnginePart.boosted(job%7));c.load(state);
                 p.moveTo(c.position());c.setOwner(p.getUUID());h.assertTrue(p.startRiding(c,true),"Driver must mount layout "+job);act(c,p,CarPackets.IGNITION,0,0);start[0]=c.getZ();peak[0]=0;
             }
-            var c=active[0];c.receiveInput(step<35?1:4,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
-            if(step==68){
-                h.assertTrue(peak[0]>3&&c.getZ()>start[0]+2,"Every family/grade/induction layout must drive: "+job);
-                h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Every layout must brake and use fuel: "+job);
-                if(job==41){p.stopRiding();c.discard();h.succeed();}
+            var c=active[0];c.receiveInput(step<55?1:4,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
+            if(step==118){
+                h.assertTrue(peak[0]>3&&c.getZ()>start[0]+2,"Every family/grade/induction layout must drive: "+job+" peak="+peak[0]+" displacement="+(c.getZ()-start[0]));
+                h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Every layout must brake and use fuel: "+job+" speed="+c.speed()+" fuel="+c.fuel()+" rpm="+c.rpm()+" peak="+peak[0]);
+                if(job==97){p.stopRiding();c.discard();h.succeed();}
             }
         });
     }
