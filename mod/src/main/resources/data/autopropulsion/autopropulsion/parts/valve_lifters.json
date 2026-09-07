@@ -1,0 +1,11 @@
+{
+  "id": "valve_lifters",
+  "slot": "valve_lifters",
+  "category": "lifter",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/valve_lifters",
+  "model_index": 130
+}

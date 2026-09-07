@@ -1,0 +1,11 @@
+{
+  "id": "cylinder_head_dohc",
+  "slot": "cylinder_head_dohc",
+  "category": "head",
+  "family": "piston",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/cylinder_head_dohc",
+  "model_index": 29
+}

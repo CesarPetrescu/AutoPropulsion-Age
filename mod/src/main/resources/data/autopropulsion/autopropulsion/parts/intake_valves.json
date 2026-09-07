@@ -1,0 +1,11 @@
+{
+  "id": "intake_valves",
+  "slot": "intake_valves",
+  "category": "valve",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/intake_valves",
+  "model_index": 61
+}

@@ -1,0 +1,11 @@
+{
+  "id": "eccentric_shaft",
+  "slot": "eccentric_shaft",
+  "category": "shaft",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/eccentric_shaft",
+  "model_index": 35
+}

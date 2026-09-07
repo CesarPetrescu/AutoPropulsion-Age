@@ -1,0 +1,13 @@
+{
+  "id": "stock_connecting_rods",
+  "slot": "connecting_rods",
+  "category": "rod",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/stock_connecting_rods",
+  "torque_limit_nm": 260,
+  "rpm_limit": 6800,
+  "model_index": 113
+}

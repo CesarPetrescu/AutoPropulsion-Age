@@ -1,0 +1,11 @@
+{
+  "id": "anti_roll_bar",
+  "slot": "anti_roll_bar",
+  "category": "bar",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/anti_roll_bar",
+  "model_index": 7
+}

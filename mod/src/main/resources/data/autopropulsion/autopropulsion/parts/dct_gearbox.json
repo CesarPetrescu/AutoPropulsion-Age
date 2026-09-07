@@ -1,0 +1,11 @@
+{
+  "id": "dct_gearbox",
+  "slot": "dct_gearbox",
+  "category": "gearbox",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/dct_gearbox",
+  "model_index": 33
+}

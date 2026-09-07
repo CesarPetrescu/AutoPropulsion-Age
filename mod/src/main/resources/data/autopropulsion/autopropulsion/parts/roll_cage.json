@@ -1,0 +1,11 @@
+{
+  "id": "roll_cage",
+  "slot": "roll_cage",
+  "category": "cage",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/roll_cage",
+  "model_index": 91
+}

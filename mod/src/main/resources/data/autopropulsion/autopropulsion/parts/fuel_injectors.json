@@ -1,0 +1,11 @@
+{
+  "id": "fuel_injectors",
+  "slot": "fuel_injectors",
+  "category": "injector",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/fuel_injectors",
+  "model_index": 47
+}

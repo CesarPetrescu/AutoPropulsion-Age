@@ -1,0 +1,11 @@
+{
+  "id": "awd_transfer_case",
+  "slot": "awd_transfer_case",
+  "category": "gearbox",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/awd_transfer_case",
+  "model_index": 10
+}

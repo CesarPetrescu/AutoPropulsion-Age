@@ -1,0 +1,12 @@
+{
+  "id": "offroad_tires",
+  "slot": "tires",
+  "category": "tire",
+  "family": "chassis",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/offroad_tires",
+  "grip": 0.85,
+  "model_index": 76
+}

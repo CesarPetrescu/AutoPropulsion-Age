@@ -1,0 +1,11 @@
+{
+  "id": "crankshaft",
+  "slot": "crankshaft",
+  "category": "crank",
+  "family": "piston",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/crankshaft",
+  "model_index": 27
+}

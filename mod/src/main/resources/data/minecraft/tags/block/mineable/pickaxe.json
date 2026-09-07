@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "autopropulsion:garage_lift",
+    "autopropulsion:dyno",
+    "autopropulsion:parts_bench",
+    "autopropulsion:asphalt"
+  ]
+}

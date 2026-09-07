@@ -1,0 +1,11 @@
+{
+  "id": "limited_slip_differential",
+  "slot": "limited_slip_differential",
+  "category": "differential",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/limited_slip_differential",
+  "model_index": 63
+}

@@ -1,0 +1,11 @@
+{
+  "id": "air_filter",
+  "slot": "air_filter",
+  "category": "filter",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/air_filter",
+  "model_index": 3
+}

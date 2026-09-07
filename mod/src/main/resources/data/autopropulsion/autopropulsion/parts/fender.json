@@ -1,0 +1,11 @@
+{
+  "id": "fender",
+  "slot": "fender",
+  "category": "panel",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/fender",
+  "model_index": 39
+}

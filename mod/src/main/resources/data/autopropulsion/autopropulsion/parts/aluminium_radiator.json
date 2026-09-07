@@ -1,0 +1,12 @@
+{
+  "id": "aluminium_radiator",
+  "slot": "radiator",
+  "category": "radiator",
+  "family": "shared",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/aluminium_radiator",
+  "radiator_w_k": 180,
+  "model_index": 6
+}

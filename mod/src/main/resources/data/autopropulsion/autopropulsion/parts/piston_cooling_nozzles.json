@@ -1,0 +1,11 @@
+{
+  "id": "piston_cooling_nozzles",
+  "slot": "piston_cooling_nozzles",
+  "category": "pipe",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/piston_cooling_nozzles",
+  "model_index": 85
+}

@@ -1,0 +1,11 @@
+{
+  "id": "tune_file",
+  "slot": "tune_file",
+  "category": "electronics",
+  "family": "workshop",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/tune_file",
+  "model_index": 126
+}

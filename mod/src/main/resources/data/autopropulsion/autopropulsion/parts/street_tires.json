@@ -1,0 +1,12 @@
+{
+  "id": "street_tires",
+  "slot": "tires",
+  "category": "tire",
+  "family": "chassis",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/street_tires",
+  "grip": 1,
+  "model_index": 116
+}

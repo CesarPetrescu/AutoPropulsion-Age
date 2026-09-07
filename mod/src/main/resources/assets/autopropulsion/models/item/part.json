@@ -1,0 +1,848 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "autopropulsion:item/part"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "autopropulsion:item/parts/abs_module"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "autopropulsion:item/parts/adjustable_cam_gear"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "autopropulsion:item/parts/air_filter"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 4
+      },
+      "model": "autopropulsion:item/parts/alloy_rim"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 5
+      },
+      "model": "autopropulsion:item/parts/alternator"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 6
+      },
+      "model": "autopropulsion:item/parts/aluminium_radiator"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 7
+      },
+      "model": "autopropulsion:item/parts/anti_roll_bar"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 8
+      },
+      "model": "autopropulsion:item/parts/apex_seals"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 9
+      },
+      "model": "autopropulsion:item/parts/automatic_gearbox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 10
+      },
+      "model": "autopropulsion:item/parts/awd_transfer_case"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 11
+      },
+      "model": "autopropulsion:item/parts/battery"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 12
+      },
+      "model": "autopropulsion:item/parts/blow_off_valve"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 13
+      },
+      "model": "autopropulsion:item/parts/boost_pipe"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 14
+      },
+      "model": "autopropulsion:item/parts/brake_caliper"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 15
+      },
+      "model": "autopropulsion:item/parts/brake_pads"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 16
+      },
+      "model": "autopropulsion:item/parts/brake_rotor"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 17
+      },
+      "model": "autopropulsion:item/parts/bridge_intake_port"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 18
+      },
+      "model": "autopropulsion:item/parts/bucket_seat"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 19
+      },
+      "model": "autopropulsion:item/parts/carburetor"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 20
+      },
+      "model": "autopropulsion:item/parts/cast_pistons"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 21
+      },
+      "model": "autopropulsion:item/parts/centrifugal_supercharger"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 22
+      },
+      "model": "autopropulsion:item/parts/charge_pipe"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 23
+      },
+      "model": "autopropulsion:item/parts/coilover"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 24
+      },
+      "model": "autopropulsion:item/parts/coolant_pipes"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 25
+      },
+      "model": "autopropulsion:item/parts/cooling_fan"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 26
+      },
+      "model": "autopropulsion:item/parts/crankcase_ventilation"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 27
+      },
+      "model": "autopropulsion:item/parts/crankshaft"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 28
+      },
+      "model": "autopropulsion:item/parts/cvt_gearbox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 29
+      },
+      "model": "autopropulsion:item/parts/cylinder_head_dohc"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 30
+      },
+      "model": "autopropulsion:item/parts/cylinder_head_ohc"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 31
+      },
+      "model": "autopropulsion:item/parts/cylinder_liners"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 32
+      },
+      "model": "autopropulsion:item/parts/dashboard"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 33
+      },
+      "model": "autopropulsion:item/parts/dct_gearbox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 34
+      },
+      "model": "autopropulsion:item/parts/direct_injection"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 35
+      },
+      "model": "autopropulsion:item/parts/eccentric_shaft"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 36
+      },
+      "model": "autopropulsion:item/parts/exhaust_header"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 37
+      },
+      "model": "autopropulsion:item/parts/exhaust_system"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 38
+      },
+      "model": "autopropulsion:item/parts/exhaust_valves"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 39
+      },
+      "model": "autopropulsion:item/parts/fender"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 40
+      },
+      "model": "autopropulsion:item/parts/final_drive"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 41
+      },
+      "model": "autopropulsion:item/parts/flywheel"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 42
+      },
+      "model": "autopropulsion:item/parts/forged_connecting_rods"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 43
+      },
+      "model": "autopropulsion:item/parts/forged_pistons"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 44
+      },
+      "model": "autopropulsion:item/parts/front_bumper"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 45
+      },
+      "model": "autopropulsion:item/parts/front_door_left"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 46
+      },
+      "model": "autopropulsion:item/parts/front_door_right"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 47
+      },
+      "model": "autopropulsion:item/parts/fuel_injectors"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 48
+      },
+      "model": "autopropulsion:item/parts/fuel_pump"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 49
+      },
+      "model": "autopropulsion:item/parts/fuel_pump_station"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 50
+      },
+      "model": "autopropulsion:item/parts/fuel_tank"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 51
+      },
+      "model": "autopropulsion:item/parts/garage_jack"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 52
+      },
+      "model": "autopropulsion:item/parts/harmonic_damper"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 53
+      },
+      "model": "autopropulsion:item/parts/head_bolts"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 54
+      },
+      "model": "autopropulsion:item/parts/head_gasket"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 55
+      },
+      "model": "autopropulsion:item/parts/headlights"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 56
+      },
+      "model": "autopropulsion:item/parts/hood"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 57
+      },
+      "model": "autopropulsion:item/parts/i4_block_billet"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 58
+      },
+      "model": "autopropulsion:item/parts/i4_block_cast"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 59
+      },
+      "model": "autopropulsion:item/parts/ignition_coils"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 60
+      },
+      "model": "autopropulsion:item/parts/intake_manifold"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 61
+      },
+      "model": "autopropulsion:item/parts/intake_valves"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 62
+      },
+      "model": "autopropulsion:item/parts/intercooler"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 63
+      },
+      "model": "autopropulsion:item/parts/limited_slip_differential"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 64
+      },
+      "model": "autopropulsion:item/parts/livery_sheet"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 65
+      },
+      "model": "autopropulsion:item/parts/locked_differential"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 66
+      },
+      "model": "autopropulsion:item/parts/main_bearing_bolts"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 67
+      },
+      "model": "autopropulsion:item/parts/main_bearing_caps"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 68
+      },
+      "model": "autopropulsion:item/parts/main_bearings"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 69
+      },
+      "model": "autopropulsion:item/parts/manual_gearbox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 70
+      },
+      "model": "autopropulsion:item/parts/mirrors"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 71
+      },
+      "model": "autopropulsion:item/parts/mpi_injection"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 72
+      },
+      "model": "autopropulsion:item/parts/naturally_aspirated_intake"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 73
+      },
+      "model": "autopropulsion:item/parts/nitrous_bottle"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 74
+      },
+      "model": "autopropulsion:item/parts/nitrous_kit"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 75
+      },
+      "model": "autopropulsion:item/parts/obd_dongle"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 76
+      },
+      "model": "autopropulsion:item/parts/offroad_tires"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 77
+      },
+      "model": "autopropulsion:item/parts/oil_filter"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 78
+      },
+      "model": "autopropulsion:item/parts/oil_metering_pump"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 79
+      },
+      "model": "autopropulsion:item/parts/oil_pan"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 80
+      },
+      "model": "autopropulsion:item/parts/oil_pump"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 81
+      },
+      "model": "autopropulsion:item/parts/open_differential"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 82
+      },
+      "model": "autopropulsion:item/parts/paint_booth"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 83
+      },
+      "model": "autopropulsion:item/parts/paint_can"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 84
+      },
+      "model": "autopropulsion:item/parts/peripheral_intake_port"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 85
+      },
+      "model": "autopropulsion:item/parts/piston_cooling_nozzles"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 86
+      },
+      "model": "autopropulsion:item/parts/piston_rings"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 87
+      },
+      "model": "autopropulsion:item/parts/race_camshaft"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 88
+      },
+      "model": "autopropulsion:item/parts/race_turbo"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 89
+      },
+      "model": "autopropulsion:item/parts/rear_bumper"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 90
+      },
+      "model": "autopropulsion:item/parts/rod_bearings"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 91
+      },
+      "model": "autopropulsion:item/parts/roll_cage"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 92
+      },
+      "model": "autopropulsion:item/parts/roots_supercharger"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 93
+      },
+      "model": "autopropulsion:item/parts/rotary_block"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 94
+      },
+      "model": "autopropulsion:item/parts/rotary_exhaust_port"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 95
+      },
+      "model": "autopropulsion:item/parts/rotor"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 96
+      },
+      "model": "autopropulsion:item/parts/rotor_housing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 97
+      },
+      "model": "autopropulsion:item/parts/sequential_gearbox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 98
+      },
+      "model": "autopropulsion:item/parts/shifter"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 99
+      },
+      "model": "autopropulsion:item/parts/side_housing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 100
+      },
+      "model": "autopropulsion:item/parts/side_intake_port"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 101
+      },
+      "model": "autopropulsion:item/parts/side_skirts"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 102
+      },
+      "model": "autopropulsion:item/parts/spark_plugs"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 103
+      },
+      "model": "autopropulsion:item/parts/splitter"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 104
+      },
+      "model": "autopropulsion:item/parts/spoiler"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 105
+      },
+      "model": "autopropulsion:item/parts/sport_tires"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 106
+      },
+      "model": "autopropulsion:item/parts/standalone_ecu"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 107
+      },
+      "model": "autopropulsion:item/parts/starter_motor"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 108
+      },
+      "model": "autopropulsion:item/parts/stationary_gear"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 109
+      },
+      "model": "autopropulsion:item/parts/steering_rack"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 110
+      },
+      "model": "autopropulsion:item/parts/steering_wheel"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 111
+      },
+      "model": "autopropulsion:item/parts/stock_camshaft"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 112
+      },
+      "model": "autopropulsion:item/parts/stock_clutch"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 113
+      },
+      "model": "autopropulsion:item/parts/stock_connecting_rods"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 114
+      },
+      "model": "autopropulsion:item/parts/stock_ecu"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 115
+      },
+      "model": "autopropulsion:item/parts/stock_radiator"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 116
+      },
+      "model": "autopropulsion:item/parts/street_tires"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 117
+      },
+      "model": "autopropulsion:item/parts/street_turbo"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 118
+      },
+      "model": "autopropulsion:item/parts/taillights"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 119
+      },
+      "model": "autopropulsion:item/parts/thermostat"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 120
+      },
+      "model": "autopropulsion:item/parts/throttle_body"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 121
+      },
+      "model": "autopropulsion:item/parts/timing_belt"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 122
+      },
+      "model": "autopropulsion:item/parts/timing_chain"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 123
+      },
+      "model": "autopropulsion:item/parts/timing_gears"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 124
+      },
+      "model": "autopropulsion:item/parts/torsen_differential"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 125
+      },
+      "model": "autopropulsion:item/parts/trunk"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 126
+      },
+      "model": "autopropulsion:item/parts/tune_file"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 127
+      },
+      "model": "autopropulsion:item/parts/tuner_laptop"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 128
+      },
+      "model": "autopropulsion:item/parts/twin_plate_clutch"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 129
+      },
+      "model": "autopropulsion:item/parts/two_step_module"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 130
+      },
+      "model": "autopropulsion:item/parts/valve_lifters"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 131
+      },
+      "model": "autopropulsion:item/parts/valve_seals"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 132
+      },
+      "model": "autopropulsion:item/parts/valve_springs"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 133
+      },
+      "model": "autopropulsion:item/parts/vtec_actuator"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 134
+      },
+      "model": "autopropulsion:item/parts/wastegate"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 135
+      },
+      "model": "autopropulsion:item/parts/water_meth_injection"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 136
+      },
+      "model": "autopropulsion:item/parts/water_pump"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 137
+      },
+      "model": "autopropulsion:item/parts/water_reservoir"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 138
+      },
+      "model": "autopropulsion:item/parts/welded_differential"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 139
+      },
+      "model": "autopropulsion:item/parts/wheel_hub"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 140
+      },
+      "model": "autopropulsion:item/parts/wrist_pins"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "main_bearing_bolts",
+  "slot": "main_bearing_bolts",
+  "category": "bolt",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/main_bearing_bolts",
+  "model_index": 66
+}

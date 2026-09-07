@@ -1,0 +1,11 @@
+{
+  "id": "alloy_rim",
+  "slot": "alloy_rim",
+  "category": "rim",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/alloy_rim",
+  "model_index": 4
+}

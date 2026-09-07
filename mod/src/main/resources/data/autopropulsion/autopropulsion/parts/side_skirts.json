@@ -1,0 +1,11 @@
+{
+  "id": "side_skirts",
+  "slot": "side_skirts",
+  "category": "bar",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/side_skirts",
+  "model_index": 101
+}

@@ -1,0 +1,11 @@
+{
+  "id": "harmonic_damper",
+  "slot": "harmonic_damper",
+  "category": "pulley",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/harmonic_damper",
+  "model_index": 52
+}

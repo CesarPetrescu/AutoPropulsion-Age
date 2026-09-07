@@ -1,0 +1,13 @@
+{
+  "id": "i4_block_cast",
+  "slot": "engine_block",
+  "category": "block",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 38,
+  "model": "autopropulsion:item/parts/i4_block_cast",
+  "torque_limit_nm": 800,
+  "rpm_limit": 10000,
+  "model_index": 58
+}

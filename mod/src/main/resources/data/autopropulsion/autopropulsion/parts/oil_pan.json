@@ -1,0 +1,11 @@
+{
+  "id": "oil_pan",
+  "slot": "oil_pan",
+  "category": "pan",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/oil_pan",
+  "model_index": 79
+}

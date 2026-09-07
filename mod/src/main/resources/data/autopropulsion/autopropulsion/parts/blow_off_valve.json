@@ -1,0 +1,11 @@
+{
+  "id": "blow_off_valve",
+  "slot": "blow_off_valve",
+  "category": "valve",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/blow_off_valve",
+  "model_index": 12
+}

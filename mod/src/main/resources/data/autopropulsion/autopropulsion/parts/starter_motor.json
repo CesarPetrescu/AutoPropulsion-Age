@@ -1,0 +1,11 @@
+{
+  "id": "starter_motor",
+  "slot": "starter_motor",
+  "category": "starter",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/starter_motor",
+  "model_index": 107
+}

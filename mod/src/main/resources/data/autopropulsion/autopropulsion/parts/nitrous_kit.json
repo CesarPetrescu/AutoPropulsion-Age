@@ -1,0 +1,11 @@
+{
+  "id": "nitrous_kit",
+  "slot": "nitrous_kit",
+  "category": "bottle",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/nitrous_kit",
+  "model_index": 74
+}

@@ -1,0 +1,11 @@
+{
+  "id": "dashboard",
+  "slot": "dashboard",
+  "category": "dash",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/dashboard",
+  "model_index": 32
+}

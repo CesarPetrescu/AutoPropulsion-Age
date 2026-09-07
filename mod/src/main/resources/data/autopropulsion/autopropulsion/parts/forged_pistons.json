@@ -1,0 +1,11 @@
+{
+  "id": "forged_pistons",
+  "slot": "forged_pistons",
+  "category": "piston",
+  "family": "piston",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/forged_pistons",
+  "model_index": 43
+}

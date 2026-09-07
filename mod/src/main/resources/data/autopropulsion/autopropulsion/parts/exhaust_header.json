@@ -1,0 +1,11 @@
+{
+  "id": "exhaust_header",
+  "slot": "exhaust_header",
+  "category": "header",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/exhaust_header",
+  "model_index": 36
+}

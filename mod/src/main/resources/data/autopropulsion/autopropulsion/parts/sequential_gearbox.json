@@ -1,0 +1,11 @@
+{
+  "id": "sequential_gearbox",
+  "slot": "sequential_gearbox",
+  "category": "gearbox",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/sequential_gearbox",
+  "model_index": 97
+}

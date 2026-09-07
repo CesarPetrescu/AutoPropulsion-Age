@@ -1,0 +1,11 @@
+{
+  "engine_loop": {
+    "subtitle": "subtitles.autopropulsion.engine",
+    "sounds": [
+      {
+        "name": "autopropulsion:engine_loop",
+        "stream": false
+      }
+    ]
+  }
+}

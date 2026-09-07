@@ -1,0 +1,11 @@
+{
+  "id": "timing_belt",
+  "slot": "timing_belt",
+  "category": "belt",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/timing_belt",
+  "model_index": 121
+}

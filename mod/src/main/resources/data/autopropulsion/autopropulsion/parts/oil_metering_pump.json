@@ -1,0 +1,11 @@
+{
+  "id": "oil_metering_pump",
+  "slot": "oil_metering_pump",
+  "category": "pump",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/oil_metering_pump",
+  "model_index": 78
+}

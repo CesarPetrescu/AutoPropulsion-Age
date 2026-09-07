@@ -1,0 +1,12 @@
+{
+  "id": "sport_tires",
+  "slot": "tires",
+  "category": "tire",
+  "family": "chassis",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/sport_tires",
+  "grip": 1.2,
+  "model_index": 105
+}

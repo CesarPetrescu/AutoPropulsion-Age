@@ -1,0 +1,11 @@
+{
+  "id": "cast_pistons",
+  "slot": "cast_pistons",
+  "category": "piston",
+  "family": "piston",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/cast_pistons",
+  "model_index": 20
+}

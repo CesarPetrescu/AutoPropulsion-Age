@@ -1,0 +1,11 @@
+{
+  "id": "splitter",
+  "slot": "splitter",
+  "category": "panel",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/splitter",
+  "model_index": 103
+}

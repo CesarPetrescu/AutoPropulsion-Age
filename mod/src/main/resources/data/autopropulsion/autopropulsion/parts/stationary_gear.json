@@ -1,0 +1,11 @@
+{
+  "id": "stationary_gear",
+  "slot": "stationary_gear",
+  "category": "gear",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/stationary_gear",
+  "model_index": 108
+}

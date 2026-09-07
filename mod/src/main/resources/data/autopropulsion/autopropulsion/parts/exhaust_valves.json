@@ -1,0 +1,11 @@
+{
+  "id": "exhaust_valves",
+  "slot": "exhaust_valves",
+  "category": "valve",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/exhaust_valves",
+  "model_index": 38
+}

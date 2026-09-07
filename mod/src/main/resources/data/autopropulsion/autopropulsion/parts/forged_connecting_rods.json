@@ -1,0 +1,13 @@
+{
+  "id": "forged_connecting_rods",
+  "slot": "connecting_rods",
+  "category": "rod",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/forged_connecting_rods",
+  "torque_limit_nm": 650,
+  "rpm_limit": 9000,
+  "model_index": 42
+}

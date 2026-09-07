@@ -1,0 +1,11 @@
+{
+  "id": "head_gasket",
+  "slot": "head_gasket",
+  "category": "gasket",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/head_gasket",
+  "model_index": 54
+}

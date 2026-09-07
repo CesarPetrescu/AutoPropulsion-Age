@@ -1,0 +1,12 @@
+{
+  "id": "race_turbo",
+  "slot": "turbo",
+  "category": "turbo",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/race_turbo",
+  "boost_bar": 1.5,
+  "model_index": 88
+}
