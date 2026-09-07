@@ -1,0 +1,7699 @@
+{
+  "units": "meters",
+  "axes": {
+    "right": "+X",
+    "front": "-Y",
+    "up": "+Z"
+  },
+  "car": {
+    "length_m": 4.5,
+    "width_without_mirrors_m": 1.9,
+    "height_m": 1.52,
+    "wheelbase_m": 2.65,
+    "track_m": 1.66
+  },
+  "parts": [
+    {
+      "id": "sparkmotors:chassis_shell",
+      "object": "SM_chassis_shell",
+      "category": 1,
+      "state": "stock",
+      "mount": "chassis_shell",
+      "mount_world_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 23,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_fender_-1",
+      "object": "SM_front_fender_-1",
+      "category": 3,
+      "state": "stock",
+      "mount": "front_fender_-1",
+      "mount_world_m": [
+        -0.8999999761581421,
+        -1.350000023841858,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 22,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_fender_-1",
+      "object": "SM_rear_fender_-1",
+      "category": 3,
+      "state": "stock",
+      "mount": "rear_fender_-1",
+      "mount_world_m": [
+        -0.8999999761581421,
+        1.2999999523162842,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 23,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_skirt_-1",
+      "object": "SM_side_skirt_-1",
+      "category": 3,
+      "state": "stock",
+      "mount": "side_skirt_-1",
+      "mount_world_m": [
+        -0.9350000023841858,
+        0.18000000715255737,
+        0.4050000011920929
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_front_left",
+      "object": "SM_door_front_left",
+      "category": 2,
+      "state": "stock",
+      "mount": "door_front_left_hinge",
+      "mount_world_m": [
+        -0.8960000276565552,
+        -0.75,
+        0.7799999713897705
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 5,
+      "replaces": "",
+      "hinge": {
+        "axis": "Z",
+        "open_degrees": 62,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:window_front_left",
+      "object": "SM_window_front_left",
+      "category": 4,
+      "state": "stock",
+      "mount": "window_front_left",
+      "mount_world_m": [
+        -0.8199999928474426,
+        -0.2524999976158142,
+        1.2200000286102295
+      ],
+      "parent_part": "sparkmotors:door_front_left",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_card_front_left",
+      "object": "SM_door_card_front_left",
+      "category": 11,
+      "state": "stock",
+      "mount": "door_card_front_left",
+      "mount_world_m": [
+        -0.8650000095367432,
+        -0.2524999976158142,
+        0.7649999856948853
+      ],
+      "parent_part": "sparkmotors:door_front_left",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:handle_front_left",
+      "object": "SM_handle_front_left",
+      "category": 5,
+      "state": "stock",
+      "mount": "handle_front_left",
+      "mount_world_m": [
+        -0.9319999814033508,
+        0.08499997854232788,
+        0.949999988079071
+      ],
+      "parent_part": "sparkmotors:door_front_left",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_rear_left",
+      "object": "SM_door_rear_left",
+      "category": 2,
+      "state": "stock",
+      "mount": "door_rear_left_hinge",
+      "mount_world_m": [
+        -0.8960000276565552,
+        0.2750000059604645,
+        0.7799999713897705
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 5,
+      "replaces": "",
+      "hinge": {
+        "axis": "Z",
+        "open_degrees": 62,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:window_rear_left",
+      "object": "SM_window_rear_left",
+      "category": 4,
+      "state": "stock",
+      "mount": "window_rear_left",
+      "mount_world_m": [
+        -0.8199999928474426,
+        0.6449999809265137,
+        1.2200000286102295
+      ],
+      "parent_part": "sparkmotors:door_rear_left",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_card_rear_left",
+      "object": "SM_door_card_rear_left",
+      "category": 11,
+      "state": "stock",
+      "mount": "door_card_rear_left",
+      "mount_world_m": [
+        -0.8650000095367432,
+        0.6449999809265137,
+        0.7649999856948853
+      ],
+      "parent_part": "sparkmotors:door_rear_left",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:handle_rear_left",
+      "object": "SM_handle_rear_left",
+      "category": 5,
+      "state": "stock",
+      "mount": "handle_rear_left",
+      "mount_world_m": [
+        -0.9319999814033508,
+        0.8550000190734863,
+        0.949999988079071
+      ],
+      "parent_part": "sparkmotors:door_rear_left",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_fender_1",
+      "object": "SM_front_fender_1",
+      "category": 3,
+      "state": "stock",
+      "mount": "front_fender_1",
+      "mount_world_m": [
+        0.8999999761581421,
+        -1.350000023841858,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 22,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_fender_1",
+      "object": "SM_rear_fender_1",
+      "category": 3,
+      "state": "stock",
+      "mount": "rear_fender_1",
+      "mount_world_m": [
+        0.8999999761581421,
+        1.2999999523162842,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 23,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_skirt_1",
+      "object": "SM_side_skirt_1",
+      "category": 3,
+      "state": "stock",
+      "mount": "side_skirt_1",
+      "mount_world_m": [
+        0.9350000023841858,
+        0.18000000715255737,
+        0.4050000011920929
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_front_right",
+      "object": "SM_door_front_right",
+      "category": 2,
+      "state": "stock",
+      "mount": "door_front_right_hinge",
+      "mount_world_m": [
+        0.8960000276565552,
+        -0.75,
+        0.7799999713897705
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 5,
+      "replaces": "",
+      "hinge": {
+        "axis": "Z",
+        "open_degrees": -62,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:window_front_right",
+      "object": "SM_window_front_right",
+      "category": 4,
+      "state": "stock",
+      "mount": "window_front_right",
+      "mount_world_m": [
+        0.8199999928474426,
+        -0.2524999976158142,
+        1.2200000286102295
+      ],
+      "parent_part": "sparkmotors:door_front_right",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_card_front_right",
+      "object": "SM_door_card_front_right",
+      "category": 11,
+      "state": "stock",
+      "mount": "door_card_front_right",
+      "mount_world_m": [
+        0.8650000095367432,
+        -0.2524999976158142,
+        0.7649999856948853
+      ],
+      "parent_part": "sparkmotors:door_front_right",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:handle_front_right",
+      "object": "SM_handle_front_right",
+      "category": 5,
+      "state": "stock",
+      "mount": "handle_front_right",
+      "mount_world_m": [
+        0.9319999814033508,
+        0.08499997854232788,
+        0.949999988079071
+      ],
+      "parent_part": "sparkmotors:door_front_right",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_rear_right",
+      "object": "SM_door_rear_right",
+      "category": 2,
+      "state": "stock",
+      "mount": "door_rear_right_hinge",
+      "mount_world_m": [
+        0.8960000276565552,
+        0.2750000059604645,
+        0.7799999713897705
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 5,
+      "replaces": "",
+      "hinge": {
+        "axis": "Z",
+        "open_degrees": -62,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:window_rear_right",
+      "object": "SM_window_rear_right",
+      "category": 4,
+      "state": "stock",
+      "mount": "window_rear_right",
+      "mount_world_m": [
+        0.8199999928474426,
+        0.6449999809265137,
+        1.2200000286102295
+      ],
+      "parent_part": "sparkmotors:door_rear_right",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:door_card_rear_right",
+      "object": "SM_door_card_rear_right",
+      "category": 11,
+      "state": "stock",
+      "mount": "door_card_rear_right",
+      "mount_world_m": [
+        0.8650000095367432,
+        0.6449999809265137,
+        0.7649999856948853
+      ],
+      "parent_part": "sparkmotors:door_rear_right",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:handle_rear_right",
+      "object": "SM_handle_rear_right",
+      "category": 5,
+      "state": "stock",
+      "mount": "handle_rear_right",
+      "mount_world_m": [
+        0.9319999814033508,
+        0.8550000190734863,
+        0.949999988079071
+      ],
+      "parent_part": "sparkmotors:door_rear_right",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:hood",
+      "object": "SM_hood",
+      "category": 2,
+      "state": "stock",
+      "mount": "hood_hinge",
+      "mount_world_m": [
+        0.0,
+        -0.7799999713897705,
+        1.0920000076293945
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 3,
+      "replaces": "",
+      "hinge": {
+        "axis": "X",
+        "open_degrees": -64,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:trunk_lid",
+      "object": "SM_trunk_lid",
+      "category": 2,
+      "state": "stock",
+      "mount": "trunk_hinge",
+      "mount_world_m": [
+        0.0,
+        1.350000023841858,
+        1.0470000505447388
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 1,
+      "replaces": "",
+      "hinge": {
+        "axis": "X",
+        "open_degrees": 64,
+        "frames": {
+          "closed": 1,
+          "open": 50
+        }
+      }
+    },
+    {
+      "id": "sparkmotors:windshield",
+      "object": "SM_windshield",
+      "category": 4,
+      "state": "stock",
+      "mount": "windshield",
+      "mount_world_m": [
+        0.0,
+        -0.5,
+        1.2799999713897705
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_glass",
+      "object": "SM_rear_glass",
+      "category": 4,
+      "state": "stock",
+      "mount": "rear_glass",
+      "mount_world_m": [
+        0.0,
+        1.1299999952316284,
+        1.2799999713897705
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_bumper",
+      "object": "SM_front_bumper",
+      "category": 3,
+      "state": "stock",
+      "mount": "front_bumper",
+      "mount_world_m": [
+        0.0,
+        -2.1700000762939453,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_light_-1",
+      "object": "SM_front_light_-1",
+      "category": 6,
+      "state": "stock",
+      "mount": "front_light_-1",
+      "mount_world_m": [
+        -0.6299999952316284,
+        -2.1700000762939453,
+        0.8999999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_light_1",
+      "object": "SM_front_light_1",
+      "category": 6,
+      "state": "stock",
+      "mount": "front_light_1",
+      "mount_world_m": [
+        0.6299999952316284,
+        -2.1700000762939453,
+        0.8999999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:grille",
+      "object": "SM_grille",
+      "category": 5,
+      "state": "stock",
+      "mount": "grille",
+      "mount_world_m": [
+        0.0,
+        -2.2139999866485596,
+        0.9020000100135803
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_bumper",
+      "object": "SM_rear_bumper",
+      "category": 3,
+      "state": "stock",
+      "mount": "rear_bumper",
+      "mount_world_m": [
+        0.0,
+        2.1700000762939453,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_light_-1",
+      "object": "SM_rear_light_-1",
+      "category": 6,
+      "state": "stock",
+      "mount": "rear_light_-1",
+      "mount_world_m": [
+        -0.6299999952316284,
+        2.1700000762939453,
+        0.8999999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_light_1",
+      "object": "SM_rear_light_1",
+      "category": 6,
+      "state": "stock",
+      "mount": "rear_light_1",
+      "mount_world_m": [
+        0.6299999952316284,
+        2.1700000762939453,
+        0.8999999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:mirror_-1",
+      "object": "SM_mirror_-1",
+      "category": 5,
+      "state": "stock",
+      "mount": "mirror_-1",
+      "mount_world_m": [
+        -0.8899999856948853,
+        -0.6200000047683716,
+        1.0850000381469727
+      ],
+      "parent_part": "sparkmotors:door_front_left",
+      "paintable": true,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:mirror_1",
+      "object": "SM_mirror_1",
+      "category": 5,
+      "state": "stock",
+      "mount": "mirror_1",
+      "mount_world_m": [
+        0.8899999856948853,
+        -0.6200000047683716,
+        1.0850000381469727
+      ],
+      "parent_part": "sparkmotors:door_front_right",
+      "paintable": true,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:tire_fl",
+      "object": "SM_tire_fl",
+      "category": 13,
+      "state": "stock",
+      "mount": "tire_fl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 29,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rim_fl",
+      "object": "SM_rim_fl",
+      "category": 13,
+      "state": "stock",
+      "mount": "rim_fl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:hub_fl",
+      "object": "SM_hub_fl",
+      "category": 14,
+      "state": "stock",
+      "mount": "hub_fl",
+      "mount_world_m": [
+        -0.7649999856948853,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_disc_fl",
+      "object": "SM_brake_disc_fl",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_disc_fl",
+      "mount_world_m": [
+        -0.7829999923706055,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_caliper_fl",
+      "object": "SM_brake_caliper_fl",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_caliper_fl",
+      "mount_world_m": [
+        -0.7929999828338623,
+        -1.2059999704360962,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_fl_-1",
+      "object": "SM_brake_pad_fl_-1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_fl_-1",
+      "mount_world_m": [
+        -0.8009999990463257,
+        -1.2130000591278076,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_fl",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_fl_1",
+      "object": "SM_brake_pad_fl_1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_fl_1",
+      "mount_world_m": [
+        -0.7649999856948853,
+        -1.2130000591278076,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_fl",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:knuckle_fl",
+      "object": "SM_knuckle_fl",
+      "category": 14,
+      "state": "stock",
+      "mount": "knuckle_fl",
+      "mount_world_m": [
+        -0.699999988079071,
+        -1.350000023841858,
+        0.36000001430511475
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coilover_fl",
+      "object": "SM_coilover_fl",
+      "category": 16,
+      "state": "stock",
+      "mount": "coilover_fl",
+      "mount_world_m": [
+        -0.6600000262260437,
+        -1.350000023841858,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:control_arm_fl",
+      "object": "SM_control_arm_fl",
+      "category": 16,
+      "state": "stock",
+      "mount": "control_arm_fl",
+      "mount_world_m": [
+        -0.5299999713897705,
+        -1.350000023841858,
+        0.30000001192092896
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:tire_rl",
+      "object": "SM_tire_rl",
+      "category": 13,
+      "state": "stock",
+      "mount": "tire_rl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 29,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rim_rl",
+      "object": "SM_rim_rl",
+      "category": 13,
+      "state": "stock",
+      "mount": "rim_rl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:hub_rl",
+      "object": "SM_hub_rl",
+      "category": 14,
+      "state": "stock",
+      "mount": "hub_rl",
+      "mount_world_m": [
+        -0.7649999856948853,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_disc_rl",
+      "object": "SM_brake_disc_rl",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_disc_rl",
+      "mount_world_m": [
+        -0.7829999923706055,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_caliper_rl",
+      "object": "SM_brake_caliper_rl",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_caliper_rl",
+      "mount_world_m": [
+        -0.7929999828338623,
+        1.444000005722046,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_rl_-1",
+      "object": "SM_brake_pad_rl_-1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_rl_-1",
+      "mount_world_m": [
+        -0.8009999990463257,
+        1.437000036239624,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_rl",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_rl_1",
+      "object": "SM_brake_pad_rl_1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_rl_1",
+      "mount_world_m": [
+        -0.7649999856948853,
+        1.437000036239624,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_rl",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:knuckle_rl",
+      "object": "SM_knuckle_rl",
+      "category": 14,
+      "state": "stock",
+      "mount": "knuckle_rl",
+      "mount_world_m": [
+        -0.699999988079071,
+        1.2999999523162842,
+        0.36000001430511475
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coilover_rl",
+      "object": "SM_coilover_rl",
+      "category": 16,
+      "state": "stock",
+      "mount": "coilover_rl",
+      "mount_world_m": [
+        -0.6600000262260437,
+        1.2999999523162842,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:control_arm_rl",
+      "object": "SM_control_arm_rl",
+      "category": 16,
+      "state": "stock",
+      "mount": "control_arm_rl",
+      "mount_world_m": [
+        -0.5299999713897705,
+        1.2999999523162842,
+        0.30000001192092896
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:tire_fr",
+      "object": "SM_tire_fr",
+      "category": 13,
+      "state": "stock",
+      "mount": "tire_fr",
+      "mount_world_m": [
+        0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 29,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rim_fr",
+      "object": "SM_rim_fr",
+      "category": 13,
+      "state": "stock",
+      "mount": "rim_fr",
+      "mount_world_m": [
+        0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:hub_fr",
+      "object": "SM_hub_fr",
+      "category": 14,
+      "state": "stock",
+      "mount": "hub_fr",
+      "mount_world_m": [
+        0.7649999856948853,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_disc_fr",
+      "object": "SM_brake_disc_fr",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_disc_fr",
+      "mount_world_m": [
+        0.7829999923706055,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_caliper_fr",
+      "object": "SM_brake_caliper_fr",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_caliper_fr",
+      "mount_world_m": [
+        0.7929999828338623,
+        -1.2059999704360962,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_fr_-1",
+      "object": "SM_brake_pad_fr_-1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_fr_-1",
+      "mount_world_m": [
+        0.7649999856948853,
+        -1.2130000591278076,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_fr",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_fr_1",
+      "object": "SM_brake_pad_fr_1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_fr_1",
+      "mount_world_m": [
+        0.8009999990463257,
+        -1.2130000591278076,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_fr",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:knuckle_fr",
+      "object": "SM_knuckle_fr",
+      "category": 14,
+      "state": "stock",
+      "mount": "knuckle_fr",
+      "mount_world_m": [
+        0.699999988079071,
+        -1.350000023841858,
+        0.36000001430511475
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coilover_fr",
+      "object": "SM_coilover_fr",
+      "category": 16,
+      "state": "stock",
+      "mount": "coilover_fr",
+      "mount_world_m": [
+        0.6600000262260437,
+        -1.350000023841858,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:control_arm_fr",
+      "object": "SM_control_arm_fr",
+      "category": 16,
+      "state": "stock",
+      "mount": "control_arm_fr",
+      "mount_world_m": [
+        0.5299999713897705,
+        -1.350000023841858,
+        0.30000001192092896
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:tire_rr",
+      "object": "SM_tire_rr",
+      "category": 13,
+      "state": "stock",
+      "mount": "tire_rr",
+      "mount_world_m": [
+        0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 29,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rim_rr",
+      "object": "SM_rim_rr",
+      "category": 13,
+      "state": "stock",
+      "mount": "rim_rr",
+      "mount_world_m": [
+        0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:hub_rr",
+      "object": "SM_hub_rr",
+      "category": 14,
+      "state": "stock",
+      "mount": "hub_rr",
+      "mount_world_m": [
+        0.7649999856948853,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_disc_rr",
+      "object": "SM_brake_disc_rr",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_disc_rr",
+      "mount_world_m": [
+        0.7829999923706055,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_caliper_rr",
+      "object": "SM_brake_caliper_rr",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_caliper_rr",
+      "mount_world_m": [
+        0.7929999828338623,
+        1.444000005722046,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_rr_-1",
+      "object": "SM_brake_pad_rr_-1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_rr_-1",
+      "mount_world_m": [
+        0.7649999856948853,
+        1.437000036239624,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_rr",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pad_rr_1",
+      "object": "SM_brake_pad_rr_1",
+      "category": 15,
+      "state": "stock",
+      "mount": "brake_pad_rr_1",
+      "mount_world_m": [
+        0.8009999990463257,
+        1.437000036239624,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:brake_caliper_rr",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:knuckle_rr",
+      "object": "SM_knuckle_rr",
+      "category": 14,
+      "state": "stock",
+      "mount": "knuckle_rr",
+      "mount_world_m": [
+        0.699999988079071,
+        1.2999999523162842,
+        0.36000001430511475
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coilover_rr",
+      "object": "SM_coilover_rr",
+      "category": 16,
+      "state": "stock",
+      "mount": "coilover_rr",
+      "mount_world_m": [
+        0.6600000262260437,
+        1.2999999523162842,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:control_arm_rr",
+      "object": "SM_control_arm_rr",
+      "category": 16,
+      "state": "stock",
+      "mount": "control_arm_rr",
+      "mount_world_m": [
+        0.5299999713897705,
+        1.2999999523162842,
+        0.30000001192092896
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:antiroll_-1.35",
+      "object": "SM_antiroll_-1.35",
+      "category": 16,
+      "state": "stock",
+      "mount": "antiroll_-1.35",
+      "mount_world_m": [
+        0.0,
+        -1.350000023841858,
+        0.3100000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:antiroll_1.3",
+      "object": "SM_antiroll_1.3",
+      "category": 16,
+      "state": "stock",
+      "mount": "antiroll_1.3",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3100000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:steering_rack",
+      "object": "SM_steering_rack",
+      "category": 17,
+      "state": "stock",
+      "mount": "steering_rack",
+      "mount_world_m": [
+        0.0,
+        -1.1299999952316284,
+        0.3799999952316284
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_seat_-1",
+      "object": "SM_front_seat_-1",
+      "category": 8,
+      "state": "stock",
+      "mount": "front_seat_-1",
+      "mount_world_m": [
+        -0.44999998807907104,
+        0.10000000149011612,
+        0.4399999976158142
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_seat_1",
+      "object": "SM_front_seat_1",
+      "category": 8,
+      "state": "stock",
+      "mount": "front_seat_1",
+      "mount_world_m": [
+        0.44999998807907104,
+        0.10000000149011612,
+        0.4399999976158142
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_bench",
+      "object": "SM_rear_bench",
+      "category": 8,
+      "state": "stock",
+      "mount": "rear_bench",
+      "mount_world_m": [
+        0.0,
+        0.9100000262260437,
+        0.5600000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:dashboard",
+      "object": "SM_dashboard",
+      "category": 9,
+      "state": "stock",
+      "mount": "dashboard",
+      "mount_world_m": [
+        0.0,
+        -0.550000011920929,
+        0.9300000071525574
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 17,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:instrument_cluster",
+      "object": "SM_instrument_cluster",
+      "category": 9,
+      "state": "stock",
+      "mount": "instrument_cluster",
+      "mount_world_m": [
+        -0.4699999988079071,
+        -0.43700000643730164,
+        1.0130000114440918
+      ],
+      "parent_part": "sparkmotors:dashboard",
+      "paintable": false,
+      "mesh_components": 21,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:needle_-0.57",
+      "object": "SM_needle_-0.57",
+      "category": 9,
+      "state": "stock",
+      "mount": "needle_-0.57",
+      "mount_world_m": [
+        -0.5699999928474426,
+        -0.3790000081062317,
+        1.0479999780654907
+      ],
+      "parent_part": "sparkmotors:instrument_cluster",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:needle_-0.38",
+      "object": "SM_needle_-0.38",
+      "category": 9,
+      "state": "stock",
+      "mount": "needle_-0.38",
+      "mount_world_m": [
+        -0.3799999952316284,
+        -0.3790000081062317,
+        1.0479999780654907
+      ],
+      "parent_part": "sparkmotors:instrument_cluster",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:console",
+      "object": "SM_console",
+      "category": 11,
+      "state": "stock",
+      "mount": "console",
+      "mount_world_m": [
+        0.0,
+        0.0,
+        0.6200000047683716
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:steering_wheel",
+      "object": "SM_steering_wheel",
+      "category": 10,
+      "state": "stock",
+      "mount": "steering_wheel",
+      "mount_world_m": [
+        -0.47999998927116394,
+        -0.30000001192092896,
+        0.9980000257492065
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:shifter",
+      "object": "SM_shifter",
+      "category": 10,
+      "state": "stock",
+      "mount": "shifter",
+      "mount_world_m": [
+        0.0,
+        -0.20000000298023224,
+        0.6499999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:handbrake",
+      "object": "SM_handbrake",
+      "category": 10,
+      "state": "stock",
+      "mount": "handbrake",
+      "mount_world_m": [
+        0.10000000149011612,
+        0.27000001072883606,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:clutch_pedal",
+      "object": "SM_clutch_pedal",
+      "category": 10,
+      "state": "stock",
+      "mount": "clutch_pedal",
+      "mount_world_m": [
+        -0.6399999856948853,
+        -0.6600000262260437,
+        0.5
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:brake_pedal",
+      "object": "SM_brake_pedal",
+      "category": 10,
+      "state": "stock",
+      "mount": "brake_pedal",
+      "mount_world_m": [
+        -0.5,
+        -0.6600000262260437,
+        0.5
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:throttle_pedal",
+      "object": "SM_throttle_pedal",
+      "category": 10,
+      "state": "stock",
+      "mount": "throttle_pedal",
+      "mount_world_m": [
+        -0.36000001430511475,
+        -0.6600000262260437,
+        0.5
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:floor_mat_-1",
+      "object": "SM_floor_mat_-1",
+      "category": 11,
+      "state": "stock",
+      "mount": "floor_mat_-1",
+      "mount_world_m": [
+        -0.4399999976158142,
+        -0.23999999463558197,
+        0.43299999833106995
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:floor_mat_1",
+      "object": "SM_floor_mat_1",
+      "category": 11,
+      "state": "stock",
+      "mount": "floor_mat_1",
+      "mount_world_m": [
+        0.4399999976158142,
+        -0.23999999463558197,
+        0.43299999833106995
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:i4_engine",
+      "object": "SM_i4_engine",
+      "category": 18,
+      "state": "stock",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 0,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:i4_block",
+      "object": "SM_i4_block",
+      "category": 18,
+      "state": "stock",
+      "mount": "i4_block",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:crankshaft_i4",
+      "object": "SM_crankshaft_i4",
+      "category": 20,
+      "state": "stock",
+      "mount": "crankshaft_i4",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 9,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:liner_0",
+      "object": "SM_liner_0",
+      "category": 20,
+      "state": "stock",
+      "mount": "liner_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.7200000286102295
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_0",
+      "object": "SM_piston_0",
+      "category": 20,
+      "state": "stock",
+      "mount": "piston_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.7429999709129333
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:wrist_pin_0",
+      "object": "SM_wrist_pin_0",
+      "category": 20,
+      "state": "stock",
+      "mount": "wrist_pin_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.7310000061988831
+      ],
+      "parent_part": "sparkmotors:piston_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_0_0",
+      "object": "SM_piston_ring_0_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_0_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.7580000162124634
+      ],
+      "parent_part": "sparkmotors:piston_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_0_1",
+      "object": "SM_piston_ring_0_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_0_1",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.75
+      ],
+      "parent_part": "sparkmotors:piston_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_0_2",
+      "object": "SM_piston_ring_0_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_0_2",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.7419999837875366
+      ],
+      "parent_part": "sparkmotors:piston_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:connecting_rod_0",
+      "object": "SM_connecting_rod_0",
+      "category": 20,
+      "state": "stock",
+      "mount": "connecting_rod_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.6604999899864197
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rod_bearing_0",
+      "object": "SM_rod_bearing_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "rod_bearing_0",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.5899999737739563
+      ],
+      "parent_part": "sparkmotors:connecting_rod_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_nozzle_0",
+      "object": "SM_oil_nozzle_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "oil_nozzle_0",
+      "mount_world_m": [
+        0.07500000298023224,
+        -1.5575000047683716,
+        0.5699999928474426
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:liner_1",
+      "object": "SM_liner_1",
+      "category": 20,
+      "state": "stock",
+      "mount": "liner_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.7200000286102295
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_1",
+      "object": "SM_piston_1",
+      "category": 20,
+      "state": "stock",
+      "mount": "piston_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.6570000052452087
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:wrist_pin_1",
+      "object": "SM_wrist_pin_1",
+      "category": 20,
+      "state": "stock",
+      "mount": "wrist_pin_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.6449999809265137
+      ],
+      "parent_part": "sparkmotors:piston_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_1_0",
+      "object": "SM_piston_ring_1_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_1_0",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.671999990940094
+      ],
+      "parent_part": "sparkmotors:piston_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_1_1",
+      "object": "SM_piston_ring_1_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_1_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.6639999747276306
+      ],
+      "parent_part": "sparkmotors:piston_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_1_2",
+      "object": "SM_piston_ring_1_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_1_2",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.656000018119812
+      ],
+      "parent_part": "sparkmotors:piston_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:connecting_rod_1",
+      "object": "SM_connecting_rod_1",
+      "category": 20,
+      "state": "stock",
+      "mount": "connecting_rod_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.5745000243186951
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rod_bearing_1",
+      "object": "SM_rod_bearing_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "rod_bearing_1",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.5040000081062317
+      ],
+      "parent_part": "sparkmotors:connecting_rod_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_nozzle_1",
+      "object": "SM_oil_nozzle_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "oil_nozzle_1",
+      "mount_world_m": [
+        0.07500000298023224,
+        -1.4325000047683716,
+        0.5699999928474426
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:liner_2",
+      "object": "SM_liner_2",
+      "category": 20,
+      "state": "stock",
+      "mount": "liner_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.7200000286102295
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_2",
+      "object": "SM_piston_2",
+      "category": 20,
+      "state": "stock",
+      "mount": "piston_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.6570000052452087
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:wrist_pin_2",
+      "object": "SM_wrist_pin_2",
+      "category": 20,
+      "state": "stock",
+      "mount": "wrist_pin_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.6449999809265137
+      ],
+      "parent_part": "sparkmotors:piston_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_2_0",
+      "object": "SM_piston_ring_2_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_2_0",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.671999990940094
+      ],
+      "parent_part": "sparkmotors:piston_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_2_1",
+      "object": "SM_piston_ring_2_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_2_1",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.6639999747276306
+      ],
+      "parent_part": "sparkmotors:piston_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_2_2",
+      "object": "SM_piston_ring_2_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_2_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.656000018119812
+      ],
+      "parent_part": "sparkmotors:piston_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:connecting_rod_2",
+      "object": "SM_connecting_rod_2",
+      "category": 20,
+      "state": "stock",
+      "mount": "connecting_rod_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.5745000243186951
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rod_bearing_2",
+      "object": "SM_rod_bearing_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "rod_bearing_2",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.5040000081062317
+      ],
+      "parent_part": "sparkmotors:connecting_rod_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_nozzle_2",
+      "object": "SM_oil_nozzle_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "oil_nozzle_2",
+      "mount_world_m": [
+        0.07500000298023224,
+        -1.3075000047683716,
+        0.5699999928474426
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:liner_3",
+      "object": "SM_liner_3",
+      "category": 20,
+      "state": "stock",
+      "mount": "liner_3",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.7200000286102295
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_3",
+      "object": "SM_piston_3",
+      "category": 20,
+      "state": "stock",
+      "mount": "piston_3",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.7429999709129333
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:wrist_pin_3",
+      "object": "SM_wrist_pin_3",
+      "category": 20,
+      "state": "stock",
+      "mount": "wrist_pin_3",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.7310000061988831
+      ],
+      "parent_part": "sparkmotors:piston_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_3_0",
+      "object": "SM_piston_ring_3_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_3_0",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.7580000162124634
+      ],
+      "parent_part": "sparkmotors:piston_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_3_1",
+      "object": "SM_piston_ring_3_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_3_1",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.75
+      ],
+      "parent_part": "sparkmotors:piston_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:piston_ring_3_2",
+      "object": "SM_piston_ring_3_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "piston_ring_3_2",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.7419999837875366
+      ],
+      "parent_part": "sparkmotors:piston_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:connecting_rod_3",
+      "object": "SM_connecting_rod_3",
+      "category": 20,
+      "state": "stock",
+      "mount": "connecting_rod_3",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.6604999899864197
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rod_bearing_3",
+      "object": "SM_rod_bearing_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "rod_bearing_3",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.5899999737739563
+      ],
+      "parent_part": "sparkmotors:connecting_rod_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_nozzle_3",
+      "object": "SM_oil_nozzle_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "oil_nozzle_3",
+      "mount_world_m": [
+        0.07500000298023224,
+        -1.1825000047683716,
+        0.5699999928474426
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:main_bearing_0",
+      "object": "SM_main_bearing_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "main_bearing_0",
+      "mount_world_m": [
+        0.0,
+        -1.6399999856948853,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:crankshaft_i4",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bearing_cap_0",
+      "object": "SM_bearing_cap_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "bearing_cap_0",
+      "mount_world_m": [
+        0.0,
+        -1.6399999856948853,
+        0.5049999952316284
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:main_bearing_1",
+      "object": "SM_main_bearing_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "main_bearing_1",
+      "mount_world_m": [
+        0.0,
+        -1.5,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:crankshaft_i4",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bearing_cap_1",
+      "object": "SM_bearing_cap_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "bearing_cap_1",
+      "mount_world_m": [
+        0.0,
+        -1.5,
+        0.5049999952316284
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:main_bearing_2",
+      "object": "SM_main_bearing_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "main_bearing_2",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:crankshaft_i4",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bearing_cap_2",
+      "object": "SM_bearing_cap_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "bearing_cap_2",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.5049999952316284
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:main_bearing_3",
+      "object": "SM_main_bearing_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "main_bearing_3",
+      "mount_world_m": [
+        0.0,
+        -1.2450000047683716,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:crankshaft_i4",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bearing_cap_3",
+      "object": "SM_bearing_cap_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "bearing_cap_3",
+      "mount_world_m": [
+        0.0,
+        -1.2450000047683716,
+        0.5049999952316284
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:main_bearing_4",
+      "object": "SM_main_bearing_4",
+      "category": 21,
+      "state": "stock",
+      "mount": "main_bearing_4",
+      "mount_world_m": [
+        0.0,
+        -1.0950000286102295,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:crankshaft_i4",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bearing_cap_4",
+      "object": "SM_bearing_cap_4",
+      "category": 21,
+      "state": "stock",
+      "mount": "bearing_cap_4",
+      "mount_world_m": [
+        0.0,
+        -1.0950000286102295,
+        0.5049999952316284
+      ],
+      "parent_part": "sparkmotors:i4_block",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:cylinder_head_i4",
+      "object": "SM_cylinder_head_i4",
+      "category": 19,
+      "state": "stock",
+      "mount": "cylinder_head_i4",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.8899999856948853
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_gasket",
+      "object": "SM_head_gasket",
+      "category": 23,
+      "state": "stock",
+      "mount": "head_gasket",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.8109999895095825
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:camshaft_-1",
+      "object": "SM_camshaft_-1",
+      "category": 22,
+      "state": "stock",
+      "mount": "camshaft_-1",
+      "mount_world_m": [
+        -0.0949999988079071,
+        -1.3700000047683716,
+        0.9290000200271606
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.5575_-0.027",
+      "object": "SM_valve_-1_-1.5575_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.5575_-0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.5844999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_160",
+      "object": "SM_valve_spring_160",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_160",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.5844999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_161",
+      "object": "SM_valve_seal_161",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_161",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.5844999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_162",
+      "object": "SM_lifter_162",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_162",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.5844999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.5575_0.027",
+      "object": "SM_valve_-1_-1.5575_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.5575_0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.530500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_164",
+      "object": "SM_valve_spring_164",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_164",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.530500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_165",
+      "object": "SM_valve_seal_165",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_165",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.530500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_166",
+      "object": "SM_lifter_166",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_166",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.530500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.4325_-0.027",
+      "object": "SM_valve_-1_-1.4325_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.4325_-0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.4594999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_168",
+      "object": "SM_valve_spring_168",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_168",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.4594999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_169",
+      "object": "SM_valve_seal_169",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_169",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.4594999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_170",
+      "object": "SM_lifter_170",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_170",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.4594999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.4325_0.027",
+      "object": "SM_valve_-1_-1.4325_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.4325_0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.405500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_172",
+      "object": "SM_valve_spring_172",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_172",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.405500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_173",
+      "object": "SM_valve_seal_173",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_173",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.405500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_174",
+      "object": "SM_lifter_174",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_174",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.405500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.3075_-0.027",
+      "object": "SM_valve_-1_-1.3075_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.3075_-0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.3344999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_176",
+      "object": "SM_valve_spring_176",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_176",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.3344999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_177",
+      "object": "SM_valve_seal_177",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_177",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.3344999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_178",
+      "object": "SM_lifter_178",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_178",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.3344999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.3075_0.027",
+      "object": "SM_valve_-1_-1.3075_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.3075_0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.280500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_180",
+      "object": "SM_valve_spring_180",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_180",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.280500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_181",
+      "object": "SM_valve_seal_181",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_181",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.280500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_182",
+      "object": "SM_lifter_182",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_182",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.280500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.1825_-0.027",
+      "object": "SM_valve_-1_-1.1825_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.1825_-0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.2094999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_184",
+      "object": "SM_valve_spring_184",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_184",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.2094999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_185",
+      "object": "SM_valve_seal_185",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_185",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.2094999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_186",
+      "object": "SM_lifter_186",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_186",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.2094999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_-1_-1.1825_0.027",
+      "object": "SM_valve_-1_-1.1825_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_-1_-1.1825_0.027",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.155500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_188",
+      "object": "SM_valve_spring_188",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_188",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.155500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_189",
+      "object": "SM_valve_seal_189",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_189",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.155500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_190",
+      "object": "SM_lifter_190",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_190",
+      "mount_world_m": [
+        -0.09200000017881393,
+        -1.155500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_-1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:camshaft_1",
+      "object": "SM_camshaft_1",
+      "category": 22,
+      "state": "stock",
+      "mount": "camshaft_1",
+      "mount_world_m": [
+        0.0949999988079071,
+        -1.3700000047683716,
+        0.9290000200271606
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.5575_-0.027",
+      "object": "SM_valve_1_-1.5575_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.5575_-0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.5844999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_193",
+      "object": "SM_valve_spring_193",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_193",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.5844999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_194",
+      "object": "SM_valve_seal_194",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_194",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.5844999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_195",
+      "object": "SM_lifter_195",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_195",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.5844999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.5575_0.027",
+      "object": "SM_valve_1_-1.5575_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.5575_0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.530500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_197",
+      "object": "SM_valve_spring_197",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_197",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.530500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_198",
+      "object": "SM_valve_seal_198",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_198",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.530500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_199",
+      "object": "SM_lifter_199",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_199",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.530500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.5575_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.4325_-0.027",
+      "object": "SM_valve_1_-1.4325_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.4325_-0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.4594999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_201",
+      "object": "SM_valve_spring_201",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_201",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.4594999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_202",
+      "object": "SM_valve_seal_202",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_202",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.4594999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_203",
+      "object": "SM_lifter_203",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_203",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.4594999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.4325_0.027",
+      "object": "SM_valve_1_-1.4325_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.4325_0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.405500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_205",
+      "object": "SM_valve_spring_205",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_205",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.405500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_206",
+      "object": "SM_valve_seal_206",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_206",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.405500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_207",
+      "object": "SM_lifter_207",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_207",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.405500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.4325_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.3075_-0.027",
+      "object": "SM_valve_1_-1.3075_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.3075_-0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.3344999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_209",
+      "object": "SM_valve_spring_209",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_209",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.3344999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_210",
+      "object": "SM_valve_seal_210",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_210",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.3344999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_211",
+      "object": "SM_lifter_211",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_211",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.3344999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.3075_0.027",
+      "object": "SM_valve_1_-1.3075_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.3075_0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.280500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_213",
+      "object": "SM_valve_spring_213",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_213",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.280500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_214",
+      "object": "SM_valve_seal_214",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_214",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.280500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_215",
+      "object": "SM_lifter_215",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_215",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.280500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.3075_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.1825_-0.027",
+      "object": "SM_valve_1_-1.1825_-0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.1825_-0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.2094999551773071,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_217",
+      "object": "SM_valve_spring_217",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_217",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.2094999551773071,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_218",
+      "object": "SM_valve_seal_218",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_218",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.2094999551773071,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_219",
+      "object": "SM_lifter_219",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_219",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.2094999551773071,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_-0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_1_-1.1825_0.027",
+      "object": "SM_valve_1_-1.1825_0.027",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_1_-1.1825_0.027",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.155500054359436,
+        0.8650000095367432
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_spring_221",
+      "object": "SM_valve_spring_221",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_spring_221",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.155500054359436,
+        0.8989999890327454
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_seal_222",
+      "object": "SM_valve_seal_222",
+      "category": 22,
+      "state": "stock",
+      "mount": "valve_seal_222",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.155500054359436,
+        0.8759999871253967
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:lifter_223",
+      "object": "SM_lifter_223",
+      "category": 22,
+      "state": "stock",
+      "mount": "lifter_223",
+      "mount_world_m": [
+        0.09200000017881393,
+        -1.155500054359436,
+        0.9179999828338623
+      ],
+      "parent_part": "sparkmotors:valve_1_-1.1825_0.027",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:valve_cover",
+      "object": "SM_valve_cover",
+      "category": 19,
+      "state": "stock",
+      "mount": "valve_cover",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.9869999885559082
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coil_-1.5575",
+      "object": "SM_coil_-1.5575",
+      "category": 27,
+      "state": "stock",
+      "mount": "coil_-1.5575",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        1.027999997138977
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:spark_plug_-1.5575",
+      "object": "SM_spark_plug_-1.5575",
+      "category": 27,
+      "state": "stock",
+      "mount": "spark_plug_-1.5575",
+      "mount_world_m": [
+        0.0,
+        -1.5575000047683716,
+        0.9559999704360962
+      ],
+      "parent_part": "sparkmotors:coil_-1.5575",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coil_-1.4325",
+      "object": "SM_coil_-1.4325",
+      "category": 27,
+      "state": "stock",
+      "mount": "coil_-1.4325",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        1.027999997138977
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:spark_plug_-1.4325",
+      "object": "SM_spark_plug_-1.4325",
+      "category": 27,
+      "state": "stock",
+      "mount": "spark_plug_-1.4325",
+      "mount_world_m": [
+        0.0,
+        -1.4325000047683716,
+        0.9559999704360962
+      ],
+      "parent_part": "sparkmotors:coil_-1.4325",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coil_-1.3075",
+      "object": "SM_coil_-1.3075",
+      "category": 27,
+      "state": "stock",
+      "mount": "coil_-1.3075",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        1.027999997138977
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:spark_plug_-1.3075",
+      "object": "SM_spark_plug_-1.3075",
+      "category": 27,
+      "state": "stock",
+      "mount": "spark_plug_-1.3075",
+      "mount_world_m": [
+        0.0,
+        -1.3075000047683716,
+        0.9559999704360962
+      ],
+      "parent_part": "sparkmotors:coil_-1.3075",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coil_-1.1825",
+      "object": "SM_coil_-1.1825",
+      "category": 27,
+      "state": "stock",
+      "mount": "coil_-1.1825",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        1.027999997138977
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:spark_plug_-1.1825",
+      "object": "SM_spark_plug_-1.1825",
+      "category": 27,
+      "state": "stock",
+      "mount": "spark_plug_-1.1825",
+      "mount_world_m": [
+        0.0,
+        -1.1825000047683716,
+        0.9559999704360962
+      ],
+      "parent_part": "sparkmotors:coil_-1.1825",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:timing_drive",
+      "object": "SM_timing_drive",
+      "category": 24,
+      "state": "stock",
+      "mount": "timing_drive",
+      "mount_world_m": [
+        0.0,
+        -1.7120000123977661,
+        0.7599999904632568
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 7,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:harmonic_damper",
+      "object": "SM_harmonic_damper",
+      "category": 24,
+      "state": "stock",
+      "mount": "harmonic_damper",
+      "mount_world_m": [
+        0.0,
+        -1.7400000095367432,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:timing_cover",
+      "object": "SM_timing_cover",
+      "category": 24,
+      "state": "stock",
+      "mount": "timing_cover",
+      "mount_world_m": [
+        0.0,
+        -1.7389999628067017,
+        0.75
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_pan",
+      "object": "SM_oil_pan",
+      "category": 28,
+      "state": "stock",
+      "mount": "oil_pan",
+      "mount_world_m": [
+        0.0,
+        -1.3600000143051147,
+        0.44999998807907104
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_pump",
+      "object": "SM_oil_pump",
+      "category": 28,
+      "state": "stock",
+      "mount": "oil_pump",
+      "mount_world_m": [
+        0.0,
+        -1.600000023841858,
+        0.5199999809265137
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_filter",
+      "object": "SM_oil_filter",
+      "category": 28,
+      "state": "stock",
+      "mount": "oil_filter",
+      "mount_world_m": [
+        0.2160000056028366,
+        -1.5399999618530273,
+        0.6100000143051147
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:crankcase_vent",
+      "object": "SM_crankcase_vent",
+      "category": 28,
+      "state": "stock",
+      "mount": "crankcase_vent",
+      "mount_world_m": [
+        0.15000000596046448,
+        -1.1200000047683716,
+        0.9800000190734863
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intake_manifold",
+      "object": "SM_intake_manifold",
+      "category": 25,
+      "state": "stock",
+      "mount": "intake_manifold",
+      "mount_world_m": [
+        -0.30000001192092896,
+        -1.3700000047683716,
+        0.8700000047683716
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 9,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:throttle_body",
+      "object": "SM_throttle_body",
+      "category": 25,
+      "state": "stock",
+      "mount": "throttle_body",
+      "mount_world_m": [
+        -0.3199999928474426,
+        -1.690000057220459,
+        0.8859999775886536
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:air_filter_airbox",
+      "object": "SM_air_filter_airbox",
+      "category": 25,
+      "state": "stock",
+      "mount": "air_filter_airbox",
+      "mount_world_m": [
+        -0.5,
+        -1.3200000524520874,
+        0.8100000023841858
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_rail",
+      "object": "SM_fuel_rail",
+      "category": 26,
+      "state": "stock",
+      "mount": "fuel_rail",
+      "mount_world_m": [
+        -0.21299999952316284,
+        -1.3700000047683716,
+        0.9279999732971191
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:injector_-1.5575",
+      "object": "SM_injector_-1.5575",
+      "category": 26,
+      "state": "stock",
+      "mount": "injector_-1.5575",
+      "mount_world_m": [
+        -0.21299999952316284,
+        -1.5575000047683716,
+        0.8999999761581421
+      ],
+      "parent_part": "sparkmotors:fuel_rail",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:injector_-1.4325",
+      "object": "SM_injector_-1.4325",
+      "category": 26,
+      "state": "stock",
+      "mount": "injector_-1.4325",
+      "mount_world_m": [
+        -0.21299999952316284,
+        -1.4325000047683716,
+        0.8999999761581421
+      ],
+      "parent_part": "sparkmotors:fuel_rail",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:injector_-1.3075",
+      "object": "SM_injector_-1.3075",
+      "category": 26,
+      "state": "stock",
+      "mount": "injector_-1.3075",
+      "mount_world_m": [
+        -0.21299999952316284,
+        -1.3075000047683716,
+        0.8999999761581421
+      ],
+      "parent_part": "sparkmotors:fuel_rail",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:injector_-1.1825",
+      "object": "SM_injector_-1.1825",
+      "category": 26,
+      "state": "stock",
+      "mount": "injector_-1.1825",
+      "mount_world_m": [
+        -0.21299999952316284,
+        -1.1825000047683716,
+        0.8999999761581421
+      ],
+      "parent_part": "sparkmotors:fuel_rail",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_header",
+      "object": "SM_exhaust_header",
+      "category": 30,
+      "state": "stock",
+      "mount": "exhaust_header",
+      "mount_world_m": [
+        0.2800000011920929,
+        -1.3700000047683716,
+        0.7599999904632568
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 12,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:alternator",
+      "object": "SM_alternator",
+      "category": 27,
+      "state": "stock",
+      "mount": "alternator",
+      "mount_world_m": [
+        0.25,
+        -1.6299999952316284,
+        0.6499999761581421
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:starter",
+      "object": "SM_starter",
+      "category": 27,
+      "state": "stock",
+      "mount": "starter",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.090000033378601,
+        0.550000011920929
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:water_pump",
+      "object": "SM_water_pump",
+      "category": 29,
+      "state": "stock",
+      "mount": "water_pump",
+      "mount_world_m": [
+        -0.15000000596046448,
+        -1.649999976158142,
+        0.6299999952316284
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:thermostat",
+      "object": "SM_thermostat",
+      "category": 29,
+      "state": "stock",
+      "mount": "thermostat",
+      "mount_world_m": [
+        -0.18000000715255737,
+        -1.100000023841858,
+        0.9300000071525574
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:engine_mount_-1",
+      "object": "SM_engine_mount_-1",
+      "category": 18,
+      "state": "stock",
+      "mount": "engine_mount_-1",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.3899999856948853,
+        0.5400000214576721
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:engine_mount_1",
+      "object": "SM_engine_mount_1",
+      "category": 18,
+      "state": "stock",
+      "mount": "engine_mount_1",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.3899999856948853,
+        0.5400000214576721
+      ],
+      "parent_part": "sparkmotors:i4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flywheel",
+      "object": "SM_flywheel",
+      "category": 35,
+      "state": "stock",
+      "mount": "flywheel",
+      "mount_world_m": [
+        0.0,
+        -1.031999945640564,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:clutch_disc",
+      "object": "SM_clutch_disc",
+      "category": 35,
+      "state": "stock",
+      "mount": "clutch_disc",
+      "mount_world_m": [
+        0.0,
+        -1.0099999904632568,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:pressure_plate",
+      "object": "SM_pressure_plate",
+      "category": 35,
+      "state": "stock",
+      "mount": "pressure_plate",
+      "mount_world_m": [
+        0.0,
+        -0.9829999804496765,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:manual_5speed",
+      "object": "SM_manual_5speed",
+      "category": 36,
+      "state": "stock",
+      "mount": "transmission_mount",
+      "mount_world_m": [
+        0.0,
+        -0.6899999976158142,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 10,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gearbox_shafts",
+      "object": "SM_gearbox_shafts",
+      "category": 36,
+      "state": "stock",
+      "mount": "gearbox_shafts",
+      "mount_world_m": [
+        0.0,
+        -0.6480000019073486,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gear_set_0",
+      "object": "SM_gear_set_0",
+      "category": 36,
+      "state": "stock",
+      "mount": "gear_set_0",
+      "mount_world_m": [
+        0.0,
+        -0.7799999713897705,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gear_set_1",
+      "object": "SM_gear_set_1",
+      "category": 36,
+      "state": "stock",
+      "mount": "gear_set_1",
+      "mount_world_m": [
+        0.0,
+        -0.7149999737739563,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gear_set_2",
+      "object": "SM_gear_set_2",
+      "category": 36,
+      "state": "stock",
+      "mount": "gear_set_2",
+      "mount_world_m": [
+        0.0,
+        -0.6499999761581421,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gear_set_3",
+      "object": "SM_gear_set_3",
+      "category": 36,
+      "state": "stock",
+      "mount": "gear_set_3",
+      "mount_world_m": [
+        0.0,
+        -0.5849999785423279,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:gear_set_4",
+      "object": "SM_gear_set_4",
+      "category": 36,
+      "state": "stock",
+      "mount": "gear_set_4",
+      "mount_world_m": [
+        0.0,
+        -0.5199999809265137,
+        0.546999990940094
+      ],
+      "parent_part": "sparkmotors:manual_5speed",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_differential",
+      "object": "SM_rear_differential",
+      "category": 37,
+      "state": "stock",
+      "mount": "rear_differential",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:final_drive",
+      "object": "SM_final_drive",
+      "category": 37,
+      "state": "stock",
+      "mount": "final_drive",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": "sparkmotors:rear_differential",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:driveshaft",
+      "object": "SM_driveshaft",
+      "category": 37,
+      "state": "stock",
+      "mount": "driveshaft",
+      "mount_world_m": [
+        0.0,
+        0.4399999976158142,
+        0.4000000059604645
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_cv_axle_-1",
+      "object": "SM_rear_cv_axle_-1",
+      "category": 37,
+      "state": "stock",
+      "mount": "rear_cv_axle_-1",
+      "mount_world_m": [
+        -0.4300000071525574,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_cv_axle_1",
+      "object": "SM_rear_cv_axle_1",
+      "category": 37,
+      "state": "stock",
+      "mount": "rear_cv_axle_1",
+      "mount_world_m": [
+        0.4300000071525574,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_tank",
+      "object": "SM_fuel_tank",
+      "category": 26,
+      "state": "stock",
+      "mount": "fuel_tank",
+      "mount_world_m": [
+        0.0,
+        1.7300000190734863,
+        0.4099999964237213
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_pump",
+      "object": "SM_fuel_pump",
+      "category": 26,
+      "state": "stock",
+      "mount": "fuel_pump",
+      "mount_world_m": [
+        0.2800000011920929,
+        1.7200000286102295,
+        0.4869999885559082
+      ],
+      "parent_part": "sparkmotors:fuel_tank",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_lines",
+      "object": "SM_fuel_lines",
+      "category": 26,
+      "state": "stock",
+      "mount": "fuel_lines",
+      "mount_world_m": [
+        -0.4000000059604645,
+        0.10000000149011612,
+        0.4399999976158142
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:radiator",
+      "object": "SM_radiator",
+      "category": 29,
+      "state": "stock",
+      "mount": "radiator",
+      "mount_world_m": [
+        0.0,
+        -1.9450000524520874,
+        0.7680000066757202
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 31,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:radiator_fan",
+      "object": "SM_radiator_fan",
+      "category": 29,
+      "state": "stock",
+      "mount": "radiator_fan",
+      "mount_world_m": [
+        0.0,
+        -1.9019999504089355,
+        0.7799999713897705
+      ],
+      "parent_part": "sparkmotors:radiator",
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coolant_hoses",
+      "object": "SM_coolant_hoses",
+      "category": 29,
+      "state": "stock",
+      "mount": "coolant_hoses",
+      "mount_world_m": [
+        -0.30000001192092896,
+        -1.75,
+        0.8399999737739563
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coolant_reservoir",
+      "object": "SM_coolant_reservoir",
+      "category": 29,
+      "state": "stock",
+      "mount": "coolant_reservoir",
+      "mount_world_m": [
+        0.49000000953674316,
+        -1.100000023841858,
+        0.8100000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:battery",
+      "object": "SM_battery",
+      "category": 27,
+      "state": "stock",
+      "mount": "battery",
+      "mount_world_m": [
+        -0.49000000953674316,
+        -1.690000057220459,
+        0.7559999823570251
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:wiring_harness",
+      "object": "SM_wiring_harness",
+      "category": 27,
+      "state": "stock",
+      "mount": "wiring_harness",
+      "mount_world_m": [
+        0.41999998688697815,
+        -0.8999999761581421,
+        0.8899999856948853
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_system",
+      "object": "SM_exhaust_system",
+      "category": 30,
+      "state": "stock",
+      "mount": "exhaust_system",
+      "mount_world_m": [
+        0.3499999940395355,
+        0.30000001192092896,
+        0.28999999165534973
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:muffler",
+      "object": "SM_muffler",
+      "category": 30,
+      "state": "stock",
+      "mount": "muffler",
+      "mount_world_m": [
+        0.49000000953674316,
+        1.8799998760223389,
+        0.28999999165534973
+      ],
+      "parent_part": "sparkmotors:exhaust_system",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_tip",
+      "object": "SM_exhaust_tip",
+      "category": 30,
+      "state": "stock",
+      "mount": "exhaust_tip",
+      "mount_world_m": [
+        0.49000000953674316,
+        2.180000066757202,
+        0.28999999165534973
+      ],
+      "parent_part": "sparkmotors:exhaust_system",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rear_spoiler",
+      "object": "SM_rear_spoiler",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "spoiler",
+      "mount_world_m": [
+        0.0,
+        1.7799999713897705,
+        1.0499999523162842
+      ],
+      "parent_part": "sparkmotors:trunk_lid",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:front_splitter",
+      "object": "SM_front_splitter",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "splitter",
+      "mount_world_m": [
+        0.0,
+        -2.200000047683716,
+        0.44999998807907104
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:widebody_fender_-1",
+      "object": "SM_widebody_fender_-1",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "front_fender_-1",
+      "mount_world_m": [
+        -0.9599999785423279,
+        -1.350000023841858,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 2,
+      "replaces": "front_fender_-1"
+    },
+    {
+      "id": "sparkmotors:sport_skirt_-1",
+      "object": "SM_sport_skirt_-1",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "side_skirt_-1",
+      "mount_world_m": [
+        -0.9470000267028809,
+        0.18000000715255737,
+        0.4050000011920929
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 1,
+      "replaces": "side_skirt_-1"
+    },
+    {
+      "id": "sparkmotors:fog_light_-1",
+      "object": "SM_fog_light_-1",
+      "category": 6,
+      "state": "upgrade",
+      "mount": "fog_light_-1",
+      "mount_world_m": [
+        -0.6399999856948853,
+        -2.2699999809265137,
+        0.5799999833106995
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:underglow_-1",
+      "object": "SM_underglow_-1",
+      "category": 6,
+      "state": "upgrade",
+      "mount": "underglow_-1",
+      "mount_world_m": [
+        -0.7200000286102295,
+        0.11999999731779099,
+        0.3199999928474426
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:widebody_fender_1",
+      "object": "SM_widebody_fender_1",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "front_fender_1",
+      "mount_world_m": [
+        0.9599999785423279,
+        -1.350000023841858,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 2,
+      "replaces": "front_fender_1"
+    },
+    {
+      "id": "sparkmotors:sport_skirt_1",
+      "object": "SM_sport_skirt_1",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "side_skirt_1",
+      "mount_world_m": [
+        0.9470000267028809,
+        0.18000000715255737,
+        0.4050000011920929
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 1,
+      "replaces": "side_skirt_1"
+    },
+    {
+      "id": "sparkmotors:fog_light_1",
+      "object": "SM_fog_light_1",
+      "category": 6,
+      "state": "upgrade",
+      "mount": "fog_light_1",
+      "mount_world_m": [
+        0.6399999856948853,
+        -2.2699999809265137,
+        0.5799999833106995
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:underglow_1",
+      "object": "SM_underglow_1",
+      "category": 6,
+      "state": "upgrade",
+      "mount": "underglow_1",
+      "mount_world_m": [
+        0.7200000286102295,
+        0.11999999731779099,
+        0.3199999928474426
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:sport_front_bumper",
+      "object": "SM_sport_front_bumper",
+      "category": 7,
+      "state": "upgrade",
+      "mount": "front_bumper",
+      "mount_world_m": [
+        0.0,
+        -2.1700000762939453,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 7,
+      "replaces": "front_bumper"
+    },
+    {
+      "id": "sparkmotors:bucket_seat_-1",
+      "object": "SM_bucket_seat_-1",
+      "category": 8,
+      "state": "upgrade",
+      "mount": "front_seat_-1",
+      "mount_world_m": [
+        -0.44999998807907104,
+        0.10000000149011612,
+        0.4399999976158142
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 6,
+      "replaces": "front_seat_-1"
+    },
+    {
+      "id": "sparkmotors:harness_-1",
+      "object": "SM_harness_-1",
+      "category": 12,
+      "state": "upgrade",
+      "mount": "harness_-1",
+      "mount_world_m": [
+        -0.44999998807907104,
+        0.17000000178813934,
+        1.0299999713897705
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bucket_seat_1",
+      "object": "SM_bucket_seat_1",
+      "category": 8,
+      "state": "upgrade",
+      "mount": "front_seat_1",
+      "mount_world_m": [
+        0.44999998807907104,
+        0.10000000149011612,
+        0.4399999976158142
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 6,
+      "replaces": "front_seat_1"
+    },
+    {
+      "id": "sparkmotors:harness_1",
+      "object": "SM_harness_1",
+      "category": 12,
+      "state": "upgrade",
+      "mount": "harness_1",
+      "mount_world_m": [
+        0.44999998807907104,
+        0.17000000178813934,
+        1.0299999713897705
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:roll_cage",
+      "object": "SM_roll_cage",
+      "category": 12,
+      "state": "upgrade",
+      "mount": "roll_cage",
+      "mount_world_m": [
+        0.0,
+        0.3700000047683716,
+        0.800000011920929
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 13,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:digital_cluster",
+      "object": "SM_digital_cluster",
+      "category": 9,
+      "state": "upgrade",
+      "mount": "instrument_cluster",
+      "mount_world_m": [
+        -0.4699999988079071,
+        -0.43700000643730164,
+        1.0130000114440918
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "instrument_cluster"
+    },
+    {
+      "id": "sparkmotors:turbocharger",
+      "object": "SM_turbocharger",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "forced_induction",
+      "mount_world_m": [
+        0.41999998688697815,
+        -1.2599999904632568,
+        0.8100000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:turbo_exhaust_manifold",
+      "object": "SM_turbo_exhaust_manifold",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "exhaust_header",
+      "mount_world_m": [
+        0.30000001192092896,
+        -1.3700000047683716,
+        0.8299999833106995
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": "exhaust_header"
+    },
+    {
+      "id": "sparkmotors:wastegate",
+      "object": "SM_wastegate",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "wastegate",
+      "mount_world_m": [
+        0.4099999964237213,
+        -1.090000033378601,
+        0.7699999809265137
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:blowoff_valve",
+      "object": "SM_blowoff_valve",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "bov",
+      "mount_world_m": [
+        -0.47999998927116394,
+        -1.7599999904632568,
+        0.8999999761581421
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intercooler",
+      "object": "SM_intercooler",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "intercooler",
+      "mount_world_m": [
+        0.0,
+        -2.0369999408721924,
+        0.7200000286102295
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 13,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:charge_pipes",
+      "object": "SM_charge_pipes",
+      "category": 31,
+      "state": "upgrade",
+      "mount": "charge_pipe",
+      "mount_world_m": [
+        0.0,
+        -1.7999999523162842,
+        0.8399999737739563
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 6,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:centrifugal_supercharger",
+      "object": "SM_centrifugal_supercharger",
+      "category": 32,
+      "state": "upgrade",
+      "mount": "forced_induction",
+      "mount_world_m": [
+        0.3799999952316284,
+        -1.6399999856948853,
+        0.8600000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": "turbocharger"
+    },
+    {
+      "id": "sparkmotors:nitrous_kit",
+      "object": "SM_nitrous_kit",
+      "category": 33,
+      "state": "upgrade",
+      "mount": "nos_kit",
+      "mount_world_m": [
+        -0.4000000059604645,
+        1.7300000190734863,
+        0.75
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:water_meth_kit",
+      "object": "SM_water_meth_kit",
+      "category": 34,
+      "state": "upgrade",
+      "mount": "water_meth",
+      "mount_world_m": [
+        0.5,
+        -0.8899999856948853,
+        0.8100000023841858
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:ecu",
+      "object": "SM_ecu",
+      "category": 39,
+      "state": "stock",
+      "mount": "ecu",
+      "mount_world_m": [
+        0.5199999809265137,
+        -0.7850000262260437,
+        0.9200000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:obd_port",
+      "object": "SM_obd_port",
+      "category": 39,
+      "state": "stock",
+      "mount": "obd_port",
+      "mount_world_m": [
+        -0.6800000071525574,
+        -0.47999998927116394,
+        0.7699999809265137
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:obd_dongle",
+      "object": "SM_obd_dongle",
+      "category": 39,
+      "state": "upgrade",
+      "mount": "obd_port",
+      "mount_world_m": [
+        -0.6800000071525574,
+        -0.453000009059906,
+        0.75
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:two_step_module",
+      "object": "SM_two_step_module",
+      "category": 39,
+      "state": "upgrade",
+      "mount": "two_step",
+      "mount_world_m": [
+        0.5299999713897705,
+        -0.7850000262260437,
+        0.8199999928474426
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:abs_module",
+      "object": "SM_abs_module",
+      "category": 15,
+      "state": "upgrade",
+      "mount": "abs",
+      "mount_world_m": [
+        -0.5600000023841858,
+        -0.8999999761581421,
+        0.7799999713897705
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 7,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:vtec_solenoid",
+      "object": "SM_vtec_solenoid",
+      "category": 22,
+      "state": "upgrade",
+      "mount": "vtec",
+      "mount_world_m": [
+        0.20999999344348907,
+        -1.1200000047683716,
+        0.925000011920929
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:carburetor_intake",
+      "object": "SM_carburetor_intake",
+      "category": 25,
+      "state": "upgrade",
+      "mount": "intake_manifold",
+      "mount_world_m": [
+        -0.3199999928474426,
+        -1.3700000047683716,
+        0.8899999856948853
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": "intake_manifold;fuel_rail;injectors;throttle_body"
+    },
+    {
+      "id": "sparkmotors:sequential_gearbox",
+      "object": "SM_sequential_gearbox",
+      "category": 36,
+      "state": "upgrade",
+      "mount": "transmission_mount",
+      "mount_world_m": [
+        0.0,
+        -0.6899999976158142,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "manual_5speed"
+    },
+    {
+      "id": "sparkmotors:automatic_gearbox",
+      "object": "SM_automatic_gearbox",
+      "category": 36,
+      "state": "upgrade",
+      "mount": "transmission_mount",
+      "mount_world_m": [
+        0.0,
+        -0.6899999976158142,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": "manual_5speed"
+    },
+    {
+      "id": "sparkmotors:dct_gearbox",
+      "object": "SM_dct_gearbox",
+      "category": 36,
+      "state": "upgrade",
+      "mount": "transmission_mount",
+      "mount_world_m": [
+        0.0,
+        -0.6899999976158142,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": "manual_5speed"
+    },
+    {
+      "id": "sparkmotors:cvt_gearbox",
+      "object": "SM_cvt_gearbox",
+      "category": 36,
+      "state": "upgrade",
+      "mount": "transmission_mount",
+      "mount_world_m": [
+        0.0,
+        -0.6899999976158142,
+        0.546999990940094
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": "manual_5speed"
+    },
+    {
+      "id": "sparkmotors:lsd_differential",
+      "object": "SM_lsd_differential",
+      "category": 37,
+      "state": "upgrade",
+      "mount": "rear_differential",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "rear_differential"
+    },
+    {
+      "id": "sparkmotors:locked_differential",
+      "object": "SM_locked_differential",
+      "category": 37,
+      "state": "upgrade",
+      "mount": "rear_differential",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "rear_differential"
+    },
+    {
+      "id": "sparkmotors:torsen_differential",
+      "object": "SM_torsen_differential",
+      "category": 37,
+      "state": "upgrade",
+      "mount": "rear_differential",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "rear_differential"
+    },
+    {
+      "id": "sparkmotors:welded_differential",
+      "object": "SM_welded_differential",
+      "category": 37,
+      "state": "upgrade",
+      "mount": "rear_differential",
+      "mount_world_m": [
+        0.0,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": "rear_differential"
+    },
+    {
+      "id": "sparkmotors:awd_transfer_kit",
+      "object": "SM_awd_transfer_kit",
+      "category": 37,
+      "state": "upgrade",
+      "mount": "transfer_case",
+      "mount_world_m": [
+        0.0,
+        -0.4099999964237213,
+        0.47999998927116394
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 5,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:damaged_front_bumper",
+      "object": "SM_damaged_front_bumper",
+      "category": 43,
+      "state": "upgrade",
+      "mount": "front_bumper",
+      "mount_world_m": [
+        0.0,
+        -2.1700000762939453,
+        0.699999988079071
+      ],
+      "parent_part": null,
+      "paintable": true,
+      "mesh_components": 1,
+      "replaces": "front_bumper"
+    },
+    {
+      "id": "sparkmotors:v6_engine",
+      "object": "SM_v6_engine",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:v6_bank_-1",
+      "object": "SM_v6_bank_-1",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_bank",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.3700000047683716,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_head_-1",
+      "object": "SM_v6_head_-1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "cylinder_head",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.3700000047683716,
+        0.9350000023841858
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cover_-1",
+      "object": "SM_v6_cover_-1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "valve_cover",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.3700000047683716,
+        0.9950000047683716
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_-1_0",
+      "object": "SM_v6_cylinder_-1_0",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.559999942779541,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_-1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_-1_1",
+      "object": "SM_v6_cylinder_-1_1",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.3700000047683716,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_-1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_-1_2",
+      "object": "SM_v6_cylinder_-1_2",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.1799999475479126,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_-1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cam_-1",
+      "object": "SM_v6_cam_-1",
+      "category": 22,
+      "state": "upgrade",
+      "mount": "camshaft",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.3700000047683716,
+        0.9459999799728394
+      ],
+      "parent_part": "sparkmotors:v6_head_-1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_bank_1",
+      "object": "SM_v6_bank_1",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_bank",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.3700000047683716,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_head_1",
+      "object": "SM_v6_head_1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "cylinder_head",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.3700000047683716,
+        0.9350000023841858
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cover_1",
+      "object": "SM_v6_cover_1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "valve_cover",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.3700000047683716,
+        0.9950000047683716
+      ],
+      "parent_part": "sparkmotors:v6_engine",
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_1_0",
+      "object": "SM_v6_cylinder_1_0",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.559999942779541,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_1_1",
+      "object": "SM_v6_cylinder_1_1",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.3700000047683716,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cylinder_1_2",
+      "object": "SM_v6_cylinder_1_2",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.1799999475479126,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:v6_bank_1",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:v6_cam_1",
+      "object": "SM_v6_cam_1",
+      "category": 22,
+      "state": "upgrade",
+      "mount": "camshaft",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.3700000047683716,
+        0.9459999799728394
+      ],
+      "parent_part": "sparkmotors:v6_head_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_engine",
+      "object": "SM_flat4_engine",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 8,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:flat4_bank_-1",
+      "object": "SM_flat4_bank_-1",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_bank",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_head_-1",
+      "object": "SM_flat4_head_-1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "cylinder_head",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.3700000047683716,
+        0.8349999785423279
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cover_-1",
+      "object": "SM_flat4_cover_-1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "valve_cover",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.3700000047683716,
+        0.8949999809265137
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cylinder_-1_0",
+      "object": "SM_flat4_cylinder_-1_0",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.559999942779541,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_bank_-1",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cylinder_-1_1",
+      "object": "SM_flat4_cylinder_-1_1",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.1799999475479126,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_bank_-1",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cam_-1",
+      "object": "SM_flat4_cam_-1",
+      "category": 22,
+      "state": "upgrade",
+      "mount": "camshaft",
+      "mount_world_m": [
+        -0.23999999463558197,
+        -1.3700000047683716,
+        0.8460000157356262
+      ],
+      "parent_part": "sparkmotors:flat4_head_-1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_bank_1",
+      "object": "SM_flat4_bank_1",
+      "category": 18,
+      "state": "upgrade",
+      "mount": "engine_bank",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_head_1",
+      "object": "SM_flat4_head_1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "cylinder_head",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.3700000047683716,
+        0.8349999785423279
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cover_1",
+      "object": "SM_flat4_cover_1",
+      "category": 19,
+      "state": "upgrade",
+      "mount": "valve_cover",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.3700000047683716,
+        0.8949999809265137
+      ],
+      "parent_part": "sparkmotors:flat4_engine",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cylinder_1_0",
+      "object": "SM_flat4_cylinder_1_0",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.559999942779541,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_bank_1",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cylinder_1_1",
+      "object": "SM_flat4_cylinder_1_1",
+      "category": 20,
+      "state": "upgrade",
+      "mount": "cylinder",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.1799999475479126,
+        0.6700000166893005
+      ],
+      "parent_part": "sparkmotors:flat4_bank_1",
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:flat4_cam_1",
+      "object": "SM_flat4_cam_1",
+      "category": 22,
+      "state": "upgrade",
+      "mount": "camshaft",
+      "mount_world_m": [
+        0.23999999463558197,
+        -1.3700000047683716,
+        0.8460000157356262
+      ],
+      "parent_part": "sparkmotors:flat4_head_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotary_1rotor",
+      "object": "SM_rotary_1rotor",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:eccentric_shaft_1r",
+      "object": "SM_eccentric_shaft_1r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "eccentric_shaft",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_1r_0",
+      "object": "SM_rotor_housing_1r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_1r_0",
+      "object": "SM_rotor_1r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_1r_0_0",
+      "object": "SM_apex_seal_1r_0_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_1r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_1r_0_1",
+      "object": "SM_apex_seal_1r_0_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_1r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_1r_0_2",
+      "object": "SM_apex_seal_1r_0_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_1r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_1r_0",
+      "object": "SM_stationary_gear_1r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.0579999685287476,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_1r_0",
+      "object": "SM_side_housing_1r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.034999966621399,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_1r_1",
+      "object": "SM_side_housing_1r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1770000457763672,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intake_port_1r",
+      "object": "SM_intake_port_1r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "intake_port",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_port_1r",
+      "object": "SM_exhaust_port_1r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "exhaust_port",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_metering_pump_1r",
+      "object": "SM_oil_metering_pump_1r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "oil_metering_pump",
+      "mount_world_m": [
+        0.2199999988079071,
+        -1.4500000476837158,
+        0.5799999833106995
+      ],
+      "parent_part": "sparkmotors:rotary_1rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotary_2rotor",
+      "object": "SM_rotary_2rotor",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:eccentric_shaft_2r",
+      "object": "SM_eccentric_shaft_2r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "eccentric_shaft",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_2r_0",
+      "object": "SM_rotor_housing_2r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_2r_0",
+      "object": "SM_rotor_2r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_0_0",
+      "object": "SM_apex_seal_2r_0_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_2r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_0_1",
+      "object": "SM_apex_seal_2r_0_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_2r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_0_2",
+      "object": "SM_apex_seal_2r_0_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_2r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_2r_0",
+      "object": "SM_stationary_gear_2r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.0579999685287476,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_2r_1",
+      "object": "SM_rotor_housing_2r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_2r_1",
+      "object": "SM_rotor_2r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_1_0",
+      "object": "SM_apex_seal_2r_1_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_2r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_1_1",
+      "object": "SM_apex_seal_2r_1_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_2r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_2r_1_2",
+      "object": "SM_apex_seal_2r_1_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_2r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_2r_1",
+      "object": "SM_stationary_gear_2r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.2000000476837158,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_2r_0",
+      "object": "SM_side_housing_2r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.034999966621399,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_2r_1",
+      "object": "SM_side_housing_2r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1770000457763672,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_2r_2",
+      "object": "SM_side_housing_2r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.319000005722046,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intake_port_2r",
+      "object": "SM_intake_port_2r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "intake_port",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_port_2r",
+      "object": "SM_exhaust_port_2r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "exhaust_port",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_metering_pump_2r",
+      "object": "SM_oil_metering_pump_2r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "oil_metering_pump",
+      "mount_world_m": [
+        0.2199999988079071,
+        -1.4500000476837158,
+        0.5799999833106995
+      ],
+      "parent_part": "sparkmotors:rotary_2rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotary_3rotor",
+      "object": "SM_rotary_3rotor",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:eccentric_shaft_3r",
+      "object": "SM_eccentric_shaft_3r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "eccentric_shaft",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_3r_0",
+      "object": "SM_rotor_housing_3r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_3r_0",
+      "object": "SM_rotor_3r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_0_0",
+      "object": "SM_apex_seal_3r_0_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_3r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_0_1",
+      "object": "SM_apex_seal_3r_0_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_3r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_0_2",
+      "object": "SM_apex_seal_3r_0_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_3r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_3r_0",
+      "object": "SM_stationary_gear_3r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.0579999685287476,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_3r_1",
+      "object": "SM_rotor_housing_3r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_3r_1",
+      "object": "SM_rotor_3r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_1_0",
+      "object": "SM_apex_seal_3r_1_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_3r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_1_1",
+      "object": "SM_apex_seal_3r_1_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_3r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_1_2",
+      "object": "SM_apex_seal_3r_1_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_3r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_3r_1",
+      "object": "SM_stationary_gear_3r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.2000000476837158,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_3r_2",
+      "object": "SM_rotor_housing_3r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_3r_2",
+      "object": "SM_rotor_3r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_2_0",
+      "object": "SM_apex_seal_3r_2_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_3r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_2_1",
+      "object": "SM_apex_seal_3r_2_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.3890000581741333,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_3r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_3r_2_2",
+      "object": "SM_apex_seal_3r_2_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.3890000581741333,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_3r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_3r_2",
+      "object": "SM_stationary_gear_3r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.3420000076293945,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_3r_0",
+      "object": "SM_side_housing_3r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.034999966621399,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_3r_1",
+      "object": "SM_side_housing_3r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1770000457763672,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_3r_2",
+      "object": "SM_side_housing_3r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.319000005722046,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_3r_3",
+      "object": "SM_side_housing_3r_3",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.4609999656677246,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intake_port_3r",
+      "object": "SM_intake_port_3r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "intake_port",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_port_3r",
+      "object": "SM_exhaust_port_3r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "exhaust_port",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_metering_pump_3r",
+      "object": "SM_oil_metering_pump_3r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "oil_metering_pump",
+      "mount_world_m": [
+        0.2199999988079071,
+        -1.4500000476837158,
+        0.5799999833106995
+      ],
+      "parent_part": "sparkmotors:rotary_3rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotary_4rotor",
+      "object": "SM_rotary_4rotor",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "engine_mount",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6700000166893005
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": "i4_engine"
+    },
+    {
+      "id": "sparkmotors:eccentric_shaft_4r",
+      "object": "SM_eccentric_shaft_4r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "eccentric_shaft",
+      "mount_world_m": [
+        0.0,
+        -1.3700000047683716,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_4r_0",
+      "object": "SM_rotor_housing_4r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_4r_0",
+      "object": "SM_rotor_4r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_0_0",
+      "object": "SM_apex_seal_4r_0_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.1050000190734863,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_4r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_0_1",
+      "object": "SM_apex_seal_4r_0_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_4r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_0_2",
+      "object": "SM_apex_seal_4r_0_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.1050000190734863,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_4r_0",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_4r_0",
+      "object": "SM_stationary_gear_4r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.0579999685287476,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_4r_1",
+      "object": "SM_rotor_housing_4r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_4r_1",
+      "object": "SM_rotor_4r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_1_0",
+      "object": "SM_apex_seal_4r_1_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.246999979019165,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_4r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_1_1",
+      "object": "SM_apex_seal_4r_1_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_4r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_1_2",
+      "object": "SM_apex_seal_4r_1_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.246999979019165,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_4r_1",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_4r_1",
+      "object": "SM_stationary_gear_4r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.2000000476837158,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_4r_2",
+      "object": "SM_rotor_housing_4r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_4r_2",
+      "object": "SM_rotor_4r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_2_0",
+      "object": "SM_apex_seal_4r_2_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.3890000581741333,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_4r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_2_1",
+      "object": "SM_apex_seal_4r_2_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.3890000581741333,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_4r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_2_2",
+      "object": "SM_apex_seal_4r_2_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.3890000581741333,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_4r_2",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_4r_2",
+      "object": "SM_stationary_gear_4r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.3420000076293945,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_housing_4r_3",
+      "object": "SM_rotor_housing_4r_3",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor_housing",
+      "mount_world_m": [
+        0.0,
+        -1.531000018119812,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:rotor_4r_3",
+      "object": "SM_rotor_4r_3",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "rotor",
+      "mount_world_m": [
+        0.012000000104308128,
+        -1.531000018119812,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_3_0",
+      "object": "SM_apex_seal_4r_3_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        0.10300000011920929,
+        -1.531000018119812,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotor_4r_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_3_1",
+      "object": "SM_apex_seal_4r_3_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.531000018119812,
+        0.7788082957267761
+      ],
+      "parent_part": "sparkmotors:rotor_4r_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:apex_seal_4r_3_2",
+      "object": "SM_apex_seal_4r_3_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "apex_seal",
+      "mount_world_m": [
+        -0.03350000083446503,
+        -1.531000018119812,
+        0.621191680431366
+      ],
+      "parent_part": "sparkmotors:rotor_4r_3",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:stationary_gear_4r_3",
+      "object": "SM_stationary_gear_4r_3",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "stationary_gear",
+      "mount_world_m": [
+        0.0,
+        -1.4839999675750732,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_4r_0",
+      "object": "SM_side_housing_4r_0",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.034999966621399,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_4r_1",
+      "object": "SM_side_housing_4r_1",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.1770000457763672,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_4r_2",
+      "object": "SM_side_housing_4r_2",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.319000005722046,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_4r_3",
+      "object": "SM_side_housing_4r_3",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.4609999656677246,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:side_housing_4r_4",
+      "object": "SM_side_housing_4r_4",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "side_housing",
+      "mount_world_m": [
+        0.0,
+        -1.6030000448226929,
+        0.699999988079071
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:intake_port_4r",
+      "object": "SM_intake_port_4r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "intake_port",
+      "mount_world_m": [
+        -0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:exhaust_port_4r",
+      "object": "SM_exhaust_port_4r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "exhaust_port",
+      "mount_world_m": [
+        0.1899999976158142,
+        -1.2999999523162842,
+        0.7699999809265137
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_metering_pump_4r",
+      "object": "SM_oil_metering_pump_4r",
+      "category": 38,
+      "state": "upgrade",
+      "mount": "oil_metering_pump",
+      "mount_world_m": [
+        0.2199999988079071,
+        -1.4500000476837158,
+        0.5799999833106995
+      ],
+      "parent_part": "sparkmotors:rotary_4rotor",
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:garage_lift",
+      "object": "SM_garage_lift",
+      "category": 40,
+      "state": "workshop",
+      "mount": "garage_lift",
+      "mount_world_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 14,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:machining_bench",
+      "object": "SM_machining_bench",
+      "category": 40,
+      "state": "workshop",
+      "mount": "machining_bench",
+      "mount_world_m": [
+        3.200000047683716,
+        0.0,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 9,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:bench_vise",
+      "object": "SM_bench_vise",
+      "category": 40,
+      "state": "workshop",
+      "mount": "bench_vise",
+      "mount_world_m": [
+        2.7300000190734863,
+        -0.03999999910593033,
+        1.159999966621399
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_pump_block",
+      "object": "SM_fuel_pump_block",
+      "category": 41,
+      "state": "workshop",
+      "mount": "fuel_pump_block",
+      "mount_world_m": [
+        -3.200000047683716,
+        0.0,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 7,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:fuel_nozzle",
+      "object": "SM_fuel_nozzle",
+      "category": 41,
+      "state": "workshop",
+      "mount": "fuel_nozzle",
+      "mount_world_m": [
+        -2.8399999141693115,
+        -0.25,
+        0.8799999952316284
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:dyno_roller_bed",
+      "object": "SM_dyno_roller_bed",
+      "category": 41,
+      "state": "workshop",
+      "mount": "dyno_roller_bed",
+      "mount_world_m": [
+        0.0,
+        4.5,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 10,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:dyno_console",
+      "object": "SM_dyno_console",
+      "category": 41,
+      "state": "workshop",
+      "mount": "dyno_console",
+      "mount_world_m": [
+        1.7999999523162842,
+        4.599999904632568,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 3,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:paint_booth",
+      "object": "SM_paint_booth",
+      "category": 41,
+      "state": "workshop",
+      "mount": "paint_booth",
+      "mount_world_m": [
+        0.0,
+        -6.0,
+        0.0
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 10,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:floor_jack",
+      "object": "SM_floor_jack",
+      "category": 40,
+      "state": "workshop",
+      "mount": "floor_jack",
+      "mount_world_m": [
+        2.700000047683716,
+        1.2999999523162842,
+        0.12999999523162842
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 6,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:tuning_laptop",
+      "object": "SM_tuning_laptop",
+      "category": 39,
+      "state": "workshop",
+      "mount": "tuning_laptop",
+      "mount_world_m": [
+        3.4700000286102295,
+        0.019999999552965164,
+        1.0750000476837158
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 43,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:jerry_can",
+      "object": "SM_jerry_can",
+      "category": 42,
+      "state": "workshop",
+      "mount": "jerry_can",
+      "mount_world_m": [
+        2.6500000953674316,
+        0.20000000298023224,
+        1.2000000476837158
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:oil_container",
+      "object": "SM_oil_container",
+      "category": 42,
+      "state": "workshop",
+      "mount": "oil_container",
+      "mount_world_m": [
+        2.9100000858306885,
+        0.20000000298023224,
+        1.2000000476837158
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:coolant_container",
+      "object": "SM_coolant_container",
+      "category": 42,
+      "state": "workshop",
+      "mount": "coolant_container",
+      "mount_world_m": [
+        3.1700000762939453,
+        0.20000000298023224,
+        1.2000000476837158
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:water_meth_container",
+      "object": "SM_water_meth_container",
+      "category": 42,
+      "state": "workshop",
+      "mount": "water_meth_container",
+      "mount_world_m": [
+        3.430000066757202,
+        0.20000000298023224,
+        1.2000000476837158
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 4,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:sport_rim_fl",
+      "object": "SM_sport_rim_fl",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "rim_fl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 12,
+      "replaces": "rim_fl"
+    },
+    {
+      "id": "sparkmotors:slick_tire_fl",
+      "object": "SM_slick_tire_fl",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "tire_fl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": "tire_fl"
+    },
+    {
+      "id": "sparkmotors:sport_coilover_fl",
+      "object": "SM_sport_coilover_fl",
+      "category": 16,
+      "state": "upgrade",
+      "mount": "coilover_fl",
+      "mount_world_m": [
+        -0.6600000262260437,
+        -1.350000023841858,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": "coilover_fl"
+    },
+    {
+      "id": "sparkmotors:sport_rim_rl",
+      "object": "SM_sport_rim_rl",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "rim_rl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 12,
+      "replaces": "rim_rl"
+    },
+    {
+      "id": "sparkmotors:slick_tire_rl",
+      "object": "SM_slick_tire_rl",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "tire_rl",
+      "mount_world_m": [
+        -0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": "tire_rl"
+    },
+    {
+      "id": "sparkmotors:sport_coilover_rl",
+      "object": "SM_sport_coilover_rl",
+      "category": 16,
+      "state": "upgrade",
+      "mount": "coilover_rl",
+      "mount_world_m": [
+        -0.6600000262260437,
+        1.2999999523162842,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": "coilover_rl"
+    },
+    {
+      "id": "sparkmotors:sport_rim_fr",
+      "object": "SM_sport_rim_fr",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "rim_fr",
+      "mount_world_m": [
+        0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 12,
+      "replaces": "rim_fr"
+    },
+    {
+      "id": "sparkmotors:slick_tire_fr",
+      "object": "SM_slick_tire_fr",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "tire_fr",
+      "mount_world_m": [
+        0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": "tire_fr"
+    },
+    {
+      "id": "sparkmotors:sport_coilover_fr",
+      "object": "SM_sport_coilover_fr",
+      "category": 16,
+      "state": "upgrade",
+      "mount": "coilover_fr",
+      "mount_world_m": [
+        0.6600000262260437,
+        -1.350000023841858,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": "coilover_fr"
+    },
+    {
+      "id": "sparkmotors:sport_rim_rr",
+      "object": "SM_sport_rim_rr",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "rim_rr",
+      "mount_world_m": [
+        0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 12,
+      "replaces": "rim_rr"
+    },
+    {
+      "id": "sparkmotors:slick_tire_rr",
+      "object": "SM_slick_tire_rr",
+      "category": 13,
+      "state": "upgrade",
+      "mount": "tire_rr",
+      "mount_world_m": [
+        0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 1,
+      "replaces": "tire_rr"
+    },
+    {
+      "id": "sparkmotors:sport_coilover_rr",
+      "object": "SM_sport_coilover_rr",
+      "category": 16,
+      "state": "upgrade",
+      "mount": "coilover_rr",
+      "mount_world_m": [
+        0.6600000262260437,
+        1.2999999523162842,
+        0.6100000143051147
+      ],
+      "parent_part": null,
+      "paintable": false,
+      "mesh_components": 73,
+      "replaces": "coilover_rr"
+    },
+    {
+      "id": "sparkmotors:head_bolt_-0.158_0",
+      "object": "SM_head_bolt_-0.158_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_-0.158_0",
+      "mount_world_m": [
+        -0.15800000727176666,
+        -1.625,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_-0.158_1",
+      "object": "SM_head_bolt_-0.158_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_-0.158_1",
+      "mount_world_m": [
+        -0.15800000727176666,
+        -1.4950000047683716,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_-0.158_2",
+      "object": "SM_head_bolt_-0.158_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_-0.158_2",
+      "mount_world_m": [
+        -0.15800000727176666,
+        -1.3650000095367432,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_-0.158_3",
+      "object": "SM_head_bolt_-0.158_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_-0.158_3",
+      "mount_world_m": [
+        -0.15800000727176666,
+        -1.2350000143051147,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_-0.158_4",
+      "object": "SM_head_bolt_-0.158_4",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_-0.158_4",
+      "mount_world_m": [
+        -0.15800000727176666,
+        -1.1050000190734863,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_0.158_0",
+      "object": "SM_head_bolt_0.158_0",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_0.158_0",
+      "mount_world_m": [
+        0.15800000727176666,
+        -1.625,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_0.158_1",
+      "object": "SM_head_bolt_0.158_1",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_0.158_1",
+      "mount_world_m": [
+        0.15800000727176666,
+        -1.4950000047683716,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_0.158_2",
+      "object": "SM_head_bolt_0.158_2",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_0.158_2",
+      "mount_world_m": [
+        0.15800000727176666,
+        -1.3650000095367432,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_0.158_3",
+      "object": "SM_head_bolt_0.158_3",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_0.158_3",
+      "mount_world_m": [
+        0.15800000727176666,
+        -1.2350000143051147,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    },
+    {
+      "id": "sparkmotors:head_bolt_0.158_4",
+      "object": "SM_head_bolt_0.158_4",
+      "category": 21,
+      "state": "stock",
+      "mount": "head_bolt_0.158_4",
+      "mount_world_m": [
+        0.15800000727176666,
+        -1.1050000190734863,
+        0.8870000243186951
+      ],
+      "parent_part": "sparkmotors:cylinder_head_i4",
+      "paintable": false,
+      "mesh_components": 2,
+      "replaces": ""
+    }
+  ],
+  "locators": [
+    {
+      "name": "locator:engine_mount",
+      "position_m": [
+        0.0,
+        -1.3700000047683716,
+        0.6600000262260437
+      ]
+    },
+    {
+      "name": "locator:transmission_mount",
+      "position_m": [
+        0.0,
+        -0.699999988079071,
+        0.5600000023841858
+      ]
+    },
+    {
+      "name": "locator:fuel_tank",
+      "position_m": [
+        0.0,
+        1.649999976158142,
+        0.4300000071525574
+      ]
+    },
+    {
+      "name": "locator:radiator",
+      "position_m": [
+        0.0,
+        -1.9600000381469727,
+        0.7799999713897705
+      ]
+    },
+    {
+      "name": "locator:battery",
+      "position_m": [
+        -0.5,
+        -1.6200000047683716,
+        0.7799999713897705
+      ]
+    },
+    {
+      "name": "locator:dash",
+      "position_m": [
+        0.0,
+        -0.5199999809265137,
+        0.9100000262260437
+      ]
+    },
+    {
+      "name": "locator:wheel_fl",
+      "position_m": [
+        -0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ]
+    },
+    {
+      "name": "locator:wheel_rl",
+      "position_m": [
+        -0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ]
+    },
+    {
+      "name": "locator:wheel_fr",
+      "position_m": [
+        0.8299999833106995,
+        -1.350000023841858,
+        0.3400000035762787
+      ]
+    },
+    {
+      "name": "locator:wheel_rr",
+      "position_m": [
+        0.8299999833106995,
+        1.2999999523162842,
+        0.3400000035762787
+      ]
+    },
+    {
+      "name": "locator:seat_-1",
+      "position_m": [
+        -0.44999998807907104,
+        0.10999999940395355,
+        0.7099999785423279
+      ]
+    },
+    {
+      "name": "locator:seat_1",
+      "position_m": [
+        0.44999998807907104,
+        0.10999999940395355,
+        0.7099999785423279
+      ]
+    }
+  ]
+}

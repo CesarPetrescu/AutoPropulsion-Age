@@ -1,0 +1,200 @@
+{
+  "scope": "Geometric authoring checks. Sampled articulation and selected subsystem clearances; not exhaustive collision or in-game physics validation.",
+  "checks": [
+    {
+      "name": "Unique part identifiers",
+      "passed": true,
+      "count": 471
+    },
+    {
+      "name": "All 43 checklist categories represented",
+      "passed": true,
+      "categories": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ]
+    },
+    {
+      "name": "Wheelbase",
+      "passed": true,
+      "meters": 2.65
+    },
+    {
+      "name": "Four separate stock tires and four rims",
+      "passed": true
+    },
+    {
+      "name": "Stock engine below closed hood (>=10 mm)",
+      "passed": true,
+      "minimum_clearance_m": 0.016636482423702637,
+      "closest_mesh": "Coil pack"
+    },
+    {
+      "name": "Tire envelope inside front arches across sampled steer/travel",
+      "passed": true,
+      "minimum_radial_clearance_m": 0.02408821735019867,
+      "steer_degrees": [
+        -28,
+        -14,
+        0,
+        14,
+        28
+      ],
+      "vertical_travel_m": [
+        -0.05,
+        0,
+        0.05
+      ]
+    },
+    {
+      "name": "Piston to liner radial clearance",
+      "passed": true,
+      "clearance_m": 0.0003
+    },
+    {
+      "name": "Liner to block bore radial clearance",
+      "passed": true,
+      "clearance_m": 0.001
+    },
+    {
+      "name": "Brake caliper inside rim barrel",
+      "passed": true,
+      "caliper_radius_m": 0.20247468977627797,
+      "rim_inside_radius_m": 0.215
+    },
+    {
+      "name": "Radiator to intercooler separation",
+      "passed": true,
+      "clearance_m": 0.034
+    },
+    {
+      "name": "Fuel tank under trunk floor",
+      "passed": true,
+      "clearance_m": 0.007500000000000062
+    },
+    {
+      "name": "Driveshaft below tunnel roof",
+      "passed": true,
+      "minimum_clearance_m": 0.023499999999999965
+    },
+    {
+      "name": "All doors swing outward through sampled animation",
+      "passed": true,
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    {
+      "name": "SM_rotary_1rotor output shaft height matches gearbox",
+      "passed": true,
+      "axis_z_m": 0.546999990940094
+    },
+    {
+      "name": "SM_rotary_2rotor output shaft height matches gearbox",
+      "passed": true,
+      "axis_z_m": 0.546999990940094
+    },
+    {
+      "name": "SM_rotary_3rotor output shaft height matches gearbox",
+      "passed": true,
+      "axis_z_m": 0.546999990940094
+    },
+    {
+      "name": "SM_rotary_4rotor output shaft height matches gearbox",
+      "passed": true,
+      "axis_z_m": 0.546999990940094
+    },
+    {
+      "name": "SM_v6_engine clears hood",
+      "passed": true,
+      "minimum_clearance_m": 0.027352482498372188
+    },
+    {
+      "name": "SM_flat4_engine clears hood",
+      "passed": true,
+      "minimum_clearance_m": 0.052844099432796776
+    },
+    {
+      "name": "Lift pad footprint matches chassis rails",
+      "passed": true,
+      "pads_x_m": [
+        -0.52,
+        0.52
+      ],
+      "pads_y_m": [
+        -0.8,
+        0.8
+      ]
+    },
+    {
+      "name": "Dyno roller pairs match both axle positions",
+      "passed": true,
+      "relative_axle_y_m": [
+        -1.35,
+        1.3
+      ]
+    },
+    {
+      "name": "Paint booth internal envelope accepts sedan",
+      "passed": true,
+      "interior_m": [
+        3.4,
+        5.3,
+        2.6
+      ],
+      "car_m": [
+        1.9,
+        4.5,
+        1.52
+      ]
+    }
+  ],
+  "passed": 22,
+  "failed": 0
+}

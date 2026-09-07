@@ -1,0 +1,11 @@
+{
+  "file": "stock_car.glb",
+  "mesh_objects": 281,
+  "triangles": 68400,
+  "root_transform_error_m": 0,
+  "uv": "Basic box projection; texture atlas and livery unwrap not yet authored.",
+  "glb_valid_header": true,
+  "bytes": 4632816,
+  "animations": 1,
+  "animation_channels": 6
+}

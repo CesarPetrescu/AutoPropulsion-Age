@@ -1,0 +1,7 @@
+# Blender backups and local batch-render progress
+*.blend[0-9]*
+*.log
+__pycache__/
+*.pyc
+assets/modular_car_kit/gallery_progress.json
+assets/modular_car_kit/rebuild_check/temporary/
