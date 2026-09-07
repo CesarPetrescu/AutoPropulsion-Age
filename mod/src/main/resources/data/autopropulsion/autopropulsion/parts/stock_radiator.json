@@ -1,0 +1,20 @@
+{
+  "category": "radiator",
+  "excludes_tags": [],
+  "id": "autopropulsion:stock_radiator",
+  "implemented": true,
+  "limits": {},
+  "mass_kg": 8,
+  "model": "autopropulsion:vehicle/parts/radiator",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "radiator_w_per_k",
+      "value": 240
+    }
+  ],
+  "preferred_slot": "radiator",
+  "requires_tags": [],
+  "slots": [],
+  "tags": []
+}

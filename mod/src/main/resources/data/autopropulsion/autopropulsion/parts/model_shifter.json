@@ -1,0 +1,16 @@
+{
+  "category": "shifter",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_shifter",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/shifter",
+  "modifiers": [],
+  "preferred_slot": "shifter",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "shifter"
+  ]
+}

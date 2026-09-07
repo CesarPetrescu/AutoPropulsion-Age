@@ -1,0 +1,16 @@
+{
+  "category": "rotary_intake_port",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rotary_intake_port",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rotary_intake_port",
+  "modifiers": [],
+  "preferred_slot": "rotary_intake_port",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rotary_intake_port"
+  ]
+}

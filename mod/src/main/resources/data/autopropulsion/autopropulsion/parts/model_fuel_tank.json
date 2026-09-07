@@ -1,0 +1,16 @@
+{
+  "category": "fuel_tank",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_fuel_tank",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/fuel_tank",
+  "modifiers": [],
+  "preferred_slot": "fuel_tank",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "fuel_tank"
+  ]
+}

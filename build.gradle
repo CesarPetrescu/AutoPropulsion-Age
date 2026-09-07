@@ -1,0 +1,23 @@
+plugins { id 'base' }
+allprojects {
+    group = 'com.photonspark.autopropulsion'
+    version = rootProject.mod_version
+    repositories { mavenCentral() }
+}
+subprojects {
+    plugins.withId('java') {
+        java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+        tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 21 }
+    }
+}
+tasks.register('generateAssets', Exec) {
+    workingDir rootDir
+    commandLine 'python3', 'art/generate_assets.py'
+}
+tasks.register('validateAssets', Exec) {
+    dependsOn 'generateAssets'
+    workingDir rootDir
+    commandLine 'python3', 'tools/validate_assets.py'
+}
+tasks.named('check') { dependsOn ':sim:test', ':mod:check', 'validateAssets' }
+tasks.named('build') { dependsOn ':sim:build', ':mod:build', ':tools:build' }

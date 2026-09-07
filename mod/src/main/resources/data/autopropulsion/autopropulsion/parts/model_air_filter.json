@@ -1,0 +1,16 @@
+{
+  "category": "air_filter",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_air_filter",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/air_filter",
+  "modifiers": [],
+  "preferred_slot": "air_filter",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "air_filter"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "camshaft_gear",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_camshaft_gear",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/camshaft_gear",
+  "modifiers": [],
+  "preferred_slot": "camshaft_gear",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "camshaft_gear"
+  ]
+}

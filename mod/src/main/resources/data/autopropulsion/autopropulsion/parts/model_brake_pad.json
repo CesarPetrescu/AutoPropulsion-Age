@@ -1,0 +1,16 @@
+{
+  "category": "brake_pad",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_brake_pad",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/brake_pad",
+  "modifiers": [],
+  "preferred_slot": "brake_pad",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "brake_pad"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "cylinder_head",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_cylinder_head",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/cylinder_head",
+  "modifiers": [],
+  "preferred_slot": "cylinder_head",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "cylinder_head"
+  ]
+}

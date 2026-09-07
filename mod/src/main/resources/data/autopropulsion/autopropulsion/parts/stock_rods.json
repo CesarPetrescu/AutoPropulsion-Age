@@ -1,0 +1,19 @@
+{
+  "category": "rods",
+  "excludes_tags": [],
+  "id": "autopropulsion:stock_rods",
+  "implemented": true,
+  "limits": {
+    "rpm": 7600,
+    "torque_nm": 260
+  },
+  "mass_kg": 3.2,
+  "model": "autopropulsion:vehicle/parts/connecting_rod",
+  "modifiers": [],
+  "preferred_slot": "engine/rods",
+  "requires_tags": [
+    "engine/piston"
+  ],
+  "slots": [],
+  "tags": []
+}

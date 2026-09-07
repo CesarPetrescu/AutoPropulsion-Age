@@ -1,0 +1,19 @@
+{
+  "category": "apex_seals",
+  "excludes_tags": [],
+  "id": "autopropulsion:stock_apex_seals",
+  "implemented": true,
+  "limits": {
+    "rpm": 9500,
+    "torque_nm": 290
+  },
+  "mass_kg": 0.2,
+  "model": "autopropulsion:vehicle/parts/apex_seal",
+  "modifiers": [],
+  "preferred_slot": "engine/apex_seals",
+  "requires_tags": [
+    "engine/rotary"
+  ],
+  "slots": [],
+  "tags": []
+}

@@ -1,0 +1,16 @@
+{
+  "category": "crankcase_vent",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_crankcase_vent",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/crankcase_vent",
+  "modifiers": [],
+  "preferred_slot": "crankcase_vent",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "crankcase_vent"
+  ]
+}

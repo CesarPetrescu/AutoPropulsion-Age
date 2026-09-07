@@ -1,0 +1,17 @@
+.gradle/
+.gradle-smoke-*/
+**/build/
+**/run/
+**/runs/
+.idea/
+*.iml
+.vscode/
+__pycache__/
+*.pyc
+art/generated/
+reports/local/
+reports/minecraft/
+*.blend1
+source.zip
+minecraft-build.log
+.env

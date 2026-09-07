@@ -1,0 +1,48 @@
+plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.146' }
+evaluationDependsOn(':sim')
+base { archivesName = 'autopropulsion-age' }
+dependencies { implementation project(':sim') }
+neoForge {
+    version = rootProject.neo_version
+    parchment { minecraftVersion = '1.21.1'; mappingsVersion = '2024.11.17' }
+    runs {
+        client {
+            client()
+            gameDirectory = file('run/client')
+            systemProperty 'apa.clientSmoke', System.getProperty('apa.clientSmoke', 'false')
+            systemProperty 'apa.profile', System.getProperty('apa.profile', 'fancy')
+            systemProperty 'apa.smokeHost', System.getProperty('apa.smokeHost', '127.0.0.1:25565')
+            programArguments.addAll '--username', System.getProperty('apa.username', 'APA_Tester')
+            if (Boolean.getBoolean('apa.clientSmoke')) {
+                programArguments.addAll '--quickPlayMultiplayer', System.getProperty('apa.smokeHost', '127.0.0.1:25565'), '--width', '1280', '--height', '720'
+            }
+        }
+        server {
+            server()
+            gameDirectory = file('run/server')
+            programArgument '--nogui'
+            systemProperty 'apa.serverSmoke', System.getProperty('apa.serverSmoke', 'false')
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = file('run/gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'autopropulsion'
+        }
+        configureEach { logLevel = org.slf4j.event.Level.INFO }
+    }
+    mods {
+        autopropulsion {
+            sourceSet sourceSets.main
+            sourceSet project(':sim').sourceSets.main
+        }
+    }
+}
+tasks.named('processResources') {
+    dependsOn rootProject.tasks.named('generateAssets')
+    filesMatching('META-INF/neoforge.mods.toml') { expand mod_version: project.version }
+}
+tasks.named('jar') {
+    dependsOn ':sim:classes'
+    from project(':sim').sourceSets.main.output
+    manifest { attributes 'Implementation-Title': 'AutoPropulsion Age', 'Implementation-Version': project.version }
+}

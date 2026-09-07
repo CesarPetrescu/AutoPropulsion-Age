@@ -1,0 +1,16 @@
+{
+  "category": "timing_chain",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_timing_chain",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/timing_chain",
+  "modifiers": [],
+  "preferred_slot": "timing_chain",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "timing_chain"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "side_housing",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_side_housing",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/side_housing",
+  "modifiers": [],
+  "preferred_slot": "side_housing",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "side_housing"
+  ]
+}

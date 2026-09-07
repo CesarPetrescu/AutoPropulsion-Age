@@ -1,0 +1,16 @@
+{
+  "category": "eccentric_shaft",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_eccentric_shaft",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/eccentric_shaft",
+  "modifiers": [],
+  "preferred_slot": "eccentric_shaft",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "eccentric_shaft"
+  ]
+}

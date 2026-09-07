@@ -1,0 +1,16 @@
+{
+  "category": "splitter",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_splitter",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/splitter",
+  "modifiers": [],
+  "preferred_slot": "splitter",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "splitter"
+  ]
+}

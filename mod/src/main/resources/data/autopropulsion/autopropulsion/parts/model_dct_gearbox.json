@@ -1,0 +1,16 @@
+{
+  "category": "dct_gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_dct_gearbox",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/dct_gearbox",
+  "modifiers": [],
+  "preferred_slot": "dct_gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "dct_gearbox"
+  ]
+}

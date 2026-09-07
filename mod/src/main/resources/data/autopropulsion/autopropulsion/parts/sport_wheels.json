@@ -1,0 +1,20 @@
+{
+  "category": "wheels",
+  "excludes_tags": [],
+  "id": "autopropulsion:sport_wheels",
+  "implemented": true,
+  "limits": {},
+  "mass_kg": 62,
+  "model": "autopropulsion:vehicle/parts/rim",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "grip_multiplier",
+      "value": 1.15
+    }
+  ],
+  "preferred_slot": "wheels",
+  "requires_tags": [],
+  "slots": [],
+  "tags": []
+}

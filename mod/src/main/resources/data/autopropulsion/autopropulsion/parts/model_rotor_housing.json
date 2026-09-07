@@ -1,0 +1,16 @@
+{
+  "category": "rotor_housing",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rotor_housing",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rotor_housing",
+  "modifiers": [],
+  "preferred_slot": "rotor_housing",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rotor_housing"
+  ]
+}

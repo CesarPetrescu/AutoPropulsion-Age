@@ -1,0 +1,16 @@
+{
+  "category": "bumper_rear",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_bumper_rear",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/bumper_rear",
+  "modifiers": [],
+  "preferred_slot": "bumper_rear",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "bumper_rear"
+  ]
+}

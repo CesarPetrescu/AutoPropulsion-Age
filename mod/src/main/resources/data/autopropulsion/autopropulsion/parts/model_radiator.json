@@ -1,0 +1,16 @@
+{
+  "category": "radiator",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_radiator",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/radiator",
+  "modifiers": [],
+  "preferred_slot": "radiator",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "radiator"
+  ]
+}

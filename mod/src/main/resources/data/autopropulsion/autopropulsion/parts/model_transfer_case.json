@@ -1,0 +1,16 @@
+{
+  "category": "transfer_case",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_transfer_case",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/transfer_case",
+  "modifiers": [],
+  "preferred_slot": "transfer_case",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "transfer_case"
+  ]
+}

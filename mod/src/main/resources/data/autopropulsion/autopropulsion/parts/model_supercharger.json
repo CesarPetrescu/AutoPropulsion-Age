@@ -1,0 +1,16 @@
+{
+  "category": "supercharger",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_supercharger",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/supercharger",
+  "modifiers": [],
+  "preferred_slot": "supercharger",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "supercharger"
+  ]
+}

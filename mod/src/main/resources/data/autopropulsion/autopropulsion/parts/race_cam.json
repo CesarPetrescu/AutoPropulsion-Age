@@ -1,0 +1,24 @@
+{
+  "category": "camshaft",
+  "excludes_tags": [],
+  "id": "autopropulsion:race_cam",
+  "implemented": true,
+  "limits": {
+    "rpm": 8800
+  },
+  "mass_kg": 3.8,
+  "model": "autopropulsion:vehicle/parts/camshaft",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "race_cam",
+      "value": 1
+    }
+  ],
+  "preferred_slot": "engine/camshaft",
+  "requires_tags": [
+    "engine/piston"
+  ],
+  "slots": [],
+  "tags": []
+}

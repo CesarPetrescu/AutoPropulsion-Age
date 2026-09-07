@@ -1,0 +1,16 @@
+{
+  "category": "rod_bearing",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rod_bearing",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rod_bearing",
+  "modifiers": [],
+  "preferred_slot": "rod_bearing",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rod_bearing"
+  ]
+}

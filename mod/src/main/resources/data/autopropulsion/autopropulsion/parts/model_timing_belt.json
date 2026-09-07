@@ -1,0 +1,16 @@
+{
+  "category": "timing_belt",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_timing_belt",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/timing_belt",
+  "modifiers": [],
+  "preferred_slot": "timing_belt",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "timing_belt"
+  ]
+}

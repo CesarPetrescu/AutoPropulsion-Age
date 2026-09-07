@@ -1,0 +1,16 @@
+{
+  "category": "sequential_gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_sequential_gearbox",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/sequential_gearbox",
+  "modifiers": [],
+  "preferred_slot": "sequential_gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "sequential_gearbox"
+  ]
+}

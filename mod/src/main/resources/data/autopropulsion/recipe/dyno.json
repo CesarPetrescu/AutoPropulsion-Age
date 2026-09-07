@@ -1,0 +1,23 @@
+{
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "III",
+    "PRP",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "autopropulsion:dyno"
+  },
+  "type": "minecraft:crafting_shaped"
+}

@@ -1,0 +1,16 @@
+{
+  "category": "hood",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_hood",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/hood",
+  "modifiers": [],
+  "preferred_slot": "hood",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "hood"
+  ]
+}

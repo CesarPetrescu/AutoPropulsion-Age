@@ -1,0 +1,16 @@
+{
+  "category": "cvt_gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_cvt_gearbox",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/cvt_gearbox",
+  "modifiers": [],
+  "preferred_slot": "cvt_gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "cvt_gearbox"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:manual_5speed",
+  "implemented": true,
+  "limits": {},
+  "mass_kg": 44,
+  "model": "autopropulsion:vehicle/parts/manual_gearbox",
+  "modifiers": [],
+  "preferred_slot": "gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": []
+}

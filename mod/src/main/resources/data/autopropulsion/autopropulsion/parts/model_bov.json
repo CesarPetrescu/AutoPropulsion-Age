@@ -1,0 +1,16 @@
+{
+  "category": "bov",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_bov",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/bov",
+  "modifiers": [],
+  "preferred_slot": "bov",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "bov"
+  ]
+}

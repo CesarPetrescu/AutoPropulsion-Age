@@ -1,0 +1,16 @@
+{
+  "category": "intake_valve",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_intake_valve",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/intake_valve",
+  "modifiers": [],
+  "preferred_slot": "intake_valve",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "intake_valve"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "spring",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_spring",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/spring",
+  "modifiers": [],
+  "preferred_slot": "spring",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "spring"
+  ]
+}

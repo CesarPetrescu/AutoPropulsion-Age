@@ -1,0 +1,16 @@
+{
+  "category": "rim",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rim",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rim",
+  "modifiers": [],
+  "preferred_slot": "rim",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rim"
+  ]
+}

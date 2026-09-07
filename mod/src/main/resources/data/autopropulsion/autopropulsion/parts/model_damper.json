@@ -1,0 +1,16 @@
+{
+  "category": "damper",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_damper",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/damper",
+  "modifiers": [],
+  "preferred_slot": "damper",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "damper"
+  ]
+}

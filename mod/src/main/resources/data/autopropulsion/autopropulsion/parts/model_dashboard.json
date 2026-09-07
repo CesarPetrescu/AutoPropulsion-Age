@@ -1,0 +1,16 @@
+{
+  "category": "dashboard",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_dashboard",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/dashboard",
+  "modifiers": [],
+  "preferred_slot": "dashboard",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "dashboard"
+  ]
+}

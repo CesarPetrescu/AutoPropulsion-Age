@@ -1,0 +1,16 @@
+{
+  "category": "main_bearing",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_main_bearing",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/main_bearing",
+  "modifiers": [],
+  "preferred_slot": "main_bearing",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "main_bearing"
+  ]
+}

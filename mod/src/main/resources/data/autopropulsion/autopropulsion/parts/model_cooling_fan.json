@@ -1,0 +1,16 @@
+{
+  "category": "cooling_fan",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_cooling_fan",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/cooling_fan",
+  "modifiers": [],
+  "preferred_slot": "cooling_fan",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "cooling_fan"
+  ]
+}

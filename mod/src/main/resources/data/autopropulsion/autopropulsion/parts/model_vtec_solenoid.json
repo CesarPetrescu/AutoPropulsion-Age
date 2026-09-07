@@ -1,0 +1,16 @@
+{
+  "category": "vtec_solenoid",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_vtec_solenoid",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/vtec_solenoid",
+  "modifiers": [],
+  "preferred_slot": "vtec_solenoid",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "vtec_solenoid"
+  ]
+}

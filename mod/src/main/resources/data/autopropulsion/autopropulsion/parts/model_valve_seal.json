@@ -1,0 +1,16 @@
+{
+  "category": "valve_seal",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_valve_seal",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/valve_seal",
+  "modifiers": [],
+  "preferred_slot": "valve_seal",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "valve_seal"
+  ]
+}

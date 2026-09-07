@@ -1,0 +1,16 @@
+{
+  "category": "spark_plug",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_spark_plug",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/spark_plug",
+  "modifiers": [],
+  "preferred_slot": "spark_plug",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "spark_plug"
+  ]
+}

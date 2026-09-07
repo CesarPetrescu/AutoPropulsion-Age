@@ -1,0 +1,16 @@
+{
+  "category": "exhaust_system",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_exhaust_system",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/exhaust_system",
+  "modifiers": [],
+  "preferred_slot": "exhaust_system",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "exhaust_system"
+  ]
+}

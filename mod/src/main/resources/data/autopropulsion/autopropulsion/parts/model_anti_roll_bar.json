@@ -1,0 +1,16 @@
+{
+  "category": "anti_roll_bar",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_anti_roll_bar",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/anti_roll_bar",
+  "modifiers": [],
+  "preferred_slot": "anti_roll_bar",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "anti_roll_bar"
+  ]
+}

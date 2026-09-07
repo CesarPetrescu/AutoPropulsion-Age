@@ -1,0 +1,16 @@
+{
+  "category": "flywheel",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_flywheel",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/flywheel",
+  "modifiers": [],
+  "preferred_slot": "flywheel",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "flywheel"
+  ]
+}

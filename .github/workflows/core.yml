@@ -1,0 +1,57 @@
+name: JVM core and original Blender assets
+on:
+  push:
+    branches: ['feat/neoforge-1.21.1-playable-foundation']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: core-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
+      - name: Validate data and run simulation checks
+        run: |
+          python3 art/generate_assets.py
+          python3 tools/validate_assets.py
+          ./gradlew :sim:test :sim:selfTest :tools:installDist --stacktrace
+          mkdir -p reports/local
+          tools/build/install/tools/bin/tools > reports/local/reference-dyno.csv
+          tools/build/install/tools/bin/tools --drive > reports/local/reference-drive.csv 2> reports/local/acceleration.txt
+      - name: Install Blender and software display
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy xvfb libgl1-mesa-dri > /tmp/blender-install.log
+      - name: Build and verify editable Blender scenes, GLBs and previews
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: xvfb-run -a blender --background --factory-startup --python-exit-code 1 --python art/run_blender.py
+      - name: Package source and tool versions
+        if: always()
+        run: |
+          mkdir -p reports/local
+          git archive HEAD -o reports/local/source.zip
+          java -version 2> reports/local/java-version.txt
+          blender --version > reports/local/blender-version.txt 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-simulation-and-blender-assets
+          path: |
+            reports/local/
+            art/generated/
+            sim/build/test-results/
+            sim/build/reports/tests/
+            tools/build/install/

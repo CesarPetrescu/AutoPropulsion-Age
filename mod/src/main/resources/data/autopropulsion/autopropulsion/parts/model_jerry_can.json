@@ -1,0 +1,16 @@
+{
+  "category": "jerry_can",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_jerry_can",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/jerry_can",
+  "modifiers": [],
+  "preferred_slot": "jerry_can",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "jerry_can"
+  ]
+}

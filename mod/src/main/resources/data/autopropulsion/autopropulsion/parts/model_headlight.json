@@ -1,0 +1,16 @@
+{
+  "category": "headlight",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_headlight",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/headlight",
+  "modifiers": [],
+  "preferred_slot": "headlight",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "headlight"
+  ]
+}

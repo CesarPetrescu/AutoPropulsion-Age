@@ -1,0 +1,16 @@
+{
+  "category": "differential",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_differential",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/differential",
+  "modifiers": [],
+  "preferred_slot": "differential",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "differential"
+  ]
+}

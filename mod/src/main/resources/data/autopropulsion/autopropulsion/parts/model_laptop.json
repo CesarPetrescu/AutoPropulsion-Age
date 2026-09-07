@@ -1,0 +1,16 @@
+{
+  "category": "laptop",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_laptop",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/laptop",
+  "modifiers": [],
+  "preferred_slot": "laptop",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "laptop"
+  ]
+}

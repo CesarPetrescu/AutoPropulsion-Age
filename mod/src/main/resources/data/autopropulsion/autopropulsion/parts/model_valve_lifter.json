@@ -1,0 +1,16 @@
+{
+  "category": "valve_lifter",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_valve_lifter",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/valve_lifter",
+  "modifiers": [],
+  "preferred_slot": "valve_lifter",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "valve_lifter"
+  ]
+}

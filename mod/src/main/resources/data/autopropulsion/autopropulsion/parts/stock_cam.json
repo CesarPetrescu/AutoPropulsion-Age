@@ -1,0 +1,18 @@
+{
+  "category": "camshaft",
+  "excludes_tags": [],
+  "id": "autopropulsion:stock_cam",
+  "implemented": true,
+  "limits": {
+    "rpm": 7200
+  },
+  "mass_kg": 4,
+  "model": "autopropulsion:vehicle/parts/camshaft",
+  "modifiers": [],
+  "preferred_slot": "engine/camshaft",
+  "requires_tags": [
+    "engine/piston"
+  ],
+  "slots": [],
+  "tags": []
+}

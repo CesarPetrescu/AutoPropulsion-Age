@@ -1,0 +1,16 @@
+{
+  "category": "mirror",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_mirror",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/mirror",
+  "modifiers": [],
+  "preferred_slot": "mirror",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "mirror"
+  ]
+}

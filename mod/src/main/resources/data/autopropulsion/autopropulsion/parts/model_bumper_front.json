@@ -1,0 +1,16 @@
+{
+  "category": "bumper_front",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_bumper_front",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/bumper_front",
+  "modifiers": [],
+  "preferred_slot": "bumper_front",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "bumper_front"
+  ]
+}

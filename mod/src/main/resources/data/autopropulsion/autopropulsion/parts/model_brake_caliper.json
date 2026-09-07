@@ -1,0 +1,16 @@
+{
+  "category": "brake_caliper",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_brake_caliper",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/brake_caliper",
+  "modifiers": [],
+  "preferred_slot": "brake_caliper",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "brake_caliper"
+  ]
+}

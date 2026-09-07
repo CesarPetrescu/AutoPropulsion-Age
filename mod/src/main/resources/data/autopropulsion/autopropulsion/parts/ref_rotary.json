@@ -1,0 +1,57 @@
+{
+  "category": "engine_block",
+  "excludes_tags": [],
+  "id": "autopropulsion:ref_rotary",
+  "implemented": true,
+  "limits": {
+    "rpm": 10000,
+    "torque_nm": 600
+  },
+  "mass_kg": 105,
+  "model": "autopropulsion:vehicle/parts/engine_block_rotary",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "displacement_l",
+      "value": 2.616
+    },
+    {
+      "op": "SET",
+      "stat": "compression_ratio",
+      "value": 10
+    },
+    {
+      "op": "SET",
+      "stat": "idle_rpm",
+      "value": 1000
+    }
+  ],
+  "preferred_slot": "engine",
+  "requires_tags": [],
+  "slots": [
+    {
+      "accepts": "apex_seals",
+      "id": "apex_seals",
+      "required": true
+    },
+    {
+      "accepts": "rotary_port",
+      "id": "intake_port",
+      "required": true
+    },
+    {
+      "accepts": "turbo",
+      "id": "turbo",
+      "required": false
+    },
+    {
+      "accepts": "ecu",
+      "id": "ecu",
+      "required": true
+    }
+  ],
+  "tags": [
+    "engine/rotary",
+    "rotors/2"
+  ]
+}

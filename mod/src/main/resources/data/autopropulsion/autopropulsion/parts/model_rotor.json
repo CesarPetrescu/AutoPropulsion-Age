@@ -1,0 +1,16 @@
+{
+  "category": "rotor",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rotor",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rotor",
+  "modifiers": [],
+  "preferred_slot": "rotor",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rotor"
+  ]
+}

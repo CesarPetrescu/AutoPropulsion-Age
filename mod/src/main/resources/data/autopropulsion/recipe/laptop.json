@@ -1,0 +1,23 @@
+{
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "IRI",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "autopropulsion:laptop"
+  },
+  "type": "minecraft:crafting_shaped"
+}

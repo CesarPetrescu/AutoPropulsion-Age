@@ -1,0 +1,16 @@
+{
+  "category": "manual_gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_manual_gearbox",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/manual_gearbox",
+  "modifiers": [],
+  "preferred_slot": "manual_gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "manual_gearbox"
+  ]
+}

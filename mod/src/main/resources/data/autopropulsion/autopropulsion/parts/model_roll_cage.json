@@ -1,0 +1,16 @@
+{
+  "category": "roll_cage",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_roll_cage",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/roll_cage",
+  "modifiers": [],
+  "preferred_slot": "roll_cage",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "roll_cage"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "oil_filter",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_oil_filter",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/oil_filter",
+  "modifiers": [],
+  "preferred_slot": "oil_filter",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "oil_filter"
+  ]
+}

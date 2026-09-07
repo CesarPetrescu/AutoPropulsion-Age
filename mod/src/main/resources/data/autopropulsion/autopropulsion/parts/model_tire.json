@@ -1,0 +1,16 @@
+{
+  "category": "tire",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_tire",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/tire",
+  "modifiers": [],
+  "preferred_slot": "tire",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "tire"
+  ]
+}

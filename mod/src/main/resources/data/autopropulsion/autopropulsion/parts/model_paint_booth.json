@@ -1,0 +1,16 @@
+{
+  "category": "paint_booth",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_paint_booth",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/paint_booth",
+  "modifiers": [],
+  "preferred_slot": "paint_booth",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "paint_booth"
+  ]
+}

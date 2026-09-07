@@ -1,0 +1,16 @@
+{
+  "category": "ecu",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_ecu",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/ecu",
+  "modifiers": [],
+  "preferred_slot": "ecu",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "ecu"
+  ]
+}
