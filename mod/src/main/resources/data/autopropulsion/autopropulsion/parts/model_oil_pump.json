@@ -1,0 +1,16 @@
+{
+  "category": "oil_pump",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_oil_pump",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/oil_pump",
+  "modifiers": [],
+  "preferred_slot": "oil_pump",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "oil_pump"
+  ]
+}

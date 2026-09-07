@@ -1,0 +1,16 @@
+{
+  "category": "piston",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_piston",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/piston",
+  "modifiers": [],
+  "preferred_slot": "piston",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "piston"
+  ]
+}

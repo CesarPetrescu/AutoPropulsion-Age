@@ -1,0 +1,16 @@
+{
+  "category": "engine_block_i4",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_engine_block_i4",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/engine_block_i4",
+  "modifiers": [],
+  "preferred_slot": "engine_block_i4",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "engine_block_i4"
+  ]
+}

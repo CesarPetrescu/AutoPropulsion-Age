@@ -1,0 +1,16 @@
+{
+  "category": "thermostat",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_thermostat",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/thermostat",
+  "modifiers": [],
+  "preferred_slot": "thermostat",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "thermostat"
+  ]
+}

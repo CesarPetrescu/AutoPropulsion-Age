@@ -1,0 +1,16 @@
+{
+  "category": "exhaust_header",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_exhaust_header",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/exhaust_header",
+  "modifiers": [],
+  "preferred_slot": "exhaust_header",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "exhaust_header"
+  ]
+}

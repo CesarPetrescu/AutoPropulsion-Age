@@ -1,0 +1,16 @@
+{
+  "category": "water_reservoir",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_water_reservoir",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/water_reservoir",
+  "modifiers": [],
+  "preferred_slot": "water_reservoir",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "water_reservoir"
+  ]
+}

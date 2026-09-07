@@ -1,0 +1,18 @@
+{
+  "category": "ecu",
+  "excludes_tags": [],
+  "id": "autopropulsion:standalone_ecu",
+  "implemented": true,
+  "limits": {
+    "rpm": 10000
+  },
+  "mass_kg": 0.8,
+  "model": "autopropulsion:vehicle/parts/ecu",
+  "modifiers": [],
+  "preferred_slot": "engine/ecu",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "ecu/tunable"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "nitrous_kit",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_nitrous_kit",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/nitrous_kit",
+  "modifiers": [],
+  "preferred_slot": "nitrous_kit",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "nitrous_kit"
+  ]
+}

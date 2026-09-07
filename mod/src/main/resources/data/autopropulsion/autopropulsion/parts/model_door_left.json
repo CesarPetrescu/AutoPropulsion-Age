@@ -1,0 +1,16 @@
+{
+  "category": "door_left",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_door_left",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/door_left",
+  "modifiers": [],
+  "preferred_slot": "door_left",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "door_left"
+  ]
+}

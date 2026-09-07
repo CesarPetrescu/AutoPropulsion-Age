@@ -1,0 +1,16 @@
+{
+  "category": "coilover",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_coilover",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/coilover",
+  "modifiers": [],
+  "preferred_slot": "coilover",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "coilover"
+  ]
+}

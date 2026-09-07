@@ -1,0 +1,16 @@
+{
+  "category": "ecu",
+  "excludes_tags": [],
+  "id": "autopropulsion:stock_ecu",
+  "implemented": true,
+  "limits": {
+    "rpm": 6800
+  },
+  "mass_kg": 0.8,
+  "model": "autopropulsion:vehicle/parts/ecu",
+  "modifiers": [],
+  "preferred_slot": "engine/ecu",
+  "requires_tags": [],
+  "slots": [],
+  "tags": []
+}

@@ -1,0 +1,16 @@
+{
+  "category": "connecting_rod",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_connecting_rod",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/connecting_rod",
+  "modifiers": [],
+  "preferred_slot": "connecting_rod",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "connecting_rod"
+  ]
+}

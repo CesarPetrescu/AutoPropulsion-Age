@@ -1,0 +1,16 @@
+{
+  "category": "piston_ring",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_piston_ring",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/piston_ring",
+  "modifiers": [],
+  "preferred_slot": "piston_ring",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "piston_ring"
+  ]
+}

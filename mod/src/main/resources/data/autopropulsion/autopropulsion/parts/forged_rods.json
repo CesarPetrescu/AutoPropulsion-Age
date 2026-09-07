@@ -1,0 +1,19 @@
+{
+  "category": "rods",
+  "excludes_tags": [],
+  "id": "autopropulsion:forged_rods",
+  "implemented": true,
+  "limits": {
+    "rpm": 9000,
+    "torque_nm": 650
+  },
+  "mass_kg": 2.8,
+  "model": "autopropulsion:vehicle/parts/connecting_rod",
+  "modifiers": [],
+  "preferred_slot": "engine/rods",
+  "requires_tags": [
+    "engine/piston"
+  ],
+  "slots": [],
+  "tags": []
+}

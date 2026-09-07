@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:gray_concrete",
+    "minecraft:black_concrete",
+    "minecraft:stone",
+    "minecraft:smooth_stone"
+  ]
+}

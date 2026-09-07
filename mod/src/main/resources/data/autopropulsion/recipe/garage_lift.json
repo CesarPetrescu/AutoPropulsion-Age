@@ -1,0 +1,23 @@
+{
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "I I",
+    "IPI",
+    "IRI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "autopropulsion:garage_lift"
+  },
+  "type": "minecraft:crafting_shaped"
+}

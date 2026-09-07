@@ -1,0 +1,20 @@
+{
+  "category": "turbo",
+  "excludes_tags": [],
+  "id": "autopropulsion:turbo_street",
+  "implemented": true,
+  "limits": {},
+  "mass_kg": 8,
+  "model": "autopropulsion:vehicle/parts/turbocharger",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "boost_bar",
+      "value": 0.7
+    }
+  ],
+  "preferred_slot": "engine/turbo",
+  "requires_tags": [],
+  "slots": [],
+  "tags": []
+}

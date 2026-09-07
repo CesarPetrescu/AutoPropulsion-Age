@@ -1,0 +1,16 @@
+{
+  "category": "stationary_gear",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_stationary_gear",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/stationary_gear",
+  "modifiers": [],
+  "preferred_slot": "stationary_gear",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "stationary_gear"
+  ]
+}

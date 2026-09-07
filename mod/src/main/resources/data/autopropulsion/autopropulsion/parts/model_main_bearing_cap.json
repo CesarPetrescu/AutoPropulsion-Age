@@ -1,0 +1,16 @@
+{
+  "category": "main_bearing_cap",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_main_bearing_cap",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/main_bearing_cap",
+  "modifiers": [],
+  "preferred_slot": "main_bearing_cap",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "main_bearing_cap"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "category": "engine_block",
+  "excludes_tags": [],
+  "id": "autopropulsion:ref_i4",
+  "implemented": true,
+  "limits": {
+    "rpm": 9000,
+    "torque_nm": 800
+  },
+  "mass_kg": 130,
+  "model": "autopropulsion:vehicle/parts/engine_block_i4",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "displacement_l",
+      "value": 2
+    },
+    {
+      "op": "SET",
+      "stat": "compression_ratio",
+      "value": 10
+    },
+    {
+      "op": "SET",
+      "stat": "idle_rpm",
+      "value": 850
+    }
+  ],
+  "preferred_slot": "engine",
+  "requires_tags": [],
+  "slots": [
+    {
+      "accepts": "rods",
+      "id": "rods",
+      "required": true
+    },
+    {
+      "accepts": "camshaft",
+      "id": "camshaft",
+      "required": true
+    },
+    {
+      "accepts": "turbo",
+      "id": "turbo",
+      "required": false
+    },
+    {
+      "accepts": "ecu",
+      "id": "ecu",
+      "required": true
+    }
+  ],
+  "tags": [
+    "engine/piston",
+    "cylinders/4"
+  ]
+}

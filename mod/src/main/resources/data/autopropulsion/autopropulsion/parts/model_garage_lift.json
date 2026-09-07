@@ -1,0 +1,16 @@
+{
+  "category": "garage_lift",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_garage_lift",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/garage_lift",
+  "modifiers": [],
+  "preferred_slot": "garage_lift",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "garage_lift"
+  ]
+}

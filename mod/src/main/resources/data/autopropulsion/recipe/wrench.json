@@ -1,0 +1,17 @@
+{
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    " I ",
+    " II",
+    "I  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "autopropulsion:wrench"
+  },
+  "type": "minecraft:crafting_shaped"
+}

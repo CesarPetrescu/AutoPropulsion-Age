@@ -1,0 +1,16 @@
+{
+  "category": "fuel_pump",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_fuel_pump",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/fuel_pump",
+  "modifiers": [],
+  "preferred_slot": "fuel_pump",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "fuel_pump"
+  ]
+}

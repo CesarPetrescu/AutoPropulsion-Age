@@ -1,0 +1,16 @@
+{
+  "category": "ignition_coil",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_ignition_coil",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/ignition_coil",
+  "modifiers": [],
+  "preferred_slot": "ignition_coil",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "ignition_coil"
+  ]
+}

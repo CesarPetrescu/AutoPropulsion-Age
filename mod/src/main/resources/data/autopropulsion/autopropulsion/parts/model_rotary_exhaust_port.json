@@ -1,0 +1,16 @@
+{
+  "category": "rotary_exhaust_port",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_rotary_exhaust_port",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rotary_exhaust_port",
+  "modifiers": [],
+  "preferred_slot": "rotary_exhaust_port",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "rotary_exhaust_port"
+  ]
+}

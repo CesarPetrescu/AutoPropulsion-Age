@@ -1,0 +1,16 @@
+{
+  "category": "carburetor",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_carburetor",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/carburetor",
+  "modifiers": [],
+  "preferred_slot": "carburetor",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "carburetor"
+  ]
+}

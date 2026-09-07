@@ -1,0 +1,16 @@
+{
+  "category": "oil_pan",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_oil_pan",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/oil_pan",
+  "modifiers": [],
+  "preferred_slot": "oil_pan",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "oil_pan"
+  ]
+}

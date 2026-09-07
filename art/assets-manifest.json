@@ -1,0 +1,485 @@
+{
+  "installable_definition_count": 18,
+  "mesh_count": 119,
+  "meshes": [
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/air_filter.json",
+      "sha256": "d5de5b589af64e9c959a5090865efb17de7a9db09506aba5e35190482a48a191"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/alternator.json",
+      "sha256": "78ea3c46958b32805ca5216c7cb0a8d9b1556a8e00e3139ea90c95766012e879"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/anti_roll_bar.json",
+      "sha256": "63cd965aa674bf386dc75e6d05fcf3882580a9dab58c45e697a9d7b785caab7a"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/apex_seal.json",
+      "sha256": "f4cdd9a2533e7ac372bb80b82f60f7cb9c065a97a11d9baa40f3c49a1ac76e94"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/automatic_gearbox.json",
+      "sha256": "b5f94efd1e546e71bcb380b9fb2927f74e8abefa46015d50c5dea44099f3d5d0"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/battery.json",
+      "sha256": "5bea9d7b198bc83b6c1568d1e613ef19161748bea6b0a86f19e973f54b875d4d"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/boost_pipe.json",
+      "sha256": "251c252c3bb3efa69ed0a01b2841530871cb5e158e92a9883c572785b5def5c6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/bov.json",
+      "sha256": "14aaea14a6a6afd9436575f3f5059407e4955234ce3d3ad35c3b614cc72cc984"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/brake_caliper.json",
+      "sha256": "5161dd08a6d7a102c7ab9b03cc5632f6f7bb3c5ef8b402b3bd61ed555b11cabf"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/brake_pad.json",
+      "sha256": "d87ce5c17e6ae87463a0e80a4e6178e892635095602bce9d6f31503ba19070f6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/brake_rotor.json",
+      "sha256": "4382700f803503bdd939dcd749605e4d31d6f418ccccfc47ac35ef70cda8cc35"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/bumper_front.json",
+      "sha256": "8529cf2a6550e6a94266a625f0f699b44095ba6207c4c2678f47d4b2588ce438"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/bumper_rear.json",
+      "sha256": "3a6af4760ee624e8b94021d27d5e36ffc087ad26431a12510ec565a738c04a3e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/camshaft.json",
+      "sha256": "e7e89d62effc7f40dadecc8746062f986b8c49c288e80c3ca78b1d5861f93bb3"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/camshaft_gear.json",
+      "sha256": "4fc371fd5c615b0431e0052029b3323ff34d1849699b00c8f7d38b7c6ffc5d2f"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/carburetor.json",
+      "sha256": "7cc411ff749d17be307e081b4719c045f34cfe96c310285495be09b3d54d9ba4"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/charge_pipe.json",
+      "sha256": "636695f5347eb4928e3532d87a86d0451900077d9167a26426b44432d927f8de"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/clutch.json",
+      "sha256": "9652a0241c46d301bf5af1d3fce244326b9a2a5fde1dfafc88adfb8912555b5b"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/coilover.json",
+      "sha256": "008a73d42ce666f296f89204cf5f388c81300849053fcde39a4a708eb22efa25"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/connecting_rod.json",
+      "sha256": "45607da99037c6784645eddeddf6e28802b1426ea921b4c3ea270d49de367348"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/cooling_fan.json",
+      "sha256": "23a0cd365ca69f5da3a6980ff5f9ee421f05c8cc0d189abb4581fb3b211579ac"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/crankcase_vent.json",
+      "sha256": "52eddd7eba1cf43567421ad1934c3cd48978e823ce99fb4028d0cfb1da7cd6a5"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/crankshaft.json",
+      "sha256": "d029ffbe7371eb5d6b6652fca66eae442b0c58672fdbad19c6836dd138996499"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/cvt_gearbox.json",
+      "sha256": "05e01fb302c1aac538dcdd3cc6f3a31da560aa2aa0325e8cb765d7afecd8bce6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/cylinder_head.json",
+      "sha256": "297a244815ee007fd0aefe98c9b3360a8e716a257d4ab4d7046370561ffb0b1b"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/cylinder_liner.json",
+      "sha256": "a29903898eaf4424172995c2bacc03d67513be1f69b32634b901d9dbcbb4ae14"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/damper.json",
+      "sha256": "e39a85d4917b5c6d850f49d76e8f0001d490cbbe7ed2eaa173b4eb6c2bb8c99a"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/dashboard.json",
+      "sha256": "cbb052a5f52f0614e0816cbe7f599224aabd05d1c5d78c0d5af66c831291422e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/dct_gearbox.json",
+      "sha256": "f80739155d24b09cc7b4b4bdba56fd589ac66e19442d8908415729c1a5ed90bc"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/differential.json",
+      "sha256": "ff86c53f1d9784b281de41d9b5c7265f6c0477ed8d9662f0f7961fd7e2f4ca6d"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/door_left.json",
+      "sha256": "067b41534027a56b6bca13e3f0d8a37793982ed573ce4adc28f3284829c2aad7"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/door_right.json",
+      "sha256": "60df01d82df48f4db0ad810f8b9253638ac40321ac3f78a3a99b9c514b55f122"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/dyno_rollers.json",
+      "sha256": "1d1f4b222c504df372b626bce31b1640fa7ff501750b5121742a252b0b6423ec"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/eccentric_shaft.json",
+      "sha256": "799bffd7e8fc185fb36f92072c0c2da6c336477e57f84dc7c9d21f9a724446d9"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/ecu.json",
+      "sha256": "f0310a909068520bf6de7e2d2f827928e0ee035abdde1f3e12ca0292dd5ba775"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/engine_block_i4.json",
+      "sha256": "84aa2d47a535c19f0322fa6a309288d80184ae59b9b333745a48dbd69ea389fa"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/engine_block_rotary.json",
+      "sha256": "48a35cd2601608c1ba3c2bd1c2c45d1525678ab3012b3f3de3701f4ff18d2a40"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/engine_block_v8.json",
+      "sha256": "53ba543283428c0a68df098570b80e491cdc46ff85ec8e117e488932081f31bf"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/exhaust_header.json",
+      "sha256": "a47026c974e29add64bdf27ccff90378b8cfaddf16375decfc50c63c23f98d4e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/exhaust_system.json",
+      "sha256": "d2fdc1e07c5bf7df8c5471555011d62be94dbabca218a67ae312e5acaa933bba"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/exhaust_valve.json",
+      "sha256": "05ee63eedfad8087095cb8428510911d82051f1c03dd06e38c28c0a7a9fa19bf"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/fender.json",
+      "sha256": "ad52cf9b91fda35d815acc317d2270baac7722a8b0cdf54165871beb62cbe21c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/final_drive.json",
+      "sha256": "7f1bd9ff74182c4d0d1830557c2d8a1c28fe4dc6a6dcfa746858d437026b23f9"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/flywheel.json",
+      "sha256": "da6d297b73a6b038b0769adfd49a6a4929c8fbdd59e88beaf6673003aa9f04fb"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/fuel_pump.json",
+      "sha256": "8d0c47e37afcd5f728c523206b57ad2b85a4963c182afb4266c648eada8f7735"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/fuel_pump_block.json",
+      "sha256": "9fd3afe3a633e6488e1d7763636bbf3f458c53bcf4bfe8578540d1061543f0fe"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/fuel_tank.json",
+      "sha256": "1ea9cd91c340bafafec6ea1e8b22daec334fe8ad7cf20934d10a68c9aa223dc2"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/garage_lift.json",
+      "sha256": "4f18d939a9d2ea54280986bbaf78ad15467ef90d230f9e96b63b08ac4f891c3e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/harmonic_damper.json",
+      "sha256": "dc6fbac6c36ddc3b768a54c885464031f294c37289c54cb1e055ea82dcd1f8a3"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/hatch_01.json",
+      "sha256": "9c348fb435271f5950f80341d831dde1aa95837fce29a6d1313e98ffe1195ccd"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/head_bolt.json",
+      "sha256": "25b46ae64aa029a3ad429985f3c108914208e244b1d3416baca234c891d4e23b"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/head_gasket.json",
+      "sha256": "dbd2cdb2ecc64cba6ec945815209246ae8f2b56ea09de70164b8eb3ca6495c0e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/headlight.json",
+      "sha256": "cf23f910929e034f23b72f9a96bc50973c436a92cd03f54d6c3bec4970ad7744"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/hood.json",
+      "sha256": "3caa19d0eb5755c1ab63393400383bfc5df5e15d3a48e6aadb8271c38e87da8e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/ignition_coil.json",
+      "sha256": "b18a29174e86c892a43f3e0fa9fa74a71cd3fefd8e2af37e856b585d54d1f84d"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/injector.json",
+      "sha256": "9768aa7fc14fff3c4e1bd59dc7cff2e455fea69e1e56d9d7af53139b6241d61a"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/intake_manifold.json",
+      "sha256": "760b9d033e1f82703eea3a1e0cffef1aeaefa72ffe3eb955fd1cb15b806220d8"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/intake_valve.json",
+      "sha256": "9f2c373d8124fe59d2c3a845e44f1bb212e1304d1b37905e8163b2d1e000555a"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/intercooler.json",
+      "sha256": "6fef5e96d70574885e36319655919d2024a0e90fdf46c1ae3161f1f4084fea8b"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/jerry_can.json",
+      "sha256": "c2086548da3e7b26ea468f52f52b849909f11d846161b3d9841d971d47dabdab"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/laptop.json",
+      "sha256": "2b1ecf355870ad3ea9da9ee8ab1cb3ea07dd929a9898e2373ab7e714e2026ac2"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/main_bearing.json",
+      "sha256": "3b6e08a26344196718c13d806177f8f740ba00be661663ad9003d3f984c7bb2e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/main_bearing_bolt.json",
+      "sha256": "14d344b7a8ef9aa5636018a8c8b272b93d80e00ae9fffa1781184875bc994ee8"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/main_bearing_cap.json",
+      "sha256": "397e1fff68a8c6ead247343c1bb893681ddd1f57ac66c0c868585349102fa3ce"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/manual_gearbox.json",
+      "sha256": "776289911a8267ec818d2969ec2a63575aa893f90598923ad1ef51c459ea6a24"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/mirror.json",
+      "sha256": "c36f34666b7c7bcaddab78bf2fec253025759fa52de57e0c6372ea72a4e3d5f3"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/nitrous_bottle.json",
+      "sha256": "843176edb8212b629a2c14c6427ae600c0b8fc0087feaff5753c92317cb99201"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/nitrous_kit.json",
+      "sha256": "e5bf6a5b71912009438ac6d382f43fe97ef36eb69146dd45e29051ff460cd228"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/obd_dongle.json",
+      "sha256": "e76724ec1da46da33710a8f5513bed710ffef965d686efa8005915d939f5cb4d"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/oil_filter.json",
+      "sha256": "636136484526eccc479f68c253563d4a2ab698817b772c08de04d2cd9d3250f9"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/oil_metering_pump.json",
+      "sha256": "035ad6c44d7eb0fbce1c1489b78fe3d0c7a7bb3047e86d3b0b8c25e61fa2502c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/oil_pan.json",
+      "sha256": "ff15f99c7cb4a324c0789659771951901378dbe9309c0d78970b821f250bf9e0"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/oil_pump.json",
+      "sha256": "60a1834dbf03d18146878f9ffe2ef190df06633440619ef4ff158b64690a2d50"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/paint_booth.json",
+      "sha256": "9ed555ffc9c95abcaa197b4251b03ec9b08a37e97e9110193e328664ae2eb3ce"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/part_bench.json",
+      "sha256": "e32cb0e50f53ea0cf08db10c1b5438e87ea51a6dcc2ba910dce64814ac4fe239"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/piston.json",
+      "sha256": "be9629d88dcc548dd41254d1918021dfc3d5fa61472b6eb06f73a2d06e9814c4"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/piston_cooling_nozzle.json",
+      "sha256": "8cfb6c84446970c0754ad502548f59347b7e3618680ecfc5ce4e7f2e91c38e66"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/piston_ring.json",
+      "sha256": "ab3e97e51626a4cd1cb2a8ccfb0f70782c5e531f02b66e016e5d0448d8aab04a"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/radiator.json",
+      "sha256": "59f1e79d888d233c603e5400be7a0565d9f033bf17af72eacc8d311aa9af82f2"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rim.json",
+      "sha256": "b75cba4c84af559425053a04b88d982797692ba13dbc518c0d1899daff5d6c66"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rod_bearing.json",
+      "sha256": "876969bb87c0dc0f23892f30abb10941ac5563cea4313e63538f0d0f5bf794b3"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/roll_cage.json",
+      "sha256": "fb6d22c4ecbbe237a3ea1e988c2819c0e4b47654e83312635543bb23e301d359"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rotary_exhaust_port.json",
+      "sha256": "5e9e40e29aae891e89c2d618d0692305d28f402a6c40800332c1a2c305e1ab55"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rotary_intake_port.json",
+      "sha256": "88d9cf9b88639011edcab063d3f878fba9eda0476e94c6a8ac7beb9719224ffb"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rotor.json",
+      "sha256": "c2156730364caeb95d6b77bf82e2d3fc7d867c99a6f87bbf29f0d8e33b359c30"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/rotor_housing.json",
+      "sha256": "2f9972600f930ba9b7b013548bcf790543df1209ced3fa1252c7213792f6f1b6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/seat.json",
+      "sha256": "6f92a05f45cc79ca567cccbb896d85830a6ec8e92c2ab5472876143d3c85d6d0"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/sequential_gearbox.json",
+      "sha256": "a1edbb477f5101130e5c9a6ffa09cb61944701bba398fd3b1590accd5de6eba0"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/shifter.json",
+      "sha256": "e03f6c7315a10e2fac3da65e45763e74aec2192a69d007245d18ce2d4cb8a04c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/side_housing.json",
+      "sha256": "f245375ebd624af61abe4b3c31c942ca08e5382cee6d09d4cdab192d1cf66059"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/side_skirt.json",
+      "sha256": "7545f50575469eb47110657e9c544b0143c62cc2aea16687e662ac66328de3cc"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/spark_plug.json",
+      "sha256": "5edcb10c64564d5842baaacb984bd96c3b3cb55be94ee1c43f515dfe58da561c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/splitter.json",
+      "sha256": "c725530c8b03ed7d9fe800c46bfb797bd3cfa21bdb84af136ce64abd1a545ffd"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/spoiler.json",
+      "sha256": "abefbacc238dd771b43993815297542da457766fb2ccd1c88562e731074c3b2b"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/spring.json",
+      "sha256": "4bea952e673a75771989c4d0c4a7be8bb9ccb6694e7501554241bcbf445fc99c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/starter.json",
+      "sha256": "78d05f3811bdc719487cd27d65397f18d93167bcb272768eb349a82fb0d3dde5"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/stationary_gear.json",
+      "sha256": "a25adea5a796a3e85e3059c454c5cb515ad91704c94c50a2e97c795453cf29b6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/steering_rack.json",
+      "sha256": "f3071fe65ea5cb3215296eae71c49a535bba593bb8a932aa88f405fcdedaffee"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/steering_wheel.json",
+      "sha256": "258b173a9faa27805a6674b989d370f4a2490711eaabe5e8b3d66407f2c53802"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/supercharger.json",
+      "sha256": "daa271258da57966f774f8525cb9d71f0896a21b9fe9ab4c341c75a065be4f9f"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/taillight.json",
+      "sha256": "7f16671b35d59d3d42c5af97ecb1ae04f3d84891d6df6c4ae6f52a2f66de89a5"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/thermostat.json",
+      "sha256": "3ac22308635438db617694a34ed21c8306575cac5821b5a478eb46ce87b9cd22"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/throttle_body.json",
+      "sha256": "44df0c756c1a97b6c04aec3fb71bbcedc40b3d2725b76223b8e598e5fa284784"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/timing_belt.json",
+      "sha256": "37d8c9649a641c1401a663426d19621ab5c63a0fdf6d2556ed3afc43bd11a64c"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/timing_chain.json",
+      "sha256": "5f62a7e723b460420d257b2837012f64aa17f5c3be030a7d91f0227118f5b7de"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/tire.json",
+      "sha256": "8ef052a93eaba87eb72cdda9483102ae519c4d40961e567045306cd28f4b92c2"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/transfer_case.json",
+      "sha256": "82cab4fc2b4d6ecd2ec62a92f114558f76b635b280ae583c62f80daea5763345"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/trunk.json",
+      "sha256": "c50de7297f1fef3f14e39b085417aef9c4f0a798a312f9f7ab42f6a9e78f5e99"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/turbocharger.json",
+      "sha256": "c1f0ecf5e5840fa315191ffd2c25a47a21667470d38795299d1ed1dcb4c5786e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/two_step_module.json",
+      "sha256": "e66787bec94a9cea0df19c183a93edbde760033e790f1ff9c83acfe78f6a306e"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/valve_lifter.json",
+      "sha256": "f39be291b3954127e78f3934704926f25dc2246333db596ada8bb757901612f2"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/valve_seal.json",
+      "sha256": "a529fdaf16b6c231d905234ce5504b10467351fed50e200527e02a4879e9a9ea"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/valve_spring.json",
+      "sha256": "bd69ad5f3b66de49549a05500ed345a4d46959053e88f610818433dab998ff25"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/vtec_solenoid.json",
+      "sha256": "67c88043a8ca9b7c80073b14eb4147f0724aa044b6fd09f5233f7fbc0a4132a6"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/wastegate.json",
+      "sha256": "725ccec69751972271d96a0b44b8d099e153acafc3c2b0daa15b9cad74171d73"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/water_meth.json",
+      "sha256": "acfb5635d5daf5f2d13a7770087c3cac3192c6ab7b896cfe462116dd889e6e54"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/water_pipe.json",
+      "sha256": "13cd6758408181f86d4a04d06ae79014001a2921ed58628cb27caab15cb659e4"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/water_reservoir.json",
+      "sha256": "8405d8e099f87564da09ae9ff25487bd91985c8549b37d861508526a819f7663"
+    },
+    {
+      "path": "mod/src/main/resources/assets/autopropulsion/models/vehicle/parts/wrist_pin.json",
+      "sha256": "b2f3485a73e2cbf190d97987feb90b5b163c3a6d367c6e6c5d54c68c7c62d0df"
+    }
+  ],
+  "part_definition_count": 136,
+  "quality": "original procedural prototype",
+  "schema_version": 1
+}

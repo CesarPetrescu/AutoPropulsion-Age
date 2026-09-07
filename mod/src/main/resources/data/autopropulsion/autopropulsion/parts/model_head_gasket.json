@@ -1,0 +1,16 @@
+{
+  "category": "head_gasket",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_head_gasket",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/head_gasket",
+  "modifiers": [],
+  "preferred_slot": "head_gasket",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "head_gasket"
+  ]
+}

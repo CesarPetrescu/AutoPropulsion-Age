@@ -1,0 +1,16 @@
+{
+  "category": "taillight",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_taillight",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/taillight",
+  "modifiers": [],
+  "preferred_slot": "taillight",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "taillight"
+  ]
+}

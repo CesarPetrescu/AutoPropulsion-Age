@@ -1,0 +1,16 @@
+{
+  "category": "boost_pipe",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_boost_pipe",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/boost_pipe",
+  "modifiers": [],
+  "preferred_slot": "boost_pipe",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "boost_pipe"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "fender",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_fender",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/fender",
+  "modifiers": [],
+  "preferred_slot": "fender",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "fender"
+  ]
+}

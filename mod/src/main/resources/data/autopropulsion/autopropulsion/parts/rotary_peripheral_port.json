@@ -1,0 +1,27 @@
+{
+  "category": "rotary_port",
+  "excludes_tags": [],
+  "id": "autopropulsion:rotary_peripheral_port",
+  "implemented": true,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/rotary_intake_port",
+  "modifiers": [
+    {
+      "op": "SET",
+      "stat": "idle_rpm",
+      "value": 1500
+    },
+    {
+      "op": "MUL",
+      "stat": "power_multiplier",
+      "value": 1.12
+    }
+  ],
+  "preferred_slot": "engine/intake_port",
+  "requires_tags": [
+    "engine/rotary"
+  ],
+  "slots": [],
+  "tags": []
+}

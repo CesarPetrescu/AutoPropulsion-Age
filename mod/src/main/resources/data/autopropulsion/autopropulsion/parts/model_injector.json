@@ -1,0 +1,16 @@
+{
+  "category": "injector",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_injector",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/injector",
+  "modifiers": [],
+  "preferred_slot": "injector",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "injector"
+  ]
+}

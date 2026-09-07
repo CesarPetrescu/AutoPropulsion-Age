@@ -1,0 +1,16 @@
+{
+  "category": "steering_rack",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_steering_rack",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/steering_rack",
+  "modifiers": [],
+  "preferred_slot": "steering_rack",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "steering_rack"
+  ]
+}

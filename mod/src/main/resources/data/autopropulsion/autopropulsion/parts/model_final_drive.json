@@ -1,0 +1,16 @@
+{
+  "category": "final_drive",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_final_drive",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/final_drive",
+  "modifiers": [],
+  "preferred_slot": "final_drive",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "final_drive"
+  ]
+}

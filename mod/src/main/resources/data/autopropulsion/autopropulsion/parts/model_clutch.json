@@ -1,0 +1,16 @@
+{
+  "category": "clutch",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_clutch",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/clutch",
+  "modifiers": [],
+  "preferred_slot": "clutch",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "clutch"
+  ]
+}

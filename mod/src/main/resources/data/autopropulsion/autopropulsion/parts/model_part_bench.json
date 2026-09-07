@@ -1,0 +1,16 @@
+{
+  "category": "part_bench",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_part_bench",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/part_bench",
+  "modifiers": [],
+  "preferred_slot": "part_bench",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "part_bench"
+  ]
+}

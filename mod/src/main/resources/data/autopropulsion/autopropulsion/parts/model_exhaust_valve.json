@@ -1,0 +1,16 @@
+{
+  "category": "exhaust_valve",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_exhaust_valve",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/exhaust_valve",
+  "modifiers": [],
+  "preferred_slot": "exhaust_valve",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "exhaust_valve"
+  ]
+}

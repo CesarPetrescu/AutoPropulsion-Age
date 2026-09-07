@@ -1,0 +1,16 @@
+{
+  "category": "wrist_pin",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_wrist_pin",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/wrist_pin",
+  "modifiers": [],
+  "preferred_slot": "wrist_pin",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "wrist_pin"
+  ]
+}

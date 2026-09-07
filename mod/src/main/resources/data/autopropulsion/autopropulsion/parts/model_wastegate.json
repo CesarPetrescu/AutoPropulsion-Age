@@ -1,0 +1,16 @@
+{
+  "category": "wastegate",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_wastegate",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/wastegate",
+  "modifiers": [],
+  "preferred_slot": "wastegate",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "wastegate"
+  ]
+}

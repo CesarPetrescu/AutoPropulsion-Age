@@ -1,0 +1,16 @@
+{
+  "category": "charge_pipe",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_charge_pipe",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/charge_pipe",
+  "modifiers": [],
+  "preferred_slot": "charge_pipe",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "charge_pipe"
+  ]
+}

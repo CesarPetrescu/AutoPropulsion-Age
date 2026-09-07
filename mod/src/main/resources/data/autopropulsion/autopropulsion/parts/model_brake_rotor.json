@@ -1,0 +1,16 @@
+{
+  "category": "brake_rotor",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_brake_rotor",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/brake_rotor",
+  "modifiers": [],
+  "preferred_slot": "brake_rotor",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "brake_rotor"
+  ]
+}

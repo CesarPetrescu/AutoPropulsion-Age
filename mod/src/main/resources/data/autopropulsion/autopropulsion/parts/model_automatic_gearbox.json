@@ -1,0 +1,16 @@
+{
+  "category": "automatic_gearbox",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_automatic_gearbox",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/automatic_gearbox",
+  "modifiers": [],
+  "preferred_slot": "automatic_gearbox",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "automatic_gearbox"
+  ]
+}

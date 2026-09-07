@@ -1,0 +1,16 @@
+{
+  "category": "spoiler",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_spoiler",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/spoiler",
+  "modifiers": [],
+  "preferred_slot": "spoiler",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "spoiler"
+  ]
+}

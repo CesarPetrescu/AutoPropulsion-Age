@@ -1,0 +1,16 @@
+{
+  "category": "battery",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_battery",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/battery",
+  "modifiers": [],
+  "preferred_slot": "battery",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "battery"
+  ]
+}

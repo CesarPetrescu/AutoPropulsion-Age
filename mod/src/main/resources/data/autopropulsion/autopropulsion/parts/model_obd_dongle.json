@@ -1,0 +1,16 @@
+{
+  "category": "obd_dongle",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_obd_dongle",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/obd_dongle",
+  "modifiers": [],
+  "preferred_slot": "obd_dongle",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "obd_dongle"
+  ]
+}

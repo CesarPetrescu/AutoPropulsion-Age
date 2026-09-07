@@ -1,0 +1,16 @@
+{
+  "category": "water_meth",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_water_meth",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/water_meth",
+  "modifiers": [],
+  "preferred_slot": "water_meth",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "water_meth"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "throttle_body",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_throttle_body",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/throttle_body",
+  "modifiers": [],
+  "preferred_slot": "throttle_body",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "throttle_body"
+  ]
+}

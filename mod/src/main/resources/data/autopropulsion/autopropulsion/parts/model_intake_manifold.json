@@ -1,0 +1,16 @@
+{
+  "category": "intake_manifold",
+  "excludes_tags": [],
+  "id": "autopropulsion:model_intake_manifold",
+  "implemented": false,
+  "limits": {},
+  "mass_kg": 1,
+  "model": "autopropulsion:vehicle/parts/intake_manifold",
+  "modifiers": [],
+  "preferred_slot": "intake_manifold",
+  "requires_tags": [],
+  "slots": [],
+  "tags": [
+    "intake_manifold"
+  ]
+}
