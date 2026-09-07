@@ -1,97 +1,40 @@
-name: Bootstrap assets and test mod
+name: Regenerate Blender assets
 on:
-  push:
-    branches: ['feat/neoforge-1.21.1-vehicle-foundation']
-    paths: ['.bootstrap/**', '.github/workflows/bootstrap.yml', 'assets/blender/**']
   workflow_dispatch:
+  push:
+    paths: ['assets/blender/**', 'assets/catalog.json', 'scripts/generate-content.py']
+  pull_request:
+    paths: ['assets/blender/**', 'assets/catalog.json', 'scripts/generate-content.py']
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: autopropulsion-bootstrap
-  cancel-in-progress: false
+  group: assets-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
-  bootstrap:
+  assets:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feat/neoforge-1.21.1-vehicle-foundation
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
-      - uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: '9.2.1'
-          cache-read-only: false
-      - name: Install Blender and isolated graphical runtime
-        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy ffmpeg xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64
-      - name: Record execution environment
+      - name: Install authoring tools
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy ffmpeg
+      - name: Regenerate and validate
         run: |
           mkdir -p build/reports
-          { git rev-parse HEAD; uname -a; java -version; blender --version; gradle --version; } > build/reports/environment.txt 2>&1
-      - name: Generate original content and editable Blender models
-        run: |
-          test -f assets/catalog.json || python3 scripts/seed-catalog.py
           python3 scripts/generate-content.py
           set -o pipefail
           blender -b --python-exit-code 1 --python assets/blender/build_assets.py 2>&1 | tee build/reports/blender.log
-          mkdir -p mod/src/main/resources/assets/autopropulsion/sounds
           ffmpeg -y -i assets/source/engine-loop.wav -c:a libvorbis -q:a 4 mod/src/main/resources/assets/autopropulsion/sounds/engine_loop.ogg
           python3 scripts/validate-content.py --assets
-      - name: Generate standard Gradle wrapper
-        run: |
-          gradle wrapper --gradle-version 9.2.1 --distribution-type bin --no-daemon
-          checksum=$(curl --fail --silent --show-error https://services.gradle.org/distributions/gradle-9.2.1-bin.zip.sha256)
-          printf '\ndistributionSha256Sum=%s\n' "$checksum" >> gradle/wrapper/gradle-wrapper.properties
-          chmod +x gradlew
-      - name: Commit generated assets to the feature branch only
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/catalog.json assets/manifest.json assets/source docs/images mod/src/main/resources mod/src/main/java/com/photonspark/autopropulsion/BuiltinCatalog.java gradle gradlew gradlew.bat
-          if ! git diff --cached --quiet; then
-            git commit -m 'assets: generate editable Blender scenes, component models and Gradle wrapper'
-            git push origin HEAD:feat/neoforge-1.21.1-vehicle-foundation
-          fi
-      - name: Build and simulation tests
-        run: |
-          set -o pipefail
-          ./gradlew build --no-daemon --console=plain 2>&1 | tee build/reports/build.log
-          python3 scripts/check-jar.py
-      - name: Dedicated server GameTests
-        run: |
-          mkdir -p mod/run/gametest
-          printf 'eula=true\n' > mod/run/gametest/eula.txt
-          set -o pipefail
-          ./gradlew :mod:runGameTestServer --no-daemon --console=plain 2>&1 | tee build/reports/gametest.log
-      - name: Actual client and server smoke matrix
-        env:
-          ACCEPT_MINECRAFT_EULA: 'true'
-        run: python3 scripts/test-runtime.py
-      - name: Package source for independent local inspection
-        if: always()
-        run: |
-          tar --exclude='./.git' --exclude='./.gradle' --exclude='./build' --exclude='*/build' --exclude='*/run' -czf "$RUNNER_TEMP/autopropulsion-source.tar.gz" .
+      - name: Check committed runtime geometry matches the generator
+        run: git diff --exit-code -- mod/src/main/resources/assets/autopropulsion/models
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: autopropulsion-source-${{ github.run_number }}
-          path: ${{ runner.temp }}/autopropulsion-source.tar.gz
-          retention-days: 14
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: autopropulsion-bootstrap-evidence-${{ github.run_number }}
+          name: autopropulsion-assets-${{ github.run_number }}
           path: |
-            mod/build/libs/*.jar
-            build/reports/**
-            sim/build/reports/**
-            sim/build/test-results/**
-            mod/run/gametest/logs/**
-            mod/run/**/crash-reports/**
-            docs/images/**
             assets/source/**
             assets/manifest.json
+            docs/images/**
+            build/reports/**
           retention-days: 14
