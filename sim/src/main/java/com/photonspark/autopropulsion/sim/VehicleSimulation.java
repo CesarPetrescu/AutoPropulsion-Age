@@ -18,6 +18,12 @@ public final class VehicleSimulation {
     public void configure(EngineSpec engine,SimulationConfig config) { this.engine=Objects.requireNonNull(engine);this.config=Objects.requireNonNull(config); }
     public State state() { return new State(speed,rpm,gear,fuel,coolant,oil,boost,health,odometer,running,fault); }
     public void restore(State s) {
+        // Validate the complete record before changing any live field. A rejected load is atomic.
+        Objects.requireNonNull(s, "state");
+        for (double value : new double[]{s.speedMs(), s.rpm(), s.fuelL(), s.coolantK(),
+                s.oilK(), s.boostBar(), s.health(), s.odometerM()}) {
+            Numbers.finite(value, "persisted state");
+        }
         speed=Numbers.clamp(s.speedMs(),-80,80); rpm=Numbers.clamp(s.rpm(),0,20000); gear=Math.max(-1,Math.min(5,s.gear()));
         fuel=Numbers.clamp(s.fuelL(),0,60); coolant=Numbers.clamp(s.coolantK(),200,600);oil=Numbers.clamp(s.oilK(),200,600);
         boost=Numbers.clamp(s.boostBar(),0,3);health=Numbers.clamp(s.health(),0,100);odometer=Numbers.clamp(s.odometerM(),0,1e12);

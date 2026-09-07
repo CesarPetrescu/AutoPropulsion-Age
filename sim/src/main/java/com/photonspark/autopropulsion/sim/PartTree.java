@@ -38,6 +38,16 @@ public final class PartTree {
         if(!Collections.disjoint(tags,part.excludes())) reasons.add("Excluded combination");
         for(var e:installed.entrySet()) if(!e.getKey().equals(path)&&!e.getKey().startsWith(path+"/"))
             if(!Collections.disjoint(e.getValue().excludes(),part.tags())) reasons.add("Existing part excludes replacement");
+        // The replacement can remove a tag needed by a different installed part.
+        // Evaluate the prospective assembly before mutating the original tree.
+        var prospectiveTags = new HashSet<>(tags);
+        prospectiveTags.addAll(part.tags());
+        for (var e : installed.entrySet()) {
+            if (!e.getKey().equals(path) && !e.getKey().startsWith(path + "/")
+                    && !prospectiveTags.containsAll(e.getValue().requires())) {
+                reasons.add("Replacement would break " + e.getKey());
+            }
+        }
         if(installed.keySet().stream().anyMatch(p->p.startsWith(path+"/"))) reasons.add("Remove children before replacing their parent");
         return List.copyOf(reasons);
     }

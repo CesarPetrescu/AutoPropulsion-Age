@@ -1,7 +1,16 @@
+// Executable suites deliberately have no JUnit dependency, so they also run offline with javac.
 tasks.register('regressionTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.photonspark.autopropulsion.sim.SimulationTests'
     args layout.buildDirectory.file('reports/regression.json').get().asFile.absolutePath
 }
-tasks.named('check') { dependsOn regressionTest }
+tasks.register('safetyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.photonspark.autopropulsion.sim.SafetyTests'
+}
+// Gradle 9 otherwise fails because these main-method suites are not JUnit tests.
+// Both `test` and `check` still execute the real suites and propagate nonzero exits.
+tasks.named('test') { enabled = false; dependsOn regressionTest, safetyTest }
+tasks.named('check') { dependsOn regressionTest, safetyTest }
