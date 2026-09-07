@@ -1,0 +1,39 @@
+name: NeoForge 1.21.1 mod tester
+on:
+  push:
+    branches: ['feat/neoforge-1.21.1-playable-foundation']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: minecraft-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  minecraft:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
+      - name: Compile mod and run dedicated GameTest server
+        run: |
+          mkdir -p mod/run/gametest
+          printf 'eula=true\n' > mod/run/gametest/eula.txt
+          ./gradlew :mod:build :mod:runGameTestServer --stacktrace 2>&1 | tee minecraft-build.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: neoforge-mod-and-tests
+          path: |
+            mod/build/libs/
+            mod/build/reports/
+            mod/run/gametest/logs/
+            mod/run/gametest/reports/
+            minecraft-build.log

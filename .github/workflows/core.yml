@@ -13,12 +13,8 @@ jobs:
   core:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -26,40 +22,23 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.2.1'
-          cache-read-only: false
-      - name: Generate official wrapper and runtime assets
+      - name: Validate data and run simulation checks
         run: |
-          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            gradle wrapper --gradle-version 9.2.1 --distribution-type bin
-          fi
           python3 art/generate_assets.py
           python3 tools/validate_assets.py
-      - name: Preserve reproducible generated files on the implementation branch
-        if: github.event_name == 'push'
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add gradlew gradlew.bat gradle/wrapper mod/src/main/resources art/assets-manifest.json docs/ASSET_CATALOG.md docs/PARTS.md
-          if ! git diff --cached --quiet; then
-            git commit -m 'build: generate wrapper and original runtime asset catalogue [skip ci]'
-            git push origin HEAD:${{ github.ref_name }}
-          fi
-      - name: Test simulation and produce dyno evidence
-        run: |
           ./gradlew :sim:test :sim:selfTest :tools:installDist --stacktrace
           mkdir -p reports/local
           tools/build/install/tools/bin/tools > reports/local/reference-dyno.csv
           tools/build/install/tools/bin/tools --drive > reports/local/reference-drive.csv 2> reports/local/acceleration.txt
-      - name: Install Blender and software-rendered display dependencies
+      - name: Install Blender and software display
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender xvfb mesa-utils libgl1-mesa-dri
-          blender --version
-      - name: Build editable Blender scenes and GLB models
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender xvfb libgl1-mesa-dri > /tmp/blender-install.log
+      - name: Build and verify editable Blender scenes, GLBs and previews
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
-        run: xvfb-run -a blender --background --factory-startup --python art/blender_build.py
-      - name: Package source and executable simulation
+        run: xvfb-run -a blender --background --factory-startup --python-exit-code 1 --python art/run_blender.py
+      - name: Package source and tool versions
         if: always()
         run: |
           mkdir -p reports/local
