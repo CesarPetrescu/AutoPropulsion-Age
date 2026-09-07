@@ -1,0 +1,13 @@
+.gradle/
+**/build/
+**/run/
+**/runs/
+.idea/
+*.iml
+.vscode/
+__pycache__/
+*.pyc
+art/generated/
+reports/local/
+*.blend1
+.env

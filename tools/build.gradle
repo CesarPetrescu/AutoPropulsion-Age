@@ -1,0 +1,8 @@
+plugins { id 'application' }
+dependencies { implementation project(':sim') }
+application { mainClass = 'com.photonspark.autopropulsion.tools.Dyno' }
+tasks.register('dyno', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    args = (project.findProperty('dynoArgs') ?: '--engine ref_i4_2.0').split(' ').toList()
+}

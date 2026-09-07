@@ -1,0 +1,66 @@
+name: JVM core and development tools
+on:
+  push:
+    branches: ['feat/neoforge-1.21.1-playable-foundation']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: core-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
+      - name: Generate official Gradle wrapper if absent
+        run: |
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            gradle wrapper --gradle-version 9.2.1 --distribution-type bin
+          fi
+      - name: Preserve wrapper on the implementation branch
+        if: github.event_name == 'push'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gradlew gradlew.bat gradle/wrapper
+          if ! git diff --cached --quiet; then
+            git commit -m 'build: add generated Gradle 9.2.1 wrapper [skip ci]'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+      - name: Test simulation and build command-line dyno
+        run: ./gradlew :sim:test :sim:selfTest :tools:installDist --stacktrace
+      - name: Install and verify Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender xvfb mesa-utils libgl1-mesa-dri
+          blender --background --factory-startup --python-expr "import bpy; print('BLENDER_AVAILABLE=' + bpy.app.version_string)"
+      - name: Package source and executable simulation
+        if: always()
+        run: |
+          mkdir -p reports/local
+          git archive HEAD -o reports/local/source.zip
+          java -version 2> reports/local/java-version.txt
+          blender --version > reports/local/blender-version.txt 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-simulation-and-test-results
+          path: |
+            reports/local/
+            sim/build/test-results/
+            sim/build/reports/tests/
+            tools/build/install/
