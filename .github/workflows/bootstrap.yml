@@ -14,15 +14,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/neoforge-1.21.1-vehicle-foundation
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '9.2.1'
+          cache-read-only: false
       - name: Install Blender and isolated graphical runtime
-        run: sudo apt-get update && sudo apt-get install -y blender ffmpeg xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy ffmpeg xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64
       - name: Generate original content and editable Blender models
         run: |
           mkdir -p build/reports
