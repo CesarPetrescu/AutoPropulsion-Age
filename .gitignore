@@ -1,0 +1,9 @@
+.gradle/
+**/build/
+**/run/
+.idea/
+*.iml
+__pycache__/
+.local-test/
+*.blend1
+*.blend2

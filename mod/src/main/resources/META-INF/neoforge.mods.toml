@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+[[mods]]
+modId="autopropulsion"
+version="${version}"
+displayName="AutoPropulsion Age"
+authors="Cesar Petrescu / PhotonSpark"
+description='''
+Modular cars with a standalone drivetrain simulation. Early playable foundation; see the feature status document before using in a persistent world.
+'''
+[[dependencies.autopropulsion]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.249,21.2)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.autopropulsion]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"

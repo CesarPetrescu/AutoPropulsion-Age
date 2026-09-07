@@ -1,0 +1,8 @@
+plugins { id 'application' }
+dependencies { implementation project(':sim') }
+application { mainClass = 'com.photonspark.autopropulsion.tools.Dyno' }
+tasks.register('dyno', JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+}

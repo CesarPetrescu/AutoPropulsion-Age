@@ -1,0 +1,7 @@
+tasks.register('regressionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.photonspark.autopropulsion.sim.SimulationTests'
+    args layout.buildDirectory.file('reports/regression.json').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn regressionTest }

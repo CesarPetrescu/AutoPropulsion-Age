@@ -1,0 +1,1 @@
+Generate original Blender sources, runtime assets and Gradle wrapper, then execute the mod test suite. Isolated feature branch only.
