@@ -90,12 +90,13 @@ public final class ClientSmoke {
         }else if(phase==8&&ticks>25){CarClient.send(car,CarPackets.IGNITION,0,0);phase=9;ticks=0;}
         else if(phase==9){
             maxSpeed=Math.max(maxSpeed,Math.abs(car.speed()));
-            PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:4,0));
+            // Service braking uses bit 2; the handbrake has separate force/slip regression tests.
+            PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:2,0));
             if(ticks==55)pendingScreenshot="alpha-driving.png";
             if(ticks==80)mc.options.setCameraType(CameraType.FIRST_PERSON);
             if(ticks==95)pendingScreenshot="alpha-interior.png";
             if(ticks>120){
-                if(car.fuel()>=40||Math.abs(car.speed())>.3||maxSpeed<5){write(mc,"FAILED: driving/braking/fuel check; peak speed="+maxSpeed);mc.stop();return;}
+                if(car.fuel()>=40||Math.abs(car.speed())>.3||maxSpeed<5){write(mc,"FAILED: service-braking/fuel check; peak speed="+maxSpeed+", final speed="+car.speed()+", fuel="+car.fuel());mc.stop();return;}
                 CarClient.send(car,CarPackets.IGNITION,0,0);phase=10;ticks=0;
             }
         }

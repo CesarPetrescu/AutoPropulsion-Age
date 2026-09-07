@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Validate shipped audio resources and decode every Vorbis stream. Requires ffmpeg/ffprobe."""
-import array, concurrent.futures, json, math, subprocess
+import array, concurrent.futures, json, math, re, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]/'src/main/resources/assets/sparkmotors'
+invalid=[p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and not re.fullmatch(r'[a-z0-9/._-]+',p.relative_to(ROOT).as_posix())]
+assert not invalid, 'Invalid Minecraft resource paths: '+str(invalid)
 manifest=json.loads((ROOT/'sounds/vehicle/manifest.json').read_text())['sounds']
 events=json.loads((ROOT/'sounds.json').read_text());lang=json.loads((ROOT/'lang/en_us.json').read_text())
 assert len(manifest)==58
@@ -20,4 +22,4 @@ def check(entry):
     assert declared['peak']<=.8 and declared['channels']==1
     return {'event':name,'decoded_peak':round(peak,4),'decoded_rms':round(rms,4),'samples':len(pcm)}
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:results=list(pool.map(check,manifest.items()))
-print(json.dumps({'passed':len(results),'mono_vorbis':True,'max_peak':max(r['decoded_peak'] for r in results),'sounds':results},indent=2))
+print(json.dumps({'passed':len(results),'resource_paths_valid':True,'mono_vorbis':True,'max_peak':max(r['decoded_peak'] for r in results),'sounds':results},indent=2))
