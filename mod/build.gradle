@@ -10,8 +10,12 @@ neoForge {
             client()
             gameDirectory = file('run/client')
             systemProperty 'apa.clientSmoke', System.getProperty('apa.clientSmoke', 'false')
+            systemProperty 'apa.profile', System.getProperty('apa.profile', 'fancy')
             systemProperty 'apa.smokeHost', System.getProperty('apa.smokeHost', '127.0.0.1:25565')
             programArguments.addAll '--username', System.getProperty('apa.username', 'APA_Tester')
+            if (Boolean.getBoolean('apa.clientSmoke')) {
+                programArguments.addAll '--quickPlayMultiplayer', System.getProperty('apa.smokeHost', '127.0.0.1:25565'), '--width', '1280', '--height', '720'
+            }
         }
         server {
             server()

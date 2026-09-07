@@ -22,11 +22,27 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.2.1'
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Compile mod and run dedicated GameTest server
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p mod/run/gametest
           printf 'eula=true\n' > mod/run/gametest/eula.txt
+          printf 'online-mode=false\nserver-ip=127.0.0.1\n' > mod/run/gametest/server.properties
           ./gradlew :mod:build :mod:runGameTestServer --stacktrace 2>&1 | tee minecraft-build.log
+          grep -q 'All 4 required tests passed' minecraft-build.log
+      - name: Install software-rendered client dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libasound2t64 > /tmp/client-install.log
+      - name: Test actual dedicated server and Fast/Fancy/Fabulous clients
+        env:
+          MC_EULA: 'true'
+        run: python3 tools/mod_tester.py
+      - name: Package exact source
+        if: always()
+        run: git archive HEAD -o source.zip
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -36,4 +52,9 @@ jobs:
             mod/build/reports/
             mod/run/gametest/logs/
             mod/run/gametest/reports/
+            mod/run/client/screenshots/
+            mod/run/client/crash-reports/
+            mod/run/server/crash-reports/
+            reports/minecraft/
             minecraft-build.log
+            source.zip
