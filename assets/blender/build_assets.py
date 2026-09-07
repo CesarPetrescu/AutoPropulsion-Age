@@ -34,7 +34,10 @@ def box(name,loc,scale,mat='metal',bevel=0,rot=(0,0,0)):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc,rotation=rot);o=finish(bpy.context.object,name,mat);o.scale=scale
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     if bevel:
-        mod=o.modifiers.new('machined_edges','BEVEL');mod.width=bevel;mod.segments=1;o.modifiers.new('weighted_normals','WEIGHTED_NORMAL')
+        mod=o.modifiers.new('machined_edges','BEVEL');mod.width=bevel;mod.segments=1
+        # Blender <=4.0 requires Auto Smooth for weighted normals; newer versions removed this property.
+        if hasattr(o.data,'use_auto_smooth'):o.data.use_auto_smooth=True
+        o.modifiers.new('weighted_normals','WEIGHTED_NORMAL')
     return o
 def cylinder(name,loc,radius,depth,mat='metal',axis='Z',vertices=12):
     rot={'Z':(0,0,0),'X':(0,math.pi/2,0),'Y':(math.pi/2,0,0)}[axis]
@@ -63,7 +66,12 @@ def triangulated(objects):
         ev.to_mesh_clear()
 def mc(v):return [round(v.x,5),round(v.z,5),round(-v.y,5)]
 def scene(camera_loc,target,scale,width,height):
-    sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=12;sc.cycles.use_denoising=True
+    sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.device='CPU';sc.cycles.samples=32
+    # Distribution Blender builds may omit OpenImageDenoise. Previews must not depend on it.
+    # This is authoring-only: exported runtime geometry is unaffected. See docs/decisions/0001-testing.md.
+    sc.cycles.use_denoising=False
+    for layer in sc.view_layers:
+        if hasattr(layer.cycles,'use_denoising'):layer.cycles.use_denoising=False
     sc.render.resolution_x=width;sc.render.resolution_y=height;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format='PNG';sc.world.color=(.12,.12,.12)
     bpy.ops.object.camera_add(location=camera_loc);camera=bpy.context.object;camera.rotation_euler=(Vector(target)-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=scale;sc.camera=camera
@@ -174,7 +182,7 @@ def part_geometry(cat):
             cylinder('housing',(0,0,.2),.36,.28,'metal',vertices=12);cylinder('rotor',(0,0,.36),.26,.06,'dark',vertices=3)
         else:
             box('casting',(0,0,.22),(.55,.78,.40),'metal',.035)
-            for y in (-.27,-.09,.09,.27):cylinder('bore',(0,y,.425),.075,.014,'dark')
+            for y in (-.27,-.09,.09,.09+.18):cylinder('bore',(0,y,.425),.075,.014,'dark')
             for x in (-.28,.28):
                 for y in (-.28,.28):bolt((x,y,.43))
     elif cat in ('turbo','supercharger','pump','carb','throttle','actuator','thermostat'):
@@ -261,6 +269,7 @@ def build_parts():
 
 car_triangles=build_car();counts=build_parts()
 manifest={'generator':'assets/blender/build_assets.py','blender_version':bpy.app.version_string,'car_triangles':car_triangles,'part_count':len(counts),'part_triangles':counts,
+          'preview_render':{'engine':'CYCLES','device':'CPU','samples':32,'denoising':False},
           'provenance':'Original procedural meshes; category-level reuse and proxy geometry, not hand-sculpted production art.',
           'runtime_formats':['vehicle mesh JSON','NeoForge OBJ/MTL'],'authoring_units':'metres',
           'source_files':['assets/source/h1-hatchback.blend','assets/source/component-catalogue.blend','assets/source/h1-hatchback.glb']}
