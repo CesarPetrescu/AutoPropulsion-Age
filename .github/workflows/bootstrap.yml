@@ -24,6 +24,7 @@ jobs:
           python3 scripts/generate-content.py
           set -o pipefail
           blender -b --python-exit-code 1 --python assets/blender/build_assets.py 2>&1 | tee build/reports/blender.log
+          blender -b --python-exit-code 1 --python assets/blender/finalize_assets.py 2>&1 | tee build/reports/visual-pass.log
           ffmpeg -y -i assets/source/engine-loop.wav -c:a libvorbis -q:a 4 mod/src/main/resources/assets/autopropulsion/sounds/engine_loop.ogg
           python3 scripts/validate-content.py --assets
       - name: Check committed runtime geometry matches the generator

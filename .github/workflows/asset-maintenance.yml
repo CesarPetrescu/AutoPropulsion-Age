@@ -1,0 +1,49 @@
+name: Publish reviewed foundation assets
+on:
+  push:
+    branches: ['feat/neoforge-1.21.1-vehicle-foundation']
+    paths: ['assets/blender/finalize_assets.py', '.bootstrap/publish-assets']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/feat/neoforge-1.21.1-vehicle-foundation'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender authoring tools
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy ffmpeg
+      - name: Generate and check source, runtime geometry and previews
+        run: |
+          mkdir -p build/reports
+          python3 scripts/generate-content.py
+          set -o pipefail
+          blender -b --python-exit-code 1 --python assets/blender/build_assets.py 2>&1 | tee build/reports/blender.log
+          blender -b --python-exit-code 1 --python assets/blender/finalize_assets.py 2>&1 | tee build/reports/visual-pass.log
+          ffmpeg -y -i assets/source/engine-loop.wav -c:a libvorbis -q:a 4 mod/src/main/resources/assets/autopropulsion/sounds/engine_loop.ogg
+          python3 scripts/validate-content.py --assets
+      - name: Publish generated files to this feature branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/manifest.json assets/source docs/images mod/src/main/resources
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets: apply checked engine clearance and uncropped preview framing'
+            # Fail rather than force-push if another author moved the branch during generation.
+            git push origin HEAD:feat/neoforge-1.21.1-vehicle-foundation
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autopropulsion-reviewed-assets-${{ github.run_number }}
+          path: |
+            assets/source/**
+            assets/manifest.json
+            docs/images/**
+            mod/src/main/resources/assets/autopropulsion/models/vehicle/**
+            build/reports/**
+          retention-days: 14
