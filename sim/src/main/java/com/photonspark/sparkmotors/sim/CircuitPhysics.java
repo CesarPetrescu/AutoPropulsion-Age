@@ -1,0 +1,53 @@
+package com.photonspark.sparkmotors.sim;
+
+import java.util.*;
+import static com.photonspark.sparkmotors.sim.VehicleDynamics.clamp;
+
+/** Deliberately bounded workshop-scale heat and mass balance, in litres, seconds and degrees C. */
+public final class CircuitPhysics {
+    public record Measurements(double coolantLeak,double coolantPressure,double circulation,boolean fan,double oilPressure,double voltage) {}
+    public static double leak(PartInstance p,double scale){
+        if(p==null)return scale;
+        return scale*clamp(Math.max(0,p.damage()-.2)+((p.faults()&PartInstance.LEAK)!=0?.25:0),0,1);
+    }
+    public static double coolantLeak(MechanicalState m){return leak(m.get("cooling.upper_hose"),.22)+leak(m.get("cooling.lower_hose"),.22)+leak(m.get("engine.cooling"),.12);}
+    public static double pressureHold(MechanicalState m,double seconds){return Math.exp(-coolantLeak(m)*seconds*3);}
+    public static Measurements measure(MechanicalState m,double rpm,boolean running,double speed){
+        double fill=clamp(m.coolant()/6,0,1),leak=coolantLeak(m);
+        boolean fan=m.coolantTemperature()>92&&m.capability("cooling.fan")>.2&&m.capability("electrical.wiring")>.2&&m.capability("electrical.fuse")>.2&&batteryCharge(m)>1;
+        double thermostat=clamp((m.coolantTemperature()-78)/12,0,1)*m.capability("cooling.thermostat");
+        double flow=running?clamp(rpm/2200,.18,1.5)*m.capability("cooling.pump")*fill*thermostat:0;
+        double pressure=clamp((m.coolantTemperature()-65)/40,0,1.3)*fill*pressureHold(m,1);
+        return new Measurements(leak,pressure,flow,fan,0,12.0+Math.min(1,batteryCharge(m)/48)*.7);
+    }
+    public static double batteryCharge(MechanicalState m){var p=m.get("electrical.battery");return p==null?0:p.reserve()*p.capability();}
+    public static MechanicalState step(MechanicalState m,double rpm,double throttle,double boost,boolean running,double speed,boolean brake,double dt){
+        dt=clamp(dt,.0001,.05);var read=measure(m,rpm,running,speed);var parts=new HashMap<>(m.parts());var faults=new HashSet<>(m.faultHistory());
+        double coolant=Math.max(0,m.coolant()-read.coolantLeak*(.35+read.coolantPressure*.65)*dt);
+        double heat=running?7+rpm*.0025+throttle*42+boost*20:0;
+        double radiator=m.capability("engine.cooling");
+        double cooling=(m.coolantTemperature()-20)*(.07+read.circulation*radiator*(.12+Math.abs(speed)*.024+(read.fan?.32:0)));
+        double capacity=26+coolant*4.18;
+        double temperature=m.coolantTemperature()+(heat-cooling)/capacity*dt;
+        if(running&&temperature>118){var p=parts.get("engine.internals");if(p!=null)parts.put("engine.internals",p.damage(Math.pow((temperature-118)/20,2)*.0015*dt,temperature>145?PartInstance.MISFIRE:0));}
+        double brakeFluid=m.brakeFluid();
+        for(int corner=0;corner<4;corner++){
+            String prefix="wheel."+ComponentSlot.CORNERS[corner]+".";
+            brakeFluid=Math.max(0,brakeFluid-leak(m.get(prefix+"brake_hose"),.025)*(brake?1:.1)*dt);
+            var tire=parts.get(prefix+"tire");
+            if(tire!=null){double pressure=Math.max(0,tire.reserve()-leak(tire,.10)*dt);double wear=tire.wear()+Math.abs(speed)*dt*(pressure<1?.000005:.00000015);parts.put(prefix+"tire",tire.condition(wear,tire.damage(),tire.faults()).operating(pressure,tire.temperature()));}
+        }
+        if(coolant<2)faults.add("COOLANT_LOW");if(temperature>110)faults.add("COOLANT_HOT");if(brakeFluid<.2)faults.add("BRAKE_PRESSURE_LOW");
+        return m.update(parts,coolant,m.oil(),brakeFluid,temperature,m.oilTemperature(),m.distance()+Math.abs(speed)*dt,faults);
+    }
+    /** One bounded allocation per contact event; unaffected parts retain exactly their prior state. */
+    public static MechanicalState impact(MechanicalState m,String region,double speed){
+        double budget=clamp((speed*speed-25)/450,0,.9);if(budget==0)return m;
+        String[] keys;double[] weights;
+        if(region.equals("front")){keys=new String[]{"body.front","cooling.upper_hose","engine.cooling"};weights=new double[]{.25,.55,.20};}
+        else if(region.equals("rear")){keys=new String[]{"body.rear","exhaust.pipe","exhaust.muffler"};weights=new double[]{.45,.30,.25};}
+        else {String c=Arrays.asList(ComponentSlot.CORNERS).contains(region)?region:"fl";keys=new String[]{"wheel."+c+".rim","wheel."+c+".link","wheel."+c+".tire"};weights=new double[]{.4,.35,.25};}
+        for(int i=0;i<keys.length;i++){var p=m.get(keys[i]);if(p!=null){int fault=keys[i].contains("hose")?PartInstance.LEAK:keys[i].endsWith("rim")||keys[i].endsWith("link")?PartInstance.BENT:0;m=m.with(keys[i],p.damage(budget*weights[i],fault));}}
+        return m;
+    }
+}

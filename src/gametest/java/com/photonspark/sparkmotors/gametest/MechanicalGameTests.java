@@ -63,4 +63,30 @@ public final class MechanicalGameTests {
         act(c,p,CarPackets.COMPONENT_SWAP,slot,0);h.assertTrue(c.mechanics().equals(before),"Closed hood rejects service");hood(c,p);
         var stranger=owner(h,car(h));stranger.moveTo(c.position());act(c,stranger,CarPackets.COMPONENT_SWAP,slot,0);h.assertTrue(c.mechanics().equals(before),"Non-owner cannot remove components");h.succeed();
     }
+
+    @GameTest(template="test_track",timeoutTicks=500) public void pressureTestRepairRefillAndVerificationRunOnServer(GameTestHelper h){
+        var c=car(h);var p=owner(h,c);hood(c,p);p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get("pressure_tester").get()));
+        c.impactComponents("front",18);var hit=c.mechanics();c.impactComponents("front",18);h.assertTrue(c.mechanics().equals(hit),"Repeated substeps cannot allocate the same impact twice");
+        c.setMechanics(c.mechanics().fluids(2.4,5,1));act(c,p,CarPackets.DIAGNOSE,0,0);
+        h.runAfterDelay(205,()->{
+            h.assertTrue(c.diagnostic().contains("Pressure loss"),"Real timed pressure test detects leakage");
+            double remaining=c.coolant();var internal=c.mechanics().get("engine.internals");var slot=ComponentSlot.byKey("cooling.upper_hose");
+            p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get(slot.item()).get()));act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(slot),1);
+            h.assertTrue(Math.abs(c.coolant()-remaining)<.001&&c.mechanics().get("engine.internals").equals(internal),"Targeted replacement does not refill or heal internals");
+            double before=c.coolant();p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get("coolant_bottle").get()));act(c,p,CarPackets.FLUID_SERVICE,0,0);
+            h.assertTrue(Math.abs(c.coolant()-before-1)<.001&&p.getInventory().countItem(Items.GLASS_BOTTLE)==1,"One litre transferred and one empty bottle returned");
+            act(c,p,CarPackets.DIAGNOSE,0,0);
+        });
+        h.runAfterDelay(415,()->{h.assertTrue(c.diagnostic().contains("Holds pressure"),"Actual ten-second verification test passes after replacing the cause");h.succeed();});
+    }
+    @GameTest(template="test_track") public void fluidBottleRemainderAndTireCornerTransferAreConserved(GameTestHelper h){
+        var c=car(h);var p=owner(h,c);hood(c,p);c.setMechanics(c.mechanics().fluids(7.7,5,1));
+        var bottle=AutoPropulsionAge.PART_ITEMS.get("coolant_bottle").get();p.getInventory().add(new ItemStack(bottle));act(c,p,CarPackets.FLUID_SERVICE,0,0);
+        h.assertTrue(c.coolant()==8,"Reservoir stops at capacity");var remainder=p.getInventory().items.stream().filter(i->i.is(bottle)).findFirst().orElseThrow();h.assertTrue(Math.abs(MechanicalData.get(remainder).coolant()-.7)<.00001,"Unused 0.7 L stays in bottle");
+        var from=ComponentSlot.byKey("wheel.fl.tire");var to=ComponentSlot.byKey("wheel.rr.tire");var used=c.mechanics().get(from.key()).condition(.7,.2,PartInstance.LEAK).operating(1.1,55);c.setMechanics(c.mechanics().with(from.key(),used));
+        act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(from),0);h.assertTrue(c.mechanics().get(from.key())!=null,"Corner service requires raised jack");
+        p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get("service_jack").get()));act(c,p,CarPackets.JACK,0,0);h.assertTrue(c.raised(),"Inventory jack physically raises the car");
+        act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(from),0);act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(to),1);
+        h.assertTrue(c.mechanics().get(to.key()).equals(used)&&c.mechanics().get(from.key())==null,"Same used tire can move across corners without refreshing pressure, wear or identity");h.succeed();
+    }
 }

@@ -30,6 +30,12 @@ neoForge {
             systemProperty 'sparkmotors.clientSmoke', 'true'
             systemProperty 'sparkmotors.clientQuick', 'true'
         }
+        clientMechanics {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientSmoke', 'true'
+            systemProperty 'sparkmotors.clientMechanics', 'true'
+        }
         server { server(); programArgument '--nogui' }
         gameTestServer {
             type = 'gameTestServer'

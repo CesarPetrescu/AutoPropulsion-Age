@@ -14,7 +14,7 @@ Immutable component instances have UUID identity, item specification, wear, stru
 
 Single components, generic assemblies, whole engines, engine family conversions, used-part upgrades and crafted car crates carry their component contents. Empty stored mounts stay empty. Engine bundles carry remaining oil/coolant rather than refilling on installation. The garage's Service view exposes inventory-backed removal/installation, hood access, a jack, orbit/pan/zoom and underside viewing. Deeper behavior follows in M2/M3; listing a mount is not evidence that its failure is implemented.
 
-Fresh M1 checks: 22 simulation tests and 22 server GameTests passed, including four new tests for typed item/network/save round trips, used wheel-assembly crafting, engine/crate conversion and ownership/access. Client verification of the new Service screen is pending the complete M2 workflow.
+Fresh M1 checks: 22 simulation tests and 22 server GameTests passed, including four new tests for typed item/network/save round trips, used wheel-assembly crafting, engine/crate conversion and ownership/access. The new screen was subsequently verified in the M2 native client run.
 
 ## Next milestone
 

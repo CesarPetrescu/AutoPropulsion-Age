@@ -64,7 +64,7 @@ public final class ClientSmoke {
             });
         }
         if(!(mc.level.getEntity(carId) instanceof CarEntity car))return;
-        if(phase>=10){engineMatrix(mc,car);return;}
+        if(phase>=10){if(Boolean.getBoolean("sparkmotors.clientMechanics"))componentFlow(mc,car);else engineMatrix(mc,car);return;}
         if(phase==4&&ticks==20)pendingScreenshot="alpha-paint.png";
         if(phase==6&&ticks==10)press(mc,"Car",0);
         if(phase==6&&ticks==20)pendingScreenshot="alpha-car-controls.png";
@@ -91,7 +91,7 @@ public final class ClientSmoke {
         }else if(phase==8&&ticks>25){CarClient.send(car,CarPackets.IGNITION,0,0);phase=9;ticks=0;}
         else if(phase==9){
             maxSpeed=Math.max(maxSpeed,Math.abs(car.speed()));
-            PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:4,0));
+            PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:2,0));
             if(ticks==55)pendingScreenshot="alpha-driving.png";
             if(ticks==80)mc.options.setCameraType(CameraType.FIRST_PERSON);
             if(ticks==95)pendingScreenshot="alpha-interior.png";
@@ -99,6 +99,27 @@ public final class ClientSmoke {
                 if(car.fuel()>=40||Math.abs(car.speed())>.3||maxSpeed<5){write(mc,"FAILED: driving/braking/fuel check; peak speed="+maxSpeed);mc.stop();return;}
                 CarClient.send(car,CarPackets.IGNITION,0,0);phase=10;ticks=0;
             }
+        }
+    }
+    private static void componentFlow(Minecraft mc,CarEntity car){
+        if(phase==10){
+            if(ticks==10){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.serverLevel().getEntity(carId);p.stopRiding();p.teleportTo(c.getX()+2.8,c.getY(),c.getZ());c.setMechanics(CircuitPhysics.impact(c.mechanics(),"front",18).fluids(2.4,5,1));});}
+            if(ticks==30){CarClient.send(car,CarPackets.OPEN,0,0);}
+            if(ticks==45){press(mc,"Service",0);}
+            if(ticks==55){if(!car.hoodOpen())press(mc,"Hood",0);}
+            if(ticks==75){pendingScreenshot="mechanics-leaking-hose.png";press(mc,"Tests / fluids",0);}
+            if(ticks==85)press(mc,"Pressure test / 10s",0);
+            if(ticks==300){if(!car.diagnostic().contains("Pressure loss"))throw new IllegalStateException("Timed leak test did not synchronize: "+car.diagnostic());pendingScreenshot="mechanics-pressure-loss.png";}
+            if(ticks==320){press(mc,"Parts",0);press(mc,"Install part",0);}
+            if(ticks==340){if(CircuitPhysics.coolantLeak(car.mechanics())>.005)throw new IllegalStateException("Hose replacement did not stop the leak");if(car.coolant()>2.5)throw new IllegalStateException("Part replacement secretly refilled coolant");press(mc,"Tests / fluids",0);}
+            if(ticks==355)press(mc,"Fill coolant",0);
+            if(ticks==370){if(car.coolant()<2.7)throw new IllegalStateException("Coolant refill packet failed");press(mc,"Pressure test / 10s",0);}
+            if(ticks==585){if(!car.diagnostic().contains("Holds pressure"))throw new IllegalStateException("Repaired circuit failed pressure verification");pendingScreenshot="mechanics-repair-verified.png";}
+            if(ticks==605){press(mc,"Parts",0);((ServiceScreen)mc.screen).select("wheel.fl.tire");press(mc,"Jack",0);}
+            if(ticks==625){if(!car.raised())throw new IllegalStateException("Jack did not synchronize");press(mc,"Remove part",0);}
+            if(ticks==645){if(car.mechanics().get("wheel.fl.tire")!=null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")!=0)throw new IllegalStateException("Removed tire remains installed or visible");press(mc,"Underside",0);pendingScreenshot="mechanics-underside-service.png";}
+            if(ticks==665)press(mc,"Install part",0);
+            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire removal and renderer visibility.");System.out.println("MECHANICS_CLIENT_PASS");mc.stop();}
         }
     }
     private static void engineMatrix(Minecraft mc,CarEntity car){

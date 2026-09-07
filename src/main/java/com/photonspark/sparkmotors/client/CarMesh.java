@@ -3,7 +3,7 @@ package com.photonspark.sparkmotors.client;
 import com.photonspark.sparkmotors.AutoPropulsionAge;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.sim.Assembly;
-import com.photonspark.sparkmotors.sim.EnginePart;
+import com.photonspark.sparkmotors.sim.*;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.*;
@@ -34,7 +34,7 @@ public final class CarMesh {
                 result.add(new Chunk(name,cat,group,variant,hinge,px,py,pz,angle,family,slot,tier,induction,kind,v,colors));
             }
         }catch(IOException e){throw new IllegalStateException("Could not load AutoPropulsion car geometry",e);}
-        chunks=List.copyOf(result);
+        chunks=List.copyOf(result);componentKeys.clear();
     }
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview){
         render(car,partial,poses,buffers,light,preview,false,false);
@@ -42,7 +42,28 @@ public final class CarMesh {
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly){
         render(car,partial,poses,buffers,light,preview,engineOnly,false);
     }
+    private static final Map<String,String> componentKeys=new HashMap<>();
+    private static String componentKey(Chunk c){return componentKeys.computeIfAbsent(c.name,name->{
+        var match=java.util.regex.Pattern.compile("(?:^|_)(fl|fr|rl|rr)(?:_|$)").matcher(name);
+        if(match.find()){
+            String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.contains("coilover")?"damper":name.contains("tie_rod")?"link":null;
+            if(part!=null)return "wheel."+match.group(1)+"."+part;
+        }
+        if(name.equals("coolant_hoses"))return "cooling.upper_hose";
+        if(name.equals("radiator_fan"))return "cooling.fan";
+        if(name.equals("water_pump"))return "cooling.pump";
+        if(name.equals("thermostat"))return "cooling.thermostat";
+        if(name.equals("oil_filter"))return "oil.filter";
+        if(name.equals("oil_pump"))return "oil.pump";
+        if(java.util.List.of("battery","starter","alternator").contains(name))return "electrical."+name;
+        if(name.equals("muffler"))return "exhaust.muffler";
+        if(name.equals("exhaust_pipe"))return "exhaust.pipe";
+        if(c.slot>=0)return ComponentSlot.engine(EnginePart.values()[c.slot]).key();
+        return "";
+    });}
+    public static int visibleComponentTriangles(CarEntity car,String key){return chunks.stream().filter(c->componentKey(c).equals(key)&&visible(c,car)).mapToInt(c->c.colors.length/3).sum();}
     private static boolean visible(Chunk c,CarEntity car){
+        String component=componentKey(c);if(!component.isEmpty()&&car.mechanics().get(component)==null)return false;
         int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
         if(c.group>=0&&(selected==0||(c.variant>0&&selected!=c.variant)))return false;
         if((c.family&(1<<car.engineFamily().ordinal()))==0||(c.induction&(1<<EnginePart.INDUCTION.variant(car.engineParts())))==0)return false;
@@ -54,6 +75,9 @@ public final class CarMesh {
     }
     public static int visibleEngineFamilies(CarEntity car){int mask=0;for(var c:chunks)if(c.group==0&&c.family!=127&&visible(c,car))mask|=c.family;return mask;}
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway){
+        render(car,partial,poses,buffers,light,preview,engineOnly,cutaway,"");
+    }
+    public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway,String highlight){
         float panel=Mth.lerp(partial,car.oldPanelProgress,car.panelProgress);
         float hood=Mth.lerp(partial,car.oldHoodProgress,car.hoodProgress);
         float engine=Mth.lerp(partial,car.oldEngineAngle,car.engineAngle);
@@ -64,13 +88,16 @@ public final class CarMesh {
             if(c.group==0&&!preview&&hood<.05)continue;
             if(engineOnly&&cutaway&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
             poses.pushPose();
+            String component=componentKey(c);var part=component.isEmpty()?null:car.mechanics().get(component);
+            int corner=component.startsWith("wheel.")?java.util.Arrays.asList(ComponentSlot.CORNERS).indexOf(component.split("\\.")[1]):-1;
+            if(corner>=0)poses.translate(0,car.wheelTravel(corner),0);
             if(c.hinge>0){
                 poses.translate(c.px,c.py,c.pz);
                 poses.mulPose((c.hinge<=4?Axis.YP:Axis.XP).rotationDegrees(c.angle*(c.hinge==5?hood:panel)));
                 poses.translate(-c.px,-c.py,-c.pz);
             }
             if(c.name.equals("radiator_fan")||c.name.equals("harmonic_damper")||engineOnly&&cutaway&&(c.name.startsWith("crankshaft")||c.name.startsWith("eccentric_shaft")||c.name.matches("rotor_[1-4]r_.*"))){
-                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotation(engine*(c.name.startsWith("rotor_")?1f/3:1)));poses.translate(-c.px,-c.py,-c.pz);
+                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotation((c.name.equals("radiator_fan")?car.fanAngle:engine)*(c.name.startsWith("rotor_")?1f/3:1)));poses.translate(-c.px,-c.py,-c.pz);
             }
             if(c.category==13||c.name.startsWith("brake_disc_")||c.name.startsWith("hub_")){
                 String tag=c.name.substring(c.name.length()-2);
@@ -78,7 +105,10 @@ public final class CarMesh {
                     float x=tag.charAt(1)=='l'?-.83f:.83f,z=tag.charAt(0)=='f'?1.35f:-1.30f;
                     poses.translate(x,.34,z);
                     if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(-car.steer()*.49f/(1+Math.abs(car.speed())*.045f)));
-                    poses.mulPose(Axis.XP.rotation(wheel));poses.translate(-x,-.34,-z);
+                    float individual=corner<0?wheel:Mth.lerp(partial,car.oldWheelAngles[corner],car.wheelAngles[corner]);
+                    poses.mulPose(Axis.XP.rotation(individual));
+                    if(part!=null&&component.endsWith(".rim")&&(part.faults()&PartInstance.BENT)!=0)poses.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(individual*2)*part.damage()*8)));
+                    if(part!=null&&component.endsWith(".tire"))poses.scale(1,(float)(.78+.22*Math.min(1,part.reserve()/2.3)),1);poses.translate(-x,-.34,-z);
                 }
             }
             VertexConsumer buffer=buffers.getBuffer(c.kind==2?RenderType.entityTranslucent(WHITE):RenderType.entityCutoutNoCull(WHITE));
@@ -87,6 +117,8 @@ public final class CarMesh {
                 for(int k=0;k<4;k++){
                     int i=triangle+Math.min(k,2),v=i*6;
                     int color=c.kind==1?0xFF000000|car.paint():c.colors[i];
+                    if(!highlight.isEmpty()&&component.equals(highlight))color=0xFFFFBC58;
+                    if(component.equals("exhaust.muffler")&&part!=null&&part.item().equals("sport_muffler"))color=0xFFAFB9C5;
                     if(c.kind==2)color=(color&0xFFFFFF)|0x30000000;
                     if(c.group==0&&selected==2&&(c.category==19||c.name.startsWith("rotor_housing")))color=0xFFDBAC4C;
                     if(c.group==3&&selected==2&&c.name.startsWith("brake_caliper"))color=0xFF3FA7F5;

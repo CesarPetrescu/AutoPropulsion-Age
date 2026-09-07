@@ -16,6 +16,7 @@ import java.util.*;
 public final class ServiceScreen extends Screen {
     private final CarEntity car;
     private int x,y,w,h,scroll,selected=10,rows;
+    private boolean tests;
     private float yaw=325,pitch=25,zoom=1,panX,panY;
     private static final int TEXT=0xFFE6F1F3, MUTED=0xFF9CB1BD, ACCENT=0xFF42D2C6;
     public ServiceScreen(CarEntity car){super(Component.literal("Component workshop"));this.car=car;}
@@ -32,6 +33,17 @@ public final class ServiceScreen extends Screen {
         button("Jack",x+85,y+h-43,65,()->send(CarPackets.JACK,0,0));
         button("Underside",x+154,y+h-43,84,()->{pitch=-70;zoom=1.2f;panX=panY=0;});
         button("Reset view",x+242,y+h-43,85,()->{pitch=25;yaw=325;zoom=1;panX=panY=0;});
+        button("Parts",rx,y+29,rw/2-3,()->{tests=false;init();});button("Tests / fluids",rx+rw/2+2,y+29,rw/2-2,()->{tests=true;init();});
+        if(tests){
+            button("Pressure test / 10s",rx,y+81,rw,()->send(CarPackets.DIAGNOSE,0,0));
+            button("Inspect fluid levels",rx,y+108,rw,()->send(CarPackets.DIAGNOSE,1,0));
+            button("Measure selected tire",rx,y+135,rw,()->send(CarPackets.DIAGNOSE,2,Math.max(0,ComponentSlot.ALL.get(selected).corner())));
+            button("Multimeter",rx,y+162,rw,()->send(CarPackets.DIAGNOSE,3,0));
+            button("Fill coolant",rx,y+197,rw/2-3,()->send(CarPackets.FLUID_SERVICE,0,0));
+            button("Fill oil",rx+rw/2+2,y+197,rw/2-2,()->send(CarPackets.FLUID_SERVICE,1,0));
+            button("Fill brake fluid",rx,y+224,rw/2-3,()->send(CarPackets.FLUID_SERVICE,2,0));
+            button("Clear history",rx+rw/2+2,y+224,rw/2-2,()->send(CarPackets.CLEAR_FAULTS,0,0));return;
+        }
         for(int i=0;i<rows;i++){int index=scroll+i;var slot=ComponentSlot.ALL.get(index);button((index==selected?"> ":"")+font.plainSubstrByWidth(slot.title(),rw-20),rx,y+54+i*21,rw,()->{selected=index;init();});}
         button("Previous",rx,y+58+rows*21,rw/2-3,()->{scroll=Math.max(0,scroll-rows);init();});
         button("More",rx+rw/2+2,y+58+rows*21,rw/2-2,()->{scroll=Math.min(ComponentSlot.ALL.size()-rows,scroll+rows);init();});
@@ -51,14 +63,20 @@ public final class ServiceScreen extends Screen {
         g.enableScissor(x+10,y+53,x+w/2-4,y+h-100);g.pose().pushPose();
         g.pose().translate(x+w/4+panX,y+h/2+panY,150);float scale=Math.min((w/2-30)/5.5f,(h-130)/3.3f)*zoom;g.pose().scale(scale,-scale,scale);
         g.pose().mulPose(Axis.XP.rotationDegrees(pitch));g.pose().mulPose(Axis.YP.rotationDegrees(yaw));g.pose().translate(0,-.65,0);
-        Lighting.setupForEntityInInventory();CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,false,false);g.flush();g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
+        Lighting.setupForEntityInInventory();CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,false,false,selectedKey());g.flush();g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
         var slot=ComponentSlot.ALL.get(selected);var part=car.mechanics().get(slot.key());int by=y+89+rows*21;
+        if(tests){
+            g.drawString(font,"TEST RESULTS",rx,y+267,ACCENT,false);g.drawWordWrap(font,Component.literal(car.diagnostic()),rx,y+284,rw,TEXT);
+            g.drawWordWrap(font,Component.literal("Stored warnings: "+String.join(", ",car.mechanics().faultHistory())),rx,y+h-82,rw,MUTED);
+        }else{
         g.drawString(font,font.plainSubstrByWidth(slot.key(),rw),rx,by,ACCENT,false);
         g.drawString(font,part==null?"Empty mount":"Installed: "+font.plainSubstrByWidth(part.item(),rw-65),rx,by+15,TEXT,false);
         g.drawString(font,"Access: "+slot.access().name().toLowerCase(Locale.ROOT),rx,by+30,MUTED,false);
         g.drawString(font,slot.hardware()!=null?"Change this assembly in the Engine tab.":"Removed parts retain wear, faults and serial.",rx,y+h-90,MUTED,false);
+        if(part!=null&&CircuitPhysics.leak(part,1)>.05&&(slot.key().contains("hose")||slot.key().equals("engine.cooling")))g.drawString(font,"Observation: wet residue at this component",rx,by+45,0xFFFFC675,false);
+        }
         g.drawString(font,car.raised()?"SERVICE JACK RAISED":"CAR ON GROUND",x+16,y+h-90,ACCENT,false);
-        g.drawString(font,car.hoodOpen()?"Hood open":"Hood closed",x+16,y+h-75,TEXT,false);
+        g.drawString(font,String.format(Locale.ROOT,"Coolant %.1f L / %.0f C",car.coolant(),car.temperature()),x+16,y+h-75,TEXT,false);
         g.drawString(font,"Park and stop the engine before service. Fluids are retained separately.",x+16,y+h-15,MUTED,false);
         super.render(g,mx,my,partial);
     }
