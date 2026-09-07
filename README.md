@@ -1,12 +1,22 @@
 # AutoPropulsion Age
 
-**Playable alpha 0.1.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
+**Playable alpha 0.2.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
-Drive a modular sedan, swap six types of assembly, repaint it and adjust its tune through a native Minecraft garage. The alpha includes a driving HUD, automatic gears, reverse, fuel, repairs, opening panels, engine sound, survival recipes and saved car configurations.
+Drive a modular sedan, open its hood, build or swap its engine, repaint it and adjust its tune through a native Minecraft garage. **Seven engine families, stock/sport grades, six service slots, and natural/turbo/supercharger configurations are playable.** The alpha includes a driving HUD, automatic gears, reverse, fuel, repairs, opening panels, engine sound, survival recipes and saved car configurations.
 
-**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.1.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Build and test results](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
+**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.2.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Build and test results](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
 
 Put the JAR in your NeoForge instance's `mods` folder. In a Creative world, take a **Sedan Crate** from the **AutoPropulsion Age** tab and use it on open, flat ground. Right-click the car, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. **F5** changes the camera.
+
+## Under the hood
+
+Open **G → Engine → Open hood** while parked with the engine off. Install high-flow fuel and forged internals before selecting a boost kit. Removed engines retain their installed parts. [Engine workshop instructions](docs/ENGINE-WORKSHOP.md).
+
+![Engine workshop with fitted inline-four turbo](docs/screenshots/engine-i4-turbo.png)
+
+![Four-rotor engine installed under the open hood](docs/screenshots/hood-rotor4-supercharger.png)
+
+[Editable Blender file: all 21 open-hood configurations](assets/engine_workshop.blend)
 
 ## In-game driving
 
@@ -42,9 +52,26 @@ Refuel, repair and operate the car from the Car tab. Doors, hood and trunk open 
 
 ![First-person cockpit and driving HUD](docs/screenshots/alpha-interior.png)
 
-These are native Minecraft captures from the client integration test. **8 simulation tests, 5 dedicated-server GameTests and the client driving/garage test pass.** The release builds with Java 21. See the [verification record](docs/DEVELOPMENT.md).
+These are native Minecraft captures from the client integration test. **13 simulation tests and 13 dedicated-server GameTests pass.** Coverage includes **10,206 engine states**, **64,512 engine/car/tune driving cases**, all **42 family/grade/induction layouts driving in-world**, and all **21 family/induction layouts installed with native client buttons**. The 21 layouts also pass targeted Blender fit and hood-sweep intersection checks. The release builds with Java 21. See the [verification record](docs/DEVELOPMENT.md).
 
-This is a playable alpha with simplified driving physics and one seat. Physical dyno equipment, independent suspension forces, manual clutch controls, per-component engine building, more engine families, liveries and the rest of the workshop are future work. Lamps glow on the model without dynamic world lighting. Dedicated-server startup and integrated client/server traffic are tested; separate-machine multiplayer and other modpacks still need playtesting. [Detailed scope and limits](docs/PLAYING.md#alpha-limits-and-next-work).
+This is a playable alpha with simplified driving physics and one seat. Physical dyno equipment, independent suspension forces, manual clutch controls, a full individual-piston/valve/rotor parts tree, liveries and the rest of the workshop are future work. Engine curves and thermal behavior are gameplay calibrations. Lamps glow on the model without dynamic world lighting. Dedicated-server startup and integrated client/server traffic are tested; separate-machine multiplayer and other modpacks still need playtesting. [Detailed scope and limits](docs/PLAYING.md#alpha-limits-and-next-work).
+
+<!-- ENGINE-GALLERY-START -->
+## Engine configuration gallery
+
+Native game previews. Click an engine to see it installed under the open hood. [Full workshop instructions](docs/ENGINE-WORKSHOP.md).
+
+| Engine | Natural | Turbo | Supercharger |
+|---|---|---|---|
+| Inline-4 | [![Inline-4 natural](docs/engine-gallery/i4-natural.png)](docs/screenshots/hood-i4-natural.png) | [![Inline-4 turbo](docs/engine-gallery/i4-turbo.png)](docs/screenshots/hood-i4-turbo.png) | [![Inline-4 supercharger](docs/engine-gallery/i4-supercharger.png)](docs/screenshots/hood-i4-supercharger.png) |
+| V6 | [![V6 natural](docs/engine-gallery/v6-natural.png)](docs/screenshots/hood-v6-natural.png) | [![V6 turbo](docs/engine-gallery/v6-turbo.png)](docs/screenshots/hood-v6-turbo.png) | [![V6 supercharger](docs/engine-gallery/v6-supercharger.png)](docs/screenshots/hood-v6-supercharger.png) |
+| Flat-four | [![Flat-four natural](docs/engine-gallery/flat4-natural.png)](docs/screenshots/hood-flat4-natural.png) | [![Flat-four turbo](docs/engine-gallery/flat4-turbo.png)](docs/screenshots/hood-flat4-turbo.png) | [![Flat-four supercharger](docs/engine-gallery/flat4-supercharger.png)](docs/screenshots/hood-flat4-supercharger.png) |
+| 1 rotor | [![1 rotor natural](docs/engine-gallery/rotor1-natural.png)](docs/screenshots/hood-rotor1-natural.png) | [![1 rotor turbo](docs/engine-gallery/rotor1-turbo.png)](docs/screenshots/hood-rotor1-turbo.png) | [![1 rotor supercharger](docs/engine-gallery/rotor1-supercharger.png)](docs/screenshots/hood-rotor1-supercharger.png) |
+| 2 rotors | [![2 rotors natural](docs/engine-gallery/rotor2-natural.png)](docs/screenshots/hood-rotor2-natural.png) | [![2 rotors turbo](docs/engine-gallery/rotor2-turbo.png)](docs/screenshots/hood-rotor2-turbo.png) | [![2 rotors supercharger](docs/engine-gallery/rotor2-supercharger.png)](docs/screenshots/hood-rotor2-supercharger.png) |
+| 3 rotors | [![3 rotors natural](docs/engine-gallery/rotor3-natural.png)](docs/screenshots/hood-rotor3-natural.png) | [![3 rotors turbo](docs/engine-gallery/rotor3-turbo.png)](docs/screenshots/hood-rotor3-turbo.png) | [![3 rotors supercharger](docs/engine-gallery/rotor3-supercharger.png)](docs/screenshots/hood-rotor3-supercharger.png) |
+| 4 rotors | [![4 rotors natural](docs/engine-gallery/rotor4-natural.png)](docs/screenshots/hood-rotor4-natural.png) | [![4 rotors turbo](docs/engine-gallery/rotor4-turbo.png)](docs/screenshots/hood-rotor4-turbo.png) | [![4 rotors supercharger](docs/engine-gallery/rotor4-supercharger.png)](docs/screenshots/hood-rotor4-supercharger.png) |
+
+<!-- ENGINE-GALLERY-END -->
 
 ## Editable model kit
 
@@ -52,8 +79,9 @@ The complete Blender kit remains available, including **471 named parts and asse
 
 | File | Contents |
 |---|---|
-| [Playable mod JAR](downloads/autopropulsion-age-0.1.0-alpha.jar) | Install this in Minecraft with NeoForge. |
+| [Playable mod JAR](downloads/autopropulsion-age-0.2.0-alpha.jar) | Install this in Minecraft with NeoForge. |
 | [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, previews, scripts, manifests, fit report and portable gallery. |
+| [Engine workshop Blender file](assets/engine_workshop.blend) | Editable derived runtime snapshots: 21 open-hood configurations. |
 | [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, engine, upgrade catalog, workshop and service scenes. |
 | [Stock car GLB](assets/modular_car_kit/stock_car.glb) | Interchange geometry, hierarchy, materials and six opening-panel animation channels. |
 | [Authoring and rebuild guide](assets/modular_car_kit/README.md) | Scene controls, measurements and rebuild commands. |

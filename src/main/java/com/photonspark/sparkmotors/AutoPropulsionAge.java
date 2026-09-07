@@ -3,7 +3,7 @@ package com.photonspark.sparkmotors;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.item.CarCrateItem;
 import com.photonspark.sparkmotors.net.CarPackets;
-import com.photonspark.sparkmotors.sim.Assembly;
+import com.photonspark.sparkmotors.sim.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +21,8 @@ import java.util.function.IntConsumer;
 @Mod(AutoPropulsionAge.ID)
 public final class AutoPropulsionAge {
     public static final String ID = "sparkmotors";
+    public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPES=DeferredRegister.create(Registries.RECIPE_SERIALIZER,ID);
+    public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>,com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer> ENGINE_RECIPE=RECIPES.register("engine_crafting",com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer::new);
     public static final DeferredRegister<net.minecraft.sounds.SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ID);
     public static final DeferredHolder<net.minecraft.sounds.SoundEvent,net.minecraft.sounds.SoundEvent> ENGINE_SOUND = SOUNDS.register("engine_loop",()->net.minecraft.sounds.SoundEvent.createVariableRangeEvent(id("engine_loop")));
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, ID);
@@ -36,7 +38,13 @@ public final class AutoPropulsionAge {
     public static final Map<String,DeferredItem<Item>> PART_ITEMS = new LinkedHashMap<>();
     static {
         for (Assembly slot : Assembly.values()) for (int v=1; v<=2; v++) {
-            String key=slot.itemName(v); PART_ITEMS.put(key, ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+            String key=slot.itemName(v); PART_ITEMS.put(key, slot==Assembly.ENGINE?ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))):ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+        }
+        for(var family:EngineFamily.values())if(family!=EngineFamily.I4)for(int v=1;v<=2;v++){
+            String key=family.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))));
+        }
+        for(var part:EnginePart.values())for(int v=1;v<=2;v++){
+            String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
         }
     }
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ID);
@@ -45,10 +53,13 @@ public final class AutoPropulsionAge {
         .displayItems((parameters,output) -> { output.accept(CAR_CRATE);output.accept(WRENCH);output.accept(FUEL_CAN);output.accept(GARAGE_ITEM);PART_ITEMS.values().forEach(output::accept); }).build());
     // Installed only by the client entry point. Dedicated servers never load UI classes.
     public static IntConsumer openGarage = id -> {};
+    public static IntConsumer openEngine = id -> {};
     public AutoPropulsionAge(IEventBus bus) {
-        ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);
+        ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);
         bus.addListener(CarPackets::register);
     }
     public static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(ID,path); }
     public static Item partItem(Assembly slot,int variant) { return PART_ITEMS.get(slot.itemName(variant)).get(); }
+    public static Item engineItem(EngineFamily family,int grade){return PART_ITEMS.get(family.itemName(grade)).get();}
+    public static Item enginePartItem(EnginePart slot,int variant){return PART_ITEMS.get(slot.itemName(variant)).get();}
 }

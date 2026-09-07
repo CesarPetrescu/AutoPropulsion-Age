@@ -1,0 +1,218 @@
+{
+  "scope": "Every family/induction layout: closed hood plane, side envelope, core/radiator and core/firewall separation. Kit tiers recolor or hide the same fitted geometry; not exhaustive CAD collision proof.",
+  "configurations": 21,
+  "passed": 21,
+  "failed": 0,
+  "checks": [
+    {
+      "family": "i4_engine",
+      "induction": "natural",
+      "hood_clearance_m": 0.02098,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1265,
+      "core_to_firewall_m": 0.24,
+      "triangles": 24208,
+      "passed": true
+    },
+    {
+      "family": "i4_engine",
+      "induction": "turbo",
+      "hood_clearance_m": 0.02098,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1265,
+      "core_to_firewall_m": 0.24,
+      "triangles": 25424,
+      "passed": true
+    },
+    {
+      "family": "i4_engine",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.02098,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1265,
+      "core_to_firewall_m": 0.24,
+      "triangles": 25060,
+      "passed": true
+    },
+    {
+      "family": "v6_engine",
+      "induction": "natural",
+      "hood_clearance_m": 0.027352,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 5376,
+      "passed": true
+    },
+    {
+      "family": "v6_engine",
+      "induction": "turbo",
+      "hood_clearance_m": 0.027352,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 6592,
+      "passed": true
+    },
+    {
+      "family": "v6_engine",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.027352,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 6228,
+      "passed": true
+    },
+    {
+      "family": "flat4_engine",
+      "induction": "natural",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 5136,
+      "passed": true
+    },
+    {
+      "family": "flat4_engine",
+      "induction": "turbo",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 6352,
+      "passed": true
+    },
+    {
+      "family": "flat4_engine",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1625,
+      "core_to_firewall_m": 0.2135,
+      "triangles": 5988,
+      "passed": true
+    },
+    {
+      "family": "rotary_1rotor",
+      "induction": "natural",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 3648,
+      "passed": true
+    },
+    {
+      "family": "rotary_1rotor",
+      "induction": "turbo",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 4864,
+      "passed": true
+    },
+    {
+      "family": "rotary_1rotor",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 4500,
+      "passed": true
+    },
+    {
+      "family": "rotary_2rotor",
+      "induction": "natural",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 4460,
+      "passed": true
+    },
+    {
+      "family": "rotary_2rotor",
+      "induction": "turbo",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 5676,
+      "passed": true
+    },
+    {
+      "family": "rotary_2rotor",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 5312,
+      "passed": true
+    },
+    {
+      "family": "rotary_3rotor",
+      "induction": "natural",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 5272,
+      "passed": true
+    },
+    {
+      "family": "rotary_3rotor",
+      "induction": "turbo",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 6488,
+      "passed": true
+    },
+    {
+      "family": "rotary_3rotor",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 6124,
+      "passed": true
+    },
+    {
+      "family": "rotary_4rotor",
+      "induction": "natural",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.115,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 6084,
+      "passed": true
+    },
+    {
+      "family": "rotary_4rotor",
+      "induction": "turbo",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 7300,
+      "passed": true
+    },
+    {
+      "family": "rotary_4rotor",
+      "induction": "supercharger",
+      "hood_clearance_m": 0.031919,
+      "side_clearance_m": 0.081467,
+      "core_to_radiator_m": 0.1485,
+      "core_to_firewall_m": 0.214,
+      "triangles": 6936,
+      "passed": true
+    }
+  ]
+}

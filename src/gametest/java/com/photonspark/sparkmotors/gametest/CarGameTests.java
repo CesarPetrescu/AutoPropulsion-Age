@@ -38,6 +38,7 @@ public final class CarGameTests {
     }
     @GameTest(template="test_track") public void inventoryTransactionAndOwnership(GameTestHelper h){
         var car=car(h);var player=owner(h,car);var sport=AutoPropulsionAge.partItem(Assembly.ENGINE,2);var stock=AutoPropulsionAge.partItem(Assembly.ENGINE,1);
+        car.action(player,CarPackets.HOOD,0,0);car.hoodProgress=1;car.tickCount+=4;
         car.action(player,CarPackets.INSTALL,0,2);h.assertTrue(Assembly.ENGINE.variant(car.config())==1,"Cannot install missing inventory item");
         player.getInventory().add(new ItemStack(sport));car.tickCount+=4;car.action(player,CarPackets.INSTALL,0,2);
         h.assertTrue(Assembly.ENGINE.variant(car.config())==2,"Sport engine must install");

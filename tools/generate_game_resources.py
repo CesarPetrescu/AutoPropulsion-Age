@@ -11,6 +11,13 @@ icons={'sedan_crate':'../../assembled.png','garage_wrench':'head_bolt_0.158_4.pn
 'stock_engine':'i4_engine.png','sport_engine':'i4_engine.png','stock_transmission':'manual_5speed.png','sport_transmission':'sequential_gearbox.png',
 'stock_wheels':'rim_fr.png','sport_wheels':'sport_rim_fr.png','stock_brakes':'brake_disc_fr.png','sport_brakes':'brake_caliper_fr.png',
 'stock_suspension':'coilover_fr.png','sport_suspension':'sport_coilover_fr.png','stock_body':'front_bumper.png','sport_body':'sport_front_bumper.png'}
+families={'v6':'v6_engine','flat4':'flat4_engine',**{f'rotor{i}':f'rotary_{i}rotor' for i in range(1,5)}}
+service={'intake':'intake_manifold','fuel_system':'fuel_rail','ignition':'coil_-1.5575','cooling':'radiator','internals':'crankshaft_i4'}
+for family,model in families.items():
+    for grade in ['stock','sport']:icons[f'{grade}_{family}_engine']=model+'.png'
+for slot,model in service.items():
+    for grade in ['stock','performance']:icons[f'{grade}_{slot}']=model+'.png'
+icons.update(turbo_kit='turbocharger.png',supercharger_kit='centrifugal_supercharger.png')
 preview=repo/'assets/modular_car_kit/previews'
 for name,image in icons.items():
     path=repo/'assets/modular_car_kit/assembled.png' if name=='sedan_crate' else preview/image
@@ -34,6 +41,15 @@ lang={'entity.sparkmotors.sedan':'Modular Sedan','block.sparkmotors.garage_contr
       'key.sparkmotors.ignition':'Start / stop engine','key.sparkmotors.garage':'Open garage','key.sparkmotors.lights':'Headlights','key.sparkmotors.panels':'Open / close panels','key.sparkmotors.reverse':'Toggle forward / reverse','key.sparkmotors.horn':'Horn','subtitles.sparkmotors.engine':'Car engine running'}
 for name in icons:lang['item.sparkmotors.'+name]=name.replace('_',' ').title()
 lang['item.sparkmotors.sedan_crate']='Sedan Crate';lang['item.sparkmotors.fuel_can']='Fuel Can (10 L)'
+for family,title in {'i4':'Inline-4','v6':'V6','flat4':'Flat-four',**{f'rotor{i}':f'{i}-Rotor' for i in range(1,5)}}.items():
+    for grade in ['stock','sport']:
+        key=grade+'_engine' if family=='i4' else grade+'_'+family+'_engine'
+        lang['item.sparkmotors.'+key]=grade.title()+' '+title+' Engine'
+lang['item.sparkmotors.performance_internals']='Forged Internals / Seal Kit'
+lang['item.sparkmotors.performance_fuel_system']='High-flow Fuel System'
+lang['item.sparkmotors.performance_cooling']='Heavy-duty Cooling Kit'
+lang['item.sparkmotors.turbo_kit']='Complete Turbo Kit'
+lang['item.sparkmotors.supercharger_kit']='Complete Supercharger Kit'
 js(assets/'lang/en_us.json',lang)
 def recipe(name,pattern,keys,count=1):
     js(data/'recipe'/f'{name}.json',{'type':'minecraft:crafting_shaped','category':'misc','pattern':pattern,'key':{k:{'item':v} for k,v in keys.items()},'result':{'id':'sparkmotors:'+name,'count':count}})
@@ -45,6 +61,18 @@ centers={'engine':'minecraft:piston','transmission':'minecraft:iron_block','whee
 for slot,center in centers.items():
     recipe('stock_'+slot,['III','ICI','III'],{'I':'minecraft:iron_ingot','C':center})
     recipe('sport_'+slot,['GRG','RSR','GRG'],{'G':'minecraft:gold_ingot','R':'minecraft:redstone','S':'sparkmotors:stock_'+slot})
+family_centers={'v6':'piston','flat4':'quartz','rotor1':'copper_block','rotor2':'gold_block','rotor3':'diamond','rotor4':'netherite_ingot'}
+for family,center in family_centers.items():
+    recipe('stock_'+family+'_engine',['III','CEC','III'],{'I':'minecraft:iron_ingot','C':'minecraft:'+center,'E':'sparkmotors:stock_engine'})
+    recipe('sport_'+family+'_engine',['GRG','RSR','GRG'],{'G':'minecraft:gold_ingot','R':'minecraft:redstone','S':'sparkmotors:stock_'+family+'_engine'})
+for slot,center in {'intake':'hopper','fuel_system':'bucket','ignition':'redstone_torch','cooling':'water_bucket','internals':'iron_pickaxe'}.items():
+    recipe('stock_'+slot,['III','ICI','III'],{'I':'minecraft:iron_ingot','C':'minecraft:'+center})
+    recipe('performance_'+slot,['GRG','RSR','GRG'],{'G':'minecraft:gold_ingot','R':'minecraft:redstone','S':'sparkmotors:stock_'+slot})
+for name,center in [('turbo_kit','diamond'),('supercharger_kit','gold_block')]:
+    recipe(name,['IRI','PCP','IRI'],{'I':'minecraft:iron_ingot','R':'minecraft:redstone','P':'minecraft:piston','C':'minecraft:'+center})
+for path in (data/'recipe').glob('*.json'):
+    value=json.loads(path.read_text());name=value['result']['id'].split(':')[1]
+    if name=='sedan_crate' or name.endswith('_engine') and name!='stock_engine':value['type']='sparkmotors:engine_crafting';js(path,value)
 # A clean one-second periodic four-cylinder-style pulse loop. Original synthesized audio.
 sound=assets/'sounds';sound.mkdir(parents=True,exist_ok=True)
 wav=repo/'.codex-reference/engine_loop.wav';rate=44100
@@ -61,4 +89,4 @@ with wave.open(str(wav),'wb') as f:
     f.writeframes(b''.join(frames))
 subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(wav),'-c:a','libvorbis','-q:a','5',str(sound/'engine_loop.ogg')],check=True)
 js(assets/'sounds.json',{'engine_loop':{'subtitle':'subtitles.sparkmotors.engine','sounds':[{'name':'sparkmotors:engine_loop','stream':False}]}})
-print('Generated 16 icons, 16 recipes, block resources, translations and engine_loop.ogg')
+print(f'Generated {len(icons)} icons and recipes, block resources, translations and engine_loop.ogg')

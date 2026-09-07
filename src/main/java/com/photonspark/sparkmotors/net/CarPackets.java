@@ -9,7 +9,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public final class CarPackets {
-    public static final int OPEN=0, IGNITION=1, LIGHTS=2, PANELS=3, HORN=4, REFUEL=5, REPAIR=6, INSTALL=7, PAINT=8, TUNE=9;
+    public static final int OPEN=0, IGNITION=1, LIGHTS=2, PANELS=3, HORN=4, REFUEL=5, REPAIR=6, INSTALL=7, PAINT=8, TUNE=9,
+        HOOD=10,ENGINE_SWAP=11,ENGINE_PART=12,OPEN_ENGINE=13;
     public record Input(int entity,int keys,float steer) implements CustomPacketPayload {
         public static final Type<Input> TYPE=new Type<>(AutoPropulsionAge.id("input"));
         public static final StreamCodec<RegistryFriendlyByteBuf,Input> CODEC=new StreamCodec<>() {
@@ -26,16 +27,16 @@ public final class CarPackets {
         };
         public Type<Action> type(){return TYPE;}
     }
-    public record Open(int entity) implements CustomPacketPayload {
+    public record Open(int entity,boolean engine) implements CustomPacketPayload {
         public static final Type<Open> TYPE=new Type<>(AutoPropulsionAge.id("open"));
         public static final StreamCodec<RegistryFriendlyByteBuf,Open> CODEC=new StreamCodec<>() {
-            public Open decode(RegistryFriendlyByteBuf b){return new Open(b.readVarInt());}
-            public void encode(RegistryFriendlyByteBuf b,Open p){b.writeVarInt(p.entity);}
+            public Open decode(RegistryFriendlyByteBuf b){return new Open(b.readVarInt(),b.readBoolean());}
+            public void encode(RegistryFriendlyByteBuf b,Open p){b.writeVarInt(p.entity);b.writeBoolean(p.engine);}
         };
         public Type<Open> type(){return TYPE;}
     }
     public static void register(RegisterPayloadHandlersEvent event) {
-        var r=event.registrar("1");
+        var r=event.registrar("2");
         r.playToServer(Input.TYPE,Input.CODEC,(p,ctx)->{
             if(ctx.player().level().getEntity(p.entity) instanceof CarEntity car && car.getControllingPassenger()==ctx.player())
                 car.receiveInput(p.keys,p.steer);
@@ -43,12 +44,15 @@ public final class CarPackets {
         r.playToServer(Action.TYPE,Action.CODEC,(p,ctx)->{
             if(ctx.player() instanceof ServerPlayer sp && sp.level().getEntity(p.entity) instanceof CarEntity car
                 && car.distanceToSqr(sp)<=100 && car.mayModify(sp)) {
-                if(p.action==OPEN) open(sp,car); else car.action(sp,p.action,p.a,p.b);
+                if(p.action==OPEN)open(sp,car);else if(p.action==OPEN_ENGINE)openEngine(sp,car);else car.action(sp,p.action,p.a,p.b);
             }
         });
-        r.playToClient(Open.TYPE,Open.CODEC,(p,ctx)->AutoPropulsionAge.openGarage.accept(p.entity));
+        r.playToClient(Open.TYPE,Open.CODEC,(p,ctx)->{if(p.engine)AutoPropulsionAge.openEngine.accept(p.entity);else AutoPropulsionAge.openGarage.accept(p.entity);});
     }
     public static void open(ServerPlayer player,CarEntity car) {
-        if(car.mayModify(player)&&car.distanceToSqr(player)<=144) PacketDistributor.sendToPlayer(player,new Open(car.getId()));
+        if(car.mayModify(player)&&car.distanceToSqr(player)<=100) PacketDistributor.sendToPlayer(player,new Open(car.getId(),false));
+    }
+    public static void openEngine(ServerPlayer player,CarEntity car){
+        if(car.mayModify(player)&&car.distanceToSqr(player)<=100)PacketDistributor.sendToPlayer(player,new Open(car.getId(),true));
     }
 }

@@ -7,8 +7,9 @@ public final class VehicleDynamics {
     public record Input(double throttle, double steer, boolean brake, boolean reverse) {
         public Input { throttle = clamp(throttle, 0, 1); steer = clamp(steer, -1, 1); }
     }
-    public record Setup(int config, int limiter, double finalDrive) {
-        public Setup { config = Assembly.sanitize(config); limiter = Math.clamp(limiter, 4000, 7000); finalDrive = clamp(finalDrive, 2.8, 4.8); }
+    public record Setup(int config, int limiter, double finalDrive, EngineFamily family, int engineParts, double temperature) {
+        public Setup(int config,int limiter,double finalDrive){this(config,limiter,finalDrive,EngineFamily.I4,EnginePart.stock(),90);}
+        public Setup { config = Assembly.sanitize(config); limiter = Math.clamp(limiter, 4000, 7000); finalDrive = clamp(finalDrive, 2.8, 4.8); family=family==null?EngineFamily.I4:family;engineParts=EnginePart.sanitize(engineParts);temperature=clamp(temperature,20,150); }
     }
     public record State(double speed, double rpm, int gear, double fuel, double yawDelta, double fuelUsed) {}
 
@@ -24,17 +25,17 @@ public final class VehicleDynamics {
             while (gear < 5 && Math.abs(speed) / WHEEL_RADIUS * GEARS[gear - 1] * finalRatio * 60 / (2 * Math.PI) > shiftRpm) gear++;
         }
         double ratio = (in.reverse ? 3.4 : GEARS[gear - 1]) * finalRatio;
-        boolean running = ignition && fuel > 0 && Assembly.ENGINE.variant(setup.config) > 0;
+        boolean running = ignition && fuel > 0 && Assembly.ENGINE.variant(setup.config) > 0 && EnginePart.ready(setup.engineParts);
         boolean drive = running && Assembly.canDrive(setup.config);
         double force = 0;
         if (running) {
             rpm = Math.max(850, Math.abs(speed) / WHEEL_RADIUS * ratio * 60 / (2 * Math.PI));
             if (Math.abs(speed) < 2) rpm = Math.max(rpm, 850 + in.throttle * 1300);
             rpm = Math.min(rpm, setup.limiter);
-            used = (.00022 + in.throttle * rpm / 6000 * .0055) * dt;
+            used = (.00022 + in.throttle * rpm / 6000 * .0055) * setup.family.fuelScale * (1+EngineBuild.boost(rpm,setup.engineParts)*in.throttle*.8) * dt;
         }
         if (drive && grounded && (!in.reverse || Math.abs(speed) < 13)) {
-            force = PistonEngine.torque(rpm, Assembly.ENGINE.variant(setup.config) == 2, setup.limiter) * ratio * .86 / WHEEL_RADIUS * in.throttle * (in.reverse ? -1 : 1);
+            force = EngineBuild.torque(rpm,setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter,setup.temperature) * ratio * .86 / WHEEL_RADIUS * in.throttle * (in.reverse ? -1 : 1);
             double tireGrip = grip * (Assembly.WHEELS.variant(setup.config) == 2 ? 1.17 : 1);
             force = clamp(force, -MASS * 9.81 * tireGrip * .56, MASS * 9.81 * tireGrip * .56);
         }

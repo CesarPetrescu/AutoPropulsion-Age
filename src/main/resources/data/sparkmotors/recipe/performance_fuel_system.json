@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GRG",
+    "RSR",
+    "GRG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "sparkmotors:stock_fuel_system"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:performance_fuel_system",
+    "count": 1
+  }
+}

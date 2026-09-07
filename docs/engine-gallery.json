@@ -1,0 +1,158 @@
+{
+  "source": "Native Minecraft 1.21.1 screenshots",
+  "preview_crop_xyxy": [
+    38,
+    204,
+    546,
+    642
+  ],
+  "configurations": [
+    {
+      "family": "i4",
+      "induction": "natural",
+      "preview": "engine-gallery/i4-natural.png",
+      "screen": "screenshots/engine-i4-natural.png",
+      "in_world": "screenshots/hood-i4-natural.png"
+    },
+    {
+      "family": "i4",
+      "induction": "turbo",
+      "preview": "engine-gallery/i4-turbo.png",
+      "screen": "screenshots/engine-i4-turbo.png",
+      "in_world": "screenshots/hood-i4-turbo.png"
+    },
+    {
+      "family": "i4",
+      "induction": "supercharger",
+      "preview": "engine-gallery/i4-supercharger.png",
+      "screen": "screenshots/engine-i4-supercharger.png",
+      "in_world": "screenshots/hood-i4-supercharger.png"
+    },
+    {
+      "family": "v6",
+      "induction": "natural",
+      "preview": "engine-gallery/v6-natural.png",
+      "screen": "screenshots/engine-v6-natural.png",
+      "in_world": "screenshots/hood-v6-natural.png"
+    },
+    {
+      "family": "v6",
+      "induction": "turbo",
+      "preview": "engine-gallery/v6-turbo.png",
+      "screen": "screenshots/engine-v6-turbo.png",
+      "in_world": "screenshots/hood-v6-turbo.png"
+    },
+    {
+      "family": "v6",
+      "induction": "supercharger",
+      "preview": "engine-gallery/v6-supercharger.png",
+      "screen": "screenshots/engine-v6-supercharger.png",
+      "in_world": "screenshots/hood-v6-supercharger.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "natural",
+      "preview": "engine-gallery/flat4-natural.png",
+      "screen": "screenshots/engine-flat4-natural.png",
+      "in_world": "screenshots/hood-flat4-natural.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "turbo",
+      "preview": "engine-gallery/flat4-turbo.png",
+      "screen": "screenshots/engine-flat4-turbo.png",
+      "in_world": "screenshots/hood-flat4-turbo.png"
+    },
+    {
+      "family": "flat4",
+      "induction": "supercharger",
+      "preview": "engine-gallery/flat4-supercharger.png",
+      "screen": "screenshots/engine-flat4-supercharger.png",
+      "in_world": "screenshots/hood-flat4-supercharger.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "natural",
+      "preview": "engine-gallery/rotor1-natural.png",
+      "screen": "screenshots/engine-rotor1-natural.png",
+      "in_world": "screenshots/hood-rotor1-natural.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "turbo",
+      "preview": "engine-gallery/rotor1-turbo.png",
+      "screen": "screenshots/engine-rotor1-turbo.png",
+      "in_world": "screenshots/hood-rotor1-turbo.png"
+    },
+    {
+      "family": "rotor1",
+      "induction": "supercharger",
+      "preview": "engine-gallery/rotor1-supercharger.png",
+      "screen": "screenshots/engine-rotor1-supercharger.png",
+      "in_world": "screenshots/hood-rotor1-supercharger.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "natural",
+      "preview": "engine-gallery/rotor2-natural.png",
+      "screen": "screenshots/engine-rotor2-natural.png",
+      "in_world": "screenshots/hood-rotor2-natural.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "turbo",
+      "preview": "engine-gallery/rotor2-turbo.png",
+      "screen": "screenshots/engine-rotor2-turbo.png",
+      "in_world": "screenshots/hood-rotor2-turbo.png"
+    },
+    {
+      "family": "rotor2",
+      "induction": "supercharger",
+      "preview": "engine-gallery/rotor2-supercharger.png",
+      "screen": "screenshots/engine-rotor2-supercharger.png",
+      "in_world": "screenshots/hood-rotor2-supercharger.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "natural",
+      "preview": "engine-gallery/rotor3-natural.png",
+      "screen": "screenshots/engine-rotor3-natural.png",
+      "in_world": "screenshots/hood-rotor3-natural.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "turbo",
+      "preview": "engine-gallery/rotor3-turbo.png",
+      "screen": "screenshots/engine-rotor3-turbo.png",
+      "in_world": "screenshots/hood-rotor3-turbo.png"
+    },
+    {
+      "family": "rotor3",
+      "induction": "supercharger",
+      "preview": "engine-gallery/rotor3-supercharger.png",
+      "screen": "screenshots/engine-rotor3-supercharger.png",
+      "in_world": "screenshots/hood-rotor3-supercharger.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "natural",
+      "preview": "engine-gallery/rotor4-natural.png",
+      "screen": "screenshots/engine-rotor4-natural.png",
+      "in_world": "screenshots/hood-rotor4-natural.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "turbo",
+      "preview": "engine-gallery/rotor4-turbo.png",
+      "screen": "screenshots/engine-rotor4-turbo.png",
+      "in_world": "screenshots/hood-rotor4-turbo.png"
+    },
+    {
+      "family": "rotor4",
+      "induction": "supercharger",
+      "preview": "engine-gallery/rotor4-supercharger.png",
+      "screen": "screenshots/engine-rotor4-supercharger.png",
+      "in_world": "screenshots/hood-rotor4-supercharger.png"
+    }
+  ]
+}

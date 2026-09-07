@@ -4,7 +4,7 @@ import com.photonspark.sparkmotors.AutoPropulsionAge;
 import com.photonspark.sparkmotors.client.*;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.net.CarPackets;
-import com.photonspark.sparkmotors.sim.Assembly;
+import com.photonspark.sparkmotors.sim.*;
 import net.minecraft.client.*;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.registries.Registries;
@@ -28,6 +28,7 @@ public final class ClientSmoke {
     private static String pendingScreenshot;
     private static boolean creating;
     private static float maxSpeed;
+    private static int engineJob;
     private static final long started=System.nanoTime();
     @SubscribeEvent public static void tick(ClientTickEvent.Post e){
         if(!Boolean.getBoolean("sparkmotors.clientSmoke"))return;
@@ -35,7 +36,7 @@ public final class ClientSmoke {
         GLFW.glfwHideWindow(mc.getWindow().getWindow());mc.options.pauseOnLostFocus=false;
         mc.options.tutorialStep=net.minecraft.client.tutorial.TutorialSteps.NONE;
         if(mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen){mc.options.onboardAccessibility=false;mc.setScreen(new TitleScreen());}
-        if((System.nanoTime()-started)/1e9>240){write(mc,"FAILED: client smoke timed out at phase "+phase);mc.stop();return;}
+        if((System.nanoTime()-started)/1e9>600){write(mc,"FAILED: client smoke timed out at phase "+phase+", engine layout "+engineJob);mc.stop();return;}
         if(!creating&&mc.screen instanceof TitleScreen){
             creating=true;mc.options.guiScale().set(2);mc.options.renderDistance().set(4);mc.options.simulationDistance().set(5);mc.options.framerateLimit().set(60);
             mc.createWorldOpenFlows().createFreshLevel("alpha-smoke-"+System.currentTimeMillis(),
@@ -62,6 +63,7 @@ public final class ClientSmoke {
             });
         }
         if(!(mc.level.getEntity(carId) instanceof CarEntity car))return;
+        if(phase>=10){engineMatrix(mc,car);return;}
         if(phase==4&&ticks==20)pendingScreenshot="alpha-paint.png";
         if(phase==6&&ticks==10)press(mc,"Car",0);
         if(phase==6&&ticks==20)pendingScreenshot="alpha-car-controls.png";
@@ -94,7 +96,56 @@ public final class ClientSmoke {
             if(ticks==95)pendingScreenshot="alpha-interior.png";
             if(ticks>120){
                 if(car.fuel()>=40||Math.abs(car.speed())>.3||maxSpeed<5){write(mc,"FAILED: driving/braking/fuel check; peak speed="+maxSpeed);mc.stop();return;}
-                write(mc,"PASS: client world loaded; car rendered; garage installation, paint and tune synchronized over real packets; engine started, drove and braked; HUD and screenshots captured.");mc.stop();phase=10;
+                CarClient.send(car,CarPackets.IGNITION,0,0);phase=10;ticks=0;
+            }
+        }
+    }
+    private static void engineMatrix(Minecraft mc,CarEntity car){
+        if(phase==10){
+            if(ticks==10)CarClient.send(car,CarPackets.HOOD,0,0);
+            if(ticks==20){
+                var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{
+                    var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=mc.getSingleplayerServer().overworld().getEntity(carId);
+                    p.stopRiding();p.teleportTo(c.getX()+2.8,c.getY()+2.55,c.getZ()+3.5);p.getAbilities().flying=true;p.onUpdateAbilities();
+                });
+            }
+            if(ticks==45){mc.options.setCameraType(CameraType.FIRST_PERSON);mc.player.getInventory().selected=8;mc.options.hideGui=true;mc.player.setYRot(133);mc.player.setXRot(32);pendingScreenshot="engine-open-hood.png";}
+            if(ticks==60){mc.options.hideGui=false;CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=11;ticks=0;}
+            return;
+        }
+        EngineFamily wanted=EngineFamily.values()[engineJob/3];int induction=engineJob%3;
+        if(phase==11&&ticks>=15){
+            if(car.engineFamily()!=wanted){press(mc,">",0);press(mc,"Fit stock",0);}
+            phase=12;ticks=0;
+        }else if(phase==12){
+            if(ticks==15&&EnginePart.FUEL.variant(car.engineParts())!=2)press(mc,"Upgrade",1);
+            if(ticks==25&&EnginePart.INTERNALS.variant(car.engineParts())!=2)press(mc,"Upgrade",4);
+            if(ticks==35&&EnginePart.COOLING.variant(car.engineParts())!=2)press(mc,"Upgrade",3);
+            if(ticks==45&&EnginePart.INTAKE.variant(car.engineParts())!=2)press(mc,"Upgrade",0);
+            if(ticks==55&&EnginePart.IGNITION.variant(car.engineParts())!=2)press(mc,"Upgrade",2);
+            if(ticks==70&&EnginePart.INDUCTION.variant(car.engineParts())!=induction)press(mc,new String[]{"Natural","Turbo","Blower"}[induction],0);
+            if(ticks==90){phase=13;ticks=0;}
+        }else if(phase==13){
+            String label=wanted.id+"-"+new String[]{"natural","turbo","supercharger"}[induction];
+            if(ticks==20){
+                var visible=CarMesh.visibleEngineParts(car);
+                if(car.engineFamily()!=wanted||EnginePart.INDUCTION.variant(car.engineParts())!=induction||!car.engineProblem().isEmpty()||CarMesh.visibleEngineFamilies(car)!=(1<<wanted.ordinal())||
+                    visible.containsKey("turbocharger")!=(induction==1)||visible.containsKey("supercharger")!=(induction==2)){
+                    write(mc,"FAILED: client engine configuration or renderer visibility mismatch: "+label);mc.stop();return;
+                }
+                System.out.println("ENGINE_LAYOUT_PASS "+label+" parts="+car.engineParts()+" triangles="+visible.values().stream().mapToInt(Integer::intValue).sum());
+                pendingScreenshot="engine-"+label+".png";
+            }
+            if(induction==0&&ticks==30)press(mc,"Inspect internals",0);
+            if(induction==0&&ticks==40)pendingScreenshot="engine-"+wanted.id+"-internals.png";
+            if(induction==0&&ticks==50)press(mc,"Show covers",0);
+            if(ticks==60){mc.setScreen(null);mc.options.hideGui=true;mc.player.setYRot(133);mc.player.setXRot(32);}
+            if(ticks==70)pendingScreenshot="hood-"+label+".png";
+            if(ticks==85){
+                mc.options.hideGui=false;
+                engineJob++;
+                if(engineJob==21){write(mc,"PASS: original driving/garage checks plus all 21 engine family/induction layouts installed through native GUI buttons, synchronized over real packets, and checked for exclusive renderer visibility. Hood, internals and in-world screenshots captured.");mc.stop();phase=14;}
+                else{CarClient.send(car,CarPackets.OPEN_ENGINE,0,0);phase=11;ticks=0;}
             }
         }
     }

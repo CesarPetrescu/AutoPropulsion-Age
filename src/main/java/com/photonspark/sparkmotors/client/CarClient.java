@@ -32,6 +32,7 @@ public final class CarClient {
         NeoForge.EVENT_BUS.addListener(CarClient::tick);
         NeoForge.EVENT_BUS.addListener((RenderHandEvent e)->{if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.getVehicle() instanceof CarEntity)e.setCanceled(true);});
         AutoPropulsionAge.openGarage=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car));};
+        AutoPropulsionAge.openEngine=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car,4));};
     }
     private static KeyMapping key(String name,int key){return new KeyMapping("key.sparkmotors."+name,key,"key.categories.sparkmotors");}
     public static void send(CarEntity car,int action,int a,int b){PacketDistributor.sendToServer(new CarPackets.Action(car.getId(),action,a,b));}
@@ -79,7 +80,7 @@ public final class CarClient {
         g.drawString(mc.font,Math.round(car.rpm())+" RPM",x+167,y+24,0xFFFFFFFF,false);
         g.fill(x+102,y+38,x+w-10,y+43,0xFF2A3C49);g.fill(x+102,y+38,x+102+(int)(128*Math.min(1,car.rpm()/car.limiter())),y+43,car.rpm()>car.limiter()*.9?0xFFF17C56:0xFF31C6C9);
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"FUEL %.1f L",car.fuel()),x+10,y+53,car.fuel()<5?0xFFFFA45C:0xFFD1E2E8,false);
-        String status=!Assembly.canDrive(car.config())?"MISSING PARTS":car.health()<=0?"REPAIR REQUIRED":car.ignition()?"ENGINE ON":"R: START ENGINE";
+        String status=!Assembly.canDrive(car.config())||!car.engineProblem().isEmpty()?"MISSING PARTS":car.health()<=0?"REPAIR REQUIRED":car.temperature()>=125?"ENGINE TOO HOT":car.ignition()?"ENGINE ON":"R: START ENGINE";
         g.drawString(mc.font,status,x+102,y+53,car.ignition()?0xFF73D8AA:0xFFFFC172,false);
         g.drawCenteredString(mc.font,"W drive  S brake  Space handbrake  Z reverse  G garage",g.guiWidth()/2,y+74,0xFFDAE6EC);
     }
