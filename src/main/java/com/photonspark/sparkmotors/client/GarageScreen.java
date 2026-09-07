@@ -45,8 +45,8 @@ public final class GarageScreen extends Screen {
         clearWidgets();serviceButtons.clear();w=Math.min(780,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;
         previewWidth=Math.max(120,(int)(w*.38));rx=x+previewWidth+20;rw=w-previewWidth-32;
         button("X",x+w-29,y+9,20,20,this::onClose,"Close garage",false);
-        String[] names={"Garage","Paint","Tuner","Car","Engine","Live"};
-        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{tab=selected;init();},null,false).active=i!=tab;}
+        String[] names={"Garage","Paint","Tuner","Car","Engine","Live","Service"};
+        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{if(selected==6)minecraft.setScreen(new ServiceScreen(car));else{tab=selected;init();}},null,false).active=i!=tab;}
         int top=y+82;
         switch(tab){
             case 0 -> {

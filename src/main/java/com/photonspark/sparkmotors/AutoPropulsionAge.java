@@ -21,6 +21,8 @@ import java.util.function.IntConsumer;
 @Mod(AutoPropulsionAge.ID)
 public final class AutoPropulsionAge {
     public static final String ID = "sparkmotors";
+    public static final DeferredRegister<net.minecraft.core.component.DataComponentType<?>> COMPONENTS=DeferredRegister.create(Registries.DATA_COMPONENT_TYPE,ID);
+    public static final DeferredHolder<net.minecraft.core.component.DataComponentType<?>,net.minecraft.core.component.DataComponentType<MechanicalState>> MECHANICAL_DATA=COMPONENTS.register("mechanical_state",com.photonspark.sparkmotors.item.MechanicalData::type);
     public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPES=DeferredRegister.create(Registries.RECIPE_SERIALIZER,ID);
     public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>,com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer> ENGINE_RECIPE=RECIPES.register("engine_crafting",com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer::new);
     public static final DeferredRegister<net.minecraft.sounds.SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ID);
@@ -38,14 +40,22 @@ public final class AutoPropulsionAge {
     public static final Map<String,DeferredItem<Item>> PART_ITEMS = new LinkedHashMap<>();
     static {
         for (Assembly slot : Assembly.values()) for (int v=1; v<=2; v++) {
-            String key=slot.itemName(v); PART_ITEMS.put(key, slot==Assembly.ENGINE?ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))):ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+            String key=slot.itemName(v); PART_ITEMS.put(key, slot==Assembly.ENGINE?ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))):ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
         }
         for(var family:EngineFamily.values())if(family!=EngineFamily.I4)for(int v=1;v<=2;v++){
             String key=family.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.EngineItem(new Item.Properties().stacksTo(1))));
         }
         for(var part:EnginePart.values())for(int v=1;v<=part.maxVariant();v++){
-            String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(16)));
+            String key=part.itemName(v);PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
         }
+    }
+    static {
+        for(var slot:ComponentSlot.ALL)if(slot.hardware()==null&&!PART_ITEMS.containsKey(slot.item())){
+            String key=slot.item();PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
+        }
+        PART_ITEMS.put("sport_muffler",ITEMS.register("sport_muffler",()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
+        for(String key:List.of("coolant_bottle","oil_bottle","brake_fluid_bottle","service_jack","pressure_tester","multimeter","tire_gauge"))
+            PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(1)));
     }
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ID);
     public static final DeferredHolder<CreativeModeTab,CreativeModeTab> TAB = TABS.register("garage", () -> CreativeModeTab.builder()
@@ -55,7 +65,7 @@ public final class AutoPropulsionAge {
     public static IntConsumer openGarage = id -> {};
     public static IntConsumer openEngine = id -> {};
     public AutoPropulsionAge(IEventBus bus) {
-        ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);
+        COMPONENTS.register(bus);ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);
         bus.addListener(CarPackets::register);
     }
     public static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(ID,path); }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " D ",
+    " WB",
+    "   "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:coal"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "B": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:oil_bottle",
+    "count": 1
+  }
+}

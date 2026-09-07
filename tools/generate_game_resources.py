@@ -89,7 +89,7 @@ for slot in catalog['slots']:
         recipe(name,['ICI','PSP','IRI'],{'I':'minecraft:iron_ingot','C':'minecraft:'+center,'P':'minecraft:'+ingredient,'S':('sparkmotors:'+slot['options'][0]['item']) if v>1 else 'minecraft:iron_block','R':'minecraft:redstone'})
 for path in (data/'recipe').glob('*.json'):
     value=json.loads(path.read_text());name=value['result']['id'].split(':')[1]
-    if name=='sedan_crate' or name.endswith('_engine') and name!='stock_engine':value['type']='sparkmotors:engine_crafting';js(path,value)
+    if name=='sedan_crate' or any(v.get('item','').startswith('sparkmotors:') for v in value.get('key',{}).values()):value['type']='sparkmotors:engine_crafting';js(path,value)
 # A clean one-second periodic four-cylinder-style pulse loop. Original synthesized audio.
 sound=assets/'sounds';sound.mkdir(parents=True,exist_ok=True)
 wav=repo/'.codex-reference/engine_loop.wav';rate=44100
@@ -105,5 +105,11 @@ with wave.open(str(wav),'wb') as f:
         frames.append(struct.pack('<h',int(sample*22000)))
     f.writeframes(b''.join(frames))
 subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(wav),'-c:a','libvorbis','-q:a','5',str(sound/'engine_loop.ogg')],check=True)
-js(assets/'sounds.json',{'engine_loop':{'subtitle':'subtitles.sparkmotors.engine','sounds':[{'name':'sparkmotors:engine_loop','stream':False}]}})
+# This generator owns only its legacy entry. Authored layer definitions survive regeneration.
+sound_manifest=assets/'sounds.json'
+sound_entries=json.loads(sound_manifest.read_text()) if sound_manifest.exists() else {}
+sound_entries.setdefault('engine_loop',{'subtitle':'subtitles.sparkmotors.engine','sounds':[{'name':'sparkmotors:engine_loop','stream':False}]})
+js(sound_manifest,sound_entries)
+import runpy
+runpy.run_path(str(repo/'tools/generate_mechanical_resources.py'),run_name='__main__')
 print(f'Generated {len(icons)} icons and recipes, block resources, translations and engine_loop.ogg')

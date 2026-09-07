@@ -1,0 +1,40 @@
+package com.photonspark.sparkmotors.sim;
+
+import java.util.*;
+
+/** Stable service paths; repeated parts are distinct slots, never a shared axle percentage. */
+public record ComponentSlot(String key,String title,Assembly assembly,EnginePart hardware,String item,int corner,Access access) {
+    public enum Access { HOOD, LIFT, CABIN }
+    public static final List<ComponentSlot> ALL;
+    public static final String[] CORNERS={"fl","fr","rl","rr"};
+    static {
+        var all=new ArrayList<ComponentSlot>();
+        for(var p:EnginePart.values())all.add(new ComponentSlot("engine."+p.name().toLowerCase(Locale.ROOT),p.title,Assembly.ENGINE,p,"",-1,Access.HOOD));
+        add(all,"cooling",Assembly.ENGINE,Access.HOOD,"upper_hose","Upper coolant hose","lower_hose","Lower coolant hose","pump","Water pump","fan","Electric radiator fan","thermostat","Thermostat","sender","Coolant temperature sender");
+        add(all,"oil",Assembly.ENGINE,Access.HOOD,"pump","Oil pump","filter","Oil filter","feed","Oil supply line","sender","Oil pressure sender");
+        add(all,"electrical",Assembly.BODY,Access.HOOD,"battery","Battery","starter","Starter motor","alternator","Alternator","belt","Accessory belt","wiring","Essential wiring","fuse","Main fuse");
+        add(all,"driveline",Assembly.TRANSMISSION,Access.LIFT,"clutch","Clutch","gearbox","Gearbox","differential","Differential","shaft","Drive shaft");
+        add(all,"induction",Assembly.ENGINE,Access.HOOD,"pipe","Charge pipe","intercooler","Intercooler","wastegate","Wastegate / bypass","bov","Pressure release valve","belt","Supercharger drive belt");
+        add(all,"exhaust",Assembly.BODY,Access.LIFT,"pipe","Exhaust section","muffler","Muffler");
+        add(all,"body",Assembly.BODY,Access.CABIN,"front","Front body panel","rear","Rear body panel","lamps","Road lamps","instruments","Instrument cluster");
+        String[] names={"Front left","Front right","Rear left","Rear right"};
+        for(int c=0;c<4;c++){
+            corner(all,c,names[c],Assembly.WHEELS,"tire","Tire","rim","Rim","bearing","Wheel bearing");
+            corner(all,c,names[c],Assembly.BRAKES,"pad","Brake pads","disc","Brake disc","caliper","Caliper","brake_hose","Brake hose");
+            corner(all,c,names[c],Assembly.SUSPENSION,"spring","Spring","damper","Damper","link","Steering / alignment link");
+        }
+        ALL=List.copyOf(all);
+    }
+    private static void add(List<ComponentSlot> all,String system,Assembly assembly,Access access,String... pairs){
+        for(int i=0;i<pairs.length;i+=2)all.add(new ComponentSlot(system+"."+pairs[i],pairs[i+1],assembly,null,system+"_"+pairs[i],-1,access));
+    }
+    private static void corner(List<ComponentSlot> all,int c,String name,Assembly assembly,String... pairs){
+        for(int i=0;i<pairs.length;i+=2)all.add(new ComponentSlot("wheel."+CORNERS[c]+"."+pairs[i],name+" "+pairs[i+1].toLowerCase(Locale.ROOT),assembly,null,"service_"+pairs[i],c,Access.LIFT));
+    }
+    public static ComponentSlot byKey(String key){return ALL.stream().filter(s->s.key.equals(key)).findFirst().orElseThrow(()->new IllegalArgumentException("Unknown component "+key));}
+    public static ComponentSlot engine(EnginePart part){return byKey("engine."+part.name().toLowerCase(Locale.ROOT));}
+    public String item(int config,int parts){return hardware==null?item:hardware.variant(parts)==0?"":hardware.itemName(hardware.variant(parts));}
+    public boolean installedBy(int config,int parts){return assembly.variant(config)>0&&(hardware==null||hardware.variant(parts)>0);}
+    public PartInstance fresh(int config,int parts){return PartInstance.fresh(item(config,parts),key.endsWith(".tire")?2.3:key.equals("electrical.battery")?48:0);}
+    public boolean accepts(PartInstance part){return hardware==null?part.item().equals(item)||(key.equals("exhaust.muffler")&&part.item().equals("sport_muffler")):java.util.stream.IntStream.rangeClosed(1,hardware.maxVariant()).anyMatch(v->part.item().equals(hardware.itemName(v)));}
+}
