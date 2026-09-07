@@ -1,0 +1,12 @@
+{
+  "id": "street_turbo",
+  "slot": "turbo",
+  "category": "turbo",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/street_turbo",
+  "boost_bar": 0.8,
+  "model_index": 117
+}

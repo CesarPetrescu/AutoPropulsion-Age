@@ -1,0 +1,32 @@
+{
+  "schema": 2,
+  "tests": [
+    {
+      "profile": "default",
+      "exit_code": 0,
+      "result": "PASS profile=default maxSpeed=28.079319 maxRpm=5970.031 stoppedSpeed=0.0",
+      "passed": true,
+      "screenshots": [
+        "autopropulsion-default-01-showroom.png",
+        "autopropulsion-default-02-garage.png",
+        "autopropulsion-default-03-dyno.png",
+        "autopropulsion-default-04-driving-hud.png",
+        "autopropulsion-default-05-braking.png"
+      ]
+    },
+    {
+      "profile": "minimal",
+      "exit_code": 0,
+      "result": "PASS profile=minimal maxSpeed=27.749472 maxRpm=6048.677 stoppedSpeed=0.0",
+      "passed": true,
+      "screenshots": [
+        "autopropulsion-minimal-01-showroom.png",
+        "autopropulsion-minimal-02-garage.png",
+        "autopropulsion-minimal-03-dyno.png",
+        "autopropulsion-minimal-04-driving-hud.png",
+        "autopropulsion-minimal-05-braking.png"
+      ]
+    }
+  ],
+  "passed": true
+}

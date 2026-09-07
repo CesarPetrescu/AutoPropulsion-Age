@@ -1,0 +1,11 @@
+{
+  "id": "piston_rings",
+  "slot": "piston_rings",
+  "category": "ring",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/piston_rings",
+  "model_index": 86
+}

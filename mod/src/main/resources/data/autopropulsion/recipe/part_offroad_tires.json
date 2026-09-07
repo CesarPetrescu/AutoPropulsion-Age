@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:compass"
+    }
+  ],
+  "result": {
+    "id": "autopropulsion:part",
+    "count": 1,
+    "components": {
+      "minecraft:custom_data": {
+        "Part": "autopropulsion:offroad_tires"
+      },
+      "minecraft:custom_model_data": 76
+    }
+  }
+}

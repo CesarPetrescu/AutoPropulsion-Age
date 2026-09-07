@@ -1,0 +1,11 @@
+{
+  "id": "rotary_exhaust_port",
+  "slot": "rotary_exhaust_port",
+  "category": "header",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/rotary_exhaust_port",
+  "model_index": 94
+}

@@ -1,0 +1,11 @@
+{
+  "id": "exhaust_system",
+  "slot": "exhaust_system",
+  "category": "exhaust",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/exhaust_system",
+  "model_index": 37
+}

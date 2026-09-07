@@ -1,0 +1,12 @@
+{
+  "id": "stock_ecu",
+  "slot": "ecu",
+  "category": "electronics",
+  "family": "shared",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/stock_ecu",
+  "rpm_limit": 6800,
+  "model_index": 114
+}

@@ -1,0 +1,11 @@
+{
+  "id": "mpi_injection",
+  "slot": "mpi_injection",
+  "category": "injection",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/mpi_injection",
+  "model_index": 71
+}

@@ -1,0 +1,11 @@
+{
+  "id": "centrifugal_supercharger",
+  "slot": "centrifugal_supercharger",
+  "category": "turbo",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/centrifugal_supercharger",
+  "model_index": 21
+}

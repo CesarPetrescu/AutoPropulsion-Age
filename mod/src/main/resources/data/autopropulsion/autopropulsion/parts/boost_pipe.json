@@ -1,0 +1,11 @@
+{
+  "id": "boost_pipe",
+  "slot": "boost_pipe",
+  "category": "pipe",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/boost_pipe",
+  "model_index": 13
+}

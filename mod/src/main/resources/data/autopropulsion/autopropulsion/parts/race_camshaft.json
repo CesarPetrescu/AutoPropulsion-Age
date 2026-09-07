@@ -1,0 +1,13 @@
+{
+  "id": "race_camshaft",
+  "slot": "camshaft",
+  "category": "shaft",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/race_camshaft",
+  "rpm_limit": 8200,
+  "race_cam": true,
+  "model_index": 87
+}

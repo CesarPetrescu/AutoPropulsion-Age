@@ -1,0 +1,11 @@
+{
+  "id": "fuel_tank",
+  "slot": "fuel_tank",
+  "category": "tank",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/fuel_tank",
+  "model_index": 50
+}

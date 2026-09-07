@@ -1,0 +1,11 @@
+{
+  "id": "roots_supercharger",
+  "slot": "roots_supercharger",
+  "category": "supercharger",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/roots_supercharger",
+  "model_index": 92
+}

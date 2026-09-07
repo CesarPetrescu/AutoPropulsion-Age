@@ -1,0 +1,9 @@
+newmtl blue
+Kd 1 1 1
+d 1
+map_Kd #mat_blue
+
+newmtl dark
+Kd 1 1 1
+d 1
+map_Kd #mat_dark

@@ -1,0 +1,11 @@
+{
+  "id": "battery",
+  "slot": "battery",
+  "category": "battery",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/battery",
+  "model_index": 11
+}

@@ -1,0 +1,11 @@
+{
+  "id": "crankcase_ventilation",
+  "slot": "crankcase_ventilation",
+  "category": "pipe",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/crankcase_ventilation",
+  "model_index": 26
+}

@@ -1,0 +1,11 @@
+{
+  "id": "cvt_gearbox",
+  "slot": "cvt_gearbox",
+  "category": "gearbox",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/cvt_gearbox",
+  "model_index": 28
+}

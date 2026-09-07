@@ -1,0 +1,11 @@
+{
+  "id": "wrist_pins",
+  "slot": "wrist_pins",
+  "category": "pin",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/wrist_pins",
+  "model_index": 140
+}

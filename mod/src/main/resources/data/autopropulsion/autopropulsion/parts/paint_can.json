@@ -1,0 +1,11 @@
+{
+  "id": "paint_can",
+  "slot": "paint_can",
+  "category": "can",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/paint_can",
+  "model_index": 83
+}

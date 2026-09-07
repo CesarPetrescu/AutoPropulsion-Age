@@ -1,0 +1,11 @@
+{
+  "id": "paint_booth",
+  "slot": "paint_booth",
+  "category": "booth",
+  "family": "workshop",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/paint_booth",
+  "model_index": 82
+}

@@ -1,0 +1,11 @@
+{
+  "id": "brake_rotor",
+  "slot": "brake_rotor",
+  "category": "disc",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/brake_rotor",
+  "model_index": 16
+}

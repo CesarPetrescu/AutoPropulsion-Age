@@ -1,0 +1,11 @@
+{
+  "id": "bucket_seat",
+  "slot": "bucket_seat",
+  "category": "seat",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/bucket_seat",
+  "model_index": 18
+}

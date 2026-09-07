@@ -1,0 +1,11 @@
+{
+  "id": "open_differential",
+  "slot": "open_differential",
+  "category": "differential",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/open_differential",
+  "model_index": 81
+}

@@ -1,0 +1,11 @@
+{
+  "id": "charge_pipe",
+  "slot": "charge_pipe",
+  "category": "pipe",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/charge_pipe",
+  "model_index": 22
+}

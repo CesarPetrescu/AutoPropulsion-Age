@@ -1,0 +1,11 @@
+{
+  "id": "thermostat",
+  "slot": "thermostat",
+  "category": "thermostat",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/thermostat",
+  "model_index": 119
+}

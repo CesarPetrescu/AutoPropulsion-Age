@@ -1,0 +1,11 @@
+{
+  "id": "fuel_pump_station",
+  "slot": "fuel_pump_station",
+  "category": "station",
+  "family": "workshop",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/fuel_pump_station",
+  "model_index": 49
+}

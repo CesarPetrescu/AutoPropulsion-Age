@@ -1,0 +1,11 @@
+{
+  "id": "oil_filter",
+  "slot": "oil_filter",
+  "category": "filter",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/oil_filter",
+  "model_index": 77
+}

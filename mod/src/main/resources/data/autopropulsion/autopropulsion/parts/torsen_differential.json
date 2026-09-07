@@ -1,0 +1,11 @@
+{
+  "id": "torsen_differential",
+  "slot": "torsen_differential",
+  "category": "differential",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/torsen_differential",
+  "model_index": 124
+}

@@ -1,0 +1,11 @@
+plugins { id 'base'; id 'net.neoforged.moddev' version '2.0.146' apply false }
+allprojects { group = 'com.photonspark.autopropulsion'; version = rootProject.mod_version }
+subprojects {
+    apply plugin: 'java-library'
+    java { toolchain.languageVersion = JavaLanguageVersion.of(21); withSourcesJar() }
+    repositories { mavenCentral() }
+    tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 21 }
+    tasks.withType(AbstractArchiveTask).configureEach { preserveFileTimestamps = false; reproducibleFileOrder = true }
+}
+tasks.named('check') { dependsOn ':sim:check', ':mod:check' }
+tasks.named('build') { dependsOn ':sim:build', ':mod:build', ':tools:build' }

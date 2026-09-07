@@ -1,0 +1,28 @@
+plugins { id 'net.neoforged.moddev' }
+base { archivesName = 'autopropulsion-age-neoforge-1.21.1' }
+dependencies { implementation project(':sim') }
+neoForge {
+    version = project.neo_version
+    parchment { minecraftVersion = '1.21.1'; mappingsVersion = '2024.11.17' }
+    runs {
+        client { client(); gameDirectory = file('run/client') }
+        server { server(); programArgument '--nogui'; gameDirectory = file('run/server') }
+        serverSmoke { server(); programArgument '--nogui'; gameDirectory = file('run/server-smoke'); systemProperty 'autopropulsion.smokeServer', 'true' }
+        gameTestServer {
+            type = 'gameTestServer'; gameDirectory = file('run/gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'autopropulsion'
+        }
+        clientSmoke {
+            client(); gameDirectory = file('run/client-smoke')
+            systemProperty 'autopropulsion.smoke', 'true'
+            systemProperty 'autopropulsion.smoke.config', providers.gradleProperty('smokeConfig').getOrElse('default')
+            programArguments.addAll '--quickPlayMultiplayer', '127.0.0.1:25565', '--width', '1280', '--height', '720'
+        }
+        configureEach { jvmArguments.addAll '-Xms256m', '-Xmx1536m'; logLevel = org.slf4j.event.Level.INFO }
+    }
+    mods { autopropulsion { sourceSet sourceSets.main; sourceSet project(':sim').sourceSets.main } }
+}
+processResources { inputs.property 'version', project.version; filesMatching('META-INF/neoforge.mods.toml') { expand version: project.version } }
+// The installable mod includes the pure simulation classes.
+tasks.named('jar') { from project(':sim').sourceSets.main.output }
+tasks.named('sourcesJar') { from project(':sim').sourceSets.main.allSource }

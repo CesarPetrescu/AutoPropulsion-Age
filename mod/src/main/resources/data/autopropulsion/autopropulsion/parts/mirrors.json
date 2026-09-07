@@ -1,0 +1,11 @@
+{
+  "id": "mirrors",
+  "slot": "mirrors",
+  "category": "mirror",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/mirrors",
+  "model_index": 70
+}

@@ -1,0 +1,11 @@
+{
+  "id": "valve_springs",
+  "slot": "valve_springs",
+  "category": "spring",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/valve_springs",
+  "model_index": 132
+}

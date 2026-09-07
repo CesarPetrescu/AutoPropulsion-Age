@@ -1,0 +1,12 @@
+{
+  "id": "stock_radiator",
+  "slot": "radiator",
+  "category": "radiator",
+  "family": "shared",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/stock_radiator",
+  "radiator_w_k": 110,
+  "model_index": 115
+}

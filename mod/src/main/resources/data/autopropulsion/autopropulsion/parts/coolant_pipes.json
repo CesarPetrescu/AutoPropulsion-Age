@@ -1,0 +1,11 @@
+{
+  "id": "coolant_pipes",
+  "slot": "coolant_pipes",
+  "category": "pipe",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/coolant_pipes",
+  "model_index": 24
+}

@@ -1,0 +1,11 @@
+{
+  "id": "intercooler",
+  "slot": "intercooler",
+  "category": "radiator",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/intercooler",
+  "model_index": 62
+}

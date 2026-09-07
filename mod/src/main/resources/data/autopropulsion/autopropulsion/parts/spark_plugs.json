@@ -1,0 +1,11 @@
+{
+  "id": "spark_plugs",
+  "slot": "spark_plugs",
+  "category": "plug",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/spark_plugs",
+  "model_index": 102
+}

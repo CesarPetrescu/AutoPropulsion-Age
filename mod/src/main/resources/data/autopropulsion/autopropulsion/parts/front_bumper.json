@@ -1,0 +1,11 @@
+{
+  "id": "front_bumper",
+  "slot": "front_bumper",
+  "category": "bumper",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/front_bumper",
+  "model_index": 44
+}

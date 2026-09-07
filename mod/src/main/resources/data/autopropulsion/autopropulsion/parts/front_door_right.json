@@ -1,0 +1,11 @@
+{
+  "id": "front_door_right",
+  "slot": "front_door_right",
+  "category": "door",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/front_door_right",
+  "model_index": 46
+}

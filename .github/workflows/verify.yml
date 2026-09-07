@@ -1,0 +1,78 @@
+name: Verify NeoForge mod
+on:
+  push:
+    paths-ignore: ['docs/**', '**.md']
+  pull_request:
+    paths-ignore: ['docs/**', '**.md']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: Record environment and validate wrapper checksum
+        run: |
+          mkdir -p build/reports
+          { git rev-parse HEAD; uname -a; java -version; } > build/reports/environment.txt 2>&1
+          echo '423cb469ccc0ecc31f0e4e1c309976198ccb734cdcbb7029d4bda0f18f57e8d9  gradle/wrapper/gradle-wrapper.jar' | sha256sum --check
+          grep -Fx 'distributionSha256Sum=72f44c9f8ebcb1af43838f45ee5c4aa9c5444898b3468ab3f4af7b6076c5bc3f' gradle/wrapper/gradle-wrapper.properties
+          chmod +x gradlew
+      - name: Offline simulation regression and catalogue validation
+        run: |
+          set -o pipefail
+          bash scripts/test-sim.sh 2>&1 | tee build/reports/simulation.log
+          python3 scripts/validate-content.py --assets
+      - name: Build installable mod
+        run: |
+          set -o pipefail
+          ./gradlew build --no-daemon --console=plain 2>&1 | tee build/reports/build.log
+          python3 scripts/check-jar.py
+      - name: Dedicated server GameTests
+        run: |
+          mkdir -p mod/run/gametest
+          printf 'eula=true\n' > mod/run/gametest/eula.txt
+          touch mod/run/gametest/server.properties
+          set -o pipefail
+          ./gradlew :mod:runGameTestServer --no-daemon --console=plain 2>&1 | tee build/reports/gametest.log
+      - name: Install isolated graphical runtime
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64 flite1-dev
+      - name: Real client and dedicated server smoke matrix
+        env:
+          ACCEPT_MINECRAFT_EULA: 'true'
+        run: python3 scripts/test-runtime.py
+      - name: Package source for independent local inspection
+        if: always()
+        run: |
+          tar --exclude='./.git' --exclude='./.gradle' --exclude='./.local-test' --exclude='./build' --exclude='*/build' --exclude='*/run' -czf "$RUNNER_TEMP/autopropulsion-source.tar.gz" .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autopropulsion-source-verify-${{ github.run_number }}
+          path: ${{ runner.temp }}/autopropulsion-source.tar.gz
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autopropulsion-verification-${{ github.run_number }}
+          path: |
+            mod/build/libs/*.jar
+            build/reports/**
+            .local-test/reports/**
+            sim/build/reports/**
+            mod/run/gametest/logs/**
+            mod/run/**/crash-reports/**
+          include-hidden-files: true
+          retention-days: 14

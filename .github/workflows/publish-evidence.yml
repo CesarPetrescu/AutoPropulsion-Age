@@ -1,0 +1,73 @@
+name: Preserve verified foundation evidence
+on:
+  push:
+    branches: ['feat/neoforge-1.21.1-vehicle-foundation']
+    paths: ['.github/workflows/publish-evidence.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preserve:
+    if: github.ref == 'refs/heads/feat/neoforge-1.21.1-vehicle-foundation'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: autopropulsion-verification-4
+          run-id: 34147283568
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/verified-evidence
+      - name: Validate provenance and preserve exact output
+        env:
+          EVIDENCE_SOURCE: ${{ runner.temp }}/verified-evidence
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,shutil
+          from pathlib import Path
+          source=Path(os.environ['EVIDENCE_SOURCE'])
+          reports=source/'build/reports'
+          expected='4ed59ca2f03e29e342c60692a63cd85ecc8c9a4c'
+          assert (reports/'environment.txt').read_text().splitlines()[0]==expected
+          result=json.loads((reports/'runtime/result.json').read_text())
+          assert result['passed'] and len(result['tests'])==2
+          assert all(t['passed'] and t['exit_code']==0 and len(t['screenshots'])==5 for t in result['tests'])
+          jar=next(p for p in (source/'mod/build/libs').glob('*.jar') if '-sources' not in p.name)
+          jar_hash=hashlib.sha256(jar.read_bytes()).hexdigest()
+          assert jar_hash=='1445c2dcb70a26e0b268306070c74fccdc4e92bd36892413cbafc6c78f12caaf'
+          target=Path('docs/evidence/2026-09-07/runtime')
+          target.mkdir(parents=True,exist_ok=True)
+          shutil.copy2(reports/'runtime/result.json',target/'result.json')
+          shutil.copy2(reports/'environment.txt',target/'environment.txt')
+          shutil.copy2(reports/'simulation.log',target/'simulation.log')
+          lines=[l for l in (reports/'gametest.log').read_text().splitlines() if 'tests' in l or 'BUILD SUCCESSFUL' in l]
+          assert any('All 8 required tests passed' in l for l in lines)
+          (target/'gametest-summary.txt').write_text('\n'.join(lines)+'\n')
+          captures=('01-showroom','02-garage','03-dyno','04-driving-hud','05-braking')
+          hashes={}
+          for profile in ('default','minimal'):
+              for capture in captures:
+                  name=f'autopropulsion-{profile}-{capture}.png'
+                  image=reports/'runtime/screenshots'/name
+                  data=image.read_bytes()
+                  assert data[:8]==b'\x89PNG\r\n\x1a\n' and len(data)>1000
+                  dest=target/'screenshots'/name
+                  dest.parent.mkdir(exist_ok=True)
+                  shutil.copy2(image,dest)
+                  hashes[name]=hashlib.sha256(data).hexdigest()
+          manifest={'source_commit':expected,'source_run':34147283568,'artifact_id':10028210660,'jar':jar.name,'jar_sha256':jar_hash,'screenshots_sha256':hashes,'note':'Exact CI output copied; no Minecraft binaries, account data or build caches committed.'}
+          (target/'artifact-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          PY
+      - name: Commit evidence to the foundation branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/evidence/2026-09-07/runtime
+          if ! git diff --cached --quiet; then
+            git commit -m 'test: preserve verified client frames, results and artifact hashes'
+            git push origin HEAD:feat/neoforge-1.21.1-vehicle-foundation
+          fi

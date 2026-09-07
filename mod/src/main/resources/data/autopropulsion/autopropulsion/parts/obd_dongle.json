@@ -1,0 +1,11 @@
+{
+  "id": "obd_dongle",
+  "slot": "obd_dongle",
+  "category": "electronics",
+  "family": "workshop",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/obd_dongle",
+  "model_index": 75
+}

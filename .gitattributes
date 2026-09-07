@@ -1,8 +1,13 @@
 * text=auto
+*.java text eol=lf
 *.py text eol=lf
+*.sh text eol=lf
 *.md text eol=lf
 *.json text eol=lf
-*.png binary
 *.blend binary
 *.glb binary
+*.png binary
+*.ogg binary
+*.wav binary
+*.nbt binary
 *.zip binary

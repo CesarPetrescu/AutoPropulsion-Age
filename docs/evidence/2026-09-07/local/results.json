@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "date": "2026-09-07",
+  "environment": "Debian 13; OpenJDK 21.0.11",
+  "verified_ci_source_commit": "4ed59ca2f03e29e342c60692a63cd85ecc8c9a4c",
+  "source_comparison": "12 simulation/tools Java files match CI source artifact byte-for-byte",
+  "simulation": {"baseline_passed": 35, "transaction_safety_passed": 2, "failed": 0, "command": "bash scripts/test-sim.sh"},
+  "content": {"parts": 140, "distinct_recipe_signatures": 24, "passed": true},
+  "exported_geometry": {"groups": 7, "triangles": 4232, "hood_clearance_m": 0.03, "passed": true},
+  "local_minecraft": "BLOCKED: UnknownHostException services.gradle.org",
+  "local_blender": "BLOCKED: package unavailable; network resolution unavailable",
+  "source_acquisition": "Connected GitHub workflow artifact download",
+  "reproduced_before_fix": {"invalid_restore_atomic": false, "replacement_preserves_requirements": false},
+  "verified_after_fix": {"invalid_restore_atomic": true, "replacement_preserves_requirements": true},
+  "simulation_log_sha256": "959293be9f62755605a8a47c518215a085b3b60ee3c0295c1bee31acf76f40e5"
+}

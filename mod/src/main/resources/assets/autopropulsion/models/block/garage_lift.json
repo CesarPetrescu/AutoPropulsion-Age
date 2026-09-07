@@ -1,0 +1,106 @@
+{
+  "textures": {
+    "metal": "autopropulsion:block/palette/metal",
+    "paint": "autopropulsion:block/palette/paint",
+    "dark": "autopropulsion:block/palette/dark",
+    "particle": "autopropulsion:block/palette/metal"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#metal"
+        },
+        "down": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        2,
+        6
+      ],
+      "to": [
+        10,
+        15,
+        10
+      ],
+      "faces": {
+        "up": {
+          "texture": "#paint"
+        },
+        "down": {
+          "texture": "#paint"
+        },
+        "north": {
+          "texture": "#paint"
+        },
+        "south": {
+          "texture": "#paint"
+        },
+        "east": {
+          "texture": "#paint"
+        },
+        "west": {
+          "texture": "#paint"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        13,
+        2
+      ],
+      "to": [
+        15,
+        15,
+        14
+      ],
+      "faces": {
+        "up": {
+          "texture": "#metal"
+        },
+        "down": {
+          "texture": "#metal"
+        },
+        "north": {
+          "texture": "#metal"
+        },
+        "south": {
+          "texture": "#metal"
+        },
+        "east": {
+          "texture": "#metal"
+        },
+        "west": {
+          "texture": "#metal"
+        }
+      }
+    }
+  ]
+}

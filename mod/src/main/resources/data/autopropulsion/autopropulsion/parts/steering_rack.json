@@ -1,0 +1,11 @@
+{
+  "id": "steering_rack",
+  "slot": "steering_rack",
+  "category": "rack",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/steering_rack",
+  "model_index": 109
+}

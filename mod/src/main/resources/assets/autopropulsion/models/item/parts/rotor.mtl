@@ -1,0 +1,9 @@
+newmtl alloy
+Kd 1 1 1
+d 1
+map_Kd #mat_alloy
+
+newmtl dark
+Kd 1 1 1
+d 1
+map_Kd #mat_dark

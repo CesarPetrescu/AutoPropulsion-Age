@@ -1,0 +1,12 @@
+{
+  "id": "stock_camshaft",
+  "slot": "camshaft",
+  "category": "shaft",
+  "family": "piston",
+  "functional": true,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/stock_camshaft",
+  "rpm_limit": 6800,
+  "model_index": 111
+}

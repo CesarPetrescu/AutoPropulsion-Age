@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:blast_furnace"
+    }
+  ],
+  "result": {
+    "id": "autopropulsion:part",
+    "count": 1,
+    "components": {
+      "minecraft:custom_data": {
+        "Part": "autopropulsion:race_turbo"
+      },
+      "minecraft:custom_model_data": 88
+    }
+  }
+}

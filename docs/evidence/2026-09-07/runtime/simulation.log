@@ -1,0 +1,40 @@
+PASS curve interpolation and endpoint clamp
+PASS curve rejects duplicate knots and NaN
+PASS modifier production order
+PASS SET ordering deterministic
+PASS weakest structural part attribution
+PASS modifier overflow rejected
+PASS part installation and nested slot
+PASS incompatible install atomic
+PASS parent replacement rejects orphaning
+PASS subtree removal complete
+PASS input clamping and hostile finite validation
+PASS reference dyno calibration
+PASS power identity
+PASS race cam peak shift and low rpm loss
+PASS boost raises torque
+PASS fuel SI dimensional sanity
+PASS limiter cuts production
+PASS neutral does not drive
+PASS car accelerates through gears
+PASS brakes stop without reversing
+PASS reverse drives backwards
+PASS clutch disengages drive
+PASS 100 repeated runs are bit-identical
+PASS state save restore exact
+PASS invalid persisted state rejected
+PASS fuel disabled config
+PASS zero fuel stops engine
+PASS configuration bounds
+PASS substeps 1 through 16 remain finite
+PASS substep convergence 4 vs 8
+PASS negative and oversized time rejected
+PASS structural damage attributed with boost
+PASS forged rods survive same boost better
+PASS damage multiplier zero
+PASS long run bounded and odometer monotonic
+RESULT 35 passed, 0 failed
+PASS rejected restore is atomic
+PASS replacement preserves dependent requirements
+SAFETY RESULT 2 passed, 0 failed
+Peak torque 187.73 Nm; peak power 118.07 kW. Analytical engine dyno, not wheel measurement.

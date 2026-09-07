@@ -1,0 +1,11 @@
+{
+  "id": "throttle_body",
+  "slot": "throttle_body",
+  "category": "throttle",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/throttle_body",
+  "model_index": 120
+}

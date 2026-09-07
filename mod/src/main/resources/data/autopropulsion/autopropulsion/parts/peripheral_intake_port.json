@@ -1,0 +1,11 @@
+{
+  "id": "peripheral_intake_port",
+  "slot": "peripheral_intake_port",
+  "category": "intake",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/peripheral_intake_port",
+  "model_index": 84
+}

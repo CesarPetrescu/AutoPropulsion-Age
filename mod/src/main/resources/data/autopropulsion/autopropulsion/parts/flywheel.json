@@ -1,0 +1,11 @@
+{
+  "id": "flywheel",
+  "slot": "flywheel",
+  "category": "disc",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/flywheel",
+  "model_index": 41
+}

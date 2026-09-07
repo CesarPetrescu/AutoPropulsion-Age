@@ -1,0 +1,11 @@
+{
+  "id": "rotary_block",
+  "slot": "rotary_block",
+  "category": "rotary_block",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/rotary_block",
+  "model_index": 93
+}

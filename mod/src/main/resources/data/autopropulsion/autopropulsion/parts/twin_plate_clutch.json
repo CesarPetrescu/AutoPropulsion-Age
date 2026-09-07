@@ -1,0 +1,11 @@
+{
+  "id": "twin_plate_clutch",
+  "slot": "twin_plate_clutch",
+  "category": "disc",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/twin_plate_clutch",
+  "model_index": 128
+}

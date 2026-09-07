@@ -1,0 +1,11 @@
+{
+  "id": "livery_sheet",
+  "slot": "livery_sheet",
+  "category": "panel",
+  "family": "body",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/livery_sheet",
+  "model_index": 64
+}

@@ -1,0 +1,11 @@
+{
+  "id": "main_bearing_caps",
+  "slot": "main_bearing_caps",
+  "category": "bearing",
+  "family": "shared",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/main_bearing_caps",
+  "model_index": 67
+}

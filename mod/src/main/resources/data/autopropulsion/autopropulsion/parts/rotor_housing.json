@@ -1,0 +1,11 @@
+{
+  "id": "rotor_housing",
+  "slot": "rotor_housing",
+  "category": "rotary_housing",
+  "family": "rotary",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/rotor_housing",
+  "model_index": 96
+}

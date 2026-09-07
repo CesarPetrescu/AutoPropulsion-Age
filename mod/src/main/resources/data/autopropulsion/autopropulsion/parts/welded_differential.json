@@ -1,0 +1,11 @@
+{
+  "id": "welded_differential",
+  "slot": "welded_differential",
+  "category": "differential",
+  "family": "chassis",
+  "functional": false,
+  "tier": 1,
+  "mass_kg": 1.0,
+  "model": "autopropulsion:item/parts/welded_differential",
+  "model_index": 138
+}
