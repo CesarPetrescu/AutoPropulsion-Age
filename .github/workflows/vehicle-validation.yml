@@ -1,0 +1,44 @@
+name: Vehicle validation
+on:
+  push:
+    branches: [main, feat/component-damage-and-vehicle-audio]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vehicle-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Generate original vehicle audio
+        run: |
+          if test -f tools/generate_vehicle_audio.py; then
+            sudo apt-get update -qq
+            sudo apt-get install -y ffmpeg
+            python3 tools/generate_vehicle_audio.py
+          fi
+      - name: Build and test
+        run: chmod +x gradlew && ./gradlew --no-daemon build -PwithGameTests
+      - name: Dedicated server GameTests
+        run: ./gradlew --no-daemon runGameTestServer -PwithGameTests
+      - name: Preserve build and verification output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vehicle-validation
+          path: |
+            build/libs/*.jar
+            sim/build/reports/tests/
+            run/gametest/logs/
+            build/reports/
+            src/main/resources/assets/sparkmotors/sounds/vehicle/
+          if-no-files-found: warn
