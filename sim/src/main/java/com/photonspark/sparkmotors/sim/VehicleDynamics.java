@@ -51,7 +51,7 @@ public final class VehicleDynamics {
         if (grounded && (in.brake || in.handbrake)) {
             double brakeForce=(Assembly.BRAKES.variant(setup.config)==2?10.8:8.0)*setup.condition.braking();
             resistance+=Math.signum(speed)*MASS*brakeForce*grip*(in.brake?1:.65);
-            slip=Math.max(slip,in.handbrake?clamp(Math.abs(speed)/12,0,1):clamp((brakeForce-6.5)*Math.abs(speed)/150,0,1));
+            slip=Math.max(slip,in.handbrake?clamp(Math.abs(speed)/12,0,1)*setup.condition.braking():clamp((brakeForce-6.5)*Math.abs(speed)/150,0,1));
         }
         if (!drive) resistance += Math.signum(speed) * 160;
         double next = speed + (force - resistance) / MASS * dt;

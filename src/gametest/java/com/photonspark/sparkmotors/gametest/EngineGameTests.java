@@ -113,7 +113,9 @@ public final class EngineGameTests {
                 state.putInt("EngineFamily",job/6);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/3)%2));state.putInt("EngineParts",EnginePart.boosted(job%3));c.load(state);
                 p.moveTo(c.position());c.setOwner(p.getUUID());h.assertTrue(p.startRiding(c,true),"Driver must mount layout "+job);act(c,p,CarPackets.IGNITION,0,0);start[0]=c.getZ();peak[0]=0;
             }
-            var c=active[0];c.receiveInput(step<35?1:4,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
+            var c=active[0];
+            // Service-brake regression: bit 2 is the foot brake; bit 4 is the weaker handbrake.
+            c.receiveInput(step<35?1:2,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
             if(step==68){
                 h.assertTrue(peak[0]>3&&c.getZ()>start[0]+2,"Every family/grade/induction layout must drive: "+job);
                 h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Every layout must brake and use fuel: "+job);
