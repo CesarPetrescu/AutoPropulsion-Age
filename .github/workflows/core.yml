@@ -1,4 +1,4 @@
-name: JVM core and development tools
+name: JVM core and original Blender assets
 on:
   push:
     branches: ['feat/neoforge-1.21.1-playable-foundation']
@@ -26,28 +26,39 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.2.1'
-      - name: Generate official Gradle wrapper if absent
+          cache-read-only: false
+      - name: Generate official wrapper and runtime assets
         run: |
           if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
             gradle wrapper --gradle-version 9.2.1 --distribution-type bin
           fi
-      - name: Preserve wrapper on the implementation branch
+          python3 art/generate_assets.py
+          python3 tools/validate_assets.py
+      - name: Preserve reproducible generated files on the implementation branch
         if: github.event_name == 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add gradlew gradlew.bat gradle/wrapper
+          git add gradlew gradlew.bat gradle/wrapper mod/src/main/resources art/assets-manifest.json docs/ASSET_CATALOG.md docs/PARTS.md
           if ! git diff --cached --quiet; then
-            git commit -m 'build: add generated Gradle 9.2.1 wrapper [skip ci]'
+            git commit -m 'build: generate wrapper and original runtime asset catalogue [skip ci]'
             git push origin HEAD:${{ github.ref_name }}
           fi
-      - name: Test simulation and build command-line dyno
-        run: ./gradlew :sim:test :sim:selfTest :tools:installDist --stacktrace
-      - name: Install and verify Blender
+      - name: Test simulation and produce dyno evidence
+        run: |
+          ./gradlew :sim:test :sim:selfTest :tools:installDist --stacktrace
+          mkdir -p reports/local
+          tools/build/install/tools/bin/tools > reports/local/reference-dyno.csv
+          tools/build/install/tools/bin/tools --drive > reports/local/reference-drive.csv 2> reports/local/acceleration.txt
+      - name: Install Blender and software-rendered display dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y blender xvfb mesa-utils libgl1-mesa-dri
-          blender --background --factory-startup --python-expr "import bpy; print('BLENDER_AVAILABLE=' + bpy.app.version_string)"
+          blender --version
+      - name: Build editable Blender scenes and GLB models
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: xvfb-run -a blender --background --factory-startup --python art/blender_build.py
       - name: Package source and executable simulation
         if: always()
         run: |
@@ -58,9 +69,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: source-simulation-and-test-results
+          name: source-simulation-and-blender-assets
           path: |
             reports/local/
+            art/generated/
             sim/build/test-results/
             sim/build/reports/tests/
             tools/build/install/

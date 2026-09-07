@@ -1,4 +1,5 @@
 plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.146' }
+evaluationDependsOn(':sim')
 base { archivesName = 'autopropulsion-age' }
 dependencies { implementation project(':sim') }
 neoForge {

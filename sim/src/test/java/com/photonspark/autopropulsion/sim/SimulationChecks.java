@@ -1,7 +1,6 @@
 package com.photonspark.autopropulsion.sim;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 /** Dependency-free executable checks, also invoked by JUnit. */
 public final class SimulationChecks {
@@ -67,7 +66,8 @@ public final class SimulationChecks {
             check(Math.abs(v - baseline) / baseline < .05, "substep convergence " + n);
         }
         double before = Math.abs(first.snapshot().speed());
-        for (int i = 0; i < 100; i++) first.tick(new VehicleInput(0, 1, 0, 1, 0, false), 4, 1, 1, 1);
+        // At the 60 m/s prototype cap, a 9.5 m/s^2 brake needs >6 seconds, not 5.
+        for (int i = 0; i < 160; i++) first.tick(new VehicleInput(0, 1, 0, 1, 0, false), 4, 1, 1, 1);
         check(Math.abs(first.snapshot().speed()) < before && Math.abs(first.snapshot().speed()) < .05, "brakes stop without reversing");
         VehicleModel reverse = new VehicleModel(EngineSpec.reference()); reverse.setRunning(true);
         for (int i = 0; i < 100; i++) reverse.tick(new VehicleInput(1, 0, 0, 0, -1, false), 4, 1, 1, 1);
@@ -108,12 +108,12 @@ public final class SimulationChecks {
         var forged = def("forged", "rods", Set.of(), Set.of("engine/piston"), List.of(), Map.of("torque_nm", 650d), List.of());
         a.install("engine/rods", forged);
         check(a.resolve(Map.of()).limit("torque_nm", 0) == 650, "upgrading bottleneck raises limit");
-        rejects(() -> a.installed().clear(), "installed map is read-only");
+        boolean immutable = false;
+        try { a.installed().clear(); } catch (UnsupportedOperationException expected) { immutable = true; }
+        check(immutable, "installed map is read-only");
     }
     public static void main(String[] args) {
-        curves(); inputs(); dynamics();
-        // Read-only map throws UnsupportedOperationException, which is intentionally tested separately.
-        try { parts(); } catch (UnsupportedOperationException expected) { passed++; }
+        curves(); inputs(); dynamics(); parts();
         System.out.println("SIMULATION_CHECKS_PASSED=" + passed);
         double[] p = peak(EngineSpec.reference());
         System.out.printf(Locale.ROOT, "REFERENCE peak_torque_nm=%.3f peak_torque_rpm=%.0f peak_power_kw=%.3f%n", p[0], p[1], p[2]);
