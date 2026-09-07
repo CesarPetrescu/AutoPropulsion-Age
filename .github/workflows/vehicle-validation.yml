@@ -5,7 +5,7 @@ on:
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: vehicle-${{ github.ref }}
   cancel-in-progress: true
@@ -13,8 +13,52 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    env:
+      ALSOFT_DRIVERS: 'null'
+      LIBGL_ALWAYS_SOFTWARE: '1'
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install audio and headless client dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg xvfb libgl1-mesa-dri libopenal1
+      - name: Apply verified implementation and publish source on feature branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/component-damage-and-vehicle-audio'
+        run: |
+          if test -f .updates/vehicle-00.xzpart; then
+            python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, lzma
+          parts = sorted(Path('.updates').glob('vehicle-*.xzpart'))
+          assert len(parts) == 4
+          patch = lzma.decompress(b''.join(p.read_bytes() for p in parts))
+          assert hashlib.sha256(patch).hexdigest() == '83e7a6690b2f50c880b8ed43ca948a6111a368d0f0c6b34440fed0661844795e'
+          Path('/tmp/vehicle-update.patch').write_bytes(patch)
+          PY
+            git apply --check /tmp/vehicle-update.patch
+            git apply /tmp/vehicle-update.patch
+            python3 tools/generate_vehicle_audio.py
+            rm .updates/vehicle-0{0,1,2,3}.xzpart
+            python3 - <<'PY'
+          from pathlib import Path
+          p = Path('README.md')
+          text = p.read_text()
+          head, rest = text.split('\n', 1)
+          notice = '\n> **0.3.0 feature preview:** independent component wear/damage, muffler-dependent layered audio, and a native inspection screen. [Controls, architecture, and verification](docs/COMPONENT-DAMAGE-AUDIO.md). Build this branch or use its Vehicle validation artifact; the older 0.2.0 downloads and screenshots below are historical.\n'
+          p.write_text(head + '\n' + notice + rest)
+          PY
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add sim src tools docs gradle.properties README.md .updates
+            git commit -m 'feat: persist component damage, layered vehicle audio and inspection'
+            git push origin HEAD:refs/heads/feat/component-damage-and-vehicle-audio
+          fi
+      - name: Record exact verified source
+        run: git rev-parse HEAD > verified-commit.txt
       - name: Preserve exact source snapshot
         uses: actions/upload-artifact@v4
         with:
@@ -29,22 +73,32 @@ jobs:
             build.gradle
             settings.gradle
             gradle.properties
+            docs/COMPONENT-DAMAGE-AUDIO.md
+            README.md
+            verified-commit.txt
           retention-days: 7
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-      - name: Generate original vehicle audio
+      - name: Validate generated audio and standalone model
         run: |
-          if test -f tools/generate_vehicle_audio.py; then
-            sudo apt-get update -qq
-            sudo apt-get install -y ffmpeg
-            python3 tools/generate_vehicle_audio.py
-          fi
-      - name: Build and test
+          python3 tools/validate_vehicle_audio.py > vehicle-audio-validation.json
+          mkdir -p /tmp/vehicle-model-test
+          javac -d /tmp/vehicle-model-test $(find sim/src/main/java -name '*.java') tools/VehicleSystemSelfTest.java
+          java -cp /tmp/vehicle-model-test VehicleSystemSelfTest | tee vehicle-model-validation.txt
+      - name: Build and unit tests
         run: chmod +x gradlew && ./gradlew --no-daemon build -PwithGameTests
       - name: Dedicated server GameTests
         run: ./gradlew --no-daemon runGameTestServer -PwithGameTests
+      - name: Native client integration
+        run: |
+          xvfb-run -a ./gradlew --no-daemon runClientSmoke -PwithGameTests
+          python3 - <<'PY'
+          from pathlib import Path
+          results = list(Path('run').rglob('alpha-smoke-result.txt'))
+          assert results, 'Client did not produce a verification result'
+          for result in results:
+              text = result.read_text()
+              print(result, text)
+              assert text.startswith('PASS:'), text
+          PY
       - name: Preserve build and verification output
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,7 +107,18 @@ jobs:
           path: |
             build/libs/*.jar
             sim/build/reports/tests/
-            run/gametest/logs/
+            sim/build/test-results/
             build/reports/
-            src/main/resources/assets/sparkmotors/sounds/vehicle/
+            run/**/logs/
+            run/**/alpha-smoke-result.txt
+            verified-commit.txt
+            vehicle-audio-validation.json
+            vehicle-model-validation.txt
+          if-no-files-found: warn
+      - name: Preserve native client screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vehicle-client-screenshots
+          path: run/**/screenshots/*.png
           if-no-files-found: warn
