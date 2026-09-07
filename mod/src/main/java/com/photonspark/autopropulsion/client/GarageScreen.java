@@ -25,8 +25,10 @@ public final class GarageScreen extends Screen {
     private void action(int code,float value){PacketDistributor.sendToServer(new Packets.Action(data.entity(),code,value));}
     @Override public boolean isPauseScreen(){return false;}
     @Override public void tick(){if(minecraft==null||minecraft.level==null||!(minecraft.level.getEntity(data.entity()) instanceof VehicleEntity))onClose();}
-    @Override public void render(GuiGraphics g,int mx,int my,float dt) {
-        renderBackground(g,mx,my,dt);g.fill(left,top,left+w,top+h,0xFA121C26);g.fill(left,top,left+w,top+3,0xFFFFAD42);
+    // Screen.render invokes renderBackground before rendering widgets in 1.21.1.
+    // Draw the panel here once, otherwise a later super.render blurs our own labels.
+    @Override public void renderBackground(GuiGraphics g,int mx,int my,float dt) {
+        super.renderBackground(g,mx,my,dt);g.fill(left,top,left+w,top+h,0xFA121C26);g.fill(left,top,left+w,top+3,0xFFFFAD42);
         g.drawString(font,"AUTOPROPULSION  /  GARAGE",left+12,top+13,0xFFF0F4F8,false);
         if(minecraft!=null&&minecraft.level!=null&&minecraft.level.getEntity(data.entity()) instanceof VehicleEntity car) {
             if(tab==0) {
@@ -45,7 +47,6 @@ public final class GarageScreen extends Screen {
             } else drawDyno(g);
             g.drawString(font,"Stop engine to change parts or boost. Held parts install by right-click.",left+12,top+h-45,0xFF8EABB9,false);
         }
-        super.render(g,mx,my,dt);
     }
     private void drawDyno(GuiGraphics g){
         int x=left+42,y=top+76,gw=w-70,gh=Math.max(40,h-154);

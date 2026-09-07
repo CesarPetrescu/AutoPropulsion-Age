@@ -163,7 +163,7 @@ public final class VehicleEntity extends Entity {
     @Override public boolean isPushable(){return false;}
     @Override protected boolean canAddPassenger(Entity p){return getPassengers().size()<2;}
     @Override public LivingEntity getControllingPassenger(){return getFirstPassenger() instanceof LivingEntity living?living:null;}
-    @Override protected void positionRider(Entity passenger,MoveFunction move){if(!hasPassenger(passenger))return;int n=getPassengers().indexOf(passenger);double a=Math.toRadians(getYRot()),x=n==0?-.36:.36,z=.2;move.accept(passenger,getX()+x*Math.cos(a)-z*Math.sin(a),getY()-.18,getZ()+x*Math.sin(a)+z*Math.cos(a));}
+    @Override protected void positionRider(Entity passenger,MoveFunction move){if(!hasPassenger(passenger))return;int n=getPassengers().indexOf(passenger);double a=Math.toRadians(getYRot()),x=n==0?-.36:.36,z=.2;move.accept(passenger,getX()+x*Math.cos(a)-z*Math.sin(a),getY()-.45,getZ()+x*Math.sin(a)+z*Math.cos(a));}
     @Override protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("DataVersionAP",1);if(owner!=null)tag.putUUID("Owner",owner);tag.putDouble("BoostSetting",boostSetting);
         CompoundTag parts=new CompoundTag();installed.forEach(parts::putString);tag.put("Parts",parts);

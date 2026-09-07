@@ -21,6 +21,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Record environment and validate wrapper checksum
         run: |
           mkdir -p build/reports
@@ -42,10 +44,11 @@ jobs:
         run: |
           mkdir -p mod/run/gametest
           printf 'eula=true\n' > mod/run/gametest/eula.txt
+          touch mod/run/gametest/server.properties
           set -o pipefail
           ./gradlew :mod:runGameTestServer --no-daemon --console=plain 2>&1 | tee build/reports/gametest.log
       - name: Install isolated graphical runtime
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libasound2t64 flite1-dev
       - name: Real client and dedicated server smoke matrix
         env:
           ACCEPT_MINECRAFT_EULA: 'true'
