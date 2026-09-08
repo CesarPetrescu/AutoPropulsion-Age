@@ -1,0 +1,11 @@
+// CI companion builds use the same unmodified, checksum-pinned Minecraft metadata as this mod.
+def metadataRoot = System.getenv('APA_METADATA_REPO')
+if (!metadataRoot) throw new GradleException('APA_METADATA_REPO must point to the pinned metadata repository')
+def metadata = new File(metadataRoot, 'net/neoforged/minecraft-dependencies/1.21.1/minecraft-dependencies-1.21.1.module')
+def hash = java.security.MessageDigest.getInstance('SHA-256').digest(metadata.bytes).encodeHex().toString()
+if (hash != '211b1f95714cf1fb6f4a45612dd4bf731fb09795c30d4fb5f23c9fada6173332') throw new GradleException('Minecraft metadata checksum mismatch')
+allprojects {
+    repositories.all { repository ->
+        if (repository.name == 'Mojang Meta') repository.url = uri(metadataRoot)
+    }
+}

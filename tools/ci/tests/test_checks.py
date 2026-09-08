@@ -68,6 +68,16 @@ class ReleaseGates(unittest.TestCase):
         with self.assertRaises(ValueError):
             checks.client('ALPHA_CLIENT_SMOKE PASS:', 'FAILED: timeout', 'mechanics')
 
+    def test_electric_requires_native_success(self):
+        for log, result in [('BUILD SUCCESSFUL', 'PASS: ok'), ('ELECTRIC_CLIENT_SMOKE PASS:', 'FAILED: drive'), ('ELECTRIC_CLIENT_SMOKE FAILED\nELECTRIC_CLIENT_SMOKE PASS:', 'PASS: ok')]:
+            with self.assertRaises(ValueError):
+                checks.client(log, result, 'electric')
+        self.assertTrue(checks.client('ELECTRIC_CLIENT_SMOKE PASS:', 'PASS: ok', 'electric')['native_electric_charging_driving'])
+
+    def test_server_requires_electric_matrix(self):
+        with self.assertRaises(ValueError):
+            checks.server('All 38 required tests passed\nDRIVETRAIN_SERVER_MATRIX_PASS 294')
+
     def test_mechanics_requires_audio_and_sender_evidence(self):
         with self.assertRaises(ValueError):
             checks.client('ALPHA_CLIENT_SMOKE PASS: MECHANICS_CLIENT_PASS', 'PASS: ok', 'mechanics')

@@ -65,4 +65,26 @@ final class ElectricHandlingTest {
             assertEquals(0,ElectricDynamics.motorTorque(type,18000));assertEquals(0,ElectricDynamics.motorTorque(type,Double.NaN));
         }
     }
+    @Test void everyCombustionMapCanColdStartAndDriveWithMechanicalState(){
+        for(var family:EngineFamily.values()){
+            var m=MechanicalState.legacy(Assembly.stock(),EnginePart.stock(),20,20,100);
+            var setup=new VehicleDynamics.Setup(Assembly.stock(),6800,3.7,family,EnginePart.stock(),20,1.4,m,DriveConfig.stock());
+            var road=new VehicleDynamics.State(0,0,1,40,0,0,EnginePhysics.State.stopped(20,100));
+            for(int i=0;i<280;i++)road=VehicleDynamics.step(road,true,new VehicleDynamics.Input(i<60?0:1,0,false,false,false,i<60),setup,1,true,.0125);
+            assertTrue(road.speed()>3,family+" speed="+road.speed()+" rpm="+road.rpm()+" mode="+road.engine().mode());
+        }
+    }
+    @Test void bothHybridsGenerateWithEveryInstalledEngineFamilyAndRespectElectricOnly(){
+        for(var type:new Powertrain[]{Powertrain.HYBRID,Powertrain.PLUG_IN_HYBRID})for(var family:EngineFamily.values()){
+            var setup=new VehicleDynamics.Setup(Assembly.stock(),6800,3.7,family,EnginePart.stock(),90,1.4,MechanicalState.legacy(Assembly.stock(),EnginePart.stock(),90,90,100));
+            var e=ElectricDynamics.State.initial(type,.1);var engine=EnginePhysics.State.stopped(90,100);double fuel=40,generated=0;
+            for(int i=0;i<1200;i++){
+                var r=ElectricDynamics.step(type,e,ElectricDynamics.Mode.AUTO,0,fuel,engine,true,new VehicleDynamics.Input(0,0,true,false),setup,1,true,false,.0125,20);
+                e=r.electric();engine=r.road().engine();fuel=r.road().fuel();generated+=r.generatorOutputJ();
+            }
+            assertTrue(generated>10000&&fuel<40,type+" "+family+" generator produced "+generated);
+            var off=ElectricDynamics.step(type,e,ElectricDynamics.Mode.ELECTRIC_ONLY,0,fuel,engine,true,new VehicleDynamics.Input(0,0,true,false),setup,1,true,false,.0125,20);
+            assertEquals(0,off.generatorOutputJ());assertEquals(0,off.fuelEnergyJ());
+        }
+    }
 }

@@ -34,6 +34,10 @@ In Creative, use `electric_400_crate`, `electric_800_crate`, `hybrid_crate` or `
 
 Survival packs start empty. External survival charging requires the optional ElectricalAge companion; a non-plug-in hybrid can charge from its fuel-powered generator. Creative chargers have an explicitly labelled test supply. [Vehicles, charging, hybrid modes and limitations →](docs/ELECTRIFICATION.md)
 
+| Electric motor, inverter and charging cable | Separate electric diagnostics |
+|---|---|
+| ![Four electrified variants in Minecraft](docs/screenshots/electric-fleet.png) | ![Electric motor curves and live pack readings](docs/screenshots/electric-diagnostics.png) |
+
 ## Get in and drive
 
 1. Use **Minecraft Java 1.21.1**, **NeoForge 21.1.249** and **Java 21**.
