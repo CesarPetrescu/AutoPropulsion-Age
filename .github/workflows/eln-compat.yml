@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: CesarPetrescu/ElectricalAge
-          ref: cb11383d2d8266b6876ad1b1629cadde0d2c1706
+          ref: 99f911d7a6c5a501345fde542cd879d8706b78af
           path: eln
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
