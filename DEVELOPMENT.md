@@ -35,7 +35,7 @@ java -version
 
 Development is integrated on `main`. Feature branches run the same required checks; automatic releases come from successful pushes to `main`. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
 
-The main output is `build/libs/autopropulsion-age-0.7.0-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
+The main output is `build/libs/autopropulsion-age-0.7.1-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
 
 If Java is not 21, set the JDK for the current PowerShell session, adapting the path to your installation:
 
@@ -163,6 +163,7 @@ The automated clients hide their own GLFW window and drive native game controls 
 .\gradlew.bat :sim:test
 .\gradlew.bat -PwithGameTests runGameTestServer
 .\gradlew.bat -PwithGameTests runClientHandling
+.\gradlew.bat -PwithGameTests runClientGraphics
 .\gradlew.bat -PwithGameTests runClientMechanics
 .\gradlew.bat -PwithGameTests runClientSmoke
 .\gradlew.bat -PwithGameTests prepareMultiplayerHarness
@@ -172,16 +173,19 @@ python tools/run_multiplayer_test.py --timeout 720
 
 | Suite | What it must prove |
 |---|---|
-| Simulation JUnit | At least 74 tests: mechanics, traction/differentials, steering, airborne momentum, batteries, regeneration, every engine cold start, all hybrid generator families, swept collision and heading recovery |
+| Simulation JUnit | At least 87 tests: configured engine internals and drive units, mechanics, traction/differentials, steering, airborne momentum, batteries, regeneration, every engine cold start, all hybrid generator families, swept collision and heading recovery |
 | Simulation matrices | Existing 7,308 hardware cases plus 294 layout × family × grade × induction drive/brake cases |
-| Dedicated GameTests | At least 41 tests, including 294 combustion and 12 electric in-world drive/brake builds, conversion transactions, permissions, condition retention, save migration, spring landing and collision/relaunch recovery |
-| Native handling client | RWD/FWD/AWD garage buttons, differential/split packets, real key mapping steering/drift/braking, contact loss and landing; screenshots |
+| Dedicated GameTests | At least 46 tests, including 294 combustion and 12 electric in-world drive/brake builds, configured-part transfer and mirrored recipes, conversion transactions, permissions, condition retention, save migration, spring landing and collision/relaunch recovery |
+| Native handling client | Eight distinct save/load/move heading resets with server/client convergence measured separately; RWD/FWD/AWD controls, real steering/drift/braking, contact loss and landing; screenshots |
+| Native graphics client | Fabulous before world loading, then native Video Settings transitions Fast/Fancy/Fabulous/Fast; five car scenes, each with 45+ world frames and matching transparency targets |
 | Native mechanics client | Complete coolant diagnosis/repair/refill/verification, service access, sender behavior, audio channels and cleanup |
 | Full native client matrix | 49 family/induction selections and 42 hardware choices, native GUI and rendering checks |
 | Two-client dedicated fixture | Ownership, synchronized state, worn-item removal, actual drop/pickup and installation in another owner's car |
-| Resource/geometry checks | 472 resources preserved, 48 mono sounds decoded, 294 hardware identities, 49 envelopes, five-position hood checks, 20 body-coverage rays and 48 tire/body steering/travel poses |
+| Resource/geometry checks | 551 resources preserved, 48 mono sounds decoded, 294 hardware identities, 49 envelopes, five-position hood checks, 20 body-coverage rays, 48 tire/body steering/travel poses and 179 configured drivetrain checks |
 
 Do not substitute `runClientSmokeQuick` for the full release matrix. The quick task covers seven I4 layouts and all 42 hardware choices, useful while iterating on the UI.
+
+For graphics regressions, set the initial graphics mode before loading a world or click the native Video Settings widget. Calling `options.graphicsMode().set(...)` directly after world loading bypasses vanilla's renderer rebuild and can leave Fabulous transparency targets absent. The graphics harness tests the real menu callback, including the GPU warning acceptance path when shown. Heading-reset tests similarly wait for fresh server/client agreement before recording a turn reference; completing a server task alone does not mean its packet and interpolation have reached the client.
 
 Fresh reports are under `sim/build/test-results/`, `sim/build/reports/`, `build/ci/`, `run/gametest/logs/`, `run/logs/` and `run/screenshots/`. The native client also writes `run/alpha-smoke-result.txt`. Require explicit PASS markers and matching current logs; Gradle success alone or an older screenshot is insufficient. The CI gates reject incomplete coverage. See [CI.md](docs/CI.md) for evidence and publication details.
 

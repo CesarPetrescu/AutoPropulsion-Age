@@ -1,4 +1,4 @@
-# Playing AutoPropulsion Age 0.7.0-alpha
+# Playing AutoPropulsion Age 0.7.1-alpha
 
 Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 

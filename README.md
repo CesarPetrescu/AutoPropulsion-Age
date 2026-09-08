@@ -20,7 +20,7 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.7.0 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.7.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
@@ -29,6 +29,8 @@
 ## Connected powertrain components
 
 0.7.0 connects the rendered drivetrain to individual serviceable parts. FWD has a front final drive and CV shafts, RWD has its rear drive path, and AWD includes both. Electric AWD has independent front and rear motors, inverters and reduction gears sharing one vehicle power budget. A broken CV, failed inverter or missing motor affects its actual axle.
+
+0.7.1 fixes client heading and position targets being lost between movement packets, which could leave the visible car facing a different direction from the server. Required native regressions now cover partial packets, eight reset headings, and Fabulous startup plus normal graphics-menu transitions. See the [AutoPropulsion audit follow-up](docs/qa/2026-09-08-follow-up.md).
 
 Piston engines have individual piston/ring/bearing/valve assemblies; rotary engines have rotor housings, seals, bearings and an eccentric shaft. Their condition changes compression, starting, torque and mechanical noise. Removing and refitting an internal kit carries its child parts, including missing mounts and worn state.
 

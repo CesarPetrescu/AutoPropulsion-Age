@@ -66,9 +66,26 @@ class ReleaseGates(unittest.TestCase):
 
     def test_native_handling_complete_pass(self):
         log = 'ALPHA_CLIENT_SMOKE PASS: HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD DRIVE_LAYOUT_PASS FWD DRIVE_LAYOUT_PASS AWD HEADING_RECOVERY_CLIENT_PASS RWD HEADING_RECOVERY_CLIENT_PASS FWD HEADING_RECOVERY_CLIENT_PASS AWD'
+        with self.assertRaises(ValueError):checks.client(log,'PASS: ok','handling')
+        log+='\nHANDLING_RESET_MATRIX_PASS 8\nHANDLING_RESET_CONVERGED FWD\nHANDLING_RESET_CONVERGED AWD\n'
+        log+='\n'.join('HANDLING_RESET_CASE_PASS '+str(i) for i in range(8))
+        packets=['INTERPOLATION_PACKET_CLIENT_PASS '+case for case in ('position_preserves_heading','rotation_preserves_position','settled_targets')]
+        log+='\n'+'\n'.join(packets)
         self.assertEqual(checks.client(log, 'PASS: ok', 'handling')['native_drive_layouts_passed'], ['AWD', 'FWD', 'RWD'])
         for layout in ('RWD','FWD','AWD'):
             with self.assertRaises(ValueError):checks.client(log.replace('HEADING_RECOVERY_CLIENT_PASS '+layout,''),'PASS: ok','handling')
+        for marker in ['HANDLING_RESET_CASE_PASS '+str(i) for i in range(8)]+['HANDLING_RESET_CONVERGED FWD','HANDLING_RESET_CONVERGED AWD','HANDLING_RESET_MATRIX_PASS 8']+packets:
+            with self.assertRaises(ValueError):checks.client(log.replace(marker,''),'PASS: ok','handling')
+
+    def test_native_graphics_requires_all_modes_and_rendered_frames(self):
+        cases=('startup-fabulous','menu-fast','menu-fancy','menu-fabulous','menu-fast-again')
+        log='ALPHA_CLIENT_SMOKE PASS:\nGRAPHICS_CLIENT_PASS 5\n'+'\n'.join('GRAPHICS_CASE_PASS '+case+' frames=45' for case in cases)
+        self.assertEqual(checks.client(log,'PASS: ok','graphics')['native_graphics_cases'],sorted(cases))
+        for case in cases:
+            with self.assertRaises(ValueError):checks.client(log.replace('GRAPHICS_CASE_PASS '+case+' frames=45',''),'PASS: ok','graphics')
+        with self.assertRaises(ValueError):checks.client(log.replace('frames=45','frames=44'),'PASS: ok','graphics')
+        with self.assertRaises(ValueError):checks.client(log.replace('GRAPHICS_CLIENT_PASS 5',''),'PASS: ok','graphics')
+        with self.assertRaises(ValueError):checks.client(log+'\nALPHA_CLIENT_SMOKE FAILED: crash','PASS: ok','graphics')
 
     def test_client_missing_result_is_failure(self):
         with self.assertRaises(ValueError):

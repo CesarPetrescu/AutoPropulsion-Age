@@ -56,6 +56,11 @@ def client(log, result, mode):
         return {'native_electric_charging_driving': True}
     require('ALPHA_CLIENT_SMOKE PASS:' in log and 'ALPHA_CLIENT_SMOKE FAILED' not in log,
             'Missing native client PASS or explicit failure present')
+    if mode == 'graphics':
+        expected={'startup-fabulous','menu-fast','menu-fancy','menu-fabulous','menu-fast-again'}
+        cases=set(re.findall(r'GRAPHICS_CASE_PASS ([\w-]+) frames=(?:4[5-9]|[5-9]\d|\d{3,})\b',log))
+        require(cases==expected and 'GRAPHICS_CLIENT_PASS 5' in log,'Incomplete native graphics startup/menu coverage')
+        return {'native_graphics_cases':sorted(cases),'minimum_world_frames_per_case':45,'transparency_targets':True}
     if mode == 'ui':
         cases = set(re.findall(r'WORKSHOP_UI_CASE_PASS (\d+ [\w-]+)', log))
         require(len(cases) == 192 and 'WORKSHOP_UI_PASS 192' in log, 'Incomplete workshop page/scale coverage')
@@ -73,7 +78,13 @@ def client(log, result, mode):
         require(layouts == {'RWD', 'FWD', 'AWD'}, 'Incomplete native drivetrain coverage')
         recovery=set(re.findall(r'HEADING_RECOVERY_CLIENT_PASS (RWD|FWD|AWD)\b',log))
         require(recovery==layouts,'Incomplete native drift/stop/relaunch heading coverage')
-        return {'native_drive_layouts_passed': sorted(layouts), 'airborne_landing': True,'heading_recovery':sorted(recovery)}
+        resets=set(re.findall(r'HANDLING_RESET_CASE_PASS (\d+)\b',log))
+        require(resets=={str(i) for i in range(8)} and 'HANDLING_RESET_MATRIX_PASS 8' in log,'Missing independent heading reset matrix')
+        converged=set(re.findall(r'HANDLING_RESET_CONVERGED (RWD|FWD|AWD)\b',log))
+        require(converged=={'FWD','AWD'},'Missing authoritative convergence between driving layouts')
+        packets=set(re.findall(r'INTERPOLATION_PACKET_CLIENT_PASS (\w+)\b',log))
+        require(packets=={'position_preserves_heading','rotation_preserves_position','settled_targets'},'Missing native partial-packet interpolation regressions')
+        return {'native_drive_layouts_passed': sorted(layouts), 'airborne_landing': True,'heading_recovery':sorted(recovery),'reset_headings':8,'between_layout_convergence':sorted(converged),'partial_packet_cases':sorted(packets)}
     layouts = set(re.findall(r'ENGINE_LAYOUT_PASS ([\w-]+)', log))
     hardware = set(re.findall(r'HARDWARE_UI_PASS ([\w-]+)', log))
     require(len(layouts) == 49 and len(hardware) == 42,
@@ -166,7 +177,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'ui', 'electric', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -179,7 +190,7 @@ def main():
         report = junit(args.directory or REPO / 'sim/build/test-results/test')
     elif args.mode == 'server':
         report = server(args.log.read_text(errors='replace'))
-    elif args.mode in ('mechanics', 'matrix', 'handling', 'ui', 'electric'):
+    elif args.mode in ('mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric'):
         report = client(args.log.read_text(errors='replace'), (REPO / "run/electric-smoke-result.txt" if args.mode == "electric" else args.result).read_text(), args.mode)
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)

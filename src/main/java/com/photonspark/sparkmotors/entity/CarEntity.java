@@ -691,6 +691,14 @@ public final class CarEntity extends Entity {
         impactComponents(region,Math.sqrt(25+Math.min(50,amount)*9));entityData.set(HEALTH,Math.max(0,health()-Math.min(amount,50)));return true;
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
+    // Vanilla combines position-only and rotation-only packets with these targets.
+    // Returning the intermediate rendered pose discards an unfinished move/turn whenever
+    // the next packet updates only the other half, leaving a stationary car facing stale yaw.
+    @Override public double lerpTargetX(){return lerpSteps>0?lerpX:getX();}
+    @Override public double lerpTargetY(){return lerpSteps>0?lerpY:getY();}
+    @Override public double lerpTargetZ(){return lerpSteps>0?lerpZ:getZ();}
+    @Override public float lerpTargetYRot(){return lerpSteps>0?lerpYaw:getYRot();}
+    @Override public float lerpTargetXRot(){return lerpSteps>0?lerpPitch:getXRot();}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
         tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",7);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());tag.putBoolean("Raised",raised());

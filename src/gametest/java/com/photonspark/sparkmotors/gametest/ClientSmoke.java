@@ -41,6 +41,7 @@ public final class ClientSmoke {
         if(Boolean.getBoolean("sparkmotors.clientUi")&&!WorkshopClient.branding(mc))return;
         if(!creating&&mc.screen instanceof TitleScreen){
             creating=true;mc.options.guiScale().set(2);mc.options.renderDistance().set(4);mc.options.simulationDistance().set(5);mc.options.framerateLimit().set(60);
+            if(Boolean.getBoolean("sparkmotors.clientGraphics"))GraphicsClient.beforeWorld(mc);
             mc.createWorldOpenFlows().createFreshLevel("alpha-smoke-"+System.currentTimeMillis(),
                 new LevelSettings("Alpha Smoke",GameType.CREATIVE,false,Difficulty.PEACEFUL,true,new GameRules(),WorldDataConfiguration.DEFAULT),
                 new WorldOptions(42,false,false),r->r.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),null);
@@ -66,6 +67,7 @@ public final class ClientSmoke {
             });
         }
         if(!(mc.level.getEntity(carId) instanceof CarEntity car))return;
+        if(Boolean.getBoolean("sparkmotors.clientGraphics")){GraphicsClient.tick(mc,car);return;}
         if(Boolean.getBoolean("sparkmotors.clientUi")){WorkshopClient.tick(mc,car);return;}
         if(Boolean.getBoolean("sparkmotors.clientHandling")){HandlingClient.tick(mc,car);return;}
         if(phase>=10){if(Boolean.getBoolean("sparkmotors.clientMechanics"))componentFlow(mc,car);else engineMatrix(mc,car);return;}
@@ -245,6 +247,9 @@ public final class ClientSmoke {
     @SubscribeEvent public static void frame(RenderFrameEvent.Post e){
         if(pendingScreenshot!=null){var mc=Minecraft.getInstance();String name=pendingScreenshot;pendingScreenshot=null;
             Screenshot.grab(mc.gameDirectory,name,mc.getMainRenderTarget(),text->System.out.println("ALPHA_SCREENSHOT "+name));}
+    }
+    @SubscribeEvent public static void worldFrame(RenderLevelStageEvent e){
+        if(Boolean.getBoolean("sparkmotors.clientGraphics"))GraphicsClient.rendered(e);
     }
     static void screenshot(String name){pendingScreenshot=name;}
     static void write(Minecraft mc,String message){

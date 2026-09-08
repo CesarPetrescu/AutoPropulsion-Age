@@ -147,6 +147,8 @@ jobs:
             task: runClientElectricSmoke
           - mode: handling
             task: runClientHandling
+          - mode: graphics
+            task: runClientGraphics
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -289,7 +291,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 192 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, eight heading resets and partial-packet interpolation regressions, Fabulous startup and native graphics-menu transitions, 192 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})

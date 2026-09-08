@@ -6,14 +6,15 @@ The **Test and release** workflow runs on every branch push, pull request and ma
 
 | Required job | Fresh evidence |
 |---|---|
-| Workflow and release gate tests | actionlint, shell validation and 28 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
+| Workflow and release gate tests | actionlint, shell validation and 29 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
 | Build, simulation and dedicated server | Java 21 build; at least 87 JUnit cases with no skips; at least 46 native GameTests, including 294 combustion and 12 electric drivetrain cases, oriented collision and crash/spin recovery; five configured-part/recipe native transfer/interlock tests; independent 7-suite energy/interlock audit; simulation benchmark report; installable JAR inspection |
 | Native client (ui) | Loaded Mods-list logo plus 192 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation, screenshots and 105 configured service-geometry/removal combinations |
 | Resources, audio and geometry | Resource regeneration preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions; 20 body-coverage rays and 48 tire/body steering/travel poses; 179 configured drivetrain/family/clearance checks |
 | Native client (electric) | Four vehicle variants and chargers rendered; actual GUI charge-target packets, charging, cable interlocks, READY, electric driving and braking |
 | ElectricalAge compatibility | Pinned companion build and tests; 47 native GameTests including real cable/MNA power, energy accounting, overvoltage recovery and unload; combined-mod client charging and driving |
 | Native client (mechanics) | Actual GUI/network coolant diagnosis, targeted repair, fluid refill, timed verification, jack/tire service, failed sender, driving, active audio channels and cleanup |
-| Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, forward relaunch aligned to the rendered heading, airborne contact loss and spring landing |
+| Native client (handling) | Eight independent save/load/move resets across positive, negative and wrapped headings, five fresh authoritative/client matching samples per reset, and synchronization before each subsequent layout; real RWD/FWD/AWD controls, steering, drift, braking, forward relaunch, airborne contact loss and landing |
+| Native client (graphics) | Fabulous selected before world loading; Fast → Fancy → Fabulous → Fast through native Video Settings widgets; at least 45 completed world frames per case, matching transparency framebuffers and car-scene screenshots |
 | Native client (matrix) | All 49 engine/induction layouts and 42 hardware choices through native GUI buttons and packets, plus garage, driving, paint, tuning and parked rev test |
 | Two native clients and dedicated server | Owner-only service, worn-part removal, real item drop/pickup, installation into a second owner's car and synchronization to both clients |
 | Required checks | Stable aggregate check: every job above must return `success` |
@@ -57,6 +58,7 @@ python tools/verify_engine_fit.py
 blender --background --factory-startup --python-exit-code 1 --python tools/validate_engine_geometry.py
 blender --background --factory-startup --python-exit-code 1 --python tools/validate_body_geometry.py
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientHandling
+LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientGraphics
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientMechanics
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientSmoke
 ./gradlew -PwithGameTests prepareMultiplayerHarness

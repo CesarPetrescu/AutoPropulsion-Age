@@ -11,10 +11,14 @@ import java.util.Locale;
 
 /** Native key mappings, garage buttons and packets; no operating-system input. */
 final class HandlingClient {
-    private static int phase,ticks,job;
+    private static int phase=5,ticks,job,resetCase,resetRevision,lastResetSample=-1;
     private static boolean done,sawAir;
-    private static volatile boolean resetReady;
+    private record ResetSample(int revision,int serverTick,Vec3 position,float yaw,double speed) {}
+    private static volatile ResetSample resetSample;
     private static int resetStable;
+    private static final float[] RESET_YAWS={90,-90,179,-179,540,-540,37,0};
+    private static Vec3 resetPosition;
+    private static float resetYaw;
     private static Vec3 origin;
     private static double peak,lateral,rearSlip,leftYaw,airY,entryYaw,worldLeft;
     static void tick(Minecraft mc,CarEntity car){
@@ -36,10 +40,49 @@ final class HandlingClient {
             action.accept(p,(CarEntity)p.serverLevel().getEntity(carId));
         });
     }
+    private static void reset(Minecraft mc,CarEntity car,Vec3 position,float yaw){
+        resetSample=null;resetStable=0;lastResetSample=-1;resetPosition=position;resetYaw=yaw;
+        int revision=++resetRevision;
+        server(mc,car,(p,c)->{
+            p.stopRiding();var tag=new CompoundTag();c.saveWithoutId(tag);c.load(tag);
+            c.moveTo(position.x,position.y,position.z,yaw,0);
+            p.teleportTo(position.x+4,position.y+1,position.z-3);CarPackets.open(p,c);
+            resetSample=new ResetSample(revision,c.tickCount,c.position(),c.getYRot(),c.horizontalSpeed());
+        });
+    }
+    private static boolean resetConverged(Minecraft mc,CarEntity car){
+        // Observe immutable samples from the server thread. A server task completing is not
+        // evidence that its rotation packet has arrived and finished client interpolation.
+        var sample=resetSample;int revision=resetRevision;
+        server(mc,car,(p,c)->resetSample=new ResetSample(revision,c.tickCount,c.position(),c.getYRot(),c.horizontalSpeed()));
+        if(sample!=null&&sample.revision()==revision&&sample.serverTick()!=lastResetSample){
+            lastResetSample=sample.serverTick();
+            // Network entity angles have 360/256 degree resolution; the steering threshold below stays unchanged.
+            boolean synced=Math.abs(net.minecraft.util.Mth.wrapDegrees(car.getYRot()-sample.yaw()))<=360f/256+.05
+                &&Math.abs(net.minecraft.util.Mth.wrapDegrees(sample.yaw()-resetYaw))<.05
+                &&car.position().distanceToSqr(sample.position())<.01
+                &&sample.position().distanceToSqr(resetPosition)<.03
+                &&sample.speed()<.03&&car.horizontalSpeed()<.03;
+            resetStable=synced?resetStable+1:0;
+        }
+        require(ticks<200,"Reset synchronization failed independently of steering: revision="+revision+" client="+car.getYRot()+" server="+sample);
+        return resetStable>=5;
+    }
     private static void step(Minecraft mc,CarEntity car){
         ticks++;if(origin==null)origin=car.position();
         var layout=DriveConfig.Layout.values()[Math.min(job,2)];
-        if(phase==0){
+        if(phase==5){
+            keys(mc,false,false,false,false,false,false);
+            if(resetCase==0)InterpolationPackets.verify(mc);
+            reset(mc,car,resetCase==RESET_YAWS.length-1?origin:origin.add((resetCase%2)*6,0,3),RESET_YAWS[resetCase]);
+            phase=6;ticks=0;
+        }else if(phase==6){
+            if(resetConverged(mc,car)){
+                System.out.printf(Locale.ROOT,"HANDLING_RESET_CASE_PASS %d target=%.2f client=%.2f server=%.2f%n",resetCase,resetYaw,car.getYRot(),resetSample.yaw());
+                if(++resetCase==RESET_YAWS.length){System.out.println("HANDLING_RESET_MATRIX_PASS 8");phase=0;}else phase=5;
+                ticks=0;
+            }
+        }else if(phase==0){
             if(ticks==15&&job>0)CarClient.send(car,CarPackets.OPEN,0,0);
             if(ticks==35)press(mc,"Drive");
             if(ticks==50)press(mc,"Raise / lower jack");
@@ -91,19 +134,13 @@ final class HandlingClient {
             }
         }else if(phase==2&&ticks==20){
             if(++job<3){
-                resetReady=false;resetStable=0;
-                server(mc,car,(p,c)->{
-                    p.stopRiding();var tag=new CompoundTag();c.saveWithoutId(tag);c.load(tag);
-                    c.moveTo(origin.x,origin.y,origin.z,0,0);p.teleportTo(origin.x+4,origin.y+1,origin.z-3);CarPackets.open(p,c);resetReady=true;
-                });phase=4;ticks=0;
+                reset(mc,car,origin,0);phase=4;ticks=0;
             }else{
                 airY=car.getY();server(mc,car,(p,c)->c.setPos(c.getX(),c.getY()+3,c.getZ()));phase=3;ticks=0;
             }
         }else if(phase==4){
             keys(mc,false,false,false,false,false,false);
-            if(resetReady&&car.position().distanceToSqr(origin)<.03&&Math.abs(net.minecraft.util.Mth.wrapDegrees(car.getYRot()))<.2)resetStable++;else resetStable=0;
-            if(resetStable>=3){System.out.println("HANDLING_RESET_CONVERGED "+layout);phase=0;ticks=0;}
-            else require(ticks<200,"Client never converged to the authoritative fixture reset; heading="+car.getYRot()+" position="+car.position());
+            if(resetConverged(mc,car)){System.out.println("HANDLING_RESET_CONVERGED "+layout);phase=0;ticks=0;}
         }else if(phase==3){
             keys(mc,false,false,true,false,true,true);
             boolean contact=false;for(int c=0;c<4;c++)contact|=car.wheelContact(c);
