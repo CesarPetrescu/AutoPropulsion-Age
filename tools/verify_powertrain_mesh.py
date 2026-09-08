@@ -1,5 +1,5 @@
 """Verify that all 42 catalog choices select distinct actual vertex geometry in all seven families."""
-import gzip,struct,hashlib,json
+import gzip,struct,hashlib,json,os
 from pathlib import Path
 repo=Path(__file__).resolve().parent.parent
 catalog=json.loads((repo/'docs/powertrain-catalog.json').read_text());chunks=[]
@@ -22,5 +22,6 @@ for family in range(7):
             assert fingerprint not in seen,(family,option['item'],'recolor-only option');seen.add(fingerprint)
             checks.append({'family':family,'item':option['item'],'triangles':sum(c['vertices']//3 for c in visible),'position_sha256':fingerprint})
 report={'scope':'Every catalog choice selects nonempty, distinct vertex positions in every engine family. Hashes exclude names, normals and colors. Geometry fit and intersection tests are separate.','checks':len(checks),'passed':len(checks),'hardware_choices':42,'families':7,'details':checks}
-(repo/'docs/hardware-mesh-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+output=Path(os.environ.get('APA_VALIDATION_OUTPUT',str(repo/'docs')));output.mkdir(parents=True,exist_ok=True)
+(output/'hardware-mesh-validation.json').write_text(json.dumps(report,indent=2)+'\n')
 print(f"Passed {len(checks)} geometry identity checks")

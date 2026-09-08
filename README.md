@@ -4,7 +4,11 @@
 
 Drive a modular sedan and build its engine under an opening hood. Choose **42 hardware items across ten engine slots**, with **seven engine families and seven induction configurations**. Parts change the actual geometry and the simulated response: turbo lag, blower drive load, flywheel inertia, fuel capacity, cams/ports, cooling and oil systems all matter.
 
-**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/mechanical-components/downloads/autopropulsion-age-0.4.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [Build and tests](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
+**[Download the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar)** · [Releases and checksums](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest) · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [CI and release policy](docs/CI.md)
+
+[![Test and release](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml/badge.svg?branch=mechanical-components)](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml?query=branch%3Amechanical-components)
+
+The latest JAR is published automatically only after simulation, dedicated-server, native client, two-client trading, resource/audio and geometry checks pass. Each release includes checksums, the exact source commit and fresh test reports/screenshots. Failed builds leave the previous tested alpha available.
 
 Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1–0.3 cars and engine items migrate their installed components and condition.
 

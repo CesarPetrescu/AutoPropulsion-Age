@@ -73,6 +73,8 @@ The native screenshots are actual Minecraft captures. The isolated hardware imag
 
 ## Connected mechanics and M6 reproduction
 
+GitHub Actions now runs these suites on Linux and gates downloadable JAR releases on every required result. See [CI coverage, artifacts and release policy](CI.md). The portable `python tools/run_multiplayer_test.py` launcher adds readiness checks, explicit pass validation, timeouts and guaranteed cleanup to the original PowerShell launch helper.
+
 ```powershell
 .\gradlew.bat -PwithGameTests runClientMechanics
 .\gradlew.bat :sim:mechanicsBenchmark

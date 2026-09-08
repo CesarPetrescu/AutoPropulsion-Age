@@ -2,7 +2,7 @@
 Mechanical mating surfaces inside the core are intentionally not checked against
 each other. External non-mating hardware and hood articulation are checked.
 """
-import gzip,struct,json,math
+import gzip,struct,json,math,os
 from pathlib import Path
 from mathutils import Vector,Matrix
 from mathutils.bvhtree import BVHTree
@@ -40,6 +40,9 @@ for family in range(7):
         checks.append(dict(family=family,induction=induction,hood_intersections=hood_hits,boost_vs_fixed=interference,compressor_vs_core=compressor_hits,passed=passed))
 report={'scope':'Exact runtime triangle intersections: all 49 layouts × 5 hood positions with the union of all 42 hardware choices, compressors versus core, boost plumbing versus battery/all radiator variants/reservoir. Intended internal mating surfaces are excluded.',
         'layouts':49,'hood_positions':[0,.25,.5,.75,1],'passed':sum(c['passed'] for c in checks),'failed':sum(not c['passed'] for c in checks),'checks':checks}
-(repo/'docs/engine-intersections.json').write_text(json.dumps(report,indent=2)+'\n')
+output=Path(os.environ.get('APA_VALIDATION_OUTPUT',str(repo/'docs')));output.mkdir(parents=True,exist_ok=True)
+(output/'engine-intersections.json').write_text(json.dumps(report,indent=2)+'\n')
 result={k:v for k,v in report.items() if k!='checks'}
 result['failures']=[c for c in checks if not c['passed']]
+print(json.dumps(result,indent=2))
+assert report['failed']==0, 'Runtime geometry has intersections; see docs/engine-intersections.json'
