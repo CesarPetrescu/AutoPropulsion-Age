@@ -16,11 +16,11 @@ import java.nio.file.*;
 /** Two real network clients; files coordinate the harness only, all service requests use game packets. */
 @EventBusSubscriber(modid="sparkmotors")
 public final class MultiplayerServer {
-    private static int stage,ticks,total;private static CarEntity first,second;private static PartInstance used;
+    private static int stage,ticks,total,unauthorizedAt=-1;private static CarEntity first,second;private static PartInstance used;
     public static Path root(){return Path.of(System.getProperty("sparkmotors.multiRoot","run"));}
-    private static void write(String name,String value){try{Files.createDirectories(root());Files.writeString(root().resolve(name),value);}catch(Exception ex){throw new RuntimeException(ex);}}
+    private static void write(String name,String value){try{Files.createDirectories(root());Path temporary=root().resolve(name+".tmp");Files.writeString(temporary,value);Files.move(temporary,root().resolve(name),StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);}catch(Exception ex){throw new RuntimeException(ex);}}
     private static void check(boolean value,String message){if(!value)throw new IllegalStateException(message);}
-    private static void advance(int next){stage=next;ticks=0;write("stage.txt",Integer.toString(stage));}
+    private static void advance(int next){stage=next;ticks=0;write("stage.txt",Integer.toString(stage));System.out.println("MULTIPLAYER_SERVER_STAGE "+stage);}
     @SubscribeEvent public static void tick(ServerTickEvent.Post e){
         if(!Boolean.getBoolean("sparkmotors.multiServer"))return;var server=e.getServer();ticks++;total++;
         try{
@@ -33,13 +33,21 @@ public final class MultiplayerServer {
                 a.setGameMode(GameType.SURVIVAL);b.setGameMode(GameType.SURVIVAL);a.getInventory().clearContent();b.getInventory().clearContent();a.teleportTo(10,65,8);b.teleportTo(6,65,8);
                 first=car(a,8);second=car(b,0);used=first.mechanics().get("cooling.upper_hose").condition(.45,.60,PartInstance.LEAK);first.setMechanics(first.mechanics().with("cooling.upper_hose",used));
                 write("cars.txt",first.getId()+","+second.getId());advance(1);
-            }else if(stage==1&&ticks>65){
-                check(first.mechanics().get("cooling.upper_hose").equals(used),"Unauthorized client removed owner A's hose");check(b.getInventory().isEmpty(),"Unauthorized request changed inventory");advance(2);
+            }else if(stage==1){
+                if(unauthorizedAt<0&&Files.exists(root().resolve("unauthorized-request.sent")))unauthorizedAt=ticks;
+                if(unauthorizedAt>=0&&ticks-unauthorizedAt>65){
+                    check(first.mechanics().get("cooling.upper_hose").equals(used),"Unauthorized client removed owner A's hose");check(b.getInventory().isEmpty(),"Unauthorized request changed inventory");advance(2);
+                }
             }else if(stage==2&&first.mechanics().get("cooling.upper_hose")==null){
                 check(a.getInventory().items.stream().anyMatch(s->MechanicalData.get(s)!=null&&used.equals(MechanicalData.get(s).get("cooling.upper_hose"))),"Owner did not receive exact worn hose");advance(3);
             }else if(stage==3){
                 var drops=server.overworld().getEntitiesOfClass(ItemEntity.class,first.getBoundingBox().inflate(8));
-                for(var item:drops){var data=MechanicalData.get(item.getItem());if(data!=null&&data.parts().values().stream().anyMatch(p->p.id().equals(used.id()))){item.setNoPickUpDelay();b.teleportTo(item.getX(),item.getY(),item.getZ());}}
+                for(var item:drops){var data=MechanicalData.get(item.getItem());if(data!=null&&data.parts().values().stream().anyMatch(p->p.id().equals(used.id()))){
+                    // Keep the original owner out of pickup range; the recipient still
+                    // collects a real ItemEntity through Minecraft's ordinary collision path.
+                    a.teleportTo(10,65,13);item.setNoPickUpDelay();b.teleportTo(item.getX(),item.getY(),item.getZ());
+                }}
+                if(ticks%200==0)System.out.println("MULTIPLAYER_WAIT_FOR_PICKUP drops="+drops.size()+" ownerInventory="+a.getInventory().items+" recipientInventory="+b.getInventory().items);
                 if(b.getInventory().items.stream().anyMatch(s->MechanicalData.get(s)!=null&&MechanicalData.get(s).parts().values().stream().anyMatch(p->p.id().equals(used.id())))){
                     b.teleportTo(2,65,8);advance(4);
                 }
