@@ -2,9 +2,9 @@ name: ElectricalAge companion verification
 on:
   push:
     branches: [main]
-    paths: ['src/**', 'sim/**', 'build.gradle', 'gradle.properties', '.github/workflows/eln-compat.yml']
+    paths: ['src/**', 'sim/**', 'tools/ci_minecraft_metadata.sh', 'build.gradle', 'gradle.properties', '.github/workflows/eln-compat.yml']
   pull_request:
-    paths: ['src/**', 'sim/**', 'build.gradle', 'gradle.properties', '.github/workflows/eln-compat.yml']
+    paths: ['src/**', 'sim/**', 'tools/ci_minecraft_metadata.sh', 'build.gradle', 'gradle.properties', '.github/workflows/eln-compat.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -38,6 +38,8 @@ jobs:
         run: |
           git -C eln rev-parse HEAD > electricalage-commit.txt
           git -C auto rev-parse HEAD > autopropulsion-commit.txt
+      - name: Check official Minecraft dependency metadata
+        run: bash auto/tools/ci_minecraft_metadata.sh 2>&1 | tee metadata.log
       - name: Compile Kotlin and run companion tests
         working-directory: eln
         run: |
