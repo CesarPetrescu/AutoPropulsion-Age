@@ -1,0 +1,87 @@
+name: Electrification source delivery and verification
+on:
+  push:
+    branches: [feat/electrified-powertrains]
+    paths: ['.ci/electric-b.b64']
+permissions:
+  contents: write
+concurrency:
+  group: electrification-delivery
+  cancel-in-progress: false
+jobs:
+  deliver-and-test:
+    if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/feat/electrified-powertrains'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/electrified-powertrains
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Apply reviewed source patch
+        run: |
+          python3 - <<'PY'
+          import base64,hashlib,lzma,pathlib,subprocess
+          p=pathlib.Path
+          data=lzma.decompress(base64.b64decode(p('.ci/electric-a.b64').read_text().strip()+p('.ci/electric-b.b64').read_text().strip()))
+          assert hashlib.sha256(data).hexdigest()=='c4d25fdbe7c83c17579148490cae5d13cf6e280d7f2ff72058471456299a3712'
+          p('/tmp/electric.patch').write_bytes(data)
+          for line in subprocess.check_output(['git','apply','--numstat','/tmp/electric.patch'],text=True).splitlines():
+              name=line.split('\t')[-1]
+              assert name.startswith(('src/','sim/','tools/','docs/')) or name in ('build.gradle','gradle.properties'),name
+          subprocess.run(['git','apply','--check','/tmp/electric.patch'],check=True)
+          subprocess.run(['git','apply','--index','/tmp/electric.patch'],check=True)
+          PY
+          python3 -m pip install Pillow
+          python3 tools/generate_electric_resources.py
+          git add src/main/resources
+          git rm .ci/electric-a.b64 .ci/electric-b.b64
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: add EV and series-hybrid simulation, native ELN chargers, models and tests'
+          git push origin HEAD:feat/electrified-powertrains
+          git rev-parse HEAD > tested-commit.txt
+      - name: Build electrification and native test sources
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon -PwithGameTests build :sim:test 2>&1 | tee compile.log
+      - name: Dedicated Minecraft tests
+        run: ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee gametest.log
+      - name: Install software graphics dependencies
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 pulseaudio
+      - name: Native electric vehicle smoke
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/electric-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientElectricSmoke 2>&1 | tee client-electric.log
+          cat run/electric-smoke-result.txt
+          grep -q '^PASS' run/electric-smoke-result.txt
+      - name: Native combustion regression smoke
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientSmokeQuick 2>&1 | tee client-combustion.log
+          grep -q '^PASS' run/alpha-smoke-result.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: electrification-source-verification
+          path: |
+            tested-commit.txt
+            *.log
+            build/libs/*.jar
+            build/reports/
+            sim/build/reports/
+            sim/build/test-results/
+            run/*smoke-result.txt
+            run/screenshots/
+            run/logs/
+            run/gametest/logs/
+          retention-days: 14
