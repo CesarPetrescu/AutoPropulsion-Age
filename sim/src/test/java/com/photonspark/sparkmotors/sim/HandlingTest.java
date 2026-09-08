@@ -27,6 +27,19 @@ class HandlingTest {
             if(diff==DriveConfig.Differential.OPEN)assertEquals(torques[driven],torques[driven+1]);
             else assertTrue(torques[driven]<torques[driven+1],"Differential transfers torque away from the faster wheel");
         }
+        for(var layout:DriveConfig.Layout.values())for(double dt:new double[]{.005,.0125,.05}){
+            var locked=new DriveConfig(layout,DriveConfig.Differential.LOCKED,40);
+            var setup=new VehicleDynamics.Setup(Assembly.stock(),6800,3.7,EngineFamily.I4,EnginePart.stock(),90,1.4,null,locked);
+            var state=wheels;int c=layout==DriveConfig.Layout.RWD?2:0;double difference=30;
+            for(int n=0;n<12;n++){
+                double energy=state.corners().stream().mapToDouble(w->w.omega()*w.omega()).sum();
+                state=WheelDynamics.step(state,setup,new VehicleDynamics.Input(0,0,false,false),0,0,0,0,0,new double[]{1,1,1,1},new boolean[4],new double[4],0,0,dt).state();
+                double next=state.corners().get(c).omega()-state.corners().get(c+1).omega();
+                assertTrue(next>=-1e-9&&next<=difference+1e-9,"Locked axle must equalize without oscillation or overshoot");
+                assertTrue(state.corners().stream().mapToDouble(w->w.omega()*w.omega()).sum()<=energy+1e-9,"Passive lock cannot create rotational energy");difference=next;
+            }
+            assertEquals(0,difference,1e-8);
+        }
     }
     @Test void tireForcesShareOneFrictionBudgetAndDisappearWithoutContact(){
         var setup=setup(DriveConfig.Layout.AWD,2,EnginePart.boosted(3));

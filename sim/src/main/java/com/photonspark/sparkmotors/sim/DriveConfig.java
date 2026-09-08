@@ -21,11 +21,17 @@ public record DriveConfig(Layout layout, Differential differential, int frontPer
         var c=wheels.corners();return (c.get(0).omega()+c.get(1).omega())*.5*frontFraction()+(c.get(2).omega()+c.get(3).omega())*.5*(1-frontFraction());
     }
     public double[] wheelTorques(double torque,WheelDynamics.State wheels){
+        return wheelTorques(torque,wheels,.0125);
+    }
+    public double[] wheelTorques(double torque,WheelDynamics.State wheels,double dt){
         double[] result=new double[4];
         for(int axle=0;axle<2;axle++){
             int left=axle*2;double axleTorque=torque*(axle==0?frontFraction():1-frontFraction());
             if((axle==0&&frontPercent==0)||(axle==1&&frontPercent==100))continue;
-            double lock=switch(differential){case OPEN->0;case LIMITED_SLIP->35;case LOCKED->200;};
+            // Do not exchange more angular momentum than equalizes the pair in
+            // this step. An explicit high-gain lock otherwise oscillates in air.
+            double equalizing=WheelDynamics.INERTIA/(2*Math.max(.0001,dt));
+            double lock=switch(differential){case OPEN->0;case LIMITED_SLIP->Math.min(35,equalizing);case LOCKED->equalizing;};
             double capacity=differential==Differential.LOCKED?1800:Math.abs(axleTorque)*.35+25;
             double transfer=VehicleDynamics.clamp((wheels.corners().get(left).omega()-wheels.corners().get(left+1).omega())*lock,-capacity,capacity);
             result[left]=axleTorque*.5-transfer;result[left+1]=axleTorque*.5+transfer;

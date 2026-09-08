@@ -33,7 +33,7 @@ public final class WheelDynamics {
     public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt){
         var result=new ArrayList<Corner>();var m=setup.mechanics();int config=setup.config();
         double brakes=0,rolling=0,moment=0,forward=0,sideways=0,driveGrip=0,holding=0;
-        double[] torques=setup.drive().wheelTorques(driveTorque,previous);
+        double[] torques=setup.drive().wheelTorques(driveTorque,previous,dt);
         double front=setup.drive().frontWeight(),longTransfer=clamp(ax,-15,15)*CG_HEIGHT/(WHEELBASE*9.81);
         for(int c=0;c<4;c++){
             var old=previous.corners.get(c);boolean contact=contacts[c]&&Assembly.WHEELS.variant(config)>0&&tireGrip(m,c)>0;
