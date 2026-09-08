@@ -163,7 +163,7 @@ public final class GarageScreen extends Screen {
         g.drawString(font,tab==4?"ENGINE / DRAG TO ORBIT":"LIVE VEHICLE",x+20,y+54,MUTED,false);
         drawPreview(g,partial);
         int stats=y+h-83;
-        g.drawString(font,car.powertrain().electric()?(car.ignition()?"READY":"HIGH VOLTAGE OFF"):(car.ignition()?"ENGINE RUNNING":"ENGINE OFF"),x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
+        g.drawString(font,car.powertrain().electric()?(car.plugged()?"PLUGGED / DRIVE LOCKED":car.ignition()?"READY":"DRIVE SYSTEM OFF"):(car.ignition()?"ENGINE RUNNING":"ENGINE OFF"),x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
         g.drawString(font,car.powertrain().electric()?String.format(Locale.ROOT,"Battery  %.1f%%",car.stateOfCharge()*100):String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
         g.drawString(font,tab==4?String.format(Locale.ROOT,"%.0f C  /  %.2f bar",car.temperature(),car.boost()):"Condition  "+Math.round(car.health())+"%",x+18,stats+29,INK,false);
         g.fill(x+18,stats+43,x+previewWidth-10,stats+47,0xFF30424F);g.fill(x+18,stats+43,x+18+(int)((previewWidth-28)*car.health()/100),stats+47,ACCENT);

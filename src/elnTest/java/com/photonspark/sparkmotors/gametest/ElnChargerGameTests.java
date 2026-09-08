@@ -16,9 +16,10 @@ public final class ElnChargerGameTests {
         var player=h.makeMockServerPlayerInLevel();player.setGameMode(GameType.CREATIVE);player.moveTo(car.position());car.setOwner(player.getUUID());
         var pos=h.absolutePos(new BlockPos(11,2,8));h.getLevel().setBlock(pos,Electrification.CHARGERS.get(ChargingModel.Tier.RAPID).get().defaultBlockState(),3);
         var charger=(ChargerBlockEntity)h.getLevel().getBlockEntity(pos);h.assertTrue(charger.connect(player,car),"native circuit vehicle pair");
-        var fixture=ElnCircuitFixture.power(h.getLevel(),pos,player,480);double before=car.tractionBattery().energyJ();double[] high={0};
+        var fixture=ElnCircuitFixture.power(h.getLevel(),pos,player,480);double before=car.tractionBattery().energyJ();
+        h.runAfterDelay(30,()->System.out.println("ELN_CIRCUIT_TRACE "+fixture.describe()+" charger="+charger.status()+" inputW="+charger.inputKw()*1000));double[] high={0};
         h.runAfterDelay(80,()->{
-            h.assertTrue(charger.inputKw()>1&&car.tractionBattery().energyJ()>before,"real ELN cable supplies joules to production charger: "+charger.status()+" "+charger.inputKw()+" kW");
+            h.assertTrue(charger.inputKw()>1&&car.tractionBattery().energyJ()>before,"real ELN cable supplies joules to production charger: "+charger.status()+" "+charger.inputKw()+" kW / "+fixture.describe());
             h.assertTrue(fixture.sourceWatts()>1000,"ELN solver sees source current/load");
             h.assertTrue(car.tractionBattery().energyJ()-before<charger.deliveredJ(),"charger and battery losses prevent energy creation");
             fixture.voltage(560);

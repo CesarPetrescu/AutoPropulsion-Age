@@ -23,7 +23,7 @@ public final class ElnChargingPort implements AutoCloseable {
         this.nominalV=nominalV;this.maxW=maxW;this.maxA=maxA;
         Class<?> api=Class.forName("mods.eln.api.v1.electrical.ElectricalIntegration");Object instance=api.getField("INSTANCE").get(null);
         int dimension=((Number)Class.forName("mods.eln.misc.DimensionIds").getMethod("id",Level.class).invoke(null,level)).intValue();
-        sink=api.getMethod("createAndRegisterGroundedResistorSink",String.class,int.class,int.class,int.class,int.class,double.class,int.class)
+        sink=api.getMethod("createGroundedResistorSink",String.class,int.class,int.class,int.class,int.class,double.class,int.class)
             .invoke(instance,"sparkmotors.charger",dimension,pos.getX(),pos.getY(),pos.getZ(),1e12,1);
         Class<?> type=sink.getClass();voltageMethod=type.getMethod("getVoltage");powerMethod=type.getMethod("getPower");
         resistanceMethod=type.getMethod("setResistance",double.class);highImpedance=type.getMethod("highImpedance");unregister=type.getMethod("unregister");
@@ -34,8 +34,14 @@ public final class ElnChargingPort implements AutoCloseable {
             return switch(method.getName()){case "hashCode"->System.identityHashCode(proxy);case "equals"->proxy==args[0];case "toString"->"AutoPropulsion charger energy sampler";default->null;};
         });
         removeProcess=simulator.getClass().getMethod("removeElectricalProcess",callback);
-        try{simulator.getClass().getMethod("addElectricalProcess",callback).invoke(simulator,process);}
-        catch(ReflectiveOperationException failure){unregister.invoke(sink);throw failure;}
+        try{
+            type.getMethod("register").invoke(sink);
+            simulator.getClass().getMethod("addElectricalProcess",callback).invoke(simulator,process);
+        }catch(ReflectiveOperationException|RuntimeException failure){
+            try{removeProcess.invoke(simulator,process);}catch(ReflectiveOperationException ignored){}
+            try{unregister.invoke(sink);}catch(ReflectiveOperationException ignored){}
+            throw failure;
+        }
     }
     public static ElnChargingPort open(Level level,BlockPos pos,double nominalV,double maxW,double maxA){
         if(level.isClientSide||!ModList.get().isLoaded("eln"))return null;

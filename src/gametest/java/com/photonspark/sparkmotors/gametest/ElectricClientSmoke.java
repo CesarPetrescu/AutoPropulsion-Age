@@ -9,6 +9,7 @@ import com.photonspark.sparkmotors.sim.electric.*;
 import net.minecraft.client.*;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.*;
@@ -56,14 +57,15 @@ public final class ElectricClientSmoke {
                 for(int i=0;i<4;i++){
                     var car=AutoPropulsionAge.CAR.get().create(level);car.moveTo(origin.getX()+i*5+.5,origin.getY()+.05,origin.getZ()+5.5,0,0);car.setOwner(p.getUUID());car.initializePowertrain(types[i],.25);level.addFreshEntity(car);result[i]=car.getId();
                     p.teleportTo(car.getX()+2,car.getY(),car.getZ());car.action(p,CarPackets.HOOD,0,0);
-                    var position=origin.offset(i*5+3,0,4);var tier=ChargingModel.Tier.values()[i];level.setBlock(position,Electrification.CHARGERS.get(tier).get().defaultBlockState(),3);
+                    var position=origin.offset(i*5+3,0,4);var tier=ChargingModel.Tier.values()[i];level.setBlock(position,Electrification.CHARGERS.get(tier).get().defaultBlockState().setValue(ChargerBlock.FACING,Direction.SOUTH),3);
                     var charger=(ChargerBlockEntity)level.getBlockEntity(position);
                     if(ModList.get().isLoaded("eln")){
                         Class<?> fixture=Class.forName("com.photonspark.sparkmotors.gametest.ElnCircuitFixture");fixtures.add((AutoCloseable)fixture.getMethod("power",Level.class,BlockPos.class,net.minecraft.server.level.ServerPlayer.class,double.class).invoke(null,level,position,p,tier.inputV));
                     }else{p.setShiftKeyDown(true);charger.interact(p);p.setShiftKeyDown(false);}
                     if(types[i].plugIn()&&!charger.connect(p,car))throw new IllegalStateException("Failed to pair "+types[i]);
                 }
-                ids=result;p.teleportTo(origin.getX()+21,origin.getY()+8,origin.getZ()+19);p.getAbilities().flying=true;p.onUpdateAbilities();
+                for(var t:ChargingModel.Tier.values())level.setBlock(origin.offset(6+t.ordinal()*3,0,15),Electrification.CHARGERS.get(t).get().defaultBlockState().setValue(ChargerBlock.FACING,Direction.SOUTH),3);
+                ids=result;p.teleportTo(origin.getX()+19,origin.getY()+6,origin.getZ()+17);p.getAbilities().flying=true;p.onUpdateAbilities();
             }catch(Throwable e){e.printStackTrace();failure=e.toString();}});return;
         }
         if(ids==null||!(mc.level.getEntity(ids[3]) instanceof CarEntity car))return;
@@ -77,7 +79,16 @@ public final class ElectricClientSmoke {
         }else if(phase==2){
             mc.player.setYRot(133);mc.player.setXRot(32);
             if(ticks==25)screenshot="electric-800-open-hood-native.png";
-            if(ticks==40){mc.options.hideGui=false;mc.setScreen(new GarageScreen(car,6));}
+            if(ticks==40){phase=10;ticks=0;var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);p.teleportTo(c.getX()-3,c.getY()+1.85,c.getZ()+15);});}
+        }else if(phase==10){
+            mc.player.setYRot(165);mc.player.setXRot(15);
+            if(ticks==25)screenshot="electric-charger-fronts-native.png";
+            if(ticks==40){phase=11;ticks=0;var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[1]);p.teleportTo(c.getX()+2.8,c.getY()+2.55,c.getZ()+3.5);});}
+        }else if(phase==11){
+            mc.player.setYRot(133);mc.player.setXRot(32);
+            if(ticks==25)screenshot="electric-phev-open-hood-native.png";
+            if(ticks==40){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);p.teleportTo(c.getX()+2.8,c.getY()+2.55,c.getZ()+3.5);});mc.options.hideGui=false;mc.setScreen(new GarageScreen(car,6));phase=12;}
+        }else if(phase==12){
             if(ticks==55){press(mc,"100% limit");}
             if(ticks==70){if(car.chargeTarget()!=100){finish(mc,"FAILED: charge ceiling GUI packet");return;}screenshot="electric-diagnostics-native.png";}
             if(ticks==90){mc.setScreen(null);var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);if(p.level().getBlockEntity(c.chargerPosition()) instanceof ChargerBlockEntity charger)charger.disconnect();c.tickCount+=4;c.action(p,CarPackets.HOOD,0,0);p.startRiding(c,true);});phase=3;ticks=0;}
