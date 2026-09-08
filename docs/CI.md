@@ -61,3 +61,7 @@ LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a python tools/run_mult
 ```
 
 Use an empty multiplayer output directory (`--output <path>`) each time. Release gates live in `tools/ci/checks.py`; the workflow shows how to validate each run's logs. Do not reuse old result files as proof of a new run.
+
+## Reproducible Minecraft metadata
+
+The build uses an [unmodified, checksum-verified Minecraft 1.21.1 metadata snapshot](../gradle/minecraft-metadata/README.md) from the successful local build. This removes dependence on NeoForge's live Mojang Meta generator, which returned HTTP 502 in two CI attempts. Dependency versions and all nine platform variants are unchanged; game and tool binaries still resolve through the normal repositories. This does not skip or weaken any test or release requirement.

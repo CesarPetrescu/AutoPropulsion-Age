@@ -6,3 +6,6 @@
 *.blend binary
 *.glb binary
 *.zip binary
+
+# Preserve the upstream metadata snapshot exactly for SHA-256 verification.
+gradle/minecraft-metadata/**/*.module -text

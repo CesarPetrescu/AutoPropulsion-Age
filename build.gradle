@@ -7,6 +7,14 @@ group = 'com.photonspark.sparkmotors'
 base { archivesName = 'autopropulsion-age' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 repositories { mavenCentral() }
+// This fixed-version metadata previously came from a live generated endpoint.
+// Pin its unmodified successful-build snapshot; game/tool JARs still use their normal repositories.
+def minecraftMetadata = file('gradle/minecraft-metadata/net/neoforged/minecraft-dependencies/1.21.1/minecraft-dependencies-1.21.1.module')
+def metadataHash = java.security.MessageDigest.getInstance('SHA-256').digest(minecraftMetadata.bytes).encodeHex().toString()
+if (metadataHash != '211b1f95714cf1fb6f4a45612dd4bf731fb09795c30d4fb5f23c9fada6173332') {
+    throw new GradleException('Pinned Minecraft 1.21.1 metadata checksum mismatch')
+}
+repositories.named('Mojang Meta') { url = uri('gradle/minecraft-metadata') }
 dependencies { implementation project(':sim') }
 // Include the pure simulation classes in the mod's development and release
 // outputs. FML does not load an ordinary project dependency as a mod module.
