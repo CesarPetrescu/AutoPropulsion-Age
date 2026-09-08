@@ -3,7 +3,7 @@ package com.photonspark.sparkmotors.sim.electric;
 import com.photonspark.sparkmotors.sim.*;
 import static com.photonspark.sparkmotors.sim.VehicleDynamics.clamp;
 
-/** Server fixed-step series drivetrain. Road work uses midpoint velocity (including launch), not F*v_old.
+/** Server fixed-step series drivetrain. Shaft work uses midpoint driven-wheel angular velocity, including launch.
  * Generator output is paid for by crank load and fuel; rejected generation is dumped, never stored twice.
  * Simplified calibrated motor/generator maps, not an OEM efficiency map or parallel/power-split hybrid.
  */
@@ -74,27 +74,31 @@ public final class ElectricDynamics {
         double desired=regen?-Math.signum(omega)*maxTorque*.65:ready&&!input.brake()?direction*maxTorque*input.throttle():0;
         if(!regen&&budget<=0)desired=0;
         if(regen&&accept+aux<=0)desired=0;
-        double serviceTorque=0;
-        for(int c=0;c<4;c++)if(contacts[c]&&Assembly.BRAKES.variant(setup.config())>0)
-            serviceTorque+=type.massKg*(Assembly.BRAKES.variant(setup.config())==2?10.8:8)*(c<2?.30:.20)*WheelDynamics.brakeCapability(setup.mechanics(),c,true)*VehicleDynamics.WHEEL_RADIUS;
-        if(regen)desired=Math.copySign(Math.min(Math.abs(desired),serviceTorque*.65),desired);
+        double regenLimit=Double.POSITIVE_INFINITY;
+        for(int c=0;c<4;c++){
+            double share=c<2?setup.drive().frontFraction()*.5:(1-setup.drive().frontFraction())*.5;
+            if(share<=0)continue;
+            double service=contacts[c]&&Assembly.BRAKES.variant(setup.config())>0?type.massKg*(Assembly.BRAKES.variant(setup.config())==2?10.8:8)*(c<2?.30:.20)*WheelDynamics.brakeCapability(setup.mechanics(),c,true)*VehicleDynamics.WHEEL_RADIUS:0;
+            regenLimit=Math.min(regenLimit,service/share);
+        }
+        if(regen)desired=Math.copySign(Math.min(Math.abs(desired),regenLimit*.65),desired);
         // Evaluate shaft work with the new wheel speed. This pays for launch and airborne wheel inertia,
         // and bounds regen by actual shaft work and pack acceptance, including full/cold batteries.
         double lo=0,hi=1;
-        for(int n=0;n<28;n++){
+        for(int n=0;desired!=0&&n<28;n++){
             double fraction=(lo+hi)*.5,torque=desired*fraction;
-            double friction=regen?1-clamp(Math.abs(torque)/Math.max(1,serviceTorque),0,.65):1;
-            var trial=VehicleDynamics.chassis(v,oldFuel,engine,wheels,trans,input,setup,grip,contacts,travel,torque,friction,dt);
+            double replacedBrake=regen?Math.abs(torque):0;
+            var trial=VehicleDynamics.chassis(v,oldFuel,engine,wheels,trans,input,setup,grip,contacts,travel,torque,replacedBrake,dt);
             double work=torque*(omega+setup.drive().drivenOmega(trial.wheels()))*.5;
             double copper=1100*Math.pow(torque/Math.max(1,type.torqueNm*REDUCTION),2);
-            double watts=work>=0?work/MOTOR_EFF+copper:work*REGEN_EFF;
+            double watts=work>=0?work/(MOTOR_EFF*setup.drive().efficiency())+copper:work*REGEN_EFF*setup.drive().efficiency();
             if(watts<=budget+1e-8&&watts>=-(accept+aux)+1e-8)lo=fraction;else hi=fraction;
         }
-        double torque=desired*lo,friction=regen?1-clamp(Math.abs(torque)/Math.max(1,serviceTorque),0,.65):1;
-        var roadState=VehicleDynamics.chassis(v,oldFuel,engine,wheels,trans,input,setup,grip,contacts,travel,torque,friction,dt);
+        double torque=desired*lo,replacedBrake=regen?Math.abs(torque):0;
+        var roadState=VehicleDynamics.chassis(v,oldFuel,engine,wheels,trans,input,setup,grip,contacts,travel,torque,replacedBrake,dt);
         double shaftW=torque*(omega+setup.drive().drivenOmega(roadState.wheels()))*.5;
         double copper=1100*Math.pow(torque/Math.max(1,type.torqueNm*REDUCTION),2);
-        double tractionW=shaftW>=0?shaftW/MOTOR_EFF+copper:shaftW*REGEN_EFF;
+        double tractionW=shaftW>=0?shaftW/(MOTOR_EFF*setup.drive().efficiency())+copper:shaftW*REGEN_EFF*setup.drive().efficiency();
         double loss=Math.max(0,tractionW-shaftW),request=tractionW+aux-generator;
         var exchange=BatteryModel.exchange(type.battery,battery,request,dt,ambientC,roadState.groundSpeed());
         double actual=exchange.terminalJ()/dt,dumped=Math.max(0,actual-request)*dt;

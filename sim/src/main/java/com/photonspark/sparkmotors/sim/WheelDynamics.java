@@ -31,9 +31,9 @@ public final class WheelDynamics {
         return step(previous,new Setup(config,6800,3.7,EngineFamily.I4,EnginePart.stock(),90,1.4,m),in,speed,0,0,in.steer()*.45,driveForce*WHEEL_RADIUS,new double[]{grip,grip,grip,grip},contacts,travels,0,0,dt);
     }
     public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt){
-        return step(previous,setup,in,speed,lateral,yawRate,steering,driveTorque,grip,contacts,travels,ax,ay,dt,1);
+        return step(previous,setup,in,speed,lateral,yawRate,steering,driveTorque,grip,contacts,travels,ax,ay,dt,0);
     }
-    public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt,double serviceScale){
+    public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt,double regenBrakeTorque){
         double mass=setup.mass();
         var result=new ArrayList<Corner>();var m=setup.mechanics();int config=setup.config();
         double brakes=0,rolling=0,moment=0,forward=0,sideways=0,driveGrip=0,holding=0;
@@ -57,7 +57,10 @@ public final class WheelDynamics {
             // Suspension load variation is bounded separately from longitudinal/lateral transfer.
             load*=clamp(1+(travels[c]-old.travel)*damper*.25/Math.max(.005,dt),.7,1.3);
             double mu=clamp(grip[c],0,2)*tireGrip(m,c)*(Assembly.WHEELS.variant(config)==2?1.17:1);
-            double service=in.brake()&&Assembly.BRAKES.variant(config)>0?mass*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true)*clamp(serviceScale,0,1):0;
+            double service=in.brake()&&Assembly.BRAKES.variant(config)>0?mass*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true):0;
+            // Regeneration replaces friction braking only at the driven corners. A rear motor must
+            // never reduce the driver's front hydraulic brake pressure.
+            service=Math.max(0,service-Math.max(0,regenBrakeTorque)/WHEEL_RADIUS*(c<2?setup.drive().frontFraction()*.5:(1-setup.drive().frontFraction())*.5));
             double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?mass*3*brakeCapability(m,c,false):0;
             double fade=clamp(1-(old.temperature-350)/500,.15,1),dragBrake=0;
             if(m!=null){var caliper=m.get("wheel."+ComponentSlot.CORNERS[c]+".caliper");if(caliper!=null&&(caliper.faults()&PartInstance.SEIZED)!=0)dragBrake=1000;}

@@ -77,7 +77,7 @@ public final class VehicleDynamics {
         }
         engine=EnginePhysics.step(engine,setup,running,in.throttle,clutchTorque,dt);
         double used=running&&engine.mode()==EnginePhysics.Mode.RUNNING?(.00022+Math.max(0,engine.shaftTorque())*engine.rpm()*1e-8)*setup.family.fuelScale*dt:0;
-        var road=chassis(speed,fuel,engine,wheels,trans,in,setup,grip,contacts,travel,clutchTorque*ratio*setup.drive.efficiency()*direction,1,dt);
+        var road=chassis(speed,fuel,engine,wheels,trans,in,setup,grip,contacts,travel,clutchTorque*ratio*setup.drive.efficiency()*direction,0,dt);
         wheels=road.wheels;trans=road.transmission;
         double slipPower=Math.abs(clutchTorque*(engine.omega()-wheelOmega*ratio))/1000;
         double heat=clamp(trans.clutchHeat()+(slipPower/3-(trans.clutchHeat()-20)*.025)*dt,20,1000);
@@ -86,12 +86,12 @@ public final class VehicleDynamics {
         return new State(road.speed,engine.rpm(),gear,Math.max(0,fuel-used),road.yawDelta,used,engine,wheels,trans,load);
     }
     /** Shared rigid body and tire integration for combustion, battery and series-hybrid drives. */
-    public static State chassis(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double axleTorque,double serviceScale,double dt){
+    public static State chassis(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double axleTorque,double regenBrakeTorque,double dt){
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         double response=Assembly.SUSPENSION.variant(setup.config)==2?1.08:1;
         double target=in.steer*.55*response/(1+Math.abs(speed)*.025);
         double steering=trans.steering()+clamp(target-trans.steering(),-1.8*response*dt,1.8*response*dt);
-        var forces=WheelDynamics.step(wheels,setup,in,speed,lateral,yawRate,steering,axleTorque,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt,serviceScale);
+        var forces=WheelDynamics.step(wheels,setup,in,speed,lateral,yawRate,steering,axleTorque,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt,regenBrakeTorque);
         double magnitude=Math.hypot(speed,lateral),drag=Assembly.BODY.variant(setup.config)==2?.40:.43;
         double fx=forces.forward()-drag*speed*magnitude,fy=forces.lateral()-drag*lateral*magnitude;
         double ax=fx/setup.mass,ay=fy/setup.mass,newYaw=clamp(yawRate+forces.yawMoment()/(YAW_INERTIA*setup.mass/MASS)*dt,-5,5);

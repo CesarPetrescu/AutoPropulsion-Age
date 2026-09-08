@@ -48,6 +48,15 @@ final class ElectricHandlingTest {
         double regen=0;for(int i=0;i<1200;i++){c.step(new VehicleDynamics.Input(0,0,true,false),false,ROAD);regen+=c.e.regenW();}
         assertTrue(peak>5);assertTrue(c.road.groundSpeed()<.04);assertEquals(0,regen);assertEquals(1,c.e.battery().soc(c.type.battery),1e-6);
     }
+    @Test void rearMotorRegenerationDoesNotReduceFrontServiceBrakes(){
+        var c=new Car(Powertrain.ELECTRIC_400,DriveConfig.Layout.RWD,.5);c.run(400,new VehicleDynamics.Input(1,0,false,false));
+        var before=c.road;var pack=c.e;
+        c.step(new VehicleDynamics.Input(0,0,true,false),true,ROAD);var blended=c.road;
+        assertTrue(c.e.regenW()>0,"battery recovers real braking energy");
+        c.road=before;c.e=pack;c.step(new VehicleDynamics.Input(0,0,true,false),false,ROAD);
+        assertEquals(c.road.wheels().corners().get(0).brakeForce(),blended.wheels().corners().get(0).brakeForce(),1e-6);
+        assertTrue(blended.wheels().corners().get(2).brakeForce()<c.road.wheels().corners().get(2).brakeForce(),"rear friction gives way to motor braking");
+    }
     @Test void backwardsSlideDoesNotSelectReverseAndBrokenShaftCannotDrive(){
         var c=new Car(Powertrain.ELECTRIC_400,DriveConfig.Layout.RWD,.5);
         c.road=new VehicleDynamics.State(-5,0,1,40,0,0,EnginePhysics.State.stopped(20,100),WheelDynamics.State.stopped(),TransmissionPhysics.State.stopped().motion(7,.1,0,0,0));
