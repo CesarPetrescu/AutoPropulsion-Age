@@ -27,7 +27,8 @@ jobs:
           python3 - <<'PY'
           import base64,hashlib,lzma,pathlib,subprocess
           p=pathlib.Path
-          data=lzma.decompress(base64.b64decode(p('.ci/electric-a.b64').read_text().strip()+p('.ci/electric-b.b64').read_text().strip()))
+          encoded=''.join(f.read_text().strip() for f in sorted(p('.ci').glob('electric-*.b64')))
+          data=lzma.decompress(base64.b64decode(encoded,validate=True))
           assert hashlib.sha256(data).hexdigest()=='c4d25fdbe7c83c17579148490cae5d13cf6e280d7f2ff72058471456299a3712'
           p('/tmp/electric.patch').write_bytes(data)
           for line in subprocess.check_output(['git','apply','--numstat','/tmp/electric.patch'],text=True).splitlines():
@@ -39,7 +40,7 @@ jobs:
           python3 -m pip install Pillow
           python3 tools/generate_electric_resources.py
           git add src/main/resources
-          git rm .ci/electric-a.b64 .ci/electric-b.b64
+          git rm .ci/electric-*.b64
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'feat: add EV and series-hybrid simulation, native ELN chargers, models and tests'
