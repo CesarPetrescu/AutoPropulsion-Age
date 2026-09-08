@@ -1,13 +1,21 @@
 name: ElectricalAge companion verification
 on:
   push:
-    branches: [feat/electrified-powertrains]
+    branches: [feat/electrified-powertrains, main]
     paths:
       - '.github/workflows/eln-compat.yml'
-      - 'src/main/java/com/photonspark/sparkmotors/compat/**'
+      - 'src/**'
+      - 'sim/**'
+      - 'build.gradle'
+      - 'gradle.properties'
+  pull_request:
+    paths: ['src/**', 'sim/**', 'build.gradle', 'gradle.properties', '.github/workflows/eln-compat.yml']
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: eln-compat-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   companion:
     runs-on: ubuntu-latest
@@ -15,36 +23,72 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          path: auto
+      - uses: actions/checkout@v4
+        with:
           repository: CesarPetrescu/ElectricalAge
+          ref: cb11383d2d8266b6876ad1b1629cadde0d2c1706
           path: eln
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Record companion source
+      - name: Record exact source commits
         run: |
           git -C eln rev-parse HEAD > electricalage-commit.txt
-          tar -czf electricalage-source.tar.gz --exclude='*.png' --exclude='*.obj' --exclude='*.ogg' --exclude='*.blend' --exclude='.git' eln/src eln/build.gradle* eln/settings.gradle* eln/gradle* eln/docs eln/.github
-      - uses: actions/upload-artifact@v4
-        with:
-          name: electricalage-inspection
-          path: |
-            electricalage-source.tar.gz
-            electricalage-commit.txt
-          retention-days: 3
+          git -C auto rev-parse HEAD > autopropulsion-commit.txt
       - name: Compile Kotlin and run companion tests
         working-directory: eln
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon compileKotlin test build
+          ./gradlew --no-daemon compileKotlin test build 2>&1 | tee ../eln-build.log
+      - name: Select installable companion jar
+        run: |
+          python3 - <<'PY'
+          import os,pathlib,zipfile
+          jars=[p.resolve() for p in pathlib.Path('eln/build/libs').glob('*.jar') if not any(x in p.name for x in ('-sources','-javadoc','-dev'))]
+          jars=[p for p in jars if 'META-INF/neoforge.mods.toml' in zipfile.ZipFile(p).namelist()]
+          assert len(jars)==1,jars
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('ELN_JAR='+str(jars[0])+'\n')
+          PY
+      - name: Build AutoPropulsion with companion and integration tests
+        working-directory: auto
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" build :sim:test 2>&1 | tee ../auto-build.log
+      - name: Dedicated native ELN cable and charger integration
+        working-directory: auto
+        run: |
+          ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" runGameTestServer 2>&1 | tee ../eln-gametest.log
+          grep -q 'ELN_CHARGER_CIRCUIT_PASS' ../eln-gametest.log
+      - name: Install software graphics dependencies
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 pulseaudio
+      - name: Native Minecraft combined-mod client verification
+        working-directory: auto
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/electric-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" runClientElectricSmoke 2>&1 | tee ../eln-client.log
+          cat run/electric-smoke-result.txt
+          grep -q '^PASS' run/electric-smoke-result.txt
+          grep -q 'ELN=true' run/electric-smoke-result.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: electricalage-test-results
+          name: electricalage-integration-results
           path: |
-            electricalage-commit.txt
-            eln/build/libs/*.jar
+            *-commit.txt
+            *.log
             eln/build/test-results/
             eln/build/reports/
+            auto/build/reports/
+            auto/sim/build/test-results/
+            auto/sim/build/reports/
+            auto/run/*smoke-result.txt
+            auto/run/screenshots/
+            auto/run/logs/
+            auto/run/gametest/logs/
           retention-days: 14
