@@ -116,6 +116,15 @@ class ParallelHybridTest {
         assertTrue(c.wheelJ>10000,"Working electric path supplies propulsion despite engine fault");
         assertTrue(c.road.speed()>25);assertEquals(40,c.road.fuel());assertFalse(c.pack.generating());
     }
+    @Test void holdingTheActualWInputAllowsCruiseChargingAfterAcceleration(){
+        for(var t:List.of(Powertrain.HYBRID,Powertrain.PLUG_IN_HYBRID)){
+            double initial=HybridControl.reserve(t,ElectricDynamics.Mode.AUTO)+.005;
+            var c=new Car(t,DriveConfig.Layout.AWD,EngineFamily.I4,initial);c.run(12000,GO);
+            assertTrue(c.road.speed()>22,t+" reached highway speed: "+c.road.speed());
+            assertTrue(c.soc()>initial+.003,t+" W-held cruise recharged: "+c.soc());
+            assertTrue(c.generatedJ>100000);assertTrue(c.fuelJ>c.generatedJ/.31);
+        }
+    }
     @Test void chargeSustainStopsAtItsBandAndElectricOnlyNeverStartsEngine(){
         var c=new Car(Powertrain.HYBRID,DriveConfig.Layout.FWD,EngineFamily.I4,.54);c.mode=ElectricDynamics.Mode.CHARGE_SUSTAIN;
         boolean stopped=false;

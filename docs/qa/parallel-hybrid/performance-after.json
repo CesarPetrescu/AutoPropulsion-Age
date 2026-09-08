@@ -1,12 +1,12 @@
 {"scope":"20 cars, 4 physics substeps; excludes Minecraft world/render/network","java":"21.0.11","results":[
-{"type":"COMBUSTION","driving":false,"ticks":600,"meanMs":0.8671,"p95Ms":1.6642,"bytesPerCarTick":143582,"checksum":266636.503},
-{"type":"COMBUSTION","driving":true,"ticks":600,"meanMs":0.8201,"p95Ms":0.8960,"bytesPerCarTick":144222,"checksum":539917.127},
-{"type":"HYBRID","driving":false,"ticks":600,"meanMs":1.1490,"p95Ms":1.4822,"bytesPerCarTick":180357,"checksum":240000.000},
-{"type":"HYBRID","driving":true,"ticks":600,"meanMs":1.6448,"p95Ms":3.0940,"bytesPerCarTick":232077,"checksum":581058.858},
-{"type":"PLUG_IN_HYBRID","driving":false,"ticks":600,"meanMs":1.0897,"p95Ms":1.1995,"bytesPerCarTick":181160,"checksum":240000.000},
-{"type":"PLUG_IN_HYBRID","driving":true,"ticks":600,"meanMs":1.3046,"p95Ms":2.4479,"bytesPerCarTick":201831,"checksum":546601.221},
-{"type":"ELECTRIC_400","driving":false,"ticks":600,"meanMs":0.6772,"p95Ms":0.7455,"bytesPerCarTick":112726,"checksum":240000.000},
-{"type":"ELECTRIC_400","driving":true,"ticks":600,"meanMs":0.6677,"p95Ms":0.7113,"bytesPerCarTick":112879,"checksum":511155.432},
-{"type":"ELECTRIC_800","driving":false,"ticks":600,"meanMs":0.6494,"p95Ms":0.6763,"bytesPerCarTick":112624,"checksum":240000.000},
-{"type":"ELECTRIC_800","driving":true,"ticks":600,"meanMs":0.6640,"p95Ms":0.7133,"bytesPerCarTick":112879,"checksum":538591.025}
+{"type":"COMBUSTION","driving":false,"ticks":600,"meanMs":0.8880,"p95Ms":1.7311,"bytesPerCarTick":143593,"checksum":266636.503},
+{"type":"COMBUSTION","driving":true,"ticks":600,"meanMs":0.8546,"p95Ms":0.9881,"bytesPerCarTick":144276,"checksum":539917.127},
+{"type":"HYBRID","driving":false,"ticks":600,"meanMs":1.1324,"p95Ms":1.3863,"bytesPerCarTick":180406,"checksum":240000.000},
+{"type":"HYBRID","driving":true,"ticks":600,"meanMs":1.5967,"p95Ms":2.9555,"bytesPerCarTick":231336,"checksum":580804.105},
+{"type":"PLUG_IN_HYBRID","driving":false,"ticks":600,"meanMs":1.1025,"p95Ms":1.1597,"bytesPerCarTick":181160,"checksum":240000.000},
+{"type":"PLUG_IN_HYBRID","driving":true,"ticks":600,"meanMs":1.3145,"p95Ms":2.5748,"bytesPerCarTick":201832,"checksum":546601.221},
+{"type":"ELECTRIC_400","driving":false,"ticks":600,"meanMs":0.6927,"p95Ms":0.7973,"bytesPerCarTick":112732,"checksum":240000.000},
+{"type":"ELECTRIC_400","driving":true,"ticks":600,"meanMs":0.6759,"p95Ms":0.7294,"bytesPerCarTick":112879,"checksum":511155.432},
+{"type":"ELECTRIC_800","driving":false,"ticks":600,"meanMs":0.6603,"p95Ms":0.7194,"bytesPerCarTick":112624,"checksum":240000.000},
+{"type":"ELECTRIC_800","driving":true,"ticks":600,"meanMs":0.6772,"p95Ms":0.7255,"bytesPerCarTick":112879,"checksum":538591.025}
 ]}

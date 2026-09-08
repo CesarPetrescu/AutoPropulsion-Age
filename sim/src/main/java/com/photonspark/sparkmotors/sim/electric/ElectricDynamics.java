@@ -54,7 +54,8 @@ public final class ElectricDynamics {
             double charge=Math.min(control.chargeW(),Math.max(0,accept-450))*generatorCapability;
             // Keep crank acceleration available for launch / maximum pedal demand.
             // A weak engine must not be pinned at clutch bite RPM by its generator.
-            if(input.throttle()>.75||!control.disconnect()&&input.throttle()>0&&engine.rpm()<1800)charge=0;
+            boolean accelerating=input.throttle()>.75&&(Math.abs(v)<22||trans.longitudinalAcceleration()>.35);
+            if(accelerating||!control.disconnect()&&input.throttle()>0&&engine.rpm()<1800)charge=0;
             double pedal=control.pedal();
             if(!control.disconnect()&&charge>0)pedal=Math.min(1,pedal+.16);
             if(control.disconnect()&&charge>0)pedal=clamp(.40+(generatorTargetRpm(setup.family())-engine.rpm())/2200,.12,.85);

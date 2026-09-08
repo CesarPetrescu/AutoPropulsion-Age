@@ -8,11 +8,11 @@ The same `PowertrainBenchmark` source was compiled against the unmodified simula
 
 | Driving fleet | Mean before → after (ms/tick, 20 cars) | Allocated bytes per car tick before → after |
 |---|---:|---:|
-| Combustion | 0.8845 → 0.8201 | 144,009 → 144,222 |
-| Hybrid | 4.2304 → 1.6448 | 534,989 → 232,077 |
-| Plug-in hybrid | 4.0972 → 1.3046 | 529,638 → 201,831 |
-| Electric 400 V | 3.6417 → 0.6677 | 435,494 → 112,879 |
-| Electric 800 V | 3.6211 → 0.6640 | 435,494 → 112,879 |
+| Combustion | 0.8845 → 0.8546 | 144,009 → 144,276 |
+| Hybrid | 4.2304 → 1.5967 | 534,989 → 231,336 |
+| Plug-in hybrid | 4.0972 → 1.3145 | 529,638 → 201,832 |
+| Electric 400 V | 3.6417 → 0.6759 | 435,494 → 112,879 |
+| Electric 800 V | 3.6211 → 0.6772 | 435,494 → 112,879 |
 
 The benchmark excludes Minecraft world/collision queries, networking, audio and rendering. Desktop load varies; the final comparison was rerun after the Blender export/render work ended. Full parked/driving samples and p95 timings are retained in [before](parallel-hybrid/performance-before.json) and [after](parallel-hybrid/performance-after.json). The reduction in allocation explains a plausible reduction in GC pressure; no GC pause-duration claim is made.
 
@@ -29,13 +29,15 @@ This measures the car renderer's CPU submission, not GPU execution, total frame 
 
 ## Verification
 
-Final local simulation run: **98 JUnit tests passed, no skipped tests**, including eleven parallel-hybrid tests. The local dedicated run passed **47 GameTests**, the 294 combustion driving cases and 12 electrified cases. That dedicated run preceded the final long-duration generator-governor and engine-failure fallback adjustments; the final simulation run covers those adjustments, and the release's CI reruns the dedicated suite on its exact commit. Local native UI passed **192 cases** and **105 configured geometries / 1,865 part removals**, including removal/reinstallation at both world LODs. Handling, electric charging and all five graphics-mode cases also passed; graphics was rerun after introducing LODs. Package/release gate tests passed **29 cases**.
+Final local simulation run: **99 JUnit tests passed, no skipped tests**, including twelve parallel-hybrid tests. The local dedicated run passed **47 GameTests**, the 294 combustion driving cases and 12 electrified cases. That dedicated run preceded the final long-duration generator-governor, engine-failure fallback and W-held cruise adjustments; the final simulation run covers those adjustments, and the release's CI reruns the dedicated suite on its exact commit. Local native UI passed **192 cases** and **105 configured geometries / 1,865 part removals**, including removal/reinstallation at both world LODs. Handling, electric charging and all five graphics-mode cases also passed; graphics was rerun after introducing LODs. Package/release gate tests passed **29 cases**.
 
 The simulation tests cover all seven engine families and FWD/RWD/AWD hybrid launches at reserve, highway engine drive without motor propulsion, independent clutch/motor failures, prolonged demand, charge taper and acceleration priority, failed/cold/full-pack charging rejection, total launch/brake energy bounds, charge-sustain limits, Electric Only and condition-preserving v2 migration.
 
 The sustained-charge test found and fixed a governor defect: always limiting generator load to 90% of spare torque lets crank speed drift toward zero-load equilibrium and generation disappear. Generator load now balances available torque, while maximum pedal / low-RPM launch takes priority. Charge completion uses a half-percentage-point tolerance; otherwise auxiliaries and an asymptotic taper can keep the engine on forever just below the nominal target.
 
 A failed-ignition highway scenario also verifies that the high-speed assistance cutoff only applies with an available running engine. A faulted engine leaves the working electric torque path available above reserve, and motor assistance bridges cranking instead of being cut merely because the ECU requested an engine start.
+
+Both HEV and PHEV also complete a 150-second test using continuous full-throttle **W** input: after acceleration, cruise charging increases SOC while maintaining highway speed. A blanket full-pedal charging prohibition would never charge during normal keyboard cruising. The supervisor therefore distinguishes low-speed/active acceleration from settled highway motion and applies a bounded crank-torque diversion there.
 
 Native Minecraft checks include actual hybrid entity ticking at depleted reserve, 12 electrified driving layouts, the 294 combustion/family/layout cases, configuration save/load, inventory/charging transactions, steering/drift recovery, 192 UI cases, five graphics cases and full/workshop/LOD part visibility. CI reruns these and adds two-client trading, compatibility and resource gates before publishing a JAR. The immutable release includes logs and provenance for its own commit.
 

@@ -63,7 +63,7 @@ public final class VehicleDynamics {
     }
     public record PowerStage(EnginePhysics.State engine,TransmissionPhysics.State transmission,double[] torques,double fuelUsed,double generatorW,double load) {}
     /** Integrate the crank and clutch once, then combine its wheel torques with electric assistance.
-     * The generator only takes spare positive crank torque. Tires are integrated by the caller. */
+     * The supervisor requests generator load after considering acceleration. Tires are integrated by the caller. */
     public static PowerStage powerStage(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,boolean ignition,Input in,Setup setup,boolean[] contacts,double requestedGeneratorW,double dt){
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         int gear=in.reverse?-1:1;double finalRatio=setup.finalDrive*(Assembly.TRANSMISSION.variant(setup.config)==2?1.10:1);
@@ -89,7 +89,11 @@ public final class VehicleDynamics {
             clutchTorque=clamp((engine.omega()-wheelOmega*ratio)/(.06+dt*(1/EngineBuild.inertia(setup.family,setup.engineParts)+ratio*ratio/wheelInertia)),-capacity,capacity);
         }
         double beforeOmega=engine.omega();
-        double generatorLoad=running&&engine.rpm()>1100?Math.min(Math.max(0,requestedGeneratorW)/(.91*Math.max(100,beforeOmega)),Math.max(0,engine.shaftTorque()-Math.max(0,clutchTorque))):0;
+        // At settled cruise the supervisor can divert up to 10% of positive crank torque
+        // even when the player holds the binary W key. The resulting load slows the crank
+        // and reduces clutch output naturally; it is never added as free electrical power.
+        double available=Math.max(0,engine.shaftTorque());
+        double generatorLoad=running&&engine.rpm()>1100?Math.min(Math.max(0,requestedGeneratorW)/(.91*Math.max(100,beforeOmega)),Math.max(available*.10,available-Math.max(0,clutchTorque))):0;
         engine=EnginePhysics.step(engine,setup,running,in.throttle,clutchTorque+generatorLoad,dt);
         double generatorW=generatorLoad*(beforeOmega+engine.omega())*.5*.91;
         double used=running&&engine.mode()==EnginePhysics.Mode.RUNNING?(.00022+Math.max(0,engine.shaftTorque())*engine.rpm()*1e-8)*setup.family.fuelScale*dt:0;
