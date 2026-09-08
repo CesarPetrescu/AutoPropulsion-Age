@@ -1,0 +1,128 @@
+name: Full-stack branch audit
+on:
+  push:
+    branches: [qa/full-stack-2026-09-08]
+    paths: ['.github/workflows/full-stack-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Pin source snapshots and branch ancestry
+        run: |
+          mkdir -p audit-source
+          python3 - <<'PY'
+          import subprocess,json,pathlib,tarfile
+          refs={
+          'main':'9ec1e9f468b066dc64b6641aad31e32e4a4b0d7a',
+          'damage-audio':'d1538b95fb8b8e2ec3edb99c4a7e4d00b52138a4',
+          'electric':'f9a5be417f1dc7962d15e24fd531426f3290baf9',
+          'playable-foundation':'2995e169abe7768c8c01659a8dbf420e5725cfac',
+          'vehicle-foundation':'8076f765b86fcb68cc0959a249b2253f10147e8e',
+          'integration':'0dbe97824e4c931aa8942fdc2932d99d8b954e1f',
+          'mechanical':'338191090a05b9b86571df920094c0e4a73769e5'}
+          out=pathlib.Path('audit-source');report={}
+          for label,sha in refs.items():
+              names=subprocess.check_output(['git','ls-tree','--name-only',sha],text=True).splitlines()
+              paths=[n for n in names if n in ('src','sim','tools','gradle','gradlew','gradlew.bat','build.gradle','build.gradle.kts','settings.gradle','settings.gradle.kts','gradle.properties','README.md','.github','.gitignore')]
+              subprocess.run(['git','archive','--format=tar.gz','-o',str(out/(label+'.tar.gz')),sha,*paths],check=True)
+              report[label]={'sha':sha,'divergence_from_main':subprocess.check_output(['git','rev-list','--left-right','--count',refs['main']+'...'+sha],text=True).strip(),'tip':subprocess.check_output(['git','show','-s','--format=%s',sha],text=True).strip(),'diff':subprocess.check_output(['git','diff','--stat',refs['main'],sha],text=True)}
+          (out/'branches.json').write_text(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-source-snapshots
+          path: audit-source/
+          retention-days: 14
+  branch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - {label: main, ref: 9ec1e9f468b066dc64b6641aad31e32e4a4b0d7a}
+          - {label: damage-audio, ref: d1538b95fb8b8e2ec3edb99c4a7e4d00b52138a4}
+          - {label: electric, ref: f9a5be417f1dc7962d15e24fd531426f3290baf9}
+          - {label: playable-foundation, ref: 2995e169abe7768c8c01659a8dbf420e5725cfac}
+          - {label: vehicle-foundation, ref: 8076f765b86fcb68cc0959a249b2253f10147e8e}
+          - {label: integration, ref: 0dbe97824e4c931aa8942fdc2932d99d8b954e1f}
+          - {label: mechanical, ref: 338191090a05b9b86571df920094c0e4a73769e5}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.ref }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      - name: Source identity and task discovery
+        run: |
+          mkdir -p audit
+          git rev-parse HEAD > audit/tested-commit.txt
+          java -version 2>audit/java-version.txt
+          chmod +x gradlew
+          if test -f tools/ci_minecraft_metadata.sh; then bash tools/ci_minecraft_metadata.sh 2>&1 | tee audit/metadata.log; fi
+          ./gradlew --no-daemon tasks --all 2>&1 | tee audit/tasks.log
+      - name: Compile and unit tests
+        id: build
+        run: timeout 1200 ./gradlew --no-daemon -PwithGameTests build 2>&1 | tee audit/build.log
+      - name: Dedicated Minecraft GameTests
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          if grep -q '^runGameTestServer ' audit/tasks.log; then
+            timeout 600 ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee audit/gametest.log
+          else
+            echo 'NOT AVAILABLE: no GameTest server task in this historical branch' | tee audit/gametest-unavailable.txt
+          fi
+      - name: Install software graphics
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: sudo apt-get update -qq && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1
+      - name: Native Minecraft client
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          if grep -q '^runClientElectricSmoke ' audit/tasks.log; then
+            task=runClientElectricSmoke; result=run/electric-smoke-result.txt
+          elif grep -q '^runClientSmokeQuick ' audit/tasks.log; then
+            task=runClientSmokeQuick; result=run/alpha-smoke-result.txt
+          elif grep -q '^runClientSmoke ' audit/tasks.log; then
+            task=runClientSmoke; result=run/alpha-smoke-result.txt
+          else
+            echo 'NOT AVAILABLE: no automated native client harness in this historical branch' | tee audit/client-unavailable.txt
+            exit 0
+          fi
+          rm -f "$result"
+          xvfb-run -a -s '-screen 0 1440x900x24' timeout 900 ./gradlew --no-daemon -PwithGameTests "$task" 2>&1 | tee audit/client.log
+          test -s "$result"
+          grep -q '^PASS' "$result"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audit-${{ matrix.label }}
+          path: |
+            audit/
+            build/libs/*.jar
+            build/test-results/
+            sim/build/test-results/
+            run/*result*
+            run/screenshots/
+            run/logs/
+            run/gametest/logs/
+            run/crash-reports/
+          retention-days: 14
