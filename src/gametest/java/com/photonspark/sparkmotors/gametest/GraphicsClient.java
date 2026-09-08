@@ -16,7 +16,7 @@ final class GraphicsClient {
     private static int stage,ticks,frames;
     private static int screenFrames;
     private static Screen renderedScreen;
-    private static boolean observing,done;
+    private static boolean observing,done,capturing;
     private static void require(boolean ok,String message){if(!ok)throw new IllegalStateException(message);}
     static void beforeWorld(Minecraft mc){
         require(mc.level==null,"Startup graphics must be selected before a world exists");
@@ -41,6 +41,17 @@ final class GraphicsClient {
         }
     }
     private static void step(Minecraft mc,CarEntity car){
+        if(capturing){
+            // Client ticks may run repeatedly before a render frame. Keep the car scene
+            // unchanged until RenderFrameEvent has actually captured this case's image.
+            if(ClientSmoke.screenshotPending())return;
+            capturing=false;ticks=0;
+            if(++stage==MODES.length){
+                done=true;System.out.println("GRAPHICS_CLIENT_PASS 5");
+                ClientSmoke.write(mc,"PASS: Fabulous before world loading and native Video Settings transitions through Fast, Fancy, Fabulous and Fast; car scene rendered in every mode with matching transparency framebuffers.");
+            }
+            return;
+        }
         ticks++;require(ticks<240,"Video setting/renderer did not converge");
         if(ticks==1){
             observing=false;frames=0;
@@ -87,12 +98,7 @@ final class GraphicsClient {
         if(frames>=45){
             ClientSmoke.screenshot("graphics-"+CASES[stage]+".png");
             System.out.println("GRAPHICS_CASE_PASS "+CASES[stage]+" frames="+frames+" mode="+mc.options.graphicsMode().get());
-            observing=false;ticks=0;
-            if(++stage==MODES.length){
-                done=true;System.out.println("GRAPHICS_CLIENT_PASS 5");
-                ClientSmoke.write(mc,"PASS: Fabulous before world loading and native Video Settings transitions through Fast, Fancy, Fabulous and Fast; car scene rendered in every mode with matching transparency framebuffers.");
-                // tick() allows the final queued framebuffer screenshot to complete before shutdown.
-            }
+            observing=false;capturing=true;
         }
     }
 }

@@ -253,6 +253,7 @@ public final class ClientSmoke {
         if(Boolean.getBoolean("sparkmotors.clientGraphics"))GraphicsClient.rendered(e);
     }
     static void screenshot(String name){pendingScreenshot=name;}
+    static boolean screenshotPending(){return pendingScreenshot!=null;}
     static void write(Minecraft mc,String message){
         try{Files.writeString(mc.gameDirectory.toPath().resolve("alpha-smoke-result.txt"),message);}catch(Exception e){throw new RuntimeException(e);}
         System.out.println("ALPHA_CLIENT_SMOKE "+message);
