@@ -55,7 +55,8 @@ public final class ClientSmoke {
                 level.setDayTime(6000);level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false,server);
                 var car=AutoPropulsionAge.CAR.get().create(level);
                 var origin=p.blockPosition();
-                for(int dx=-10;dx<=10;dx++)for(int dz=-10;dz<=32;dz++)level.setBlock(origin.offset(dx,-1,dz),net.minecraft.world.level.block.Blocks.SMOOTH_STONE.defaultBlockState(),3);
+                int pad=Boolean.getBoolean("sparkmotors.clientHandling")?80:10;
+                for(int dx=-pad;dx<=pad;dx++)for(int dz=-pad;dz<=Math.max(32,pad);dz++)level.setBlock(origin.offset(dx,-1,dz),net.minecraft.world.level.block.Blocks.SMOOTH_STONE.defaultBlockState(),3);
                 car.moveTo(p.getX(),p.getY()+.05,p.getZ()+5,0,0);car.setOwner(p.getUUID());level.addFreshEntity(car);carId=car.getId();
                 p.teleportTo(p.getX()+5,p.getY()+1,p.getZ()-1);p.setYRot(-40);p.setXRot(12);
                 p.getInventory().add(AutoPropulsionAge.FUEL_CAN.toStack());
@@ -64,6 +65,7 @@ public final class ClientSmoke {
             });
         }
         if(!(mc.level.getEntity(carId) instanceof CarEntity car))return;
+        if(Boolean.getBoolean("sparkmotors.clientHandling")){HandlingClient.tick(mc,car);return;}
         if(phase>=10){if(Boolean.getBoolean("sparkmotors.clientMechanics"))componentFlow(mc,car);else engineMatrix(mc,car);return;}
         if(phase==4&&ticks==20)pendingScreenshot="alpha-paint.png";
         if(phase==6&&ticks==10)press(mc,"Car",0);
@@ -242,11 +244,12 @@ public final class ClientSmoke {
         if(pendingScreenshot!=null){var mc=Minecraft.getInstance();String name=pendingScreenshot;pendingScreenshot=null;
             Screenshot.grab(mc.gameDirectory,name,mc.getMainRenderTarget(),text->System.out.println("ALPHA_SCREENSHOT "+name));}
     }
-    private static void write(Minecraft mc,String message){
+    static void screenshot(String name){pendingScreenshot=name;}
+    static void write(Minecraft mc,String message){
         try{Files.writeString(mc.gameDirectory.toPath().resolve("alpha-smoke-result.txt"),message);}catch(Exception e){throw new RuntimeException(e);}
         System.out.println("ALPHA_CLIENT_SMOKE "+message);
     }
-    private static void press(Minecraft mc,String label,int index){
+    static void press(Minecraft mc,String label,int index){
         var buttons=mc.screen.children().stream().filter(c->c instanceof net.minecraft.client.gui.components.Button)
             .map(c->(net.minecraft.client.gui.components.Button)c).filter(b->b.getMessage().getString().equals(label)).toList();
         if(index>=buttons.size()||!buttons.get(index).active)throw new IllegalStateException("Smoke button unavailable: "+label+" #"+index);

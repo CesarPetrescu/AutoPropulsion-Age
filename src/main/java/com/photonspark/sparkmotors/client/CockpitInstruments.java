@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.*;
 import java.util.Locale;
 
 public final class CockpitInstruments {
-    public static InstrumentReadings read(CarEntity c){return InstrumentReadings.read(c.mechanics(),c.speed(),c.rpm(),c.fuel(),c.temperature(),c.oilPressure(),c.boost(),c.engineRunning());}
+    public static InstrumentReadings read(CarEntity c){return InstrumentReadings.read(c.mechanics(),c.horizontalSpeed(),c.rpm(),c.fuel(),c.temperature(),c.oilPressure(),c.boost(),c.engineRunning());}
     public static void render(CarEntity c,PoseStack poses,MultiBufferSource buffers,int light){
         var r=read(c);if(!r.powered())return;var font=Minecraft.getInstance().font;
         poses.pushPose();poses.translate(-.19,1.011,.365);poses.mulPose(Axis.YP.rotationDegrees(180));poses.scale(.00125f,-.00125f,.00125f);

@@ -34,8 +34,10 @@ class EngineConfigurationTest {
         }
         for(int parts:builds)for(var family:EngineFamily.values())for(int grade=1;grade<=2;grade++)for(int tune=0;tune<3;tune++){
             var setup=new VehicleDynamics.Setup(Assembly.ENGINE.with(Assembly.stock(),grade),new int[]{4000,6800,7000}[tune],new double[]{2.8,3.7,4.8}[tune],family,parts,90);
-            var s=drive(setup,5,new VehicleDynamics.Input(1,.2,false,false));
-            assertTrue(s.speed()>3&&s.fuel()<40,family+" did not drive parts="+parts+" speed="+s.speed());
+            // Compatibility/acceleration on a straight. Sustained full-throttle cornering
+            // may now spin a powerful RWD build; handling has its own trajectory tests.
+            var s=drive(setup,5,new VehicleDynamics.Input(1,0,false,false));
+            assertTrue(s.speed()>3&&s.fuel()<40,family+" did not drive parts="+parts+" grade="+grade+" tune="+tune+" speed="+s.speed()+" lateral="+s.transmission().lateralSpeed());
             assertTrue(Double.isFinite(s.engine().oilPressure())&&s.rpm()<=setup.limiter()*1.041);
             for(int t=0;t<160;t++)s=VehicleDynamics.step(s,true,new VehicleDynamics.Input(0,0,true,false),setup,1,true,.05);
             assertEquals(0,s.speed(),.001);checked++;

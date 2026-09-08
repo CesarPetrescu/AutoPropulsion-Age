@@ -36,6 +36,14 @@ public final class CarEntity extends Entity {
     private double testPressure=1;
     private static final EntityDataAccessor<String> DIAGNOSTIC=data(EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Float> TRIP_START=data(EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DRIVE_SETUP=data(EntityDataSerializers.INT),FRONT_SPLIT=data(EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> LATERAL_SPEED=data(EntityDataSerializers.FLOAT),YAW_RATE=data(EntityDataSerializers.FLOAT),STEERING_ANGLE=data(EntityDataSerializers.FLOAT);
+    public DriveConfig driveConfig(){return DriveConfig.decode(entityData.get(DRIVE_SETUP),entityData.get(FRONT_SPLIT));}
+    public void setDriveConfig(DriveConfig value){entityData.set(DRIVE_SETUP,value.packed());entityData.set(FRONT_SPLIT,value.frontPercent());}
+    public float lateralSpeed(){return entityData.get(LATERAL_SPEED);}
+    public float horizontalSpeed(){return (float)Math.hypot(speed(),lateralSpeed());}
+    public float yawRate(){return entityData.get(YAW_RATE);}
+    public float steeringAngle(){return entityData.get(STEERING_ANGLE);}
     private static final EntityDataAccessor<Float> ENGINE_LOAD=data(EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> VENT_EVENTS=data(EntityDataSerializers.INT);
     public float engineLoad(){return entityData.get(ENGINE_LOAD);}
@@ -68,7 +76,7 @@ public final class CarEntity extends Entity {
             entityData.set(TEMPERATURE,(float)value.coolantTemperature());entityData.set(OIL_TEMP,(float)value.oilTemperature());
             var internal=value.get("engine.internals");entityData.set(ENGINE_HEALTH,internal==null?0f:(float)((1-internal.damage())*100));
             if(engineState!=null)engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),value.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff(),engineState.mode(),engineState.startTime());
-            var clutch=value.get("driveline.clutch");if(clutch!=null&&transmissionState!=null)transmissionState=new TransmissionPhysics.State(transmissionState.gear(),transmissionState.target(),transmissionState.remaining(),clutch.temperature(),transmissionState.lateralSpeed(),transmissionState.yawRate());
+            var clutch=value.get("driveline.clutch");if(clutch!=null&&transmissionState!=null)transmissionState=transmissionState.heat(clutch.temperature());
             if(wheelState!=null)wheelState=WheelDynamics.restoreTemperatures(wheelState,value);
         }
     }
@@ -76,7 +84,7 @@ public final class CarEntity extends Entity {
     public double tripKm(){return Math.max(0,mechanics().distance()/1000-entityData.get(TRIP_START));}
     private double speed,verticalSpeed,lerpX,lerpY,lerpZ;
     private float lerpYaw,lerpPitch;
-    private int lerpSteps,lastInputTick=-100,inputKeys,lastActionTick=-100,benchTicks;
+    private int lerpSteps,lastInputTick=-100,inputKeys,lastActionTick=-100,benchTicks,benchRecovery;
     private float inputSteer;
     private EnginePhysics.State engineState=EnginePhysics.State.stopped(20,100);
     public float fanAngle;
@@ -85,6 +93,7 @@ public final class CarEntity extends Entity {
 
     public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;}
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
+        b.define(DRIVE_SETUP,DriveConfig.stock().packed());b.define(FRONT_SPLIT,0);b.define(LATERAL_SPEED,0f);b.define(YAW_RATE,0f);b.define(STEERING_ANGLE,0f);
         b.define(TRIP_START,0f);b.define(ENGINE_LOAD,0f);b.define(VENT_EVENTS,0);b.define(DIAGNOSTIC,"No test performed.");b.define(COOLANT,8f);b.define(OIL_QUANTITY,5f);b.define(BRAKE_FLUID,1f);b.define(CONTACTS,0);b.define(ENGINE_MODE,0);for(var wheel:WHEELS)b.define(wheel,new org.joml.Vector3f());b.define(MECHANICS,new CompoundTag());b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(FINAL_DRIVE,3.7f);b.define(FLAGS,0);b.define(CONFIG,Assembly.stock());b.define(PAINT,0x168A91);b.define(GEAR,1);b.define(LIMITER,6800);b.define(OWNER,Optional.empty());
         b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);
@@ -131,55 +140,62 @@ public final class CarEntity extends Entity {
         }
         if(entityData.get(MECHANICS).isEmpty())setMechanics(mechanical);
         boolean driver=getControllingPassenger() instanceof Player;
-        if(!driver||tickCount-lastInputTick>10){inputKeys=4;inputSteer=0;}
+        if(!driver||tickCount-lastInputTick>10){inputKeys=20;inputSteer=0;}
         if(engineHealth()<=5||fuel()<=0||isInWater()||!engineProblem().isEmpty())flag(1,false);
-        if(!ignition())benchTicks=0;
-        if(benchTicks>0){benchTicks--;inputKeys=21;inputSteer=0;}
+        if(!ignition()){benchTicks=0;benchRecovery=0;}
+        if(benchTicks>0){benchTicks--;benchRecovery=100;inputKeys=23;inputSteer=0;}
+        else if(benchRecovery>0){benchRecovery--;inputKeys=22;inputSteer=0;if(rpm()<1100&&throttle()<.05)benchRecovery=0;}
         boolean reverse=(inputKeys&8)!=0;
         if(speed>1)reverse=false;
         if(speed< -1)reverse=true;
         boolean braking=(inputKeys&2)!=0;flag(32,braking);flag(64,(inputKeys&4)!=0);flag(128,surfaceGrip()<.9);
         var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse,(inputKeys&16)!=0,(inputKeys&4)!=0);
-        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget(),mechanics());
+        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget(),mechanics(),driveConfig());
         double[] contact=wheelContacts();
-        int contactCount=0;for(double h:contact)if(Double.isFinite(h))contactCount++;
-        boolean grounded=onGround()||contactCount>=2;
-        boolean[] touching=new boolean[4];double[] travels=new double[4];
-        for(int c=0;c<4;c++){touching[c]=Double.isFinite(contact[c])&&!raised();travels[c]=touching[c]?Math.clamp(contact[c]-getY(),-.16,.16):-.16;}
-        double grip=surfaceGrip();
+        int contactCount=0;
         float currentFuel=fuel();
         for(int i=0;i<4;i++){
-            var state=VehicleDynamics.step(speed,currentFuel,engineState,wheelState,transmissionState,ignition(),input,setup,grip,touching,travels,.0125);
+            contact=wheelContacts();contactCount=0;
+            boolean[] touching=new boolean[4];double[] travels=new double[4],gaps=new double[4],grips=new double[4];
+            for(int c=0;c<4;c++){
+                gaps[c]=getY()-contact[c];touching[c]=Double.isFinite(contact[c])&&!raised()&&gaps[c]<=SuspensionPhysics.REACH;
+                if(touching[c])contactCount++;
+                travels[c]=touching[c]?Math.clamp(-gaps[c],-.28,.16):-.28;
+                grips[c]=touching[c]?surfaceGrip(new Vec3(wheelPoint(c).x,contact[c]-.02,wheelPoint(c).z)):0;
+                if(!touching[c])gaps[c]=Double.NaN;
+            }
+            var state=VehicleDynamics.step(speed,currentFuel,engineState,wheelState,transmissionState,ignition(),input,setup,grips,touching,travels,.0125);
             if(state.engine().blowOff()&&!engineState.blowOff())entityData.set(VENT_EVENTS,ventEvents()+1);entityData.set(ENGINE_LOAD,(float)state.load());
             engineState=state.engine();wheelState=state.wheels();transmissionState=state.transmission();
             if(engineState.mode()==EnginePhysics.Mode.STALLED)flag(1,false);
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
-            float previousYaw=getYRot();
-            setYRot(previousYaw+(float)Math.toDegrees(state.yawDelta()));
-            AABB nextBox=makeBoundingBox();
-            if(!level().noCollision(this,nextBox.deflate(.015)))setYRot(previousYaw);
+            float previousYaw=getYRot(),attemptedYaw=previousYaw+(float)Math.toDegrees(state.yawDelta());
+            setYRot(attemptedYaw);
+            double yaw=Math.toRadians(attemptedYaw),vx=-Math.sin(yaw)*speed-Math.cos(yaw)*transmissionState.lateralSpeed(),vz=Math.cos(yaw)*speed-Math.sin(yaw)*transmissionState.lateralSpeed();
+            if(!level().noCollision(this,makeBoundingBox().deflate(.015))){setYRot(previousYaw);transmissionState=transmissionState.motion(transmissionState.lateralSpeed(),0,transmissionState.steering(),0,0);}
             setBoundingBox(makeBoundingBox());
-            double yaw=Math.toRadians(getYRot());
-            verticalSpeed=raised()?0:Math.max(-30,verticalSpeed-9.81*.0125);
-            Vec3 move=new Vec3((-Math.sin(yaw)*speed+Math.cos(yaw)*transmissionState.lateralSpeed())*.0125,verticalSpeed*.0125,(Math.cos(yaw)*speed+Math.sin(yaw)*transmissionState.lateralSpeed())*.0125);
-            double oldX=getX(),oldZ=getZ(),impact=Math.abs(speed);
+            verticalSpeed=raised()?0:VehicleDynamics.clamp(verticalSpeed+SuspensionPhysics.acceleration(gaps,verticalSpeed,mechanics(),driveConfig())*.0125,-30,30);
+            Vec3 move=new Vec3(vx*.0125,verticalSpeed*.0125,vz*.0125);
+            double oldX=getX(),oldZ=getZ();
             move(MoverType.SELF,move);
             if(verticalCollision)verticalSpeed=0;
-            boolean forwards=speed>=0;
-            if(horizontalCollision&&Math.hypot(getX()-oldX,getZ()-oldZ)<Math.hypot(move.x,move.z)*.5){
-                speed=0;
-                if(impact>5){impactComponents(forwards?"front":"rear",impact);entityData.set(HEALTH,Math.max(0,health()-(float)(impact-5)*1.3f));playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("impact").get(),.5f,1);}
-            }
-            grounded=onGround()||contactCount>=2;
+            double lostX=Math.abs(getX()-oldX-move.x)>.0001?vx:0,lostZ=Math.abs(getZ()-oldZ-move.z)>.0001?vz:0;
+            if(lostX!=0)vx=0;if(lostZ!=0)vz=0;
+            double impact=Math.hypot(lostX,lostZ);
+            if(impact>5){impactComponents(speed>=0?"front":"rear",impact);entityData.set(HEALTH,Math.max(0,health()-(float)(impact-5)*1.3f));if(tickCount%5==0)playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("impact").get(),.5f,1);}
+            yaw=Math.toRadians(getYRot());speed=-Math.sin(yaw)*vx+Math.cos(yaw)*vz;
+            transmissionState=transmissionState.motion(-Math.cos(yaw)*vx-Math.sin(yaw)*vz,impact>0?transmissionState.yawRate()*.5:transmissionState.yawRate(),transmissionState.steering(),transmissionState.longitudinalAcceleration(),transmissionState.lateralAcceleration());
         }
+        entityData.set(LATERAL_SPEED,(float)transmissionState.lateralSpeed());entityData.set(YAW_RATE,(float)transmissionState.yawRate());entityData.set(STEERING_ANGLE,(float)transmissionState.steering());
         entityData.set(FUEL,currentFuel);entityData.set(SPEED,(float)speed);entityData.set(STEER,inputSteer);
         float throttle=(inputKeys&1)!=0?1:0;
         entityData.set(BOOST,(float)engineState.boost());entityData.set(OIL_TEMP,(float)engineState.oilTemperature());entityData.set(OIL_PRESSURE,(float)engineState.oilPressure());
         entityData.set(ENGINE_HEALTH,(float)engineState.health());entityData.set(AFR,(float)engineState.afr());entityData.set(THROTTLE,(float)engineState.throttle());entityData.set(SPOOL,(float)engineState.spool());
         entityData.set(SHAFT_TORQUE,(float)engineState.shaftTorque());entityData.set(BLOWER_KW,(float)engineState.blowerKw());
-        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),engineState.mode()==EnginePhysics.Mode.RUNNING,engineState.mode()==EnginePhysics.Mode.CRANKING,lights(),speed,braking,.05);
-        mechanical=WheelDynamics.wear(mechanical,wheelState,speed,.05);
+        double roadSpeed=Math.hypot(speed,transmissionState.lateralSpeed());
+        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),engineState.mode()==EnginePhysics.Mode.RUNNING,engineState.mode()==EnginePhysics.Mode.CRANKING,lights(),roadSpeed,braking,.05);
+        mechanical=WheelDynamics.wear(mechanical,wheelState,roadSpeed,.05);
         var internals=mechanical.get("engine.internals");
         if(internals!=null){double damage=Math.max(internals.damage(),1-engineState.health()/100);mechanical=mechanical.with("engine.internals",internals.condition(internals.wear(),damage,internals.faults()));entityData.set(ENGINE_HEALTH,(float)(100*(1-damage)));}
         engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),engineState.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff(),engineState.mode(),engineState.startTime());
@@ -193,27 +209,28 @@ public final class CarEntity extends Entity {
             else{testPressure*=CircuitPhysics.pressureHold(mechanics(),.05);pressureTestTicks--;if(pressureTestTicks%20==0)entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Cooling pressure: %.2f bar / 1.00 initial. %s",testPressure,pressureTestTicks==0?(testPressure>.90?"Holds pressure.":"Pressure loss: inspect circuit joints and radiator."):(pressureTestTicks/20)+" seconds remaining."));}
         }
         if(tickCount%10==0&&coolant()>0&&CircuitPhysics.coolantLeak(mechanics())>.005&&level() instanceof net.minecraft.server.level.ServerLevel server){var at=position().add(new Vec3(.35,.6,1.7).yRot((float)-Math.toRadians(getYRot())));server.sendParticles(net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER,at.x,at.y,at.z,2,.08,.04,.08,0);}
-        setDeltaMovement(-Math.sin(Math.toRadians(getYRot()))*speed/20,verticalSpeed/20,Math.cos(Math.toRadians(getYRot()))*speed/20);
+        double worldYaw=Math.toRadians(getYRot());setDeltaMovement((-Math.sin(worldYaw)*speed-Math.cos(worldYaw)*transmissionState.lateralSpeed())/20,verticalSpeed/20,(Math.cos(worldYaw)*speed-Math.sin(worldYaw)*transmissionState.lateralSpeed())/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
             float roll=(float)Math.toDegrees(Math.atan2((contact[0]+contact[2]-contact[1]-contact[3])/2,1.66));
-            entityData.set(PITCH,Mth.lerp(.25f,roadPitch(),Mth.clamp(pitch,-14,14)));
-            entityData.set(ROLL,Mth.lerp(.25f,roadRoll(),Mth.clamp(roll,-10,10)));
+            entityData.set(PITCH,Mth.lerp(.25f,roadPitch(),Mth.clamp(pitch+(float)transmissionState.longitudinalAcceleration()*.5f,-18,18)));
+            entityData.set(ROLL,Mth.lerp(.25f,roadRoll(),Mth.clamp(roll-(float)transmissionState.lateralAcceleration()*.7f,-18,18)));
         }
     }
-    private double surfaceGrip(){
-        var block=level().getBlockState(blockPosition().below());
+    private double surfaceGrip(){return surfaceGrip(position().add(0,-.2,0));}
+    private double surfaceGrip(Vec3 point){
+        var block=level().getBlockState(BlockPos.containing(point));
         if(block.is(net.minecraft.tags.BlockTags.ICE))return .22;
-        if(block.is(net.minecraft.tags.BlockTags.SAND)||block.is(net.minecraft.tags.BlockTags.DIRT))return .70;
+        if(block.is(net.minecraft.tags.BlockTags.SAND)||block.is(net.minecraft.tags.BlockTags.DIRT)||block.is(net.minecraft.world.level.block.Blocks.GRAVEL))return .70;
         return 1;
     }
+    private Vec3 wheelPoint(int c){return position().add(new Vec3(c%2==0?-.83:.83,0,c<2?1.35:-1.30).yRot((float)-Math.toRadians(getYRot())));}
     private double[] wheelContacts(){
-        double[] heights=new double[4];int i=0;
-        for(double z:new double[]{1.35,-1.30})for(double x:new double[]{-.83,.83}){
-            Vec3 local=new Vec3(x,0,z).yRot((float)-Math.toRadians(getYRot()));
-            Vec3 from=position().add(local).add(0,.75,0),to=from.add(0,-1.05,0);
+        double[] heights=new double[4];
+        for(int c=0;c<4;c++){
+            Vec3 point=wheelPoint(c),from=point.add(0,.16,0),to=point.add(0,-SuspensionPhysics.REACH,0);
             var hit=level().clip(new ClipContext(from,to,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
-            heights[i++]=hit.getType()==HitResult.Type.BLOCK?hit.getLocation().y:Double.NaN;
+            heights[c]=hit.getType()==HitResult.Type.BLOCK?hit.getLocation().y:Double.NaN;
         }
         return heights;
     }
@@ -222,14 +239,14 @@ public final class CarEntity extends Entity {
         double x=.98*c+2.25*s,z=2.25*c+.98*s;
         return new AABB(getX()-x,getY(),getZ()-z,getX()+x,getY()+1.52,getZ()+z);
     }
-    @Override public float maxUpStep(){return Math.abs(speed())<7?.6f:0;}
+    @Override public float maxUpStep(){return horizontalSpeed()<4?.3f:0;}
     @Override public boolean isPickable(){return true;}
     @Override public boolean isPushable(){return false;}
     @Override public boolean canBeCollidedWith(){return isAlive();}
     @Override public boolean canCollideWith(Entity other){return other.canBeCollidedWith()&&!isPassengerOfSameVehicle(other);}
     @Override public boolean isControlledByLocalInstance(){return false;}
     @Override public LivingEntity getControllingPassenger(){return getFirstPassenger() instanceof LivingEntity l?l:null;}
-    @Override protected boolean canAddPassenger(Entity p){return getPassengers().isEmpty()&&Math.abs(speed())<1;}
+    @Override protected boolean canAddPassenger(Entity p){return getPassengers().isEmpty()&&horizontalSpeed()<1;}
     @Override protected Vec3 getPassengerAttachmentPoint(Entity p,EntityDimensions dimensions,float scale){
         return new Vec3(-.40,.18,.12).yRot((float)-Math.toRadians(getYRot()));
     }
@@ -254,7 +271,7 @@ public final class CarEntity extends Entity {
         if(entityData.get(OWNER).isEmpty())setOwner(player.getUUID());
         if(player.getItemInHand(hand).is(AutoPropulsionAge.FUEL_CAN.get()))action(sp,CarPackets.REFUEL,0,0);
         else if(player.isSecondaryUseActive()||player.getItemInHand(hand).is(AutoPropulsionAge.WRENCH.get()))CarPackets.open(sp,this);
-        else if(Math.abs(speed())<1)player.startRiding(this);
+        else if(horizontalSpeed()<1)player.startRiding(this);
         return InteractionResult.CONSUME;
     }
     @Override public InteractionResult interactAt(Player player,Vec3 hit,InteractionHand hand){
@@ -281,7 +298,7 @@ public final class CarEntity extends Entity {
             }return;
         }
         if(action==CarPackets.REV_TEST){
-            if(engineRunning()&&Math.abs(speed())<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
+            if(engineRunning()&&horizontalSpeed()<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
             else message(player,"Park, open the hood and start the engine before a rev test.");return;
         }
         if(action==CarPackets.IGNITION){
@@ -294,13 +311,23 @@ public final class CarEntity extends Entity {
             if(fuel()<=0||isInWater()){message(player,"Refuel or repair the car before starting.");return;}
             engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());flag(1,true);playSound(SoundEvents.PISTON_EXTEND,.7f,.7f);return;
         }
-        if(Math.abs(speed())>.3){message(player,"Stop the car before servicing it.");return;}
+        if(horizontalSpeed()>.3){message(player,"Stop the car before servicing it.");return;}
         if(action==CarPackets.PANELS){boolean open=!panels();flag(4,open);flag(8,open);return;}
         if(action==CarPackets.HOOD){flag(8,!hoodOpen());playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("latch").get(),.4f,1);return;}
         if(ignition()){message(player,"Switch the engine off before servicing.");return;}
         boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||action==CarPackets.ENGINE_REBUILD||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
         if(engineWork&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before working on the engine.");return;}
         switch(action){
+            case CarPackets.DRIVE_SETUP -> {
+                if(!DriveConfig.valid(a,b)){message(player,"Invalid driveline configuration.");return;}
+                var next=DriveConfig.decode(a,b);if(next.equals(driveConfig()))return;
+                boolean conversion=next.layout()!=driveConfig().layout()||next.differential()!=driveConfig().differential();
+                if(conversion&&!raised()){message(player,"Leave the car and raise it on a service jack before converting the driveline.");return;}
+                if(Assembly.TRANSMISSION.variant(config())==0||MechanicalCapabilities.transmission(mechanics())<=.01){message(player,"Fit a working gearbox, shaft and differential first.");return;}
+                if(conversion&&!consume(player,Items.IRON_INGOT,8)){message(player,"Driveline conversion requires 8 iron ingots.");return;}
+                setDriveConfig(next);transmissionState=transmissionState.motion(0,0,0,0,0);
+                message(player,next.layout()+" / "+next.differential().name().replace('_',' ')+" saved. Installed part condition is retained.");
+            }
             case CarPackets.DIAGNOSE -> {
                 if(a==0){if(!hasTool(player,"pressure_tester"))return;if(!hoodOpen()||temperature()>60){message(player,"Open the hood and let the coolant cool below 60 C before pressure testing.");return;}pressureTestTicks=200;testPressure=1;entityData.set(DIAGNOSTIC,"Cooling circuit pumped to 1.00 bar. Holding for ten seconds.");}
                 if(a==1){if(!player.isCreative()&&player.getInventory().countItem(AutoPropulsionAge.WRENCH.get())==0){message(player,"Use the garage wrench for fluid inspection.");return;}entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Fluid inspection: coolant %.2f / 8 L; oil %.2f / 5 L; brake reservoir %.2f / 1 L.",coolant(),oilQuantity(),brakeFluid()));}
@@ -330,7 +357,7 @@ public final class CarEntity extends Entity {
                 if(!getPassengers().isEmpty()){message(player,"Leave the car before lifting it.");return;}
                 if(!raised()&&!player.isCreative()&&player.getInventory().countItem(AutoPropulsionAge.PART_ITEMS.get("service_jack").get())==0){message(player,"A service jack is required.");return;}
                 if(!raised()&&!level().noCollision(this,getBoundingBox().move(0,.5,0))){message(player,"Clear the space above the car first.");return;}
-                setPos(getX(),getY()+(raised()?-.5:.5),getZ());flag(16,!raised());verticalSpeed=0;speed=0;
+                setPos(getX(),getY()+(raised()?-.5:.5),getZ());flag(16,!raised());verticalSpeed=0;speed=0;transmissionState=transmissionState.motion(0,0,0,0,0);
             }
             case CarPackets.COMPONENT_SWAP -> {
                 if(a<0||a>=ComponentSlot.ALL.size()||b<0||b>2)return;
@@ -473,12 +500,14 @@ public final class CarEntity extends Entity {
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",4);tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",5);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());tag.putBoolean("Raised",raised());
         tag.putFloat("EngineHealth",engineHealth());tag.putFloat("OilTemperature",oilTemperature());tag.putFloat("BoostTarget",boostTarget());
         tag.putInt("Limiter",limiter());tag.putFloat("FinalDrive",finalDrive());tag.putBoolean("Lights",lights());entityData.get(OWNER).ifPresent(id->tag.putUUID("Owner",id));
     }
     @Override protected void readAdditionalSaveData(CompoundTag tag){
+        setDriveConfig(tag.contains("DriveSetup")?DriveConfig.decode(tag.getInt("DriveSetup"),tag.getInt("FrontSplit")):DriveConfig.stock());
+        entityData.set(LATERAL_SPEED,0f);entityData.set(YAW_RATE,0f);entityData.set(STEERING_ANGLE,0f);
         if(tag.contains("Assemblies"))setConfiguration(tag.getInt("Assemblies"));
         entityData.set(ENGINE_FAMILY,EngineFamily.byId(tag.getInt("EngineFamily")).ordinal());
         entityData.set(ENGINE_PARTS,tag.contains("EngineParts")?(tag.getInt("DataVersion")<3?EnginePart.fromLegacy(tag.getInt("EngineParts")):EnginePart.sanitize(tag.getInt("EngineParts"))):EnginePart.stock());
@@ -497,6 +526,6 @@ public final class CarEntity extends Entity {
         wheelState=WheelDynamics.State.stopped();transmissionState=TransmissionPhysics.State.stopped();
         if(tag.contains("Mechanics",10))setMechanics(MechanicalData.read(tag.getCompound("Mechanics")));
         else setMechanics(MechanicalState.legacy(config(),engineParts(),temperature(),oilTemperature(),engineHealth()));
-        tripStart=VehicleDynamics.clamp(tag.getDouble("TripStart"),0,mechanics().distance());entityData.set(TRIP_START,(float)(tripStart/1000));entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
+        tripStart=VehicleDynamics.clamp(tag.getDouble("TripStart"),0,mechanics().distance());entityData.set(TRIP_START,(float)(tripStart/1000));entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;benchRecovery=0;flag(1,false);
     }
 }

@@ -53,7 +53,7 @@ public final class CarClient {
             while(LIGHTS.consumeClick())send(car,CarPackets.LIGHTS,0,0);
             while(PANELS.consumeClick())send(car,CarPackets.PANELS,0,0);
             while(HORN.consumeClick())send(car,CarPackets.HORN,0,0);
-            while(REVERSE.consumeClick())if(Math.abs(car.speed())<.5)reverse=!reverse;
+            while(REVERSE.consumeClick())if(car.horizontalSpeed()<.5)reverse=!reverse;
         }
         if(mc.player.getVehicle()==car){
             if(lastCar!=car.getId()){
@@ -68,7 +68,7 @@ public final class CarClient {
                 if(mc.options.keyDown.isDown())keys|=2;
                 if(mc.options.keyJump.isDown())keys|=4;
                 if(CLUTCH.isDown())keys|=16;
-                steer=(mc.options.keyRight.isDown()?1:0)-(mc.options.keyLeft.isDown()?1:0);
+                steer=(mc.options.keyLeft.isDown()?1:0)-(mc.options.keyRight.isDown()?1:0);
             }else keys|=4;
             PacketDistributor.sendToServer(new CarPackets.Input(car.getId(),keys,steer));
         }else lastCar=-1;

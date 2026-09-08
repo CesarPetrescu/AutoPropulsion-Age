@@ -36,6 +36,12 @@ neoForge {
             systemProperty 'sparkmotors.clientSmoke', 'true'
             systemProperty 'sparkmotors.clientMechanics', 'true'
         }
+        clientHandling {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientSmoke', 'true'
+            systemProperty 'sparkmotors.clientHandling', 'true'
+        }
         multiServer { server(); gameDirectory=file('run/multi-server');programArgument '--nogui';systemProperty 'sparkmotors.multiServer','true' }
         multiClientA { client();gameDirectory=file('run/multi-client-a');programArguments.addAll '--username','MechanicA','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','A' }
         multiClientB { client();gameDirectory=file('run/multi-client-b');programArguments.addAll '--username','MechanicB','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','B' }

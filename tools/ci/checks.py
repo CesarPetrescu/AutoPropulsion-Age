@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=43):
+def junit(directory, minimum=51):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,11 +36,12 @@ def junit(directory, minimum=43):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=26):
+def server(log, minimum=30):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
-    return {'dedicated_gametests_passed': int(counts[-1])}
+    require('DRIVETRAIN_SERVER_MATRIX_PASS 294' in log, 'Missing complete drivetrain/engine driving matrix')
+    return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
 
 
 def client(log, result, mode):
@@ -51,6 +52,12 @@ def client(log, result, mode):
         for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS'):
             require(marker in log, f'Missing {marker}')
         return {'native_mechanics_passed': True, 'audio_channels_and_cleanup': True, 'sender_test': True}
+    if mode == 'handling':
+        for marker in ('HANDLING_CLIENT_PASS', 'AIRBORNE_LANDING_PASS'):
+            require(marker in log, f'Missing {marker}')
+        layouts = set(re.findall(r'DRIVE_LAYOUT_PASS (RWD|FWD|AWD)\b', log))
+        require(layouts == {'RWD', 'FWD', 'AWD'}, 'Incomplete native drivetrain coverage')
+        return {'native_drive_layouts_passed': sorted(layouts), 'airborne_landing': True}
     layouts = set(re.findall(r'ENGINE_LAYOUT_PASS ([\w-]+)', log))
     hardware = set(re.findall(r'HARDWARE_UI_PASS ([\w-]+)', log))
     require(len(layouts) == 49 and len(hardware) == 42,
@@ -134,7 +141,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -147,7 +154,7 @@ def main():
         report = junit(args.directory or REPO / 'sim/build/test-results/test')
     elif args.mode == 'server':
         report = server(args.log.read_text(errors='replace'))
-    elif args.mode in ('mechanics', 'matrix'):
+    elif args.mode in ('mechanics', 'matrix', 'handling'):
         report = client(args.log.read_text(errors='replace'), args.result.read_text(), args.mode)
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)

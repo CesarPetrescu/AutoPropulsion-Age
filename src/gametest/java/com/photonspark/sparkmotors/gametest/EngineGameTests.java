@@ -106,21 +106,22 @@ public final class EngineGameTests {
         }
         h.assertTrue(count==13,"All donor-engine recipes checked");h.succeed();
     }
-    @GameTest(template="test_track",timeoutTicks=14000) public void all98EngineLayoutsDriveAndBrakeInWorld(GameTestHelper h){
+    @GameTest(template="test_track",timeoutTicks=42000) public void all294DrivetrainEngineLayoutsDriveAndBrakeInWorld(GameTestHelper h){
         var p=h.makeMockServerPlayerInLevel();CarEntity[] active={null};int[] ticks={0};float[] peak={0};double[] start={0};
         h.onEachTick(()->{
-            int t=ticks[0]++,job=t/135,step=t%135;if(job>=98)return;
+            int t=ticks[0]++,job=t/135,step=t%135;if(job>=294)return;
             if(step==0){
                 if(active[0]!=null){p.stopRiding();active[0].discard();}
                 var c=car(h);active[0]=c;var state=new CompoundTag();c.saveWithoutId(state);
-                state.remove("Mechanics");state.putInt("EngineFamily",job/14);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/7)%2));state.putInt("EngineParts",EnginePart.boosted(job%7));c.load(state);
+                state.remove("Mechanics");state.putInt("EngineFamily",(job%98)/14);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/7)%2));state.putInt("EngineParts",EnginePart.boosted(job%7));c.load(state);
+                c.setDriveConfig(DriveConfig.preset(DriveConfig.Layout.values()[job/98]));
                 p.moveTo(c.position());c.setOwner(p.getUUID());h.assertTrue(p.startRiding(c,true),"Driver must mount layout "+job);act(c,p,CarPackets.IGNITION,0,0);start[0]=c.getZ();peak[0]=0;
             }
             var c=active[0];c.receiveInput(step<15?4:step<70?1:2,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
             if(step==133){
                 h.assertTrue(peak[0]>3&&c.getZ()>start[0]+2,"Every family/grade/induction layout must drive: "+job+" peak="+peak[0]+" displacement="+(c.getZ()-start[0]));
                 h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Every layout must brake and use fuel: "+job+" speed="+c.speed()+" fuel="+c.fuel()+" rpm="+c.rpm()+" peak="+peak[0]);
-                if(job==97){p.stopRiding();c.discard();h.succeed();}
+                if(job==293){p.stopRiding();c.discard();System.out.println("DRIVETRAIN_SERVER_MATRIX_PASS 294");h.succeed();}
             }
         });
     }

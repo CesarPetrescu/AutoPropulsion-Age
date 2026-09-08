@@ -134,7 +134,7 @@ public final class CarMesh {
                 if(tag.matches("[fr][lr]")){
                     float x=tag.charAt(1)=='l'?-.83f:.83f,z=tag.charAt(0)=='f'?1.35f:-1.30f;
                     poses.translate(x,.34,z);
-                    if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(-car.steer()*.49f/(1+Math.abs(car.speed())*.045f)));
+                    if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(-car.steeringAngle()));
                     float individual=corner<0?wheel:Mth.lerp(partial,car.oldWheelAngles[corner],car.wheelAngles[corner]);
                     poses.mulPose(Axis.XP.rotation(individual));
                     if(part!=null&&component.endsWith(".rim")&&(part.faults()&PartInstance.BENT)!=0)poses.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(individual*2)*part.damage()*8)));

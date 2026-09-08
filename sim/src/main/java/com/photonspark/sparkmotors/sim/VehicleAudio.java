@@ -33,8 +33,8 @@ public final class VehicleAudio {
             var internal=m.get("engine.internals");if(internal!=null)add(result,"knock","knock",Math.max(0,internal.wear()-.65)*.18+((internal.faults()&PartInstance.MISFIRE)!=0?.08:0),rpm/3000,-1);
         }
         for(int c=0;c<4;c++){
-            var wheel=s.wheels.corners().get(c);String prefix="wheel."+ComponentSlot.CORNERS[c]+".";double speed=Math.abs(wheel.omega()*.34);
-            if(!wheel.contact()||Math.abs(s.speed)<.25||m.get(prefix+"tire")==null)continue;
+            var wheel=s.wheels.corners().get(c);String prefix="wheel."+ComponentSlot.CORNERS[c]+".";double speed=Math.max(Math.abs(s.speed),Math.abs(wheel.omega()*.34));
+            if(!wheel.contact()||speed<.25||m.get(prefix+"tire")==null)continue;
             add(result,"road"+c,s.rough?"gravel":"road",Math.min(.055,speed*.002),.65+speed/40,c);
             add(result,"slip"+c,"tire_slip",wheel.slip()*Math.min(1,speed/6)*.09,1+wheel.slip()*.2,c);
             var pad=m.get(prefix+"pad");boolean braking=(s.brake&&WheelDynamics.brakeCapability(m,c,true)>0)||(s.handbrake&&c>=2&&WheelDynamics.brakeCapability(m,c,false)>0);

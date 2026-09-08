@@ -48,7 +48,21 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        self.assertEqual(checks.server('All 26 required tests passed :)')['dedicated_gametests_passed'], 26)
+        self.assertEqual(checks.server('All 30 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294')['dedicated_gametests_passed'], 30)
+
+    def test_server_missing_driving_matrix_blocks_release(self):
+        with self.assertRaises(ValueError):
+            checks.server('All 30 required tests passed :)')
+
+    def test_native_handling_missing_layout_or_landing_blocks_release(self):
+        for log in ('HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD',
+                    'HANDLING_CLIENT_PASS DRIVE_LAYOUT_PASS RWD DRIVE_LAYOUT_PASS FWD DRIVE_LAYOUT_PASS AWD'):
+            with self.assertRaises(ValueError):
+                checks.client('ALPHA_CLIENT_SMOKE PASS: ' + log, 'PASS: ok', 'handling')
+
+    def test_native_handling_complete_pass(self):
+        log = 'ALPHA_CLIENT_SMOKE PASS: HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD DRIVE_LAYOUT_PASS FWD DRIVE_LAYOUT_PASS AWD'
+        self.assertEqual(checks.client(log, 'PASS: ok', 'handling')['native_drive_layouts_passed'], ['AWD', 'FWD', 'RWD'])
 
     def test_client_missing_result_is_failure(self):
         with self.assertRaises(ValueError):

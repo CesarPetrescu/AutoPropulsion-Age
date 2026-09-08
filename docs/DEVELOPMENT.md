@@ -1,5 +1,7 @@
 # Playable alpha: development and verification
 
+**Start with the [Windows development guide](../DEVELOPMENT.md)** for current setup, Blender MCP/background exports, handling architecture and test commands. The verification section below describes the earlier mechanics baseline; current CI artifacts are authoritative for each new commit.
+
 ## Build
 
 Requires a Java 21 JDK. The wrapper downloads Gradle 9.2.1, NeoForge 21.1.249 and ModDevGradle 2.0.146 dependencies.
@@ -9,7 +11,7 @@ Requires a Java 21 JDK. The wrapper downloads Gradle 9.2.1, NeoForge 21.1.249 an
 .\gradlew.bat runClient
 ```
 
-On Linux/macOS use `./gradlew`. The installable artifact is `build/libs/autopropulsion-age-0.4.0-alpha.jar`. Its simulation classes are bundled; `sim/build/libs` is not a second mod to install.
+On Linux/macOS use `./gradlew`. The installable artifact is `build/libs/autopropulsion-age-0.5.0-alpha.jar`. Its simulation classes are bundled; `sim/build/libs` is not a second mod to install.
 
 ```powershell
 .\gradlew.bat :sim:test
@@ -67,7 +69,7 @@ The simulation catalog can be exported with `java -cp sim/build/classes/java/mai
 
 The dyno shares the hardware curves and physics with the game. `--transient` outputs a ten-second stateful run: seven seconds of acceleration followed by throttle lift and braking. CSV includes RPM, road speed, boost, turbo speed, throttle, torque, AFR, oil readings, engine wear and blower load. Every CLI hardware selection is validated before the run.
 
-Vehicle schema 4 adds typed mechanical state while retaining the ten three-bit hardware slots; legacy six two-bit slots migrate without changing old choices. Engine item schema 2 uses the same mapping. Protocol 4 requires matching client/server mod versions. Individual wear, damage, faults, quantities, pressure/charge and temperatures persist, while moving/rotating transient state resets on load. Simulation classes are included in the mod output and JAR; dedicated test/harness classes and the test track are excluded from releases.
+Vehicle schema 5 adds drivetrain routing to the typed mechanical state while retaining the ten three-bit hardware slots; legacy six two-bit slots migrate without changing old choices. Engine item schema 2 uses the same mapping. Protocol 5 requires matching client/server mod versions. Individual wear, damage, faults, quantities, pressure/charge and temperatures persist, while moving/rotating transient state resets on load. Simulation classes are included in the mod output and JAR; dedicated test/harness classes and the test track are excluded from releases.
 
 The native screenshots are actual Minecraft captures. The isolated hardware images are Blender renders of the exact game geometry. These checks establish the implemented alpha behavior; other modpacks, separate-machine multiplayer, a full combustion solver and the remaining original specification are future work.
 

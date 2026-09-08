@@ -1,6 +1,6 @@
-# Playing AutoPropulsion Age 0.4.0-alpha
+# Playing AutoPropulsion Age 0.5.0-alpha
 
-Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the mod JAR](../downloads/autopropulsion-age-0.4.0-alpha.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
+Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 
 The alpha provides a drivable sedan, seven engine families, 42 engine hardware choices, individual mechanical components, fluids, diagnosis and targeted repair. The [milestone report](mechanical-milestones.md) distinguishes verified behavior from the remaining roadmap.
 
@@ -24,6 +24,22 @@ Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it
 | Left Shift / F5 | Exit / camera view |
 
 Keys can be rebound in Minecraft Controls. The normal HUD stays compact. Look down in first person to see the dashboard needles, gear and odometer. Coolant/oil sender failures remove their readings and produce a sender warning. The garage **Live** page is explicitly labeled assisted telemetry and can show values unavailable to a failed instrument.
+
+## Drive layouts and drifting
+
+The car keeps sideways momentum and turns from independent tire forces. Too much power, braking or steering can use up grip. Ice and loose ground, pressure loss, worn tires and individual corner damage change the result. A short **Space** pull while turning initiates rear slip; release it, lift and countersteer promptly. Holding the handbrake can spin the car. Use **S** for a normal stop.
+
+Open **G → Drive** to choose RWD, FWD or AWD. Exit, park with the engine off and raise the car on a **Service Jack** before converting. Survival requires **eight iron ingots** for each layout/differential conversion and retains all installed part identities and condition. A repeated current preset costs nothing. Lower the jack before starting.
+
+| Preset | Power routing | Differential |
+|---|---|---|
+| RWD | Rear wheels | Limited slip |
+| FWD | Front wheels | Open |
+| AWD | 40% front / 60% rear | Limited slip |
+
+You can also select open, limited-slip or locked axle differentials. AWD front torque adjusts from 20–80% while parked with the engine off; this adjustment is free. FWD tires share propulsion and steering grip. RWD power can break rear traction. AWD improves traction but still slides when all tire grip is used. The Drive diagram shows actual installed routing and synchronized wheel contact/slip.
+
+Springs support the chassis, and gravity acts when road contact is lost. Steering and braking in the air do not create tire-road forces. Current handling has planar yaw/lateral motion and vertical spring movement; it does not simulate full rollovers or soft-body deformation. [Development architecture and reproducible tests](../DEVELOPMENT.md#handling-and-drivetrain-work).
 
 ## Complete a coolant-leak repair
 
@@ -61,6 +77,6 @@ The Service cutaway hides covers only in the preview. It does not remove invento
 
 ## Persistence and current limits
 
-Existing 0.1–0.3 cars and engine items migrate once. Individual identities, wear, damage, faults, pressure/charge, temperatures and applicable fluid quantities survive supported service, item, crafting, crate and save conversions. Reloaded cars start with the engine off. Owners/operators, proximity, access and Survival inventory transactions remain server-validated.
+Existing 0.1–0.4 cars and engine items migrate once. Individual identities, wear, damage, faults, pressure/charge, temperatures and applicable fluid quantities survive supported service, item, crafting, crate and save conversions. Reloaded cars start with the engine off. Owners/operators, proximity, access and Survival inventory transactions remain server-validated.
 
 There are 122 mod items/recipes and 81 stable component mounts (80 installed on a stock naturally aspirated car). This is a component simulation with useful service assemblies, not an individual fastener/cylinder or soft-body simulator. Not every logical component has its own unique detailed mesh. Expert fasteners, engine-stand procedures, a full body/glass/latch service tree, dynamic headlights, LODs and large-fleet tuning remain future work. The local two-client test passed; separate-machine latency, other modpacks and long-duration worlds remain untested.

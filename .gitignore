@@ -11,4 +11,5 @@ assets/modular_car_kit/rebuild_check/temporary/
 run/
 runs/
 .idea/
+.venv/
 *.iml

@@ -55,7 +55,7 @@ public final class PowertrainGameTests {
     }
     @GameTest(template="test_track",timeoutTicks=180) public void clutchFreeRevsAndReconnectsTheRealDriveline(GameTestHelper h){
         var c=car(h);var p=h.makeMockServerPlayerInLevel();p.moveTo(c.position());c.setOwner(p.getUUID());p.startRiding(c,true);act(c,p,CarPackets.IGNITION,0,0);int[] ticks={0};
-        h.onEachTick(()->{ticks[0]++;c.receiveInput(ticks[0]<40?17:ticks[0]<90?1:4,0);});
+        h.onEachTick(()->{ticks[0]++;c.receiveInput(ticks[0]<40?17:ticks[0]<90?1:2,0);});
         h.runAfterDelay(35,()->{h.assertTrue(c.rpm()>4000&&Math.abs(c.speed())<.1,"C+W must free-rev the crank without propelling the car");h.assertTrue(c.oilPressure()>1,"Running oil pressure is synchronized");});
         h.runAfterDelay(85,()->h.assertTrue(c.speed()>5,"Releasing clutch reconnects the drivetrain"));
         h.runAfterDelay(160,()->{h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Brakes stop the new drivetrain");p.stopRiding();h.succeed();});

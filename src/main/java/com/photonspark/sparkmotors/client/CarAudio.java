@@ -21,7 +21,7 @@ public final class CarAudio {
     public void tick(){
         var corners=new ArrayList<WheelDynamics.Corner>();
         for(int c=0;c<4;c++)corners.add(new WheelDynamics.Corner(car.wheelOmega(c),0,car.wheelTravel(c),car.wheelContact(c),car.wheelSlip(c),0,20));
-        var input=new VehicleAudio.Input(car.engineFamily(),car.engineMode(),car.rpm(),car.throttle(),car.engineLoad(),car.spool(),car.boost(),car.speed(),EnginePart.INDUCTION.variant(car.engineParts()),car.serviceBrake(),car.handbrake(),car.roughSurface(),new WheelDynamics.State(corners),car.mechanics());
+        var input=new VehicleAudio.Input(car.engineFamily(),car.engineMode(),car.rpm(),car.throttle(),car.engineLoad(),car.spool(),car.boost(),car.horizontalSpeed(),EnginePart.INDUCTION.variant(car.engineParts()),car.serviceBrake(),car.handbrake(),car.roughSurface(),new WheelDynamics.State(corners),car.mechanics());
         var mix=VehicleAudio.mix(input);
         layers.values().forEach(layer->layer.target=0);
         for(var entry:mix.entrySet()){

@@ -131,6 +131,8 @@ jobs:
             task: runClientMechanics
           - mode: matrix
             task: runClientSmoke
+          - mode: handling
+            task: runClientHandling
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -268,7 +270,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, dedicated GameTests, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})

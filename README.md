@@ -1,6 +1,6 @@
 # AutoPropulsion Age
 
-**Playable alpha 0.4.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
+**Playable alpha 0.5.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
 Drive a modular sedan and build its engine under an opening hood. Choose **42 hardware items across ten engine slots**, with **seven engine families and seven induction configurations**. Parts change the actual geometry and the simulated response: turbo lag, blower drive load, flywheel inertia, fuel capacity, cams/ports, cooling and oil systems all matter.
 
@@ -10,7 +10,23 @@ Drive a modular sedan and build its engine under an opening hood. Choose **42 ha
 
 The latest JAR is published automatically only after simulation, dedicated-server, native client, two-client trading, resource/audio and geometry checks pass. Each release includes checksums, the exact source commit and fresh test reports/screenshots. Failed builds leave the previous tested alpha available.
 
-Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1–0.3 cars and engine items migrate their installed components and condition.
+Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1–0.4 cars and engine items migrate their installed components and condition.
+
+For Windows setup, Minecraft runs, Blender MCP, asset exports, debugging and tests, see the **[development guide](DEVELOPMENT.md)**.
+
+## Traction, drifting and drive layouts
+
+The sedan now has separate forward and lateral momentum, tire slip and force-driven yaw. It can lose rear or front grip, slide, spin and leave the road. Spring/damper support releases when the wheels lose contact; airborne steering does not redirect the chassis.
+
+**G → Drive** fits RWD (rear limited slip), FWD (front open differential) or AWD (40% front / 60% rear limited slip). Choose open, limited-slip or locked axle differentials, and adjust AWD front torque from 20–80%. Stop, switch off, exit and raise the car on a service jack for conversions; Survival costs eight iron ingots and retains installed part condition.
+
+**Space** pulls the rear handbrake; **S** uses the service brakes. A short handbrake pull while turning initiates rotation. Release it and countersteer promptly. Tire pressure, wear, individual brake faults, road surface and engine torque affect the available grip. AWD can still slide.
+
+The release gate includes 294 in-world engine/drivetrain driving combinations plus native garage, drift and braking checks for all three presets and an airborne/landing check. This is planar handling with vertical suspension, not full rollover or soft-body crash physics. [Controls and limits](DEVELOPMENT.md#handling-and-drivetrain-work).
+
+| RWD road preset | FWD road preset | AWD road preset |
+|---|---|---|
+| ![RWD garage](docs/screenshots/handling-rwd-setup.png) | ![FWD garage](docs/screenshots/handling-fwd-setup.png) | ![AWD garage](docs/screenshots/handling-awd-setup.png) |
 
 ## Diagnose and repair actual parts
 
@@ -75,7 +91,7 @@ The alpha includes automatic gears, reverse, collision handling, fuel, repairs, 
 
 ## Verification and scope
 
-[The current milestone record](docs/mechanical-milestones.md) covers fresh JUnit, native server/client, two-client trading, persistence, audio regeneration and Blender checks. [verification.json](docs/verification.json) records the final build and checksum. The old model galleries remain below; native screenshots are refreshed by the full client matrix.
+[The CI release gate](docs/CI.md) covers JUnit, native server/client, two-client trading, persistence, audio regeneration and Blender checks. The latest release carries the exact tested commit, checksums and fresh test evidence. [The mechanics milestone record](docs/mechanical-milestones.md) and [verification.json](docs/verification.json) describe the earlier mechanics baseline. The model galleries remain below; native screenshots are refreshed by the full client matrix.
 
 This is a playable component-simulation alpha. Deeper individual engine internals, Expert fasteners, engine-stand procedures, complete glass/latch service, projected headlights and large-fleet rendering remain future work. Sound assets are original synthesis, not recordings. Native active-channel tests cannot establish subjective audio quality.
 

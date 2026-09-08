@@ -33,7 +33,7 @@ public final class GarageScreen extends Screen {
     public GarageScreen(CarEntity car,int initialTab){super(Component.literal("AutoPropulsion Garage"));this.car=car;tab=initialTab;draftLimiter=car.limiter();draftDrive=Math.round(car.finalDrive()*100);draftBoost=Math.round(car.boostTarget()*1000);lastConfig=car.config();lastPaint=car.paint();selectedFamily=car.engineFamily();lastFamily=selectedFamily.ordinal();lastEngineParts=car.engineParts();for(var p:EnginePart.values())selectedParts[p.ordinal()]=p.variant(car.engineParts());}
     @Override public boolean isPauseScreen(){return false;}
     private void request(int action,int a,int b){CarClient.send(car,action,a,b);}
-    private boolean serviceAllowed(){return Math.abs(car.speed())<.3&&!car.ignition();}
+    private boolean serviceAllowed(){return car.horizontalSpeed()<.3&&!car.ignition();}
     private boolean engineServiceAllowed(){return serviceAllowed()&&car.hoodOpen()&&car.hoodProgress>=.95;}
     private Item assemblyItem(Assembly slot,int v){return slot==Assembly.ENGINE?AutoPropulsionAge.engineItem(car.engineFamily(),v):AutoPropulsionAge.partItem(slot,v);}
     private Button button(String label,int bx,int by,int bw,int bh,Runnable action,String tooltip,boolean service){
@@ -45,8 +45,8 @@ public final class GarageScreen extends Screen {
         clearWidgets();serviceButtons.clear();w=Math.min(780,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;
         previewWidth=Math.max(120,(int)(w*.38));rx=x+previewWidth+20;rw=w-previewWidth-32;
         button("X",x+w-29,y+9,20,20,this::onClose,"Close garage",false);
-        String[] names={"Garage","Paint","Tuner","Car","Engine","Live","Service"};
-        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{if(selected==6)minecraft.setScreen(new ServiceScreen(car));else{tab=selected;init();}},null,false).active=i!=tab;}
+        String[] names={"Garage","Paint","Tuner","Car","Engine","Live","Service","Drive"};
+        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{if(selected==6)minecraft.setScreen(new ServiceScreen(car));else if(selected==7)minecraft.setScreen(new DriveScreen(car));else{tab=selected;init();}},null,false).active=i!=tab;}
         int top=y+82;
         switch(tab){
             case 0 -> {
@@ -120,7 +120,7 @@ public final class GarageScreen extends Screen {
             case 5 -> {
                 button("Start / stop",rx,y+h-49,rw/3-3,22,()->request(CarPackets.IGNITION,0,0),"Start the engine for live readings. Hold C + W while driving to rev with the clutch disengaged.",false);
                 var rev=button("Rev test / 2s",rx+rw/3+1,y+h-49,rw/3-3,22,()->request(CarPackets.REV_TEST,0,0),"A two-second throttle test with the clutch disengaged and brakes held. Open the hood, park and start the engine first.",false);
-                serviceButtons.put(rev,()->car.engineRunning()&&car.hoodOpen()&&Math.abs(car.speed())<.3);
+                serviceButtons.put(rev,()->car.engineRunning()&&car.hoodOpen()&&car.horizontalSpeed()<.3);
                 var rebuild=button("Rebuild engine",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(CarPackets.ENGINE_REBUILD,0,0),"Consumes 12 iron ingots to restore engine condition. Open the hood, park and stop the engine.",true);
                 serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.needsEngineRebuild());
             }

@@ -15,6 +15,12 @@ class VehicleAudioTest {
     @Test void roadAudioSurvivesEngineOffButRequiresEachContact(){
         var off=VehicleAudio.mix(input(fresh(),EnginePhysics.Mode.OFF,0,0,true,false));assertEquals(4,off.size());assertTrue(off.containsKey("road0"));assertTrue(VehicleAudio.mix(input(fresh(),EnginePhysics.Mode.OFF,0,0,false,false)).isEmpty());
         var m=fresh().with("wheel.fl.tire",null);var missing=VehicleAudio.mix(input(m,EnginePhysics.Mode.OFF,0,0,true,false));assertFalse(missing.containsKey("road0"));assertTrue(missing.containsKey("road1"));
+        var spin=new WheelDynamics.State(Collections.nCopies(4,new WheelDynamics.Corner(60,0,0,true,1,0,20)));
+        var burnout=VehicleAudio.mix(new VehicleAudio.Input(EngineFamily.I4,EnginePhysics.Mode.RUNNING,4000,1,1,0,0,0,0,false,true,false,spin,fresh()));
+        assertTrue(burnout.containsKey("slip0"),"A stationary burnout still makes tire slip sound");
+        var locked=new WheelDynamics.State(Collections.nCopies(4,new WheelDynamics.Corner(0,0,0,true,1,0,20)));
+        var skid=VehicleAudio.mix(new VehicleAudio.Input(EngineFamily.I4,EnginePhysics.Mode.OFF,0,0,0,0,0,12,0,true,true,false,locked,fresh()));
+        assertTrue(skid.containsKey("road0")&&skid.containsKey("slip0"),"Locked wheels sliding across the road remain audible");
     }
     @Test void equalRpmDifferentLoadChangesTheMix(){
         var coast=VehicleAudio.mix(input(fresh(),EnginePhysics.Mode.RUNNING,0,1,true,false));var load=VehicleAudio.mix(input(fresh(),EnginePhysics.Mode.RUNNING,1,1,true,false));assertTrue(load.get("low").gain()>coast.get("low").gain());assertFalse(load.containsKey("coast"));assertEquals(coast.get("low").pitch(),load.get("low").pitch());

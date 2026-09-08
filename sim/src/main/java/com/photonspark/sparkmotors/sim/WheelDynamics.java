@@ -5,11 +5,12 @@ import static com.photonspark.sparkmotors.sim.VehicleDynamics.*;
 
 /** Four independent contacts. No contact means no chassis braking or tire-road sound at that corner. */
 public final class WheelDynamics {
+    public static final double INERTIA=1.8;
     public record Corner(double omega,double angle,double travel,boolean contact,double slip,double brakeForce,double temperature) {
         public static Corner stopped(){return new Corner(0,0,0,false,0,0,20);}
     }
-    public record State(List<Corner> corners){public State{corners=List.copyOf(corners);if(corners.size()!=4)throw new IllegalArgumentException("Four corners required");}public static State stopped(){return new State(Collections.nCopies(4,Corner.stopped()));}}
-    public record Forces(State state,double braking,double rolling,double yawMoment,double driveGrip) {}
+    public record State(List<Corner> corners,boolean initialized){public State(List<Corner> corners){this(corners,true);}public State{corners=List.copyOf(corners);if(corners.size()!=4)throw new IllegalArgumentException("Four corners required");}public static State stopped(){return new State(Collections.nCopies(4,Corner.stopped()),false);}}
+    public record Forces(State state,double braking,double rolling,double yawMoment,double driveGrip,double forward,double lateral,double holdingGrip) {}
     public static State restoreTemperatures(State previous,MechanicalState m){
         var corners=new ArrayList<Corner>();
         for(int c=0;c<4;c++){var old=previous.corners.get(c);var disc=m.get("wheel."+ComponentSlot.CORNERS[c]+".disc");corners.add(new Corner(old.omega,old.angle,old.travel,old.contact,old.slip,old.brakeForce,disc==null?20:disc.temperature()));}
@@ -25,33 +26,75 @@ public final class WheelDynamics {
         double value=pads*m.capability(k+"disc")*m.capability(k+"caliper");
         return hydraulic?value*m.capability(k+"brake_hose")*clamp(m.brakeFluid()/.35,0,1):value;
     }
+    /** Compatibility entry point for direct component/brake tests. */
     public static Forces step(State previous,MechanicalState m,int config,Input in,double speed,double driveForce,double grip,boolean[] contacts,double[] travels,double dt){
-        var result=new ArrayList<Corner>();double brakes=0,rolling=0,moment=0,driveGrip=0;
+        return step(previous,new Setup(config,6800,3.7,EngineFamily.I4,EnginePart.stock(),90,1.4,m),in,speed,0,0,in.steer()*.45,driveForce*WHEEL_RADIUS,new double[]{grip,grip,grip,grip},contacts,travels,0,0,dt);
+    }
+    public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt){
+        var result=new ArrayList<Corner>();var m=setup.mechanics();int config=setup.config();
+        double brakes=0,rolling=0,moment=0,forward=0,sideways=0,driveGrip=0,holding=0;
+        double[] torques=setup.drive().wheelTorques(driveTorque,previous);
+        double front=setup.drive().frontWeight(),longTransfer=clamp(ax,-15,15)*CG_HEIGHT/(WHEELBASE*9.81);
         for(int c=0;c<4;c++){
-            var old=previous.corners.get(c);boolean contact=contacts[c]&&Assembly.WHEELS.variant(config)>0;
-            double traction=tireGrip(m,c)*grip*(Assembly.WHEELS.variant(config)==2?1.17:1);
+            var old=previous.corners.get(c);boolean contact=contacts[c]&&Assembly.WHEELS.variant(config)>0&&tireGrip(m,c)>0;
+            double x=c<2?WHEELBASE*(1-front):-WHEELBASE*front,y=c%2==0?TRACK/2:-TRACK/2;
+            double link=m==null?1:m.capability("wheel."+ComponentSlot.CORNERS[c]+".link");
+            double angle=c<2?steering*link:0;
+            double ca=Math.cos(angle),sa=Math.sin(angle),pointU=speed-yawRate*y,pointV=lateral+yawRate*x;
+            double u=pointU*ca+pointV*sa,v=-pointU*sa+pointV*ca;
             double spring=m==null?1:m.capability("wheel."+ComponentSlot.CORNERS[c]+".spring");
             double damper=m==null?1:m.capability("wheel."+ComponentSlot.CORNERS[c]+".damper");
-            double load=clamp(.25*(.35+.65*spring)+travels[c]*.4+(travels[c]-old.travel)/Math.max(.001,dt)*damper*.003,.04,.42);
-            double limit=MASS*9.81*load*traction;
+            double axle=clamp(c<2?front-longTransfer:1-front+longTransfer,0,1);
+            double lateralTransfer=clamp(clamp(ay,-15,15)*CG_HEIGHT/(TRACK*9.81)*(c<2?front:1-front),-axle*.5,axle*.5);
+            // Unloading an inside wheel redistributes the existing axle load;
+            // clamping each corner independently would invent extra normal force.
+            double fraction=axle*.5+(c%2==0?-1:1)*lateralTransfer;
+            double load=MASS*9.81*fraction*(.30+.70*spring);
+            // Suspension load variation is bounded separately from longitudinal/lateral transfer.
+            load*=clamp(1+(travels[c]-old.travel)*damper*.25/Math.max(.005,dt),.7,1.3);
+            double mu=clamp(grip[c],0,2)*tireGrip(m,c)*(Assembly.WHEELS.variant(config)==2?1.17:1);
             double service=in.brake()&&Assembly.BRAKES.variant(config)>0?MASS*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true):0;
             double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?MASS*3*brakeCapability(m,c,false):0;
-            double fade=clamp(1-(old.temperature-350)/500,.15,1);
-            double drag=0;if(m!=null){var caliper=m.get("wheel."+ComponentSlot.CORNERS[c]+".caliper");if(caliper!=null&&(caliper.faults()&PartInstance.SEIZED)!=0)drag=1000;}
-            double request=Math.max(service*fade,hand)+drag;
-            double wheelForce=c>=2?driveForce*.5:0;
-            // A locked wheel balances opposing engine/brake torques before the tire contact limit.
-            double brake=contact?Math.min(request,Math.abs(speed)<.1?Math.max(limit,Math.abs(wheelForce)):limit):0;brakes+=brake;moment+=(c%2==0?-1:1)*brake*.83;
-            if(contact){rolling+=35+(1-traction)*140+(m==null?0:(1-m.capability("wheel."+ComponentSlot.CORNERS[c]+".bearing"))*220);if(c>=2)driveGrip+=traction*.5;}
-            double omega=old.omega;
-            if(contact){double slip=clamp((Math.abs(wheelForce)+request)/Math.max(100,limit)-1,0,2);omega=speed/WHEEL_RADIUS*(1+(wheelForce>request?slip:-Math.min(1,slip)));}
-            else{omega+=(wheelForce*WHEEL_RADIUS-Math.signum(omega)*Math.min(Math.abs(omega)*1.5/dt,request*WHEEL_RADIUS))*dt/1.5;}
-            omega=clamp(omega,-300,300);double travel=old.travel+(travels[c]-(1-spring)*.12-old.travel)*(1-Math.exp(-dt*(3+damper*9)));
-            double temperature=old.temperature+(brake*Math.abs(speed)/1000/8-(old.temperature-20)*(.016+Math.abs(speed)*.002))*dt;
-            double slip=contact?Math.abs(omega*WHEEL_RADIUS-speed)/Math.max(1,Math.abs(speed)):0;
-            result.add(new Corner(omega,old.angle+omega*dt,travel,contact,slip,brake,clamp(temperature,20,1000)));
+            double fade=clamp(1-(old.temperature-350)/500,.15,1),dragBrake=0;
+            if(m!=null){var caliper=m.get("wheel."+ComponentSlot.CORNERS[c]+".caliper");if(caliper!=null&&(caliper.faults()&PartInstance.SEIZED)!=0)dragBrake=1000;}
+            double request=Math.max(service*fade,hand)+dragBrake,brakeTorque=request*WHEEL_RADIUS;
+            double omega=previous.initialized?old.omega:u/WHEEL_RADIUS;
+            double free=omega+torques[c]*dt/INERTIA;
+            double braked=free-clamp(free,-brakeTorque*dt/INERTIA,brakeTorque*dt/INERTIA);
+            double fx=0,fy=0,alpha=Math.atan2(v,Math.max(2.5,Math.abs(u))),limit=mu*load;
+            if(contact){
+                // Implicit longitudinal slip response prevents stiff wheel oscillation at 80 Hz.
+                double stiffness=load*11/Math.max(3,Math.abs(u));
+                fx=stiffness*(braked*WHEEL_RADIUS-u)/(1+dt*stiffness*(WHEEL_RADIUS*WHEEL_RADIUS/INERTIA+4/MASS));
+                fy=-limit*Math.sin(1.35*Math.atan(9*alpha));
+                double predictedSlip=Math.abs(braked*WHEEL_RADIUS-u)/Math.max(3,Math.abs(u));
+                double sliding=1-.22*clamp((predictedSlip-.18)/1.2,0,1);
+                limit*=sliding;
+                // Acceleration, braking and cornering share the same finite contact patch.
+                double combined=Math.hypot(fx,fy),scale=combined>limit?limit/Math.max(.001,combined):1;
+                fx*=scale;fy*=scale;
+                double rollingForce=35+(1-tireGrip(m,c))*140+(m==null?0:(1-m.capability("wheel."+ComponentSlot.CORNERS[c]+".bearing"))*220);
+                double rollingU=clamp(u*MASS/(4*dt),-rollingForce,rollingForce);
+                // Rolling resistance is also contact-limited (zero friction means zero road force).
+                rollingU=clamp(rollingU,-Math.max(0,limit-Math.hypot(fx,fy)),Math.max(0,limit-Math.hypot(fx,fy)));
+                fx-=rollingU;rolling+=Math.abs(rollingU);
+                double worldU=fx*ca-fy*sa,worldV=fx*sa+fy*ca;
+                forward+=worldU;sideways+=worldV;moment+=x*worldV-y*worldU;
+                driveGrip+=mu*(c<2?setup.drive().frontFraction()*.5:(1-setup.drive().frontFraction())*.5);
+            }
+            double torque=torques[c]-fx*WHEEL_RADIUS;
+            if(contact&&braked==0&&brakeTorque>Math.abs(torques[c]))holding+=Math.min(limit,(brakeTorque-Math.abs(torques[c]))/WHEEL_RADIUS);
+            double beforeBrake=omega+torque*dt/INERTIA;
+            omega=beforeBrake-clamp(beforeBrake,-brakeTorque*dt/INERTIA,brakeTorque*dt/INERTIA);
+            if(!contact)omega*=Math.exp(-dt*.015);
+            omega=clamp(omega,-450,450);
+            double brake=contact?Math.min(request,limit):0;brakes+=brake;
+            double travel=old.travel+(travels[c]-(1-spring)*.12-old.travel)*(1-Math.exp(-dt*(3+damper*9)));
+            double temperature=old.temperature+(brake*Math.abs(u)/1000/8-(old.temperature-20)*(.016+Math.abs(u)*.002))*dt;
+            double slip=contact?Math.hypot((omega*WHEEL_RADIUS-u)/Math.max(3,Math.abs(u)),Math.tan(alpha)):0;
+            result.add(new Corner(omega,old.angle+omega*dt,travel,contact,clamp(slip,0,4),brake,clamp(temperature,20,1000)));
         }
-        return new Forces(new State(result),brakes,rolling,moment,driveGrip);
+        return new Forces(new State(result),brakes,rolling,moment,driveGrip,forward,sideways,holding);
     }
     public static MechanicalState wear(MechanicalState m,State wheels,double speed,double dt){
         for(int c=0;c<4;c++){
