@@ -13,7 +13,7 @@ titles=['Inline-4','V6','Flat-four','1 rotor','2 rotors','3 rotors','4 rotors']
 modes=['natural','turbo','supercharger','large-turbo','twin-turbo','roots','twin-screw'];crop=(38,204,546,642)
 font=ImageFont.load_default(size=16)
 sheet=Image.new('RGB',(1680,7*245+60),'#101b25');draw=ImageDraw.Draw(sheet)
-draw.text((20,15),'AutoPropulsion Age 0.3 / all 49 engine layouts',font=font,fill='#42d2c6')
+draw.text((20,15),'AutoPropulsion Age 0.4 / all 49 engine layouts',font=font,fill='#42d2c6')
 records=[]
 for row,family in enumerate(families):
     for col,mode in enumerate(modes):

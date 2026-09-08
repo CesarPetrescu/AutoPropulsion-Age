@@ -9,7 +9,7 @@ Requires a Java 21 JDK. The wrapper downloads Gradle 9.2.1, NeoForge 21.1.249 an
 .\gradlew.bat runClient
 ```
 
-On Linux/macOS use `./gradlew`. The installable artifact is `build/libs/autopropulsion-age-0.3.0-alpha.jar`. Its simulation classes are bundled; `sim/build/libs` is not a second mod to install.
+On Linux/macOS use `./gradlew`. The installable artifact is `build/libs/autopropulsion-age-0.4.0-alpha.jar`. Its simulation classes are bundled; `sim/build/libs` is not a second mod to install.
 
 ```powershell
 .\gradlew.bat :sim:test
@@ -30,8 +30,8 @@ An unusual Windows host can report `sun.nio.ch.PipeImpl` / Unix-domain socket `I
 | `sim/` | Pure Java engine curve, automatic gearing, longitudinal dynamics, steering, fuel and assembly configuration; JUnit tests and CSV dyno CLI |
 | `src/main/.../entity/CarEntity.java` | Server simulation, four wheel contacts, collision movement, ownership, inventory transactions, safe dismount and NBT persistence |
 | `src/main/.../net/CarPackets.java` | Driver input, validated garage actions and screen-open payloads |
-| `src/main/.../client/` | Native Minecraft garage/HUD, mesh renderer, wheel/panel animation and looping engine sound |
-| `src/main/resources/` | Mod metadata, 70 items/recipes, controller block, language, mesh, icons and sound |
+| `src/main/.../client/` | Native Minecraft garage/HUD, mesh renderer, wheel/panel animation and layered component-driven audio and cockpit instruments |
+| `src/main/resources/` | Mod metadata, 122 items/recipes, controller block, language, mesh, icons and sound |
 | `src/gametest/` | Development-only dedicated GameTests, test track and client integration harness |
 | `tools/export_runtime_mesh.py` / `export_engine_runtime.py` | Blender export of the car, seven engine cores and their fitted service/induction hardware |
 | `tools/validate_engine_geometry.py` | Exact runtime triangle checks for the hood sweep and selected non-mating engine hardware |
@@ -45,7 +45,7 @@ The server advances four 12.5 ms simulation steps per game tick. Input packets i
 
 Open `assets/modular_car_kit/sparkmotors_modular.blend` in Blender, then run `tools/export_runtime_mesh.py` through Blender's Python API/MCP. The exporter expects the assembled scene and manifest. It converts Blender `(x,y,z)` to car-local Minecraft `(x,z,-y)` at one meter per block, retaining hinge pivots and wheel centers. The exporter adds the rear valance, scuttle and family-specific engine adapters without changing the original authoring project. `assets/engine_workshop.blend` is an editable derived snapshot of the runtime geometry with 49 open-hood scenes and 42 isolated part scenes. Rebuild it with `tools/build_engine_workbench.py`; primary authoring rebuilds use the original kit plus the exporter.
 
-The committed APA2 mesh contains **668 material/part batches and 266,436 triangles across all alternatives**, compressed to **3,206,115 bytes**. Most alternatives are mutually exclusive, and the in-world engine bay is culled when the hood is closed. Each selected hardware choice has distinct vertex positions, verified for every family. Runtime metadata selects family, service slot/variant and compressor. Body paint is tinted at draw time. Mesh data is cached on resource reload. See [runtime-assets.json](runtime-assets.json).
+The committed APA2 mesh contains **734 material/part batches and 268,980 triangles across all alternatives**, compressed to **3,237,722 bytes**. Most alternatives are mutually exclusive, and the in-world engine bay is culled when the hood is closed. Each selected hardware choice has distinct vertex positions, verified for every family. Runtime metadata selects family, service slot/variant and compressor. Body paint is tinted at draw time. Mesh data is cached on resource reload. See [runtime-assets.json](runtime-assets.json).
 
 Run `tools/build_engine_workbench.py` through Blender MCP to create `assets/engine_workshop.blend` with 91 editable scenes. `tools/render_powertrain_hardware.py` renders the 42 isolated models. `tools/verify_powertrain_mesh.py` checks all 294 family/hardware geometry identities. `tools/build_hardware_gallery.py` creates the README hardware gallery; `tools/build_engine_gallery.py` uses the native Minecraft captures. The primary authoring source is the original kit plus `tools/build_powertrain_hardware.py` and `tools/export_engine_runtime.py`.
 
@@ -67,6 +67,24 @@ The simulation catalog can be exported with `java -cp sim/build/classes/java/mai
 
 The dyno shares the hardware curves and physics with the game. `--transient` outputs a ten-second stateful run: seven seconds of acceleration followed by throttle lift and braking. CSV includes RPM, road speed, boost, turbo speed, throttle, torque, AFR, oil readings, engine wear and blower load. Every CLI hardware selection is validated before the run.
 
-State schema 3 uses ten three-bit slots; legacy six two-bit slots migrate without changing old choices. Engine item schema 2 uses the same mapping. Protocol 3 requires matching client/server mod versions. Engine wear and temperatures persist, while moving/rotating transient state resets on load. Simulation classes are included in the mod output and JAR; dedicated test/harness classes and the test track are excluded from releases.
+Vehicle schema 4 adds typed mechanical state while retaining the ten three-bit hardware slots; legacy six two-bit slots migrate without changing old choices. Engine item schema 2 uses the same mapping. Protocol 4 requires matching client/server mod versions. Individual wear, damage, faults, quantities, pressure/charge and temperatures persist, while moving/rotating transient state resets on load. Simulation classes are included in the mod output and JAR; dedicated test/harness classes and the test track are excluded from releases.
 
 The native screenshots are actual Minecraft captures. The isolated hardware images are Blender renders of the exact game geometry. These checks establish the implemented alpha behavior; other modpacks, separate-machine multiplayer, a full combustion solver and the remaining original specification are future work.
+
+## Connected mechanics and M6 reproduction
+
+```powershell
+.\gradlew.bat -PwithGameTests runClientMechanics
+.\gradlew.bat :sim:mechanicsBenchmark
+.\gradlew.bat -PwithGameTests prepareMultiplayerHarness
+.\tools\run_multiplayer_test.ps1
+python tools/verify_mechanical_audio.py
+```
+
+The multiplayer script starts a hidden dedicated server and two native clients on loopback port 25576. It writes the fixture server's EULA acceptance and settings in its isolated `run/multi-server` directory, uses a unique flat world and writes logs/result files under `.codex-reference/multiplayer-*`. It exports only development launch descriptors under ignored build output. A successful result requires both real clients to acknowledge synchronized state after Survival removal, native drop/pickup and installation into the second owner's car. The processes exit themselves. This tests actual networking on one machine, not remote latency or hostile modpacks.
+
+`MechanicalState`/`PartInstance` are immutable and `MechanicalData` registers their versioned NeoForge data component and codecs. `CircuitPhysics`, `WheelDynamics` and `MechanicalCapabilities` feed the existing engine/transmission. The server updates fluids/wear at 20 Hz, advances dynamics in four substeps, and sends a full mechanical snapshot once per second and immediately after service. Scalar operating values and wheel states also synchronize. The native size test records serialized NBT; the simulation benchmark excludes Minecraft overhead. See [mechanics-performance.json](mechanics-performance.json) and [mechanics-network-size.json](mechanics-network-size.json).
+
+`generate_game_resources.py` preserves existing authored sounds and translations; `generate_mechanical_audio.py` owns original synthesized layers. The validator decodes all 48 mono OGG files and proves regeneration preserves definitions/hashes. [Audio validation](audio-validation.json) is technical evidence, not listening acceptance.
+
+Current tests, milestone coverage, approximations and the next unfinished step are recorded in [mechanical-milestones.md](mechanical-milestones.md). Do not count the original 471 model roots as individually simulated service parts.

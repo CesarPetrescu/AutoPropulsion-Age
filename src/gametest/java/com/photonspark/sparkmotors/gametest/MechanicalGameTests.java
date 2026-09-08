@@ -15,6 +15,17 @@ import java.util.*;
 
 @GameTestHolder("sparkmotors") @PrefixGameTestTemplate(false)
 public final class MechanicalGameTests {
+    @GameTest(template="test_track") public void fullMechanicalSnapshotIsBoundedAndRoundTrips(GameTestHelper h){
+        var state=MechanicalState.legacy(Assembly.stock(),EnginePart.boosted(1),85,90,100);
+        var buffer=new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        try{
+            buffer.writeNbt(MechanicalData.write(state));int bytes=buffer.readableBytes();
+            h.assertTrue(bytes<20000,"Full tracked component snapshot stays below 20 KB");
+            h.assertTrue(MechanicalData.read(buffer.readNbt()).equals(state),"Full tracked snapshot round trips exactly");
+            String report="{\"scope\":\"One healthy boosted car's serialized mechanical NBT; excludes other entity packets and compression\",\"parts\":"+state.parts().size()+",\"snapshotBytes\":"+bytes+",\"periodicSnapshotsPerSecond\":1}";
+            var out=java.nio.file.Path.of("mechanics-network-size.json");java.nio.file.Files.writeString(out,report);System.out.println("MECHANICS_NETWORK_SIZE "+report);h.succeed();
+        }catch(java.io.IOException ex){throw new RuntimeException(ex);}finally{buffer.release();}
+    }
     private CarEntity car(GameTestHelper h){var c=AutoPropulsionAge.CAR.get().create(h.getLevel());var p=h.absoluteVec(new Vec3(8,2.05,8));c.moveTo(p.x,p.y,p.z,0,0);h.getLevel().addFreshEntity(c);return c;}
     private ServerPlayer owner(GameTestHelper h,CarEntity c){var p=net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(),new com.mojang.authlib.GameProfile(UUID.randomUUID(),"component_mechanic"));p.moveTo(c.position());p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);c.setOwner(p.getUUID());return p;}
     private void act(CarEntity c,ServerPlayer p,int action,int a,int b){c.tickCount+=4;c.action(p,action,a,b);}
@@ -29,7 +40,9 @@ public final class MechanicalGameTests {
         try{AutoPropulsionAge.MECHANICAL_DATA.get().streamCodec().encode(buffer,MechanicalData.get(saved));var decoded=AutoPropulsionAge.MECHANICAL_DATA.get().streamCodec().decode(buffer);h.assertTrue(decoded.parts().get(slot.key()).equals(used),"Typed persistent and network codecs retain every field");}finally{buffer.release();}
         act(c,p,CarPackets.COMPONENT_SWAP,index,1);h.assertTrue(c.mechanics().get(slot.key()).equals(used),"Reinstalled hose retains identity, wear and leak");
         h.assertTrue(c.mechanics().coolant()==2.4&&c.mechanics().oil()==3.2,"Part work cannot refill fluids");
-        var tag=new CompoundTag();c.saveWithoutId(tag);var copy=AutoPropulsionAge.CAR.get().create(h.getLevel());copy.load(tag);h.assertTrue(copy.mechanics().equals(c.mechanics()),"Vehicle save preserves full component state");h.succeed();
+        var m=c.mechanics();m=m.with("wheel.fl.disc",m.get("wheel.fl.disc").operating(0,315)).with("driveline.clutch",m.get("driveline.clutch").operating(0,190)).with("wheel.fl.tire",m.get("wheel.fl.tire").operating(2.3,75));c.setMechanics(m);
+        var tag=new CompoundTag();c.saveWithoutId(tag);var copy=AutoPropulsionAge.CAR.get().create(h.getLevel());copy.load(tag);h.assertTrue(copy.mechanics().equals(c.mechanics()),"Vehicle save preserves full component state");copy.setUUID(UUID.randomUUID());h.assertTrue(h.getLevel().addFreshEntity(copy),"Reload fixture joins the ticking level");
+        h.runAfterDelay(3,()->{h.assertTrue(copy.tickCount>0,"Reload fixture actually simulated ticks");h.assertTrue(copy.mechanics().get("wheel.fl.disc").temperature()>300&&copy.mechanics().get("driveline.clutch").temperature()>180&&copy.mechanics().get("wheel.fl.tire").temperature()>70,"Resumed simulation does not instantly cool stored brakes, clutch or tires");h.succeed();});
     }
     @GameTest(template="test_track") public void wheelAssembliesAndCraftingCannotRefreshUsedTires(GameTestHelper h){
         var c=car(h);var p=owner(h,c);String key="wheel.fl.tire";var used=c.mechanics().get(key).condition(.8,.2,PartInstance.LEAK).operating(1.1,67);c.setMechanics(c.mechanics().with(key,used));
@@ -75,6 +88,8 @@ public final class MechanicalGameTests {
             h.assertTrue(Math.abs(c.coolant()-remaining)<.001&&c.mechanics().get("engine.internals").equals(internal),"Targeted replacement does not refill or heal internals");
             double before=c.coolant();p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get("coolant_bottle").get()));act(c,p,CarPackets.FLUID_SERVICE,0,0);
             h.assertTrue(Math.abs(c.coolant()-before-1)<.001&&p.getInventory().countItem(Items.GLASS_BOTTLE)==1,"One litre transferred and one empty bottle returned");
+            for(int bottle=0;bottle<6&&c.coolant()<8;bottle++){p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get("coolant_bottle").get()));act(c,p,CarPackets.FLUID_SERVICE,0,0);}
+            h.assertTrue(c.coolant()==8,"Survival fluid service completes a full reservoir refill");
             act(c,p,CarPackets.DIAGNOSE,0,0);
         });
         h.runAfterDelay(415,()->{h.assertTrue(c.diagnostic().contains("Holds pressure"),"Actual ten-second verification test passes after replacing the cause");h.succeed();});
@@ -99,6 +114,11 @@ public final class MechanicalGameTests {
         h.runAfterDelay(80,()->{
             var slot=ComponentSlot.byKey("oil.pump");p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get(slot.item()).get()));act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(slot),1);act(c,p,CarPackets.IGNITION,0,0);
         });
-        h.runAfterDelay(110,()->{h.assertTrue(c.oilPressure()>.5,"Targeted oil-pump replacement restores measured pressure");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Replacement retains pre-existing internal wear");h.succeed();});
+        h.runAfterDelay(110,()->{h.assertTrue(c.oilPressure()>.5,"Targeted oil-pump replacement restores measured pressure");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Replacement retains pre-existing internal wear");act(c,p,CarPackets.IGNITION,0,0);});
+        h.runAfterDelay(140,()->{
+            double oil=c.oilQuantity();p.getInventory().add(new ItemStack(Items.IRON_INGOT,12));act(c,p,CarPackets.ENGINE_REBUILD,0,0);
+            h.assertTrue(c.mechanics().get("engine.internals").wear()==0,"Rebuild repairs wear even when structural engine health is still 100 percent");
+            h.assertTrue(c.oilQuantity()==oil&&p.getInventory().countItem(Items.IRON_INGOT)==0,"Internal rebuild consumes its materials and retains oil quantity");h.succeed();
+        });
     }
 }

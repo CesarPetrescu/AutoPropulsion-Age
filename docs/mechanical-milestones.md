@@ -1,37 +1,72 @@
-# Connected mechanical system
+# Connected mechanical system — implementation evidence
 
-Work starts from `2bbe5ea`, on branch `mechanical-components`. The supplied audit examined `83b91cd`; its independent crank, flywheel, clutch and turbo-spool concerns partly predate 0.3. The existing simulation, garage, registry IDs and ownership protocol are being extended. No separate downloadable handoff was attached; the pasted specification is the implementation reference.
+Work started from `2bbe5ea` on `mechanical-components`. The supplied audit examined `83b91cd`; some independent crank, clutch and turbo concerns predated the existing 0.3 implementation. The existing simulation, garage, mod IDs and ownership protocol were extended. No downloadable handoff file was attached; the pasted specification is the reference. Tests below were performed on 8 September 2026 in this implementation run.
 
-## M0 — reproduced baseline
+## Milestone status
 
-Fresh runs on 8 September 2026: 22 simulation JUnit tests and all 18 required dedicated-server GameTests passed. The hidden native `runClientSmokeQuick` also passed in 3m11s, with real garage buttons/packets, driving, paint, tuning, seven I4 induction layouts and all 42 hardware choices. These are results from this run, not historical repository claims. Test logs are local under `.codex-reference/mechanics-m0-*`.
+| Milestone | Outcome and evidence |
+|---|---|
+| M0: baseline | Complete. Fresh 22 JUnit / 18 GameTests and the hidden native quick client passed before edits. Confirmed combined braking, absent-brake fallback, airborne braking and sound-generator ownership defects. |
+| M1: persistence | Complete. Immutable, versioned NeoForge component data carries UUID, specification, wear, damage, faults, reserve and temperature. Used parts survive service, storage, network codecs, crafting, engine/crate conversion and saves. Fresh M1: 22 JUnit / 22 GameTests. |
+| M2: playable repair | Complete. Localized front impact can damage a hose; leaking coolant, timed pressure diagnosis, targeted replacement, separate conserved refill and repeat verification work in the native client and server. Independent tire/brake corners, contact-dependent braking and distinct handbrake work. Fresh M2: 28 JUnit / 24 GameTests and the native repair workflow. |
+| M3: mechanical depth | Core milestone implemented. Starting, oil pressure/supply, charging, clutch/shift state, drive-path failure and independent wheel behavior connect to installed parts. Fresh M3: 35 JUnit / 25 GameTests, including all 98 native family/grade/induction driving layouts. Deeper cylinder/chamber internals remain grouped assemblies. |
+| M4: audio | Integrated and mechanically tested; listening acceptance pending. 48 real, original synthesized mono OGG assets with explicit family/load/exhaust/induction/road/fault mixing. Fresh audio tests and native active-channel/cleanup checks passed. No model listening tool is available and user feedback has not arrived. |
+| M5: cockpit/workshop | Baseline complete. Sender-aware cockpit needles and warnings, optional performance display, odometer/trip, orbit/pan/zoom/focus/underside, physical jack/access, selected components and independently animated wheels/fan. Native screenshots reviewed; the mini-needle depth defect was found and fixed. Larger body/latch/Expert workflows remain outside this implemented baseline. |
+| M6: integration | Complete for the recorded scope. Fresh 43 JUnit / 26 server GameTests, the full 49-layout / 42-hardware native matrix, final repair-and-drive / rebuild UI / saved-temperature regressions, and a real two-client trading test passed. Audio regeneration, targeted Blender geometry and scoped performance measurements passed. Listening, remote latency and fleet rendering remain unverified. |
 
-Confirmed source defects: service/handbrake input collapsed; no contact requirement on braking; absent brakes use the stock branch; broad assembly drive gate damps rolling and prevents otherwise runnable engines; generator overwrites authored sound definitions. The 471 Blender roots are visual geometry, not 471 independently simulated components. Workshop scenery is not automatically functional equipment.
+## Architecture and actual coverage
 
-## M1 — persistent component foundation
+`MechanicalState` is the immutable persistent authority, shared by vehicle and item codecs. `ComponentSlot` gives each repeated corner its own identity. Fluid amount, operating temperature, wear, structural damage and discrete faults are distinct. Vehicle schema 4 migrates older aggregate engine condition once; typed item schema 1 retains missing mounts instead of creating replacement parts. Existing registry IDs remain unchanged and protocol 4 requires matching client/server versions.
 
-Immutable component instances have UUID identity, item specification, wear, structural damage, fault flags, stored pressure/charge and temperature. Stable paths distinguish all four wheel corners. NeoForge's registered `sparkmotors:mechanical_state` data component supplies persistent and network codecs. Vehicle data version 4 migrates old aggregate engine damage into the internal assembly once; existing version 1–3 part layouts remain supported.
+`CircuitPhysics`, `MechanicalCapabilities`, `WheelDynamics`, `EnginePhysics` and `TransmissionPhysics` consume the installed state. A running engine can have no torque path or failed brakes; a stopped engine does not prevent rolling. Coolant mass, circulation, radiator/fan behavior and heat balance produce temperature. Oil quantity/supply produces pressure; starvation wears internals and compressors. Electrical demand and alternator output change battery charge. Individual contact, tire pressure/tread, brake heat/condition, suspension and links affect motion. Impacts allocate one bounded localized budget and use a cooldown to avoid substep repetition.
 
-Single components, generic assemblies, whole engines, engine family conversions, used-part upgrades and crafted car crates carry their component contents. Empty stored mounts stay empty. Engine bundles carry remaining oil/coolant rather than refilling on installation. The garage's Service view exposes inventory-backed removal/installation, hood access, a jack, orbit/pan/zoom and underside viewing. Deeper behavior follows in M2/M3; listing a mount is not evidence that its failure is implemented.
+`VehicleAudio` produces simultaneous layers from actual family, RPM, load, fitted muffler/compressor and corner contact/fault state. `CarAudio` owns the positional voices and their lifecycle. Synthesized assets are original game audio, not engine recordings. The [listening reel](mechanical-audio-preview.mp3) and [timeline](audio-preview-timeline.json) are available for review. All 48 assets decode as mono Vorbis with finite, unclipped decoded peaks. Resource regeneration preserves authored sound definitions and hashes.
 
-Fresh M1 checks: 22 simulation tests and 22 server GameTests passed, including four new tests for typed item/network/save round trips, used wheel-assembly crafting, engine/crate conversion and ownership/access. The new screen was subsequently verified in the M2 native client run.
+The normal cockpit uses sender-aware `InstrumentReadings`; failed senders do not report perfect values. The garage Live panel is explicitly assisted telemetry. The multimeter, fluid inspection, timed pressure tester, tire gauge, oil-pressure tool and grouped compression test provide specific evidence. Fault-history clearing is separate from repair. Used parts stay used, and partial 1 L fluid bottles retain the remainder.
 
-## Next milestone
+The Blender master was preserved. Reproducible derived scripts split hoses, springs/dampers, fan blades/shrouds and induction plumbing and add service geometry and cockpit gauges. The current runtime union contains 734 batches / 268,980 triangles; alternatives are mutually exclusive. All 49 fit envelopes and five-position hood sweeps passed the targeted clearance/intersection checks, and all 294 hardware geometry identities passed. These checks do not establish clearance for every possible pair of all hardware alternatives. `assets/engine_workshop.blend` contains the matching 91 editable derived scenes.
 
-M2: coolant circuit causality, pressure testing, conserved refill transactions, localized collision damage, independent tire/brake behavior and a complete playable repair scenario. M3–M6 remain unfinished.
+## Twenty acceptance scenarios from the pasted requirements
 
-## M3 � connected powertrain, oil and electrical systems
+The pasted handoff described acceptance examples but did not include its separate numbered attachment. These twenty traceable scenarios cover that supplied scope; they are not a claim to have read an unavailable file.
 
-The starter now physically spins the crank before combustion catches; a flat battery, failed starting circuit or seized assembly can prevent cranking. Ignition/fuel/compression faults can permit cranking without sustained running. Engine, transmission, rolling and braking capabilities are independent. Ancillary cooling/oil/exhaust removal no longer makes the combustion assembly disappear; running without them has the corresponding fluid/heat consequences.
+| # | Scenario | Evidence / limit |
+|---|---|---|
+| 1 | Worn part removed, serialized and refitted without healing | Native `wornHoseRoundTripsItemNetworkSaveAndAnotherCar`; actual two-client trade |
+| 2 | Used assembly crafting and car/engine conversion preserve state | Native wheel-assembly, donor engine and crate tests |
+| 3 | Older saves migrate once with distinct corner identities | Native migration, save round trips and verified resumed ticks retaining hot brake/clutch/tire state |
+| 4 | Non-owner, out-of-range and invalid work cannot consume/duplicate parts | Native server tests; two actual clients verify owner rejection |
+| 5 | Front impact creates a localized coolant fault once | Mechanical physics plus native pressure workflow's repeated-impact check |
+| 6 | Leak causes loss, overheating and retained permanent damage | `MechanicalPhysicsTest` circuit simulation; actual server/client leak diagnosis |
+| 7 | Hose replacement stops its leak without filling or healing internals | Native timed repair workflow and pure circuit tests |
+| 8 | Partial refill conserves quantity and verification holds pressure | Native fluid remainder and ten-second repeat test |
+| 9 | Four tire identities, pressures and used corner swaps | Native corner-transfer test; wheel simulation tests |
+| 10 | Service brake, rear handbrake and missing brakes behave differently | `MechanicalPhysicsTest`, including asymmetric front hydraulics |
+| 11 | Airborne brakes slow the wheel, not the chassis | `MechanicalPhysicsTest` airborne case |
+| 12 | Starter/flat battery/ignition faults determine cranking and running | Powertrain JUnit and native electrical/oil test |
+| 13 | Clutch slip, finite shifting and failed drivetrain permit appropriate coasting/revving | `MechanicalPowertrainTest` |
+| 14 | Oil-supply fault damages a replacement compressor until its cause is repaired | `MechanicalPowertrainTest`; native pump replacement retains wear |
+| 15 | Alternator/belt control charge independently of internal damage | `MechanicalPowertrainTest` |
+| 16 | Muffler-only swap changes exhaust mix without giving free power | Powertrain + audio JUnit tests |
+| 17 | Turbo release requires hardware, pressure and a real transition; blowers use drive state | Powertrain + audio JUnit tests |
+| 18 | Road audio works engine-off, requires contact, and voices clean up | Audio JUnit plus native active-channel and cleanup checks; listening quality pending |
+| 19 | Cockpit failed sender, actual service access and visible part removal work | Instrument JUnit + native client screenshots/actions, physical jack and focused hose |
+| 20 | Regeneration, native integration and performance are recorded | 48 decoded assets/hash check; two-client report; final verification record; scoped benchmark |
 
-Oil quantity, pump/filter/feed restriction and temperature produce pressure. Low-pressure running wears the actual engine and compressor; changing a turbo cannot repair its supply. Battery charge changes with starter/accessory demand and alternator/belt output. Clutch condition/heat changes torque capacity, gearbox/differential/shaft faults interrupt drive, shifts take finite time, and steering links, damping, bearings and corner travel influence motion. Engine families now have differing torque-curve shapes as gameplay calibrations. Rotary diagnostic vocabulary uses chambers, seals and ports.
+## Limits and next unfinished work
 
-Fresh checks: 35 simulation tests and all 25 server GameTests pass, including all 98 family/grade/induction layouts. The layout test now allows the starter to finish before its existing acceleration interval, and legacy test fixtures explicitly discard generated mechanical data before assigning legacy aggregate fields. The new server test reproduces a flat battery, missing oil pump, measured pressure loss, internal wear, targeted replacement and retained damage. The compression tool reports a grouped assembly estimate; individual cylinder/chamber internals are not separately simulated. The native mechanical client regression also passed before M4.
+Subjective listening acceptance is the next unfinished gate. There is no fabricated claim to have listened. Separate-machine/network-latency tests, other modpacks, prolonged survival play and many-car rendering remain untested. The simulation benchmark excludes Minecraft world/collision/render/network costs; the measured healthy boosted-car NBT snapshot is 5,623 bytes at one periodic snapshot per second, with additional live scalar and wheel packets. Worn/hot states can serialize larger snapshots. This is not a measured total bandwidth or fleet capacity.
 
-## M4 � layered audio integrated; listening acceptance pending
+This baseline does not implement soft-body deformation, individual thermodynamic cylinders/chambers, Expert fasteners, engine-stand procedures, a comprehensive independent glass/latch/interior parts system, projected road lighting or LODs. Several service nodes share assembly geometry. Torque curves and compression tests are calibrated gameplay models. Expanding these should continue from the same persistent state, not add a parallel health model.
 
-The single loop controller is replaced with explicit concurrent family/RPM/load, intake, independent stock/sport/open exhaust, compressor, road, slip, brake-fault and bearing layers. Turbo audio follows persistent spool; centrifugal, Roots and twin-screw compressors have separate assets and drive inputs. Pressure release requires hardware, pressure and an actual transition counter. Road voices follow each wheel contact while rolling with the engine off. Sound voices stop when their car disappears, leaves range, changes world, or resources reload.
+## Changed files
 
-There are 48 original synthesized mono OGG assets. These are designed game audio, not recordings of real engines. A 25-second source-asset listening reel is `mechanical-audio-preview.mp3`, with its timeline in `audio-preview-timeline.json`. User listening feedback was requested in chat; no model listening tool is available. Consequently subjective sound quality is not signed off.
-
-Fresh evidence: 40 simulation tests pass, including five audio behavior tests. All 48 files were decoded and checked for mono channels, valid references, finite samples and unclipped decoded peaks. Regenerating all game resources preserved authored definitions and asset hashes (`audio-validation.json`). The native client passed the repair workflow with actual active sound channels and verified cleanup (`AUDIO_CHANNELS_AND_CLEANUP_PASS`). Further M5/M6 work continues while listening review is pending.
+| Area | Main files |
+|---|---|
+| Persistent mechanics and simulation | [sim sources](../sim/src/main/java/com/photonspark/sparkmotors/sim/): `PartInstance`, `ComponentSlot`, `MechanicalState`, `CircuitPhysics`, `MechanicalCapabilities`, `WheelDynamics`, `TransmissionPhysics`, `VehicleDynamics`, `EnginePhysics`, `EngineBuild`, `InstrumentReadings`, `VehicleAudio` |
+| World behavior, service and synchronization | [CarEntity.java](../src/main/java/com/photonspark/sparkmotors/entity/CarEntity.java), [CarPackets.java](../src/main/java/com/photonspark/sparkmotors/net/CarPackets.java) |
+| Item/crafting state | [item sources](../src/main/java/com/photonspark/sparkmotors/item/): `MechanicalData`, `EngineItem`, `EngineCraftingRecipe`, `CarCrateItem`; registry integration in `AutoPropulsionAge` |
+| Client presentation | [client sources](../src/main/java/com/photonspark/sparkmotors/client/): `CarAudio`, `CarClient`, `CarMesh`, `CockpitInstruments`, `GarageScreen`, `ServiceScreen`; old single-loop controller removed |
+| Native and pure tests | [GameTests and client harnesses](../src/gametest/java/com/photonspark/sparkmotors/gametest/), [JUnit tests](../sim/src/test/java/com/photonspark/sparkmotors/sim/), `tools/run_multiplayer_test.ps1`, `MechanicsBenchmark` |
+| Blender and resources | `tools/build_service_geometry.py`, runtime/workbench exporters, `assets/engine_workshop.blend`, packaged mesh, service recipes/icons/translations, 48 mono OGGs and explicit sound definitions |
+| Evidence and delivery | `docs/verification.json`, mechanical/audio/geometry reports, native screenshot galleries, guides, `downloads/autopropulsion-age-0.4.0-alpha.jar`, `downloads/SHA256SUMS.txt` |

@@ -1,12 +1,26 @@
 # AutoPropulsion Age
 
-**Playable alpha 0.3.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
+**Playable alpha 0.4.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
 
 Drive a modular sedan and build its engine under an opening hood. Choose **42 hardware items across ten engine slots**, with **seven engine families and seven induction configurations**. Parts change the actual geometry and the simulated response: turbo lag, blower drive load, flywheel inertia, fuel capacity, cams/ports, cooling and oil systems all matter.
 
-**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.3.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [Build and tests](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
+**[Download the playable mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/mechanical-components/downloads/autopropulsion-age-0.4.0-alpha.jar)** · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [Build and tests](docs/DEVELOPMENT.md) · [Checksums](downloads/SHA256SUMS.txt)
 
-Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1/0.2 cars and engine items migrate their installed components.
+Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1–0.3 cars and engine items migrate their installed components and condition.
+
+## Diagnose and repair actual parts
+
+The car now has **81 stable mechanical mounts**, including independent parts at every wheel corner. Used components retain identity, wear, damage and faults through removal, trading, crafting and reinstallation. Coolant and oil quantities, starting/charging, braking and the drivetrain consume that installed state.
+
+**G → Service** opens the component workshop. A damaged coolant hose leaks; a ten-second pressure test detects the loss. Replacing that hose stops its leak, but you still need to refill the circuit and repair any damage caused by continuing to drive. A jack enables corner/underside work. Tire pressure, brake condition, clutch slip, oil supply and battery charge have mechanical consequences.
+
+![A focused, independently serviceable coolant hose](docs/screenshots/mechanics-focused-hose.png)
+![Timed verification after hose repair](docs/screenshots/mechanics-repair-verified.png)
+![Working cockpit instruments](docs/screenshots/mechanics-cockpit.png)
+
+The cockpit uses real sender state; **V** toggles optional performance readings. Engine audio is layered by family, RPM and load, with independent muffler, induction, wheel/contact and fault contributions. The 48 original synthesized assets have passed decoding and native channel tests; **subjective listening review is still pending**.
+
+[Complete repair walkthrough](docs/PLAYING.md#complete-a-coolant-leak-repair) · [Milestones and twenty acceptance scenarios](docs/mechanical-milestones.md) · [Audio listening reel](docs/mechanical-audio-preview.mp3)
 
 ## Build the engine
 
@@ -35,7 +49,7 @@ The induction slot also supports natural aspiration. Street turbo, centrifugal, 
 
 The crank and flywheel store angular momentum. A slipping automatic clutch couples engine speed to the wheels; hold C to disengage it. Turbo shaft speed and manifold pressure build over time, and a blow-off valve vents pressure on throttle lift. Blowers consume crankshaft power. Fuel capacity limits power and can produce a lean mixture under boost; lean running and excessive coolant/oil heat wear the engine. Oil hardware changes pressure and heat rejection. Cams/ports and exhausts trade low-end torque for high-RPM flow.
 
-The **Live** page shows RPM, throttle, turbo speed, boost, AFR, coolant/oil temperatures, oil pressure, shaft torque, blower load and engine condition. Start the engine with its hood open and press **Rev test / 2s** to watch a timed test while the car remains parked. **Rebuild engine** restores wear for twelve iron ingots.
+The **Live** page shows RPM, throttle, turbo speed, boost, AFR, coolant/oil temperatures, oil pressure, shaft torque, blower load and engine condition. Start the engine with its hood open and press **Rev test / 2s** to watch a timed test while the car remains parked. **Rebuild engine** restores the internal assembly for twelve iron ingots; fluids and external causes remain unchanged. The Live page is explicitly assisted telemetry.
 
 ![Live diagnostics during a native engine rev test](docs/screenshots/powertrain-live.png)
 
@@ -45,7 +59,7 @@ The **Tuner** sets rev limiter, final drive and boost target. Hardware limits st
 
 ## Drive and customize the car
 
-The alpha includes automatic gears, reverse, collision handling, fuel, repairs, engine sound, eight paint colors, stock/sport car assemblies, opening doors/hood/trunk, one driving seat, seventy recipes and persistent ownership/configurations.
+The alpha includes automatic gears, reverse, collision handling, fuel, repairs, engine sound, eight paint colors, stock/sport car assemblies, opening doors/hood/trunk, one driving seat, 122 recipes and persistent ownership/configurations.
 
 ![Driving HUD with boost, AFR and oil temperature](docs/screenshots/alpha-driving.png)
 
@@ -57,9 +71,9 @@ The alpha includes automatic gears, reverse, collision handling, fuel, repairs, 
 
 ## Verification and scope
 
-The reproducible checks cover **1,835,008 populated hardware combinations**, **7,308 continuous driving/braking cases**, **98 native in-world engine layouts**, all **42 hardware item recipes and inventory transactions**, and all **49 rendered family/induction layouts**. Every hardware choice selects distinct vertex geometry in each engine family (**294 checks**). Blender clearance and selected triangle-intersection checks pass for all 49 layouts through five hood positions. See the exact results and test counts in the [verification record](docs/verification.json).
+[The current milestone record](docs/mechanical-milestones.md) covers fresh JUnit, native server/client, two-client trading, persistence, audio regeneration and Blender checks. [verification.json](docs/verification.json) records the final build and checksum. The old model galleries remain below; native screenshots are refreshed by the full client matrix.
 
-This is a playable alpha with calibrated gameplay physics. Engine families use shared reference torque curves with family scaling; combustion cycles, per-cylinder damage, full suspension force simulation, compound charging, nitrous, individual body-panel choices and liveries remain future work. Stock/sport still describes the six large car assemblies. The 42 new choices are engine hardware. [Detailed scope](docs/ENGINE-WORKSHOP.md).
+This is a playable component-simulation alpha. Deeper individual engine internals, Expert fasteners, engine-stand procedures, complete glass/latch service, projected headlights and large-fleet rendering remain future work. Sound assets are original synthesis, not recordings. Native active-channel tests cannot establish subjective audio quality.
 
 <!-- ENGINE-GALLERY-START -->
 ## Engine configuration gallery
@@ -88,6 +102,7 @@ Native game previews. Click an engine to see it installed under the open hood. [
 
 
 <!-- ENGINE-GALLERY-END -->
+
 
 <!-- HARDWARE-GALLERY-START -->
 ## Every new engine hardware model
@@ -216,7 +231,7 @@ The complete Blender kit remains available, including **471 named parts and asse
 
 | File | Contents |
 |---|---|
-| [Playable mod JAR](downloads/autopropulsion-age-0.3.0-alpha.jar) | Install this in Minecraft with NeoForge. |
+| [Playable mod JAR](downloads/autopropulsion-age-0.4.0-alpha.jar) | Install this in Minecraft with NeoForge. |
 | [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, previews, scripts, manifests, fit report and portable gallery. |
 | [Engine workshop Blender file](assets/engine_workshop.blend) | Editable derived runtime snapshots: 49 open-hood layouts plus 42 isolated hardware scenes. |
 | [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, engine, upgrade catalog, workshop and service scenes. |

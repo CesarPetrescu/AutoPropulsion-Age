@@ -36,6 +36,9 @@ neoForge {
             systemProperty 'sparkmotors.clientSmoke', 'true'
             systemProperty 'sparkmotors.clientMechanics', 'true'
         }
+        multiServer { server(); gameDirectory=file('run/multi-server');programArgument '--nogui';systemProperty 'sparkmotors.multiServer','true' }
+        multiClientA { client();gameDirectory=file('run/multi-client-a');programArguments.addAll '--username','MechanicA','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','A' }
+        multiClientB { client();gameDirectory=file('run/multi-client-b');programArguments.addAll '--username','MechanicB','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','B' }
         server { server(); programArgument '--nogui' }
         gameTestServer {
             type = 'gameTestServer'
@@ -57,3 +60,18 @@ tasks.named('processResources') {
 tasks.named('jar') { exclude '**/gametest/**'; exclude '**/structure/test_track.nbt' }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 tasks.named('check') { dependsOn ':sim:test' }
+
+// Prepare native launch descriptors so the two clients and dedicated server can run concurrently
+// without holding three Gradle build locks. Generated descriptors stay in the ignored build directory.
+tasks.register('prepareMultiplayerHarness') {
+    dependsOn 'prepareMultiServerRun','prepareMultiClientARun','prepareMultiClientBRun','classes'
+    doLast {
+        def result = [:]
+        ['runMultiServer','runMultiClientA','runMultiClientB'].each { name ->
+            def run = tasks.named(name).get()
+            def prefix = name.substring(3,4).toLowerCase() + name.substring(4)
+            result[name] = [jvmArguments: run.jvmArgumentProviders.collectMany { it.asArguments().toList() }, java: run.javaLauncher.get().executablePath.asFile.absolutePath, classpath: run.classpathProvider.asPath, vmArgs: layout.buildDirectory.file('moddev/'+prefix+'RunVmArgs.txt').get().asFile.absolutePath, programArgs: layout.buildDirectory.file('moddev/'+prefix+'RunProgramArgs.txt').get().asFile.absolutePath, workingDirectory: run.gameDirectory.get().asFile.absolutePath, modClasses: run.environmentProperty.get()['MOD_CLASSES']]
+        }
+        layout.buildDirectory.file('multiplayer-launches.json').get().asFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(result))
+    }
+}

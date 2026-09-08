@@ -122,7 +122,7 @@ public final class GarageScreen extends Screen {
                 var rev=button("Rev test / 2s",rx+rw/3+1,y+h-49,rw/3-3,22,()->request(CarPackets.REV_TEST,0,0),"A two-second throttle test with the clutch disengaged and brakes held. Open the hood, park and start the engine first.",false);
                 serviceButtons.put(rev,()->car.engineRunning()&&car.hoodOpen()&&Math.abs(car.speed())<.3);
                 var rebuild=button("Rebuild engine",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(CarPackets.ENGINE_REBUILD,0,0),"Consumes 12 iron ingots to restore engine condition. Open the hood, park and stop the engine.",true);
-                serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.engineHealth()<100&&Assembly.ENGINE.variant(car.config())>0);
+                serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.needsEngineRebuild());
             }
         }
     }
@@ -201,8 +201,9 @@ public final class GarageScreen extends Screen {
             }
             case 5 -> {
                 g.drawString(font,"ASSISTED LIVE TELEMETRY",rx,top,ACCENT,false);
-                String[] labels={"Crank speed","Throttle / turbo speed","Boost / target","Air:fuel ratio","Coolant / oil","Oil pressure","Shaft torque","Blower drive load","Engine condition"};
-                String[] values={String.format(Locale.ROOT,"%.0f RPM",car.rpm()),String.format(Locale.ROOT,"%.0f%% / %.0f%%",car.throttle()*100,car.spool()*100),String.format(Locale.ROOT,"%.2f / %.2f bar",car.boost(),car.boostTarget()),String.format(Locale.ROOT,"%.2f : 1",car.afr()),String.format(Locale.ROOT,"%.0f / %.0f C",car.temperature(),car.oilTemperature()),String.format(Locale.ROOT,"%.2f bar",car.oilPressure()),String.format(Locale.ROOT,"%.0f Nm",car.shaftTorque()),String.format(Locale.ROOT,"%.1f kW",car.blowerKw()),String.format(Locale.ROOT,"%.1f%%",car.engineHealth())};
+                var internal=car.mechanics().get("engine.internals");
+                String[] labels={"Crank speed","Throttle / turbo speed","Boost / target","Air:fuel ratio","Coolant / oil","Oil pressure","Shaft torque","Blower drive load","Internal damage / wear"};
+                String[] values={String.format(Locale.ROOT,"%.0f RPM",car.rpm()),String.format(Locale.ROOT,"%.0f%% / %.0f%%",car.throttle()*100,car.spool()*100),String.format(Locale.ROOT,"%.2f / %.2f bar",car.boost(),car.boostTarget()),String.format(Locale.ROOT,"%.2f : 1",car.afr()),String.format(Locale.ROOT,"%.0f / %.0f C",car.temperature(),car.oilTemperature()),String.format(Locale.ROOT,"%.2f bar",car.oilPressure()),String.format(Locale.ROOT,"%.0f Nm",car.shaftTorque()),String.format(Locale.ROOT,"%.1f kW",car.blowerKw()),internal==null?"Not installed":String.format(Locale.ROOT,"%.1f%% / %.1f%%",internal.damage()*100,internal.wear()*100)};
                 int spacing=Math.min(25,Math.max(12,(h-180)/labels.length));
                 for(int i=0;i<labels.length;i++){int by=top+22+i*spacing;g.drawString(font,labels[i],rx,by,MUTED,false);g.drawString(font,values[i],rx+rw-font.width(values[i]),by,i==3&&car.boost()>.1&&car.afr()>13.5?0xFFFF8E60:INK,false);}
             }

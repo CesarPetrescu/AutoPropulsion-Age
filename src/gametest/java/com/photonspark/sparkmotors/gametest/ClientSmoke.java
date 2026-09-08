@@ -106,6 +106,7 @@ public final class ClientSmoke {
     private static void componentFlow(Minecraft mc,CarEntity car){
         if(phase==10){
             if(ticks==10){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.serverLevel().getEntity(carId);p.stopRiding();p.teleportTo(c.getX()+2.8,c.getY(),c.getZ());c.setMechanics(CircuitPhysics.impact(c.mechanics(),"front",18).fluids(2.4,5,1));});}
+            if(ticks==15){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var c=(CarEntity)mc.getSingleplayerServer().overworld().getEntity(carId);c.setMechanics(c.mechanics().with("engine.internals",c.mechanics().get("engine.internals").condition(.35,0,0)));});}
             if(ticks==30){CarClient.send(car,CarPackets.OPEN,0,0);}
             if(ticks==45){press(mc,"Service",0);}
             if(ticks==55){if(!car.hoodOpen())press(mc,"Hood",0);}
@@ -114,18 +115,27 @@ public final class ClientSmoke {
             if(ticks==300){if(!car.diagnostic().contains("Pressure loss"))throw new IllegalStateException("Timed leak test did not synchronize: "+car.diagnostic());pendingScreenshot="mechanics-pressure-loss.png";}
             if(ticks==320){press(mc,"Parts",0);press(mc,"Install part",0);}
             if(ticks==340){if(CircuitPhysics.coolantLeak(car.mechanics())>.005)throw new IllegalStateException("Hose replacement did not stop the leak");if(car.coolant()>2.5)throw new IllegalStateException("Part replacement secretly refilled coolant");press(mc,"Tests / fluids",0);}
-            if(ticks==355)press(mc,"Fill coolant",0);
-            if(ticks==370){if(car.coolant()<2.7)throw new IllegalStateException("Coolant refill packet failed");press(mc,"Pressure test / 10s",0);}
-            if(ticks==585){if(!car.diagnostic().contains("Holds pressure"))throw new IllegalStateException("Repaired circuit failed pressure verification");pendingScreenshot="mechanics-repair-verified.png";}
-            if(ticks==605){press(mc,"Parts",0);((ServiceScreen)mc.screen).select("wheel.fl.tire");press(mc,"Jack",0);}
-            if(ticks==625){if(!car.raised())throw new IllegalStateException("Jack did not synchronize");press(mc,"Remove part",0);}
-            if(ticks==645){if(car.mechanics().get("wheel.fl.tire")!=null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")!=0)throw new IllegalStateException("Removed tire remains installed or visible");press(mc,"Underside",0);pendingScreenshot="mechanics-underside-service.png";}
-            if(ticks==665)press(mc,"Install part",0);
-            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");((ServiceScreen)mc.screen).select("cooling.upper_hose");press(mc,"Focus part",0);}
-            if(ticks==700){if(CarMesh.visibleComponentTriangles(car,"cooling.upper_hose")==0||CarMesh.visibleComponentTriangles(car,"cooling.lower_hose")==0)throw new IllegalStateException("Independent coolant hose geometry missing");pendingScreenshot="mechanics-focused-hose.png";}
-            if(ticks==715){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.serverLevel().getEntity(carId);c.setMechanics(c.mechanics().with("cooling.sender",null));});}
-            if(ticks==740){if(!Double.isNaN(CockpitInstruments.read(car).coolant()))throw new IllegalStateException("Failed coolant sender still supplies a perfect cockpit reading");
-                write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire visibility, focused separate hoses, and failed sender behavior.");
+            if(ticks>=355&&ticks<=385&&ticks%5==0)press(mc,"Fill coolant",0);
+            if(ticks==400){if(car.coolant()<7.999)throw new IllegalStateException("Full coolant refill packet sequence failed");press(mc,"Pressure test / 10s",0);}
+            if(ticks==615){if(!car.diagnostic().contains("Holds pressure"))throw new IllegalStateException("Repaired circuit failed pressure verification");pendingScreenshot="mechanics-repair-verified.png";}
+            if(ticks==620){if(car.mechanics().get("engine.internals").wear()<.34)throw new IllegalStateException("Hose replacement healed unrelated internal wear");press(mc,"Garage",0);press(mc,"Live",0);}
+            if(ticks==625)press(mc,"Rebuild engine",0);
+            if(ticks==630){if(car.mechanics().get("engine.internals").wear()!=0)throw new IllegalStateException("Native rebuild button failed to repair wear-only internals");press(mc,"Service",0);}
+            if(ticks==635){press(mc,"Parts",0);((ServiceScreen)mc.screen).select("wheel.fl.tire");press(mc,"Jack",0);}
+            if(ticks==655){if(!car.raised())throw new IllegalStateException("Jack did not synchronize");press(mc,"Remove part",0);}
+            if(ticks==675){if(car.mechanics().get("wheel.fl.tire")!=null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")!=0)throw new IllegalStateException("Removed tire remains installed or visible");press(mc,"Underside",0);pendingScreenshot="mechanics-underside-service.png";}
+            if(ticks==695)press(mc,"Install part",0);
+            if(ticks==715){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");((ServiceScreen)mc.screen).select("cooling.upper_hose");press(mc,"Focus part",0);}
+            if(ticks==730){if(CarMesh.visibleComponentTriangles(car,"cooling.upper_hose")==0||CarMesh.visibleComponentTriangles(car,"cooling.lower_hose")==0)throw new IllegalStateException("Independent coolant hose geometry missing");pendingScreenshot="mechanics-focused-hose.png";}
+            if(ticks==745){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.serverLevel().getEntity(carId);c.setMechanics(c.mechanics().with("cooling.sender",null));});}
+            if(ticks==770){if(!Double.isNaN(CockpitInstruments.read(car).coolant()))throw new IllegalStateException("Failed coolant sender still supplies a perfect cockpit reading");((ServiceScreen)mc.screen).select("cooling.sender");press(mc,"Install part",0);}
+            if(ticks==780){press(mc,"Jack",0);}
+            if(ticks==790){press(mc,"Hood",0);mc.setScreen(null);maxSpeed=0;var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);p.startRiding(p.serverLevel().getEntity(carId),true);});mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);}
+            if(ticks==810)CarClient.send(car,CarPackets.IGNITION,0,0);
+            if(ticks>=820&&ticks<=960){PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<900?1:2,0));maxSpeed=Math.max(maxSpeed,Math.abs(car.speed()));}
+            if(ticks==890)pendingScreenshot="mechanics-repaired-driving.png";
+            if(ticks==970){if(maxSpeed<5||Math.abs(car.speed())>.3||!car.engineRunning()||car.coolant()<7.99||car.temperature()>110)throw new IllegalStateException("Repaired car failed running/road verification: speed="+maxSpeed+" coolant="+car.coolant());
+                write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, full conserved refill, timed verification, physical jack, tire visibility, focused separate hoses, failed sender behavior and repaired-car driving.");
                 CarClient.stopSounds();if(CarClient.activeAudioVoices()!=0)throw new IllegalStateException("Audio voices survived cleanup");System.out.println("MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS INSTRUMENT_SENDER_PASS");mc.stop();}
         }
     }
@@ -220,12 +230,12 @@ public final class ClientSmoke {
         if(phase==16){
             if(ticks==8)press(mc,"Live",0);
             if(ticks==16)press(mc,"Start / stop",0);
-            if(ticks==24)press(mc,"Rev test / 2s",0);
-            if(ticks==35){if(car.rpm()<1500||Math.abs(car.speed())>.1)throw new IllegalStateException("Parked rev test failed");pendingScreenshot="powertrain-live.png";}
-            if(ticks==45)press(mc,"Start / stop",0);
-            if(ticks==55){press(mc,"Tuner",0);press(mc,"-",2);press(mc,"Apply boost",0);}
-            if(ticks==70){if(Math.abs(car.boostTarget()-1.3)>.01)throw new IllegalStateException("Boost tune failed over the real packet path");pendingScreenshot="powertrain-tuner.png";}
-            if(ticks==85){write(mc,"PASS: driving/garage/paint/tune plus "+engineJob+" family/induction layouts and all 42 hardware choices installed through native GUI buttons and real packets. Exclusive compressors, live rev test, diagnostics, boost tuning and screenshots verified.");mc.stop();phase=18;}
+            if(ticks==45){if(!car.engineRunning())throw new IllegalStateException("Engine did not finish cranking before parked rev test: "+car.engineMode());press(mc,"Rev test / 2s",0);}
+            if(ticks==60){if(car.rpm()<1500||Math.abs(car.speed())>.1)throw new IllegalStateException("Parked rev test failed");pendingScreenshot="powertrain-live.png";}
+            if(ticks==80)press(mc,"Start / stop",0);
+            if(ticks==95){press(mc,"Tuner",0);press(mc,"-",2);press(mc,"Apply boost",0);}
+            if(ticks==110){if(Math.abs(car.boostTarget()-1.3)>.01)throw new IllegalStateException("Boost tune failed over the real packet path");pendingScreenshot="powertrain-tuner.png";}
+            if(ticks==125){write(mc,"PASS: driving/garage/paint/tune plus "+engineJob+" family/induction layouts and all 42 hardware choices installed through native GUI buttons and real packets. Exclusive compressors, live rev test, diagnostics, boost tuning and screenshots verified.");mc.stop();phase=18;}
         }
     }
     @SubscribeEvent public static void frame(RenderFrameEvent.Post e){

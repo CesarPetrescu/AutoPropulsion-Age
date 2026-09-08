@@ -104,7 +104,8 @@ with wave.open(str(wav),'wb') as f:
         sample=math.tanh(base*1.3)*.34+texture
         frames.append(struct.pack('<h',int(sample*22000)))
     f.writeframes(b''.join(frames))
-subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(wav),'-c:a','libvorbis','-q:a','5',str(sound/'engine_loop.ogg')],check=True)
+if not (sound/'engine_loop.ogg').exists():
+    subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-i',str(wav),'-c:a','libvorbis','-q:a','5',str(sound/'engine_loop.ogg')],check=True)
 # This generator owns only its legacy entry. Authored layer definitions survive regeneration.
 sound_manifest=assets/'sounds.json'
 sound_entries=json.loads(sound_manifest.read_text()) if sound_manifest.exists() else {}

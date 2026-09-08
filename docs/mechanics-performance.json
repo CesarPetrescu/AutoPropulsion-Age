@@ -1,0 +1,8 @@
+{
+  "scope": "Pure mechanical simulation only; excludes Minecraft entity, rendering and networking costs",
+  "java": "21.0.11",
+  "cars": 20, "ticks": 1000, "substepsPerTick": 4,
+  "meanBatchMilliseconds": 0.6553, "p95BatchMilliseconds": 0.9068,
+  "meanMicrosecondsPerCarTick": 32.7651,
+  "checksum": 2036556.1233
+}

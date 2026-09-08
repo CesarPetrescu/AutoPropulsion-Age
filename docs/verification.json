@@ -1,11 +1,13 @@
 {
-  "version": "0.3.0-alpha",
+  "version": "0.4.0-alpha",
   "date": "2026-09-08",
   "minecraft": "1.21.1",
   "neoforge": "21.1.249",
   "java": "21.0.11",
+  "source_baseline": "2bbe5ea",
+  "branch": "mechanical-components",
   "unit_tests": {
-    "passed": 22,
+    "passed": 43,
     "failed": 0,
     "tests": [
       "com.photonspark.sparkmotors.sim.EngineConfigurationTest.allHardwareOptionsDriveAcrossFamiliesGradesInductionAndTuneBounds()",
@@ -22,6 +24,27 @@
       "com.photonspark.sparkmotors.sim.EnginePhysicsTest.coolingOilSystemsAndOverheatAffectCondition()",
       "com.photonspark.sparkmotors.sim.EnginePhysicsTest.stationaryBrakesHoldWhenARevTestReconnectsTheClutch()",
       "com.photonspark.sparkmotors.sim.EnginePhysicsTest.rootsRespondsAtLowRpmAndBeltLoadIsReal()",
+      "com.photonspark.sparkmotors.sim.InstrumentReadingsTest.missingClusterOrPowerDisablesNeedles()",
+      "com.photonspark.sparkmotors.sim.InstrumentReadingsTest.failedSenderDoesNotReportPerfectTemperatureOrPressure()",
+      "com.photonspark.sparkmotors.sim.InstrumentReadingsTest.gaugesUseDefinedSourcesAndWarnings()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.failedFrontLeftHydraulicsPullButHandbrakeStillWorks()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.frontImpactLeakOverheatsAndCorrectRepairStillNeedsFluidAndRetainsDamage()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.airborneBrakingSlowsOnlyWheelRotationNotChassis()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.missingPumpAndFanHaveDifferentMeasuredEvidenceThanLeakingHose()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.serviceBrakeAndRearHandbrakeAreDistinctAndMissingBrakeDoesNotStopRolling()",
+      "com.photonspark.sparkmotors.sim.MechanicalPhysicsTest.usedTireMovesAcrossCornersWithoutResetAndFluidStateIsImmutable()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.starterHasCrankingStateAndCannotStartWithFlatBatteryOrOpenIgnition()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.alternatorAndBeltControlChargeIndependentlyOfEngineHealth()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.mufflerChangesNoCombustionOrOilAndFamiliesHaveDifferentCurveShapes()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.wornClutchSlipsAndShiftHasFiniteDisengagement()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.brokenGearboxAllowsEngineToRevAndVehicleToCoast()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.pressureReleaseRequiresValvePressureAndTurboHardware()",
+      "com.photonspark.sparkmotors.sim.MechanicalPowertrainTest.oilSupplyFaultStarvesOriginalAndReplacementTurbo()",
+      "com.photonspark.sparkmotors.sim.VehicleAudioTest.mufflerOnlyChangesExhaustVoice()",
+      "com.photonspark.sparkmotors.sim.VehicleAudioTest.compressorTypesAreExclusiveAndAllVoicesResolveToAuthoredAssets()",
+      "com.photonspark.sparkmotors.sim.VehicleAudioTest.grindingNeedsWornPadBrakingAndContact()",
+      "com.photonspark.sparkmotors.sim.VehicleAudioTest.roadAudioSurvivesEngineOffButRequiresEachContact()",
+      "com.photonspark.sparkmotors.sim.VehicleAudioTest.equalRpmDifferentLoadChangesTheMix()",
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.missingAssembliesAndEmptyTankPreventDriving()",
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.sportEngineActuallyChangesAcceleration()",
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.deterministicAndFinite()",
@@ -30,51 +53,87 @@
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.reverseAndBrakes()",
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.reachesRoadSpeedAndUsesFuel()",
       "com.photonspark.sparkmotors.sim.VehicleDynamicsTest.suspensionChangesSteeringResponse()"
-    ],
-    "exhaustive_populated_hardware_combinations": 1835008,
-    "ready": 692224,
-    "correctly_blocked": 1142784,
-    "stateful_drive_brake_cases": 7308,
-    "distinct_dynamic_baseline_builds": 174
+    ]
   },
   "dedicated_gametests": {
-    "passed": 18,
+    "passed": 26,
     "failed": 0,
-    "family_grade_induction_layouts_driven": 98,
-    "engine_item_serialized_roundtrips": 98,
-    "hardware_recipe_and_inventory_transactions": 42,
-    "donor_engine_conversions": 13,
-    "donor_crate_preservation": true,
-    "legacy_car_and_item_migration": true,
-    "clutch_and_timed_parked_rev_test": true,
-    "condition_and_temperature_preservation": true
+    "native_driving_layouts": 98,
+    "includes_final_wear_only_rebuild_regression": true
   },
   "client_integration": {
-    "full_suite": "PASS",
-    "native_family_induction_layouts": 49,
-    "native_hardware_options": 42,
-    "final_build_focused_suite": "PASS",
-    "final_i4_induction_layouts": 7,
-    "final_hardware_options": 42,
-    "live_rev_test_and_boost_tune": true,
-    "screenshots": "engine-gallery.json"
+    "full_matrix": "PASS",
+    "family_induction_layouts": 49,
+    "hardware_choices": 42,
+    "final_mechanical_workflow": "PASS",
+    "actual_sound_channels_and_cleanup": "PASS",
+    "sender_behavior": "PASS",
+    "cockpit_screenshot_review": "Needles, labels and odometer inspected in native image"
   },
+  "multiplayer": {
+    "passed": true,
+    "clients": 2,
+    "checks": [
+      "ownership rejection",
+      "live entity synchronization",
+      "native item drop and pickup",
+      "used part reinstallation in another owned car"
+    ]
+  },
+  "performance": {
+    "scope": "Pure mechanical simulation only; excludes Minecraft entity, rendering and networking costs",
+    "java": "21.0.11",
+    "cars": 20,
+    "ticks": 1000,
+    "substepsPerTick": 4,
+    "meanBatchMilliseconds": 0.6553,
+    "p95BatchMilliseconds": 0.9068,
+    "meanMicrosecondsPerCarTick": 32.7651,
+    "checksum": 2036556.1233
+  },
+  "network_size": {
+    "scope": "One healthy boosted car's serialized mechanical NBT; excludes other entity packets and compression",
+    "parts": 81,
+    "snapshotBytes": 5623,
+    "periodicSnapshotsPerSecond": 1
+  },
+  "audio": {
+    "decoded_mono_assets": 48,
+    "authored_audio_survives_regeneration": true,
+    "origin": "Original synthesized game audio",
+    "subjective_listening": "Pending user feedback; no model listening tool available"
+  },
+  "resolved_during_this_run": [
+    "Baseline brakes combined and missing/airborne braking defects reproduced and fixed",
+    "Mini cockpit needles initially occluded by dial faces; source corrected and native screenshot inspected",
+    "Rebuild UI and server originally rejected wear-only internal damage; shared predicate and native regressions passed",
+    "Stored brake/clutch temperatures were overwritten by transient-state initialization and tire temperature jumped to a target; restore/thermal-decay fix checked during resumed server ticks",
+    "First full client matrix passed 49 layouts and 42 hardware choices, then failed because the test requested revving before cranking finished; corrected timing and reran the full suite"
+  ],
   "blender": {
-    "fit_layouts_passed": 49,
-    "intersection_layouts_passed": 49,
+    "fit_layouts": 49,
+    "intersection_layouts": 49,
     "hood_positions": 5,
     "distinct_hardware_geometry_checks": 294,
-    "hardware_renders": 42,
-    "editable_inspection_scenes": 91,
-    "file": "assets/engine_workshop.blend"
+    "runtime_chunks": 734,
+    "union_triangles": 268980,
+    "editable_derived_scenes": 91,
+    "scope": "Targeted fit, hood and non-mating hardware tests, not all pairwise contacts"
   },
   "release_jar": {
-    "path": "downloads/autopropulsion-age-0.3.0-alpha.jar",
-    "bytes": 3363321,
-    "sha256": "bde83c02351af728f9e20ff704a3ffe1cce28c32d8a8380fd31e3df174a1a329",
+    "path": "downloads/autopropulsion-age-0.4.0-alpha.jar",
+    "bytes": 5245446,
+    "sha256": "1d953692dd9c8ba54512476f05dd2390eae10d29b1d39e78c75be6cac4f9b513",
     "simulation_included": true,
     "development_harness_excluded": true,
-    "recipes": 70
+    "recipes": 122,
+    "packaged_mechanical_audio": 48
   },
-  "scope": "Exhaustive discrete populated-hardware compatibility; targeted stateful driving, native integration and selected geometry intersections. Not exhaustive transient or every pairwise CAD contact testing."
+  "unexecuted": [
+    "Subjective audio listening acceptance",
+    "Separate-machine latency and other modpacks",
+    "Long-duration survival worlds",
+    "Large-fleet Minecraft render/network performance"
+  ],
+  "next_unfinished_step": "Listening/playtest feedback; then deeper service/access coverage and fleet profiling against the same component state"
 }

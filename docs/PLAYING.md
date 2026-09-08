@@ -1,98 +1,66 @@
-# Playing AutoPropulsion Age 0.3.0-alpha
+# Playing AutoPropulsion Age 0.4.0-alpha
 
-This alpha lets you place, drive and customize one sedan. It includes six garage tabs, 42 engine hardware choices in ten slots, stateful engine/boost physics, a driving HUD, seventy recipes, fuel, repairs and saved configurations. The larger design in [the original requirements](modular-car-requirements.md) remains a roadmap.
+Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the mod JAR](../downloads/autopropulsion-age-0.4.0-alpha.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 
-## Install
-
-1. Install **Minecraft Java Edition 1.21.1** with **NeoForge 21.1.249** and **Java 21**. This is the tested combination.
-2. Download [autopropulsion-age-0.3.0-alpha.jar](https://github.com/CesarPetrescu/AutoPropulsion-Age/raw/refs/heads/main/downloads/autopropulsion-age-0.3.0-alpha.jar).
-3. Put the JAR in that Minecraft instance's `mods` folder and launch its NeoForge profile. No Blender, GLB importer, separate simulation library or other mod is required.
-4. Replace the previous AutoPropulsion JAR when upgrading; keep only one version installed. Existing 0.1/0.2 cars and traded engine items migrate their original installed parts. The four new slots receive OEM parts.
-5. For a dedicated server, put the same JAR in the server's `mods` folder and on each player's client.
-
-The separate `modular-car-kit.zip` contains editable artwork. Install the **JAR** to play. If you use a launcher with multiple instances, use the selected instance's folder.
+The alpha provides a drivable sedan, seven engine families, 42 engine hardware choices, individual mechanical components, fluids, diagnosis and targeted repair. The [milestone report](mechanical-milestones.md) distinguishes verified behavior from the remaining roadmap.
 
 ## First drive
 
-Start a Creative world, open the **AutoPropulsion Age** creative tab and take a **Sedan Crate**. Alternatively, with cheats enabled:
-
-```mcfunction
-/give @s sparkmotors:sedan_crate
-```
-
-Use the crate on a wide, flat surface with room for a 4.5-block car. It places a complete stock sedan with 40 L of fuel. Right-click the car with an empty hand to enter, press **R** to start the engine and hold **W** to drive. Use **F5** for a view behind the car. **S** brakes; stop, press **Z**, then hold **W** to reverse. **Left Shift** exits.
-
-## Controls
+Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on wide, flat ground. With cheats, use `/give @s sparkmotors:sedan_crate`. A new car includes stock components and fuel. Right-click with an empty hand, press **R**, wait for the starter to catch, then hold **W**. Stop with **S** before selecting reverse with **Z**.
 
 | Input | Action |
 |---|---|
-| Right-click car, empty hand | Enter the driver's seat |
-| W / S | Accelerator / brake |
-| A / D | Steer left / right |
-| Space | Handbrake |
-| Hold C / C + W | Disengage clutch / free-rev the engine |
-| Z, while stopped | Switch forward / reverse |
+| W / S | Accelerator / service brake |
+| A / D | Steering |
+| Space | Rear-wheel handbrake, separate from hydraulic service brakes |
+| C / C + W | Disengage clutch / free-rev |
+| Z while stopped | Forward / reverse |
 | R | Start / stop engine |
-| G, while driving or looking at car | Open garage |
-| Shift + right-click, or use Garage Wrench | Open garage from outside |
-| H | Toggle lamps |
-| O, while stopped | Open / close doors, hood and trunk |
-| B | Horn |
-| Left Shift | Exit |
-| F5 | Cycle normal Minecraft camera views |
+| G | Garage, while seated or looking at the car |
+| Shift + right-click / Garage Wrench | Garage from outside |
+| H / B | Lamps / horn |
+| O while stopped | Doors, hood and trunk |
+| V | Optional performance instruments |
+| Left Shift / F5 | Exit / camera view |
 
-The custom keys can be changed under **Options → Controls → AutoPropulsion Age**. The HUD displays km/h, gear, RPM, fuel, boost, AFR, oil temperature and engine status. Opening a screen applies the handbrake. Gears shift automatically; look around with the mouse while seated.
+Keys can be rebound in Minecraft Controls. The normal HUD stays compact. Look down in first person to see the dashboard needles, gear and odometer. Coolant/oil sender failures remove their readings and produce a sender warning. The garage **Live** page is explicitly labeled assisted telemetry and can show values unavailable to a failed instrument.
 
-## Garage
+## Complete a coolant-leak repair
 
-Stop and switch off the engine before changing parts, paint or tuning, refuelling or repairing. Open the garage with G, a wrench, or by right-clicking a **Garage Controller** near your car. The controller searches within eight blocks. Owners and server operators can use the car; another player cannot take it or modify it.
+1. Park and stop the engine. Open **G → Service**, then **Hood**. Allow hot coolant to cool below 60 C before pressure testing or opening the circuit.
+2. Carry a **Pressure Tester**. On **Tests / fluids**, run **Pressure test / 10s**. The server measures pressure retention over ten seconds; a leak produces pressure loss.
+3. On **Parts**, select the upper or lower coolant hose and use **Focus part**. Wet residue is an observation of that component's leak, not a universal diagnosis of the radiator. Drag to orbit, right-drag to pan, and scroll over the preview to zoom.
+4. Carry the matching replacement hose and press **Install part**. In Survival this consumes one incoming part and returns the actual old hose, retaining its serial, wear, damage and fault. You can remove first if preferred.
+5. Replacing the hose stops that leak; it does **not** refill coolant or repair any overheated internals. Carry **Coolant Bottles** and use **Fill coolant**. Each bottle holds 1 L; a partially used bottle retains its remainder. The reservoir holds 8 L.
+6. Repeat the ten-second pressure test. Check the fluid level, restart and verify temperature under load. Other leaks, a failed pump, fan, belt, oil supply or existing internal damage require their own work.
 
-| Tab | Working features |
-|---|---|
-| Garage | Live 3D preview and Stock / Sport / Remove buttons for engine, transmission, wheels, brakes, suspension and body kit |
-| Paint | Eight paint colors with an immediate preview after the server accepts the change |
-| Tuner | 4,000–7,000 RPM limiter, 2.8–4.8 final drive, 0.2–1.4 bar boost target and calculated steady-state power curve |
-| Car | Ignition, lamps, independent hood, opening panels, fuel, condition and repair controls |
-| Engine | Seven engine families, stock/sport base grades, ten service slots, 42 named hardware choices, seven induction layouts and internals inspection |
-| Live | RPM, throttle, turbo speed, boost, AFR, coolant/oil temperatures, oil pressure, torque, blower load, engine wear, timed rev test and engine rebuild |
+Creative mode bypasses item/tool costs for experimenting. Survival requires the corresponding tools and parts. A new healthy car should hold pressure; naturally occurring impacts and neglected fluids provide faults. Dropping or trading a used part does not repair it.
 
-For engine work, open the **Engine** tab and press **Open hood** first. See the [engine workshop guide](ENGINE-WORKSHOP.md) for every family, kit and configuration.
+![Pressure loss during the native repair test](screenshots/mechanics-pressure-loss.png)
+![Verification after targeted hose replacement](screenshots/mechanics-repair-verified.png)
 
-In the Engine tab, each row's arrows browse named hardware and the middle Fit button installs it. More parts / Previous parts and scrolling reveal the other slots. For large or twin turbos, install return/race fuel, billet internals and upgraded ignition/cooling first. Other boost kits require high-flow fuel and forged/billet internals. High-compression internals require natural aspiration. On Live, start the engine and use **Rev test / 2s** with the hood open to watch diagnostics while the brakes are held and the clutch disengaged. Rebuild engine consumes twelve iron ingots to restore engine wear.
+## Corner, underside and electrical work
 
-In Survival, installing consumes one assembly from your inventory and returns the previous assembly. Removing a required driving assembly prevents the engine starting. Creative changes are free. Scroll the Garage list if a large GUI scale leaves only a few rows visible.
+Carry a **Service Jack**, park, stop the engine and press **Jack** in Service. The car physically rises and a jack becomes visible. Individual tire, rim, bearing, pad, disc, caliper, hydraulic hose, spring, damper and link mounts are independent at all four corners. Corner and driveline/exhaust work requires the raised service position. Lower the car before driving.
 
-Sport parts have gameplay effects: engine torque +38%, shorter transmission gearing, more tire grip, stronger brakes, quicker steering with sport suspension, and slightly lower drag with the sport body kit. Wheels, suspension and body kits have alternate geometry. The stock/sport grade within each engine family and brake appearances use recolors; the sport transmission uses the existing casing in this alpha.
+Select a corner before **Measure tire** or **Inflate tire**. These need a **Tire Gauge** or **Tire Pump**. Inflation changes pressure but does not seal a puncture. Service braking uses each corner's installed hardware, temperature and contact. Handbraking uses the rear hardware; airborne braking slows free wheel rotation without braking the chassis.
 
-Paint consumes one dye of any color. Refuelling consumes one **Fuel Can** for up to 10 L, with a 50 L tank limit. Repair consumes four iron ingots and restores condition to 100%. Creative mode bypasses these costs. High-speed wall impacts damage the car; zero condition disables the engine until repaired.
+**Inspect fluids** needs the garage wrench. **Multimeter**, **Oil pressure test** and **Compression test** need their named tools. Compression is an explicitly grouped assembly estimate, with chamber/seal/port vocabulary for rotaries. The oil circuit holds 5 L and the brake reservoir 1 L. Oil/coolant bottles conserve their unused remainder. Clearing warning history never repairs an active cause; the condition is logged again.
 
-Configuration, engine family/components, owner, paint, fuel, car condition, engine wear, coolant/oil temperatures, tune, hood and lamp state save with the entity. Removed engines and engine crafting retain their parts and condition. Reloaded cars start parked with the engine off. The all-panels control opens all six together, and the hood also has an independent control. There is one usable seat.
+A worn clutch can slip while the engine runs. A broken gearbox, differential or shaft can interrupt drive while the car coasts. Oil-pump/feed faults cause measured pressure loss and internal/compressor wear. A failed alternator or belt discharges the battery, and a flat battery cannot crank. Replacing the affected part preserves damage elsewhere.
 
-## Survival crafting
+## Engine builds, sound and appearance
 
-Use a crafting table. These are deliberately simple alpha recipes.
+Use **G → Engine** for families, base grades and the ten engine hardware slots. See [the engine guide](ENGINE-WORKSHOP.md) and the README's full model galleries. Compatible installations require a stopped engine and open hood. The tuner adjusts limiter, final drive and boost target.
 
-| Item | Recipe |
-|---|---|
-| Each stock assembly | Eight iron ingots around its center ingredient below |
-| Stock engine / transmission | Center: piston / iron block |
-| Stock wheels / brakes | Center: coal block / copper ingot |
-| Stock suspension / body | Center: string / glass |
-| Sport assembly | Matching stock assembly in center; gold ingots in four corners; redstone in the four remaining edge cells |
-| Sedan Crate | Top and bottom rows: iron blocks. Middle row: stock engine, stock wheels, stock transmission |
-| Fuel Can | Coal in center; iron nuggets directly above, below, left and right |
-| Garage Controller | Top and bottom rows: iron ingots. Middle row: redstone, crafting table, redstone |
-| Garage Wrench | Iron ingots at top-center, middle-center, middle-right, bottom-left |
+The independently fitted stock/sport/missing muffler changes the exhaust layer without automatically adding power. Engine sound follows family, RPM and load; turbo sound follows spool, blow-off events require a fitted valve and pressure transition, and blower types have their own drive layers. Road sound follows wheel contact and remains while coasting with the engine off. These are original synthesized game sounds; subjective listening acceptance remains pending.
 
-The crate includes stock brakes, suspension and body. Exact recipe JSON is in [the resource folder](../src/main/resources/data/sparkmotors/recipe).
+The Service cutaway hides covers only in the preview. It does not remove inventory parts or satisfy physical access requirements. Wheel travel, tire pressure/deformation, steering/pedals, instruments, hoses and the electric fan follow component state. Lamps are emissive; they do not project light onto the road.
 
-## Alpha limits and next work
+**Rebuild engine** consumes twelve iron ingots to restore the internal assembly's wear, structural damage and faults. It does not fix external oil/cooling/electrical causes or refill fluids. The four-ingot body repair only repairs body panels. Mechanical capability is independent of the old car-wide cosmetic condition value.
 
-- Driving integrates crank/flywheel inertia and clutch torque, with automatic gearing, simplified grip/drag and Minecraft block collisions. Four wheel probes align the body with the road; independent spring-force suspension and tire heat/wear remain future work. Engine hardware uses calibrated gameplay curves and simplified fuel/thermal/wear models.
-- The bounding box conservatively encloses the rotated car. Tight corners and diagonal gaps need more clearance than the body shape; this is best played on broad roads. Full-block curbs are obstacles.
-- Lamps glow on the model; they do not cast dynamic beams into the world. The horn uses a vanilla sound and the engine uses an original synthesized loop.
-- The garage power graph is calculated from the engine model. A physical dyno, lifts, tire machines, drag races, a full individual-component engine parts tree and additional passengers are future work.
-- The runtime includes seven engine families, 42 hardware choices and seven induction configurations. The full 471-entry original Blender kit also includes workshop and driveline assets that remain authoring assets. Individual body-panel customization, texture atlases, liveries, LODs and large-fleet performance work remain.
-- Single-player client/server traffic and a dedicated GameTest server are tested. Separate-machine multiplayer latency, other modpacks and long-running worlds still need playtesting.
+## Persistence and current limits
 
-See [verification and development instructions](DEVELOPMENT.md) for the tests run on this build.
+Existing 0.1–0.3 cars and engine items migrate once. Individual identities, wear, damage, faults, pressure/charge, temperatures and applicable fluid quantities survive supported service, item, crafting, crate and save conversions. Reloaded cars start with the engine off. Owners/operators, proximity, access and Survival inventory transactions remain server-validated.
+
+There are 122 mod items/recipes and 81 stable component mounts (80 installed on a stock naturally aspirated car). This is a component simulation with useful service assemblies, not an individual fastener/cylinder or soft-body simulator. Not every logical component has its own unique detailed mesh. Expert fasteners, engine-stand procedures, a full body/glass/latch service tree, dynamic headlights, LODs and large-fleet tuning remain future work. The local two-client test passed; separate-machine latency, other modpacks and long-duration worlds remain untested.

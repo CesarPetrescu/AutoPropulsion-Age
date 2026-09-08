@@ -10,6 +10,11 @@ public final class WheelDynamics {
     }
     public record State(List<Corner> corners){public State{corners=List.copyOf(corners);if(corners.size()!=4)throw new IllegalArgumentException("Four corners required");}public static State stopped(){return new State(Collections.nCopies(4,Corner.stopped()));}}
     public record Forces(State state,double braking,double rolling,double yawMoment,double driveGrip) {}
+    public static State restoreTemperatures(State previous,MechanicalState m){
+        var corners=new ArrayList<Corner>();
+        for(int c=0;c<4;c++){var old=previous.corners.get(c);var disc=m.get("wheel."+ComponentSlot.CORNERS[c]+".disc");corners.add(new Corner(old.omega,old.angle,old.travel,old.contact,old.slip,old.brakeForce,disc==null?20:disc.temperature()));}
+        return new State(corners);
+    }
     public static double tireGrip(MechanicalState m,int c){
         if(m==null)return 1;String prefix="wheel."+ComponentSlot.CORNERS[c]+".";var tire=m.get(prefix+"tire");if(tire==null)return 0;
         double pressure=clamp(tire.reserve()/2.3,.06,1.05);return pressure*(1-tire.wear()*.65)*(1-tire.damage()*.85)*m.capability(prefix+"rim");
@@ -53,7 +58,7 @@ public final class WheelDynamics {
             var w=wheels.corners.get(c);String k="wheel."+ComponentSlot.CORNERS[c]+".";var pad=m.get(k+"pad");
             if(pad!=null)m=m.with(k+"pad",pad.condition(pad.wear()+w.brakeForce*Math.abs(speed)*dt/2e9,pad.damage(),pad.faults()).operating(pad.reserve(),w.temperature));
             var disc=m.get(k+"disc");if(disc!=null)m=m.with(k+"disc",disc.operating(disc.reserve(),w.temperature));
-            var tire=m.get(k+"tire");if(tire!=null&&w.contact)m=m.with(k+"tire",tire.condition(tire.wear()+w.slip*Math.abs(speed)*dt*.000005,tire.damage(),tire.faults()).operating(tire.reserve(),20+Math.abs(speed)*1.2+w.slip*30));
+            var tire=m.get(k+"tire");if(tire!=null){double target=20+(w.contact?Math.abs(speed)*1.2+w.slip*30:0);double temperature=tire.temperature()+(target-tire.temperature())*(1-Math.exp(-dt*.03));m=m.with(k+"tire",tire.condition(tire.wear()+(w.contact?w.slip*Math.abs(speed)*dt*.000005:0),tire.damage(),tire.faults()).operating(tire.reserve(),temperature));}
         }return m;
     }
 }

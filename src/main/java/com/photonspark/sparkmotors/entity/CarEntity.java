@@ -69,6 +69,7 @@ public final class CarEntity extends Entity {
             var internal=value.get("engine.internals");entityData.set(ENGINE_HEALTH,internal==null?0f:(float)((1-internal.damage())*100));
             if(engineState!=null)engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),value.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff(),engineState.mode(),engineState.startTime());
             var clutch=value.get("driveline.clutch");if(clutch!=null&&transmissionState!=null)transmissionState=new TransmissionPhysics.State(transmissionState.gear(),transmissionState.target(),transmissionState.remaining(),clutch.temperature(),transmissionState.lateralSpeed(),transmissionState.yawRate());
+            if(wheelState!=null)wheelState=WheelDynamics.restoreTemperatures(wheelState,value);
         }
     }
     private double tripStart;
@@ -230,7 +231,7 @@ public final class CarEntity extends Entity {
     @Override public LivingEntity getControllingPassenger(){return getFirstPassenger() instanceof LivingEntity l?l:null;}
     @Override protected boolean canAddPassenger(Entity p){return getPassengers().isEmpty()&&Math.abs(speed())<1;}
     @Override protected Vec3 getPassengerAttachmentPoint(Entity p,EntityDimensions dimensions,float scale){
-        return new Vec3(-.40,.26,.12).yRot((float)-Math.toRadians(getYRot()));
+        return new Vec3(-.40,.18,.12).yRot((float)-Math.toRadians(getYRot()));
     }
     @Override protected void positionRider(Entity p,MoveFunction move){
         super.positionRider(p,move);
@@ -407,13 +408,16 @@ public final class CarEntity extends Entity {
             }
             case CarPackets.BOOST_TUNE -> {entityData.set(BOOST_TARGET,Mth.clamp(a/1000f,.2f,1.4f));message(player,"Boost target saved. Hardware limits still apply.");}
             case CarPackets.ENGINE_REBUILD -> {
-                var installed=mechanics().get("engine.internals");
-                if(installed==null||(installed.wear()==0&&installed.damage()==0&&installed.faults()==0)||Assembly.ENGINE.variant(config())==0)return;
+                if(!needsEngineRebuild())return;
                 if(consume(player,Items.IRON_INGOT,12)){var internal=mechanics().get("engine.internals");if(internal!=null)setMechanics(mechanics().with("engine.internals",internal.condition(0,0,0)));entityData.set(ENGINE_HEALTH,100f);engineState=EnginePhysics.State.stopped(oilTemperature(),100);message(player,"Engine rebuilt. Temperatures and installed parts retained.");}
                 else message(player,"Engine rebuild requires 12 iron ingots.");
             }
             default -> {}
         }
+    }
+    public boolean needsEngineRebuild(){
+        var internal=mechanics().get("engine.internals");
+        return internal!=null&&Assembly.ENGINE.variant(config())>0&&(internal.wear()>0||internal.damage()>0||internal.faults()!=0);
     }
     private void swapEngine(ServerPlayer player,EngineFamily family,int grade){
         int old=Assembly.ENGINE.variant(config());
@@ -490,8 +494,9 @@ public final class CarEntity extends Entity {
         if(tag.contains("Limiter"))entityData.set(LIMITER,Mth.clamp(tag.getInt("Limiter"),4000,7000));
         if(tag.contains("FinalDrive"))entityData.set(FINAL_DRIVE,(float)VehicleDynamics.clamp(tag.getFloat("FinalDrive"),2.8,4.8));
         if(tag.hasUUID("Owner"))setOwner(tag.getUUID("Owner"));
+        wheelState=WheelDynamics.State.stopped();transmissionState=TransmissionPhysics.State.stopped();
         if(tag.contains("Mechanics",10))setMechanics(MechanicalData.read(tag.getCompound("Mechanics")));
         else setMechanics(MechanicalState.legacy(config(),engineParts(),temperature(),oilTemperature(),engineHealth()));
-        tripStart=VehicleDynamics.clamp(tag.getDouble("TripStart"),0,mechanics().distance());entityData.set(TRIP_START,(float)(tripStart/1000));wheelState=WheelDynamics.State.stopped();transmissionState=TransmissionPhysics.State.stopped();entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
+        tripStart=VehicleDynamics.clamp(tag.getDouble("TripStart"),0,mechanics().distance());entityData.set(TRIP_START,(float)(tripStart/1000));entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
     }
 }
