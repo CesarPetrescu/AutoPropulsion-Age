@@ -174,9 +174,9 @@ public final class CarEntity extends Entity {
             if(engineState.mode()==EnginePhysics.Mode.STALLED)flag(1,false);
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
-            float previousYaw=getYRot(),attemptedYaw=previousYaw-(float)Math.toDegrees(state.yawDelta());
+            float previousYaw=getYRot(),attemptedYaw=previousYaw+(float)Math.toDegrees(state.yawDelta());
             setYRot(attemptedYaw);
-            double yaw=Math.toRadians(attemptedYaw),vx=-Math.sin(yaw)*speed+Math.cos(yaw)*transmissionState.lateralSpeed(),vz=Math.cos(yaw)*speed+Math.sin(yaw)*transmissionState.lateralSpeed();
+            double yaw=Math.toRadians(attemptedYaw),vx=-Math.sin(yaw)*speed-Math.cos(yaw)*transmissionState.lateralSpeed(),vz=Math.cos(yaw)*speed-Math.sin(yaw)*transmissionState.lateralSpeed();
             if(!level().noCollision(this,makeBoundingBox().deflate(.015))){setYRot(previousYaw);transmissionState=transmissionState.motion(transmissionState.lateralSpeed(),0,transmissionState.steering(),0,0);}
             setBoundingBox(makeBoundingBox());
             verticalSpeed=raised()?0:VehicleDynamics.clamp(verticalSpeed+SuspensionPhysics.acceleration(gaps,verticalSpeed,mechanics(),driveConfig())*.0125,-30,30);
@@ -189,7 +189,7 @@ public final class CarEntity extends Entity {
             double impact=Math.hypot(lostX,lostZ);
             if(impact>5){impactComponents(speed>=0?"front":"rear",impact);entityData.set(HEALTH,Math.max(0,health()-(float)(impact-5)*1.3f));if(tickCount%5==0)playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("impact").get(),.5f,1);}
             yaw=Math.toRadians(getYRot());speed=-Math.sin(yaw)*vx+Math.cos(yaw)*vz;
-            transmissionState=transmissionState.motion(Math.cos(yaw)*vx+Math.sin(yaw)*vz,impact>0?transmissionState.yawRate()*.5:transmissionState.yawRate(),transmissionState.steering(),transmissionState.longitudinalAcceleration(),transmissionState.lateralAcceleration());
+            transmissionState=transmissionState.motion(-Math.cos(yaw)*vx-Math.sin(yaw)*vz,impact>0?transmissionState.yawRate()*.5:transmissionState.yawRate(),transmissionState.steering(),transmissionState.longitudinalAcceleration(),transmissionState.lateralAcceleration());
         }
         entityData.set(CLUTCH_STATE,new org.joml.Vector3f((float)transmissionState.clutchSlipRpm(),(float)transmissionState.clutchTorque(),(float)transmissionState.clutchEngagement()));
         entityData.set(LATERAL_SPEED,(float)transmissionState.lateralSpeed());entityData.set(YAW_RATE,(float)transmissionState.yawRate());entityData.set(STEERING_ANGLE,(float)transmissionState.steering());
@@ -214,7 +214,7 @@ public final class CarEntity extends Entity {
             else{testPressure*=CircuitPhysics.pressureHold(mechanics(),.05);pressureTestTicks--;if(pressureTestTicks%20==0)entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Cooling pressure: %.2f bar / 1.00 initial. %s",testPressure,pressureTestTicks==0?(testPressure>.90?"Holds pressure.":"Pressure loss: inspect circuit joints and radiator."):(pressureTestTicks/20)+" seconds remaining."));}
         }
         if(tickCount%10==0&&coolant()>0&&CircuitPhysics.coolantLeak(mechanics())>.005&&level() instanceof net.minecraft.server.level.ServerLevel server){var at=position().add(new Vec3(.35,.6,1.7).yRot((float)-Math.toRadians(getYRot())));server.sendParticles(net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER,at.x,at.y,at.z,2,.08,.04,.08,0);}
-        double worldYaw=Math.toRadians(getYRot());setDeltaMovement((-Math.sin(worldYaw)*speed+Math.cos(worldYaw)*transmissionState.lateralSpeed())/20,verticalSpeed/20,(Math.cos(worldYaw)*speed+Math.sin(worldYaw)*transmissionState.lateralSpeed())/20);
+        double worldYaw=Math.toRadians(getYRot());setDeltaMovement((-Math.sin(worldYaw)*speed-Math.cos(worldYaw)*transmissionState.lateralSpeed())/20,verticalSpeed/20,(Math.cos(worldYaw)*speed-Math.sin(worldYaw)*transmissionState.lateralSpeed())/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
             float roll=(float)Math.toDegrees(Math.atan2((contact[0]+contact[2]-contact[1]-contact[3])/2,1.66));

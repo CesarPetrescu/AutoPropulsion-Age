@@ -127,14 +127,14 @@ public final class CarMesh {
                 String gauge=c.name.startsWith("needle_")?(c.name.contains("0.57")?"speed":"rpm"):c.name.substring("gauge_needle_".length());
                 poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees((float)(-140+readings.fraction(gauge)*280)));poses.translate(-c.px,-c.py,-c.pz);
             }
-            if(c.name.equals("steering_wheel")){poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees(-car.steer()*125));poses.translate(-c.px,-c.py,-c.pz);}
+            if(c.name.equals("steering_wheel")){poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees(car.steer()*125));poses.translate(-c.px,-c.py,-c.pz);}
             if(c.name.endsWith("_pedal")){float depressed=c.name.startsWith("throttle")?car.throttle():c.name.startsWith("brake")&&car.serviceBrake()?1:0;poses.translate(0,-depressed*.025,depressed*.02);}
             if(c.category==13||c.name.startsWith("brake_disc_")||c.name.startsWith("hub_")){
                 String tag=c.name.substring(c.name.length()-2);
                 if(tag.matches("[fr][lr]")){
                     float x=tag.charAt(1)=='l'?-.83f:.83f,z=tag.charAt(0)=='f'?1.35f:-1.30f;
                     poses.translate(x,.34,z);
-                    if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(car.steeringAngle()));
+                    if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(-car.steeringAngle()));
                     float individual=corner<0?wheel:Mth.lerp(partial,car.oldWheelAngles[corner],car.wheelAngles[corner]);
                     poses.mulPose(Axis.XP.rotation(individual));
                     if(part!=null&&component.endsWith(".rim")&&(part.faults()&PartInstance.BENT)!=0)poses.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(individual*2)*part.damage()*8)));

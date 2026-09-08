@@ -64,7 +64,7 @@ final class HandlingClient {
             if(ticks>=100&&ticks<145){lateral=Math.max(lateral,Math.abs(car.lateralSpeed()));rearSlip=Math.max(rearSlip,Math.max(car.wheelSlip(2),car.wheelSlip(3)));}
             if(ticks==99){entryYaw=car.getYRot();worldLeft=0;}
             if(ticks>=103&&ticks<110)worldLeft=Math.min(worldLeft,net.minecraft.util.Mth.wrapDegrees(car.getYRot()-(float)entryYaw));
-            if(ticks>=103&&ticks<110)leftYaw=Math.max(leftYaw,car.yawRate());
+            if(ticks>=103&&ticks<110)leftYaw=Math.max(leftYaw,-car.yawRate());
             if(ticks==113)ClientSmoke.screenshot("handling-"+layout.name().toLowerCase(Locale.ROOT)+"-drift.png");
             if(ticks==265){
                 require(peak>5&&lateral>.3&&rearSlip>.5&&leftYaw>.05,"No physical drift/left steering: speed="+peak+" lateral="+lateral+" rearSlip="+rearSlip+" yaw="+leftYaw);

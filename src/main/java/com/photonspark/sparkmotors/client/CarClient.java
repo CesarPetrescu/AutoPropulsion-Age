@@ -68,7 +68,8 @@ public final class CarClient {
                 if(mc.options.keyDown.isDown())keys|=2;
                 if(mc.options.keyJump.isDown())keys|=4;
                 if(CLUTCH.isDown())keys|=16;
-                steer=(mc.options.keyLeft.isDown()?1:0)-(mc.options.keyRight.isDown()?1:0);
+                // Minecraft yaw and the existing rig basis turn right for positive input.
+                steer=(mc.options.keyRight.isDown()?1:0)-(mc.options.keyLeft.isDown()?1:0);
             }else keys|=4;
             PacketDistributor.sendToServer(new CarPackets.Input(car.getId(),keys,steer));
         }else lastCar=-1;

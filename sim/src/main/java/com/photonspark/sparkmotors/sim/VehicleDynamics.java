@@ -1,6 +1,6 @@
 package com.photonspark.sparkmotors.sim;
 
-/** Four tire forces drive a planar rigid body. SI units; forward/left/yaw-left body axes. */
+/** Four tire forces drive a planar rigid body. SI units; forward and signed lateral/yaw axes follow the existing rig. Positive steer turns right in Minecraft. */
 public final class VehicleDynamics {
     public static final double MASS = 1280, WHEEL_RADIUS = .34, WHEELBASE = 2.65, TRACK=1.66, YAW_INERTIA=2350, CG_HEIGHT=.54;
     private static final double[] GEARS = {3.6, 2.1, 1.4, 1.05, .82};
