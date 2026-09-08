@@ -29,6 +29,8 @@ jobs:
           cache-read-only: false
       - name: Record tested source
         run: git rev-parse HEAD > tested-commit.txt
+      - name: Check official Minecraft dependency metadata
+        run: bash tools/ci_minecraft_metadata.sh 2>&1 | tee metadata.log
       - name: Build and simulation tests
         run: |
           chmod +x gradlew
