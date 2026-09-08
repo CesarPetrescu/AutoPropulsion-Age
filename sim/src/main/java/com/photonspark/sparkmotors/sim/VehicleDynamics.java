@@ -53,8 +53,10 @@ public final class VehicleDynamics {
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         int gear=in.reverse?-1:1;double finalRatio=setup.finalDrive*(Assembly.TRANSMISSION.variant(setup.config)==2?1.10:1);
         if(!in.reverse)while(gear<5&&Math.abs(speed)/WHEEL_RADIUS*GEARS[gear-1]*finalRatio*60/(2*Math.PI)>Math.min(5800,setup.limiter-250))gear++;
-        // Sliding opposite the selected direction cannot select reverse or kick down.
-        if(speed*(in.reverse?-1:1)<-.5&&(trans.target()<0)==in.reverse)gear=trans.target();
+        // Hold the selected ratio through sideways/backsiding drift, including the
+        // zero-forward-speed crossing where road-speed shifting would otherwise kick down.
+        boolean drifting=speed*(in.reverse?-1:1)<-.5||Math.abs(lateral)>Math.max(1,Math.abs(speed)*.4);
+        if(drifting&&(trans.target()<0)==in.reverse)gear=trans.target();
         trans=TransmissionPhysics.shift(trans,gear,dt);gear=trans.gear();
         double ratio=(gear<0?3.4:GEARS[gear-1])*finalRatio,direction=gear<0?-1:1;
         double wheelOmega=(wheels.initialized()?setup.drive.drivenOmega(wheels):speed/WHEEL_RADIUS)*direction;

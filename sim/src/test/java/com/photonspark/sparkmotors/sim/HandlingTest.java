@@ -94,6 +94,11 @@ class HandlingTest {
     }
     @Test void backwardDriftKeepsForwardGearAndClutchDisengagementTransmitsNoTorque(){
         var setup=setup(DriveConfig.Layout.RWD,1,EnginePart.stock());
+        for(double forward:new double[]{8,0,-8}){
+            var sideways=new TransmissionPhysics.State(3,3,0,20,12,0);
+            var result=VehicleDynamics.step(forward,40,rolling(forward).engine(),WheelDynamics.State.stopped(),sideways,true,new VehicleDynamics.Input(0,0,false,false,true),setup,1,ROAD,new double[4],.05);
+            assertEquals(3,result.transmission().target(),"Crossing sideways through zero forward speed must not start a downshift");
+        }
         var start=rolling(-10);
         var trans=new TransmissionPhysics.State(3,3,0,20,2,0);
         for(int i=0;i<20;i++){
