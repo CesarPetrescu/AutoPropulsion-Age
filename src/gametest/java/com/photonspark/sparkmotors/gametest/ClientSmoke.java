@@ -92,7 +92,7 @@ public final class ClientSmoke {
         else if(phase==9){
             maxSpeed=Math.max(maxSpeed,Math.abs(car.speed()));
             PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:2,0));
-            if(ticks==55)pendingScreenshot="alpha-driving.png";
+            if(ticks==55){if(CarClient.activeAudioVoices()==0)throw new IllegalStateException("No actual engine/road sound channels active");pendingScreenshot="alpha-driving.png";}
             if(ticks==80)mc.options.setCameraType(CameraType.FIRST_PERSON);
             if(ticks==95)pendingScreenshot="alpha-interior.png";
             if(ticks>120){
@@ -119,7 +119,7 @@ public final class ClientSmoke {
             if(ticks==625){if(!car.raised())throw new IllegalStateException("Jack did not synchronize");press(mc,"Remove part",0);}
             if(ticks==645){if(car.mechanics().get("wheel.fl.tire")!=null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")!=0)throw new IllegalStateException("Removed tire remains installed or visible");press(mc,"Underside",0);pendingScreenshot="mechanics-underside-service.png";}
             if(ticks==665)press(mc,"Install part",0);
-            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire removal and renderer visibility.");System.out.println("MECHANICS_CLIENT_PASS");mc.stop();}
+            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire removal and renderer visibility.");CarClient.stopSounds();if(CarClient.activeAudioVoices()!=0)throw new IllegalStateException("Audio voices survived cleanup");System.out.println("MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS");mc.stop();}
         }
     }
     private static void engineMatrix(Minecraft mc,CarEntity car){

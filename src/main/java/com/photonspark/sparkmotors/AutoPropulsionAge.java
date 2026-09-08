@@ -27,6 +27,8 @@ public final class AutoPropulsionAge {
     public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>,com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer> ENGINE_RECIPE=RECIPES.register("engine_crafting",com.photonspark.sparkmotors.item.EngineCraftingRecipe.Serializer::new);
     public static final DeferredRegister<net.minecraft.sounds.SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ID);
     public static final DeferredHolder<net.minecraft.sounds.SoundEvent,net.minecraft.sounds.SoundEvent> ENGINE_SOUND = SOUNDS.register("engine_loop",()->net.minecraft.sounds.SoundEvent.createVariableRangeEvent(id("engine_loop")));
+    public static final Map<String,DeferredHolder<net.minecraft.sounds.SoundEvent,net.minecraft.sounds.SoundEvent>> MECHANICAL_SOUNDS=new LinkedHashMap<>();
+    static {for(String name:VehicleAudio.assets())MECHANICAL_SOUNDS.put(name,SOUNDS.register(name,()->net.minecraft.sounds.SoundEvent.createVariableRangeEvent(id(name))));}
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, ID);
     public static final DeferredHolder<EntityType<?>, EntityType<CarEntity>> CAR = ENTITIES.register("sedan",
         () -> EntityType.Builder.<CarEntity>of(CarEntity::new, MobCategory.MISC).sized(1.95f,1.52f).clientTrackingRange(12).updateInterval(1).build(ID+":sedan"));

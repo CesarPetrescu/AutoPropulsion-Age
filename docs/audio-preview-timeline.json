@@ -1,0 +1,62 @@
+[
+  {
+    "at": 0,
+    "label": "i4 at 3000 RPM"
+  },
+  {
+    "at": 2.25,
+    "label": "v6 at 3000 RPM"
+  },
+  {
+    "at": 4.5,
+    "label": "flat4 at 3000 RPM"
+  },
+  {
+    "at": 6.75,
+    "label": "rotor1 at 3000 RPM"
+  },
+  {
+    "at": 9.0,
+    "label": "rotor2 at 3000 RPM"
+  },
+  {
+    "at": 11.25,
+    "label": "rotor3 at 3000 RPM"
+  },
+  {
+    "at": 13.5,
+    "label": "rotor4 at 3000 RPM"
+  },
+  {
+    "at": 15.75,
+    "label": "exhaust_stock"
+  },
+  {
+    "at": 17.0,
+    "label": "exhaust_sport"
+  },
+  {
+    "at": 18.25,
+    "label": "exhaust_open"
+  },
+  {
+    "at": 19.5,
+    "label": "turbo"
+  },
+  {
+    "at": 20.75,
+    "label": "centrifugal"
+  },
+  {
+    "at": 22.0,
+    "label": "roots"
+  },
+  {
+    "at": 23.25,
+    "label": "twin_screw"
+  },
+  {
+    "at": 24.5,
+    "label": "release"
+  }
+]

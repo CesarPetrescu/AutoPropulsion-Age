@@ -1,0 +1,295 @@
+{
+  "assets_checked": 48,
+  "resource_regeneration_preserves_authored_audio": true,
+  "listening_status": "User listening review requested; no model listening tool is available.",
+  "assets": {
+    "i4_idle": {
+      "decoded_peak": 0.7785945534706116,
+      "rms": 0.42236095666885376,
+      "channels": 1,
+      "sha256": "c016a91cb9024763cd7cc2e61f29dd9e114c842cd8ab3d2f6acc74ba1c8c5310"
+    },
+    "i4_low": {
+      "decoded_peak": 0.8686680793762207,
+      "rms": 0.5409181714057922,
+      "channels": 1,
+      "sha256": "7e87fc83fcd52c28f4b7f755c0ca2a96722b812a70af674f577791e6c18c8c09"
+    },
+    "i4_high": {
+      "decoded_peak": 0.8663058876991272,
+      "rms": 0.5425190329551697,
+      "channels": 1,
+      "sha256": "664772a7049a984643aee0391b07893993d2621338ac924c6dfb4b6dea328f37"
+    },
+    "i4_coast": {
+      "decoded_peak": 0.7651153802871704,
+      "rms": 0.5396102666854858,
+      "channels": 1,
+      "sha256": "601323dac9802bb1f8aa607c05dc9f4aa78768d6f0738a2adafd39e66e6ef7ae"
+    },
+    "v6_idle": {
+      "decoded_peak": 0.70591801404953,
+      "rms": 0.4181196391582489,
+      "channels": 1,
+      "sha256": "12185cf1c85eb4f525b161af307a4f0f870aa9ae29f930374c372ed7cece5459"
+    },
+    "v6_low": {
+      "decoded_peak": 0.8227643966674805,
+      "rms": 0.5438328385353088,
+      "channels": 1,
+      "sha256": "df460be078a878fa852ec0c7039c2a1040090ab16c12bc1b4d7284d71c3d9899"
+    },
+    "v6_high": {
+      "decoded_peak": 0.8368940353393555,
+      "rms": 0.5444104671478271,
+      "channels": 1,
+      "sha256": "44b4dedde727d40e5e3fcc5da504ff3544d631a735edf13f118d8dcb04f832d3"
+    },
+    "v6_coast": {
+      "decoded_peak": 0.7397576570510864,
+      "rms": 0.5391830801963806,
+      "channels": 1,
+      "sha256": "fb3c8c6bdba10e2c7541dbcebff924d02760465a47f064bb1f2d07f5e29a3641"
+    },
+    "flat4_idle": {
+      "decoded_peak": 0.795440137386322,
+      "rms": 0.3652418851852417,
+      "channels": 1,
+      "sha256": "57ab2d62a0327156566322837acc82fc37950029bb471a8c9a56204a1715e59d"
+    },
+    "flat4_low": {
+      "decoded_peak": 0.8753158450126648,
+      "rms": 0.4675199091434479,
+      "channels": 1,
+      "sha256": "72b5f1a405a76a10f68b0879f3c5f8a1cd43e5d5d0f8ef0b429229ff17c2f0f9"
+    },
+    "flat4_high": {
+      "decoded_peak": 0.872514009475708,
+      "rms": 0.4693875312805176,
+      "channels": 1,
+      "sha256": "d1b930e170521dce9aa98a8ba92b33302b06b5e990ea4af2da31ca07ecf5d81d"
+    },
+    "flat4_coast": {
+      "decoded_peak": 0.791323184967041,
+      "rms": 0.4682970941066742,
+      "channels": 1,
+      "sha256": "756fe54a9f69490f1aec2ed8c46754672747155c503b87ee48119620fdaa19e8"
+    },
+    "rotor1_idle": {
+      "decoded_peak": 0.8418060541152954,
+      "rms": 0.4384452998638153,
+      "channels": 1,
+      "sha256": "ba4b85311713f580adac5397b1c5643da2540893a3365dc41f00d53d4a564270"
+    },
+    "rotor1_low": {
+      "decoded_peak": 0.8886522054672241,
+      "rms": 0.4977346658706665,
+      "channels": 1,
+      "sha256": "271eb7a30f47f7bbdf54f6fbdede15e25dafd287e6e38ae38829f098ffbc2fd4"
+    },
+    "rotor1_high": {
+      "decoded_peak": 0.869057834148407,
+      "rms": 0.5013213157653809,
+      "channels": 1,
+      "sha256": "95bd120cf0d6cf5ca273362eb3b8559a0d127936eb28b4e23641a32d961ca786"
+    },
+    "rotor1_coast": {
+      "decoded_peak": 0.8628873229026794,
+      "rms": 0.5354548692703247,
+      "channels": 1,
+      "sha256": "87570927feadfde13f001afaa2382e2f3661ee19740566e68f4ba6b63c4790a0"
+    },
+    "rotor2_idle": {
+      "decoded_peak": 0.8936757445335388,
+      "rms": 0.43528398871421814,
+      "channels": 1,
+      "sha256": "37848ed5eda258e5a6a36f9fec0fe2690e0ae46f3b63bd1f8ef5f7cbadd88d48"
+    },
+    "rotor2_low": {
+      "decoded_peak": 0.872196614742279,
+      "rms": 0.5009946823120117,
+      "channels": 1,
+      "sha256": "27b2284f0e108b4778dd484ae60e6901383d6116827671601cecf78091709f9f"
+    },
+    "rotor2_high": {
+      "decoded_peak": 0.9129561185836792,
+      "rms": 0.4983598589897156,
+      "channels": 1,
+      "sha256": "bde674da89605067c7cdecfa1c603348a3c3ae9a987f01c9ccb18ca98fdb729b"
+    },
+    "rotor2_coast": {
+      "decoded_peak": 0.8599472045898438,
+      "rms": 0.5371989607810974,
+      "channels": 1,
+      "sha256": "6b642f5845de7d63b5f24b71132e622f962b61e398960fbb5042b83f2876eede"
+    },
+    "rotor3_idle": {
+      "decoded_peak": 0.8719196915626526,
+      "rms": 0.43470096588134766,
+      "channels": 1,
+      "sha256": "18cafba3abe04e8cbc22b52dc60202faf3616f279e3cdc61e625daa223326c0d"
+    },
+    "rotor3_low": {
+      "decoded_peak": 0.8775972127914429,
+      "rms": 0.5009029507637024,
+      "channels": 1,
+      "sha256": "5baf9f1722f6f52623d38b229b10aa0904810921749d8a5d8c6391828fb3b3a6"
+    },
+    "rotor3_high": {
+      "decoded_peak": 0.8827047348022461,
+      "rms": 0.5031530261039734,
+      "channels": 1,
+      "sha256": "3418bbc2115d73d9f2596358db80eb2e58a094df0194693a7610a2c1f33664a1"
+    },
+    "rotor3_coast": {
+      "decoded_peak": 0.8373199105262756,
+      "rms": 0.5386364459991455,
+      "channels": 1,
+      "sha256": "327af76824090f26cd7dfcdb8a1cd05f40eb377b8a30a67882783263647d8c02"
+    },
+    "rotor4_idle": {
+      "decoded_peak": 0.8818380832672119,
+      "rms": 0.4340842664241791,
+      "channels": 1,
+      "sha256": "123275880f0aeeafe1018b0b4bea72c22d2190dafd35b2473a60ca6d117a8e4b"
+    },
+    "rotor4_low": {
+      "decoded_peak": 0.9106028079986572,
+      "rms": 0.502616822719574,
+      "channels": 1,
+      "sha256": "0f903fb5b30ec030adf83f511788559af34f5c9d84db21bbfadb46d8ba0f8cb7"
+    },
+    "rotor4_high": {
+      "decoded_peak": 0.8757123351097107,
+      "rms": 0.5043033361434937,
+      "channels": 1,
+      "sha256": "47d914ae6a56bf4809581bb46a57e59e3a57c365c9c69e5818d2eb6454a4f07b"
+    },
+    "rotor4_coast": {
+      "decoded_peak": 0.8337416052818298,
+      "rms": 0.5386066436767578,
+      "channels": 1,
+      "sha256": "4a548a6c6ea30825e396b483f5e11b302fdab85acbccd029d9bcae883e638fc7"
+    },
+    "intake": {
+      "decoded_peak": 0.5838322043418884,
+      "rms": 0.12656879425048828,
+      "channels": 1,
+      "sha256": "8d46e673b52edf64b5ac0ccf4cba51c1bcd9ee398922da991e1d5e8aa59066f4"
+    },
+    "exhaust_stock": {
+      "decoded_peak": 0.6155039668083191,
+      "rms": 0.3070051372051239,
+      "channels": 1,
+      "sha256": "a74a4f3ddfda9b89a07ff95b0a203c456d820f2631117b76418ee908c134b324"
+    },
+    "exhaust_sport": {
+      "decoded_peak": 0.6919866800308228,
+      "rms": 0.33205363154411316,
+      "channels": 1,
+      "sha256": "0a7bd04d95d6bbf508c64b7db42d67ae934204529fc8893e5622e94b7fbacd05"
+    },
+    "exhaust_open": {
+      "decoded_peak": 0.8171824216842651,
+      "rms": 0.3003467917442322,
+      "channels": 1,
+      "sha256": "a362845b8a26ca8a7e0352995ce46eabe4ba143e20711015331568c7d197cfaf"
+    },
+    "turbo": {
+      "decoded_peak": 0.46866339445114136,
+      "rms": 0.2519093155860901,
+      "channels": 1,
+      "sha256": "de6dd3d222229f41d7854df1908319fbac1c29eb206a19fde43a50cfaf3b2c56"
+    },
+    "centrifugal": {
+      "decoded_peak": 0.46388107538223267,
+      "rms": 0.2518188953399658,
+      "channels": 1,
+      "sha256": "238dff8d0c906ca3fb176f51056a7dba8ce8d7027e4d7608f758c7c3da08824d"
+    },
+    "roots": {
+      "decoded_peak": 0.6158394813537598,
+      "rms": 0.277742862701416,
+      "channels": 1,
+      "sha256": "f559f62d61555748933ef9f50136c4730ff7c9188dba4351c5e5aa6b3ae4fea2"
+    },
+    "twin_screw": {
+      "decoded_peak": 0.47010400891304016,
+      "rms": 0.25221315026283264,
+      "channels": 1,
+      "sha256": "3401c7e5f4a4b36759a2278407e1b05fd572757b37db334cc3bf5e2bcb1e04e8"
+    },
+    "boost_leak": {
+      "decoded_peak": 0.5817312002182007,
+      "rms": 0.12668375670909882,
+      "channels": 1,
+      "sha256": "60c7d82f76529aaae54701645f0273adb0380a759c09c1ee6ca0245a8a33d292"
+    },
+    "road": {
+      "decoded_peak": 0.227088063955307,
+      "rms": 0.05242937430739403,
+      "channels": 1,
+      "sha256": "037857842ab58582fed692f13c38e7e604cf9aa58d1e79183510d9a74a6b602b"
+    },
+    "gravel": {
+      "decoded_peak": 0.7342871427536011,
+      "rms": 0.03746671602129936,
+      "channels": 1,
+      "sha256": "3ed036f0c963f3d2747970574ab727e198acd868b00b53d08c9dcd1c7f8740ce"
+    },
+    "tire_slip": {
+      "decoded_peak": 0.4354960322380066,
+      "rms": 0.18218304216861725,
+      "channels": 1,
+      "sha256": "67c38540eff14405ef4183829a60bc19363ddb1a375306a4c44cf2fd049f14bf"
+    },
+    "brake_grind": {
+      "decoded_peak": 0.765345573425293,
+      "rms": 0.14169391989707947,
+      "channels": 1,
+      "sha256": "412655adcba6a05345123a96ebda2ffb0a8fa8beda1a650c0c4a88bb4991b137"
+    },
+    "bearing": {
+      "decoded_peak": 0.4928204119205475,
+      "rms": 0.1587667465209961,
+      "channels": 1,
+      "sha256": "3938da9b26b3a66842b3cea70fce239f5708fb42d712be94accf953bf020df86"
+    },
+    "knock": {
+      "decoded_peak": 0.8329296112060547,
+      "rms": 0.1181487962603569,
+      "channels": 1,
+      "sha256": "2ecf4dcaedcbe98ca59b65f9d16885442e684e0e0f7dc5fdc3ca0841dc91277a"
+    },
+    "starter": {
+      "decoded_peak": 0.4893338680267334,
+      "rms": 0.15615655481815338,
+      "channels": 1,
+      "sha256": "ffd4a33865ca5fc001ca577e3b31824e3aafeda69a21a08646f767fbcd6672af"
+    },
+    "release": {
+      "decoded_peak": 0.632677435874939,
+      "rms": 0.06775093823671341,
+      "channels": 1,
+      "sha256": "0f2a7502aeff73b60baa43c66bc248efef5435bc492157939565a26b062cda1e"
+    },
+    "latch": {
+      "decoded_peak": 0.4943064749240875,
+      "rms": 0.05207857862114906,
+      "channels": 1,
+      "sha256": "590a8ea4217fd0b89628fef7592f8569341501e83dafea26525bbe5a6dae1786"
+    },
+    "impact": {
+      "decoded_peak": 0.7905764579772949,
+      "rms": 0.06700502336025238,
+      "channels": 1,
+      "sha256": "f08755371fd8882954734bfe34be811f50e1dae5c01e6aaceb3cea27e62fbc31"
+    },
+    "horn": {
+      "decoded_peak": 0.5805924534797668,
+      "rms": 0.2850063443183899,
+      "channels": 1,
+      "sha256": "84b99ae8cf1639d2ea1782a03d442bad5ec21f3da13ff919418c2bfbfa0835ab"
+    }
+  }
+}

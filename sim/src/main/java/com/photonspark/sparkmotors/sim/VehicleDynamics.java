@@ -15,7 +15,8 @@ public final class VehicleDynamics {
         public Setup(int config,int limiter,double finalDrive,EngineFamily family,int engineParts,double temperature){this(config,limiter,finalDrive,family,engineParts,temperature,1.4);}
         public Setup { config = Assembly.sanitize(config); limiter = Math.clamp(limiter, 4000, 7000); finalDrive = clamp(finalDrive, 2.8, 4.8); family=family==null?EngineFamily.I4:family;engineParts=EnginePart.sanitize(engineParts);temperature=clamp(temperature,20,150);boostTarget=clamp(boostTarget,.2,1.4); }
     }
-    public record State(double speed, double rpm, int gear, double fuel, double yawDelta, double fuelUsed, EnginePhysics.State engine, WheelDynamics.State wheels, TransmissionPhysics.State transmission) {
+    public record State(double speed, double rpm, int gear, double fuel, double yawDelta, double fuelUsed, EnginePhysics.State engine, WheelDynamics.State wheels, TransmissionPhysics.State transmission, double load) {
+        public State(double speed,double rpm,int gear,double fuel,double yawDelta,double fuelUsed,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State transmission){this(speed,rpm,gear,fuel,yawDelta,fuelUsed,engine,wheels,transmission,0);}
         public State(double speed,double rpm,int gear,double fuel,double yawDelta,double fuelUsed,EnginePhysics.State engine,WheelDynamics.State wheels){this(speed,rpm,gear,fuel,yawDelta,fuelUsed,engine,wheels,TransmissionPhysics.State.stopped());}
         public State(double speed,double rpm,int gear,double fuel,double yawDelta,double fuelUsed,EnginePhysics.State engine){this(speed,rpm,gear,fuel,yawDelta,fuelUsed,engine,WheelDynamics.State.stopped());}
         public State(double speed,double rpm,int gear,double fuel,double yawDelta,double fuelUsed){this(speed,rpm,gear,fuel,yawDelta,fuelUsed,EnginePhysics.State.stopped(90,100));}
@@ -95,7 +96,7 @@ public final class VehicleDynamics {
         double slipPower=Math.abs(clutchTorque*(engine.omega()-Math.abs(speed)/WHEEL_RADIUS*ratio))/1000;
         double heat=transmission.clutchHeat()+(slipPower/3-(transmission.clutchHeat()-20)*.025)*dt;
         transmission=new TransmissionPhysics.State(transmission.gear(),transmission.target(),transmission.remaining(),heat,transmission.lateralSpeed(),transmission.yawRate());
-        return new State(clamp(next, -14, 65), rpm, gear, Math.max(0, fuel - used), yaw, used,engine,wheelForces.state(),transmission);
+        return new State(clamp(next, -14, 65), rpm, gear, Math.max(0, fuel - used), yaw, used,engine,wheelForces.state(),transmission,clamp(Math.max(0,clutchTorque)/Math.max(1,EngineBuild.naturalTorque(rpm,setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter)),0,1));
     }
     public static double clamp(double v, double min, double max) { return Double.isFinite(v) ? Math.max(min, Math.min(max, v)) : min; }
 }

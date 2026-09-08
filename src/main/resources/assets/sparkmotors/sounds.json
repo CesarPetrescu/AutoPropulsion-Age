@@ -7,5 +7,437 @@
         "stream": false
       }
     ]
+  },
+  "i4_idle": {
+    "subtitle": "subtitles.sparkmotors.i4_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/i4_idle",
+        "stream": false
+      }
+    ]
+  },
+  "i4_low": {
+    "subtitle": "subtitles.sparkmotors.i4_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/i4_low",
+        "stream": false
+      }
+    ]
+  },
+  "i4_high": {
+    "subtitle": "subtitles.sparkmotors.i4_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/i4_high",
+        "stream": false
+      }
+    ]
+  },
+  "i4_coast": {
+    "subtitle": "subtitles.sparkmotors.i4_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/i4_coast",
+        "stream": false
+      }
+    ]
+  },
+  "v6_idle": {
+    "subtitle": "subtitles.sparkmotors.v6_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/v6_idle",
+        "stream": false
+      }
+    ]
+  },
+  "v6_low": {
+    "subtitle": "subtitles.sparkmotors.v6_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/v6_low",
+        "stream": false
+      }
+    ]
+  },
+  "v6_high": {
+    "subtitle": "subtitles.sparkmotors.v6_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/v6_high",
+        "stream": false
+      }
+    ]
+  },
+  "v6_coast": {
+    "subtitle": "subtitles.sparkmotors.v6_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/v6_coast",
+        "stream": false
+      }
+    ]
+  },
+  "flat4_idle": {
+    "subtitle": "subtitles.sparkmotors.flat4_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/flat4_idle",
+        "stream": false
+      }
+    ]
+  },
+  "flat4_low": {
+    "subtitle": "subtitles.sparkmotors.flat4_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/flat4_low",
+        "stream": false
+      }
+    ]
+  },
+  "flat4_high": {
+    "subtitle": "subtitles.sparkmotors.flat4_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/flat4_high",
+        "stream": false
+      }
+    ]
+  },
+  "flat4_coast": {
+    "subtitle": "subtitles.sparkmotors.flat4_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/flat4_coast",
+        "stream": false
+      }
+    ]
+  },
+  "rotor1_idle": {
+    "subtitle": "subtitles.sparkmotors.rotor1_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor1_idle",
+        "stream": false
+      }
+    ]
+  },
+  "rotor1_low": {
+    "subtitle": "subtitles.sparkmotors.rotor1_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor1_low",
+        "stream": false
+      }
+    ]
+  },
+  "rotor1_high": {
+    "subtitle": "subtitles.sparkmotors.rotor1_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor1_high",
+        "stream": false
+      }
+    ]
+  },
+  "rotor1_coast": {
+    "subtitle": "subtitles.sparkmotors.rotor1_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor1_coast",
+        "stream": false
+      }
+    ]
+  },
+  "rotor2_idle": {
+    "subtitle": "subtitles.sparkmotors.rotor2_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor2_idle",
+        "stream": false
+      }
+    ]
+  },
+  "rotor2_low": {
+    "subtitle": "subtitles.sparkmotors.rotor2_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor2_low",
+        "stream": false
+      }
+    ]
+  },
+  "rotor2_high": {
+    "subtitle": "subtitles.sparkmotors.rotor2_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor2_high",
+        "stream": false
+      }
+    ]
+  },
+  "rotor2_coast": {
+    "subtitle": "subtitles.sparkmotors.rotor2_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor2_coast",
+        "stream": false
+      }
+    ]
+  },
+  "rotor3_idle": {
+    "subtitle": "subtitles.sparkmotors.rotor3_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor3_idle",
+        "stream": false
+      }
+    ]
+  },
+  "rotor3_low": {
+    "subtitle": "subtitles.sparkmotors.rotor3_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor3_low",
+        "stream": false
+      }
+    ]
+  },
+  "rotor3_high": {
+    "subtitle": "subtitles.sparkmotors.rotor3_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor3_high",
+        "stream": false
+      }
+    ]
+  },
+  "rotor3_coast": {
+    "subtitle": "subtitles.sparkmotors.rotor3_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor3_coast",
+        "stream": false
+      }
+    ]
+  },
+  "rotor4_idle": {
+    "subtitle": "subtitles.sparkmotors.rotor4_idle",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor4_idle",
+        "stream": false
+      }
+    ]
+  },
+  "rotor4_low": {
+    "subtitle": "subtitles.sparkmotors.rotor4_low",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor4_low",
+        "stream": false
+      }
+    ]
+  },
+  "rotor4_high": {
+    "subtitle": "subtitles.sparkmotors.rotor4_high",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor4_high",
+        "stream": false
+      }
+    ]
+  },
+  "rotor4_coast": {
+    "subtitle": "subtitles.sparkmotors.rotor4_coast",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/rotor4_coast",
+        "stream": false
+      }
+    ]
+  },
+  "intake": {
+    "subtitle": "subtitles.sparkmotors.intake",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/intake",
+        "stream": false
+      }
+    ]
+  },
+  "exhaust_stock": {
+    "subtitle": "subtitles.sparkmotors.exhaust_stock",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/exhaust_stock",
+        "stream": false
+      }
+    ]
+  },
+  "exhaust_sport": {
+    "subtitle": "subtitles.sparkmotors.exhaust_sport",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/exhaust_sport",
+        "stream": false
+      }
+    ]
+  },
+  "exhaust_open": {
+    "subtitle": "subtitles.sparkmotors.exhaust_open",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/exhaust_open",
+        "stream": false
+      }
+    ]
+  },
+  "turbo": {
+    "subtitle": "subtitles.sparkmotors.turbo",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/turbo",
+        "stream": false
+      }
+    ]
+  },
+  "centrifugal": {
+    "subtitle": "subtitles.sparkmotors.centrifugal",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/centrifugal",
+        "stream": false
+      }
+    ]
+  },
+  "roots": {
+    "subtitle": "subtitles.sparkmotors.roots",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/roots",
+        "stream": false
+      }
+    ]
+  },
+  "twin_screw": {
+    "subtitle": "subtitles.sparkmotors.twin_screw",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/twin_screw",
+        "stream": false
+      }
+    ]
+  },
+  "boost_leak": {
+    "subtitle": "subtitles.sparkmotors.boost_leak",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/boost_leak",
+        "stream": false
+      }
+    ]
+  },
+  "road": {
+    "subtitle": "subtitles.sparkmotors.road",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/road",
+        "stream": false
+      }
+    ]
+  },
+  "gravel": {
+    "subtitle": "subtitles.sparkmotors.gravel",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/gravel",
+        "stream": false
+      }
+    ]
+  },
+  "tire_slip": {
+    "subtitle": "subtitles.sparkmotors.tire_slip",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/tire_slip",
+        "stream": false
+      }
+    ]
+  },
+  "brake_grind": {
+    "subtitle": "subtitles.sparkmotors.brake_grind",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/brake_grind",
+        "stream": false
+      }
+    ]
+  },
+  "bearing": {
+    "subtitle": "subtitles.sparkmotors.bearing",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/bearing",
+        "stream": false
+      }
+    ]
+  },
+  "knock": {
+    "subtitle": "subtitles.sparkmotors.knock",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/knock",
+        "stream": false
+      }
+    ]
+  },
+  "starter": {
+    "subtitle": "subtitles.sparkmotors.starter",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/starter",
+        "stream": false
+      }
+    ]
+  },
+  "release": {
+    "subtitle": "subtitles.sparkmotors.release",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/release",
+        "stream": false
+      }
+    ]
+  },
+  "latch": {
+    "subtitle": "subtitles.sparkmotors.latch",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/latch",
+        "stream": false
+      }
+    ]
+  },
+  "impact": {
+    "subtitle": "subtitles.sparkmotors.impact",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/impact",
+        "stream": false
+      }
+    ]
+  },
+  "horn": {
+    "subtitle": "subtitles.sparkmotors.horn",
+    "sounds": [
+      {
+        "name": "sparkmotors:mechanical/horn",
+        "stream": false
+      }
+    ]
   }
 }

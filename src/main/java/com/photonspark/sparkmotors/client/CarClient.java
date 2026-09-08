@@ -23,24 +23,26 @@ public final class CarClient {
     private static boolean reverse;
     private static int lastCar=-1;
     private static float lastYaw;
-    private static final java.util.Map<Integer,CarEngineSound> sounds=new java.util.HashMap<>();
+    private static final java.util.Map<Integer,CarAudio> sounds=new java.util.HashMap<>();
     public CarClient(IEventBus bus){
         bus.addListener((EntityRenderersEvent.RegisterRenderers e)->e.registerEntityRenderer(AutoPropulsionAge.CAR.get(),CarRenderer::new));
         bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN,CLUTCH})e.register(key);});
-        bus.addListener((RegisterClientReloadListenersEvent e)->e.registerReloadListener((ResourceManagerReloadListener)CarMesh::reload));
+        bus.addListener((RegisterClientReloadListenersEvent e)->e.registerReloadListener((ResourceManagerReloadListener)resources->{stopSounds();CarMesh.reload(resources);}));
         bus.addListener((RegisterGuiLayersEvent e)->e.registerAboveAll(AutoPropulsionAge.id("dashboard"),(graphics,delta)->hud(graphics)));
         NeoForge.EVENT_BUS.addListener(CarClient::tick);
         NeoForge.EVENT_BUS.addListener((RenderHandEvent e)->{if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.getVehicle() instanceof CarEntity)e.setCanceled(true);});
         AutoPropulsionAge.openGarage=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car));};
         AutoPropulsionAge.openEngine=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car,4));};
     }
+    public static int activeAudioVoices(){return sounds.values().stream().mapToInt(CarAudio::voices).sum();}
+    public static void stopSounds(){sounds.values().forEach(CarAudio::stop);sounds.clear();}
     private static KeyMapping key(String name,int key){return new KeyMapping("key.sparkmotors."+name,key,"key.categories.sparkmotors");}
     public static void send(CarEntity car,int action,int a,int b){PacketDistributor.sendToServer(new CarPackets.Action(car.getId(),action,a,b));}
     private static void tick(ClientTickEvent.Post event){
-        Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.level==null)return;
-        sounds.entrySet().removeIf(e->e.getValue().isStopped());
-        for(CarEntity nearby:mc.level.getEntitiesOfClass(CarEntity.class,mc.player.getBoundingBox().inflate(32)))
-            if(nearby.ignition()&&!sounds.containsKey(nearby.getId())){var sound=new CarEngineSound(nearby);sounds.put(nearby.getId(),sound);mc.getSoundManager().play(sound);}
+        Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.level==null){stopSounds();return;}
+        var nearby=mc.level.getEntitiesOfClass(CarEntity.class,mc.player.getBoundingBox().inflate(32));
+        var ids=new java.util.HashSet<Integer>();for(var car:nearby){ids.add(car.getId());sounds.computeIfAbsent(car.getId(),id->new CarAudio(car)).tick();}
+        sounds.entrySet().removeIf(e->{if(!ids.contains(e.getKey())){e.getValue().stop();return true;}return false;});
         CarEntity car=mc.player.getVehicle() instanceof CarEntity c?c:mc.hitResult instanceof EntityHitResult hit&&hit.getEntity() instanceof CarEntity c?c:null;
         if(car==null){lastCar=-1;reverse=false;return;}
         if(mc.screen==null){

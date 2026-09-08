@@ -59,7 +59,7 @@ lang['item.sparkmotors.supercharger_kit']='Complete Supercharger Kit'
 lang['key.sparkmotors.clutch']='Disengage clutch (hold to free-rev)'
 for slot in catalog['slots']:
     for option in slot['options']:lang['item.sparkmotors.'+option['item']]=option['label']
-js(assets/'lang/en_us.json',lang)
+js(assets/'lang/en_us.json',{**(json.loads((assets/'lang/en_us.json').read_text()) if (assets/'lang/en_us.json').exists() else {}),**lang})
 def recipe(name,pattern,keys,count=1):
     js(data/'recipe'/f'{name}.json',{'type':'minecraft:crafting_shaped','category':'misc','pattern':pattern,'key':{k:{'item':v} for k,v in keys.items()},'result':{'id':'sparkmotors:'+name,'count':count}})
 recipe('sedan_crate',['III','EWT','III'],{'I':'minecraft:iron_block','E':'sparkmotors:stock_engine','W':'sparkmotors:stock_wheels','T':'sparkmotors:stock_transmission'})

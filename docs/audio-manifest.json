@@ -1,0 +1,386 @@
+{
+  "i4_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.734666834741234,
+    "rms": 0.4215937670568794,
+    "loop": true
+  },
+  "i4_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.539363605678051,
+    "loop": true
+  },
+  "i4_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5392210399885397,
+    "loop": true
+  },
+  "i4_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7441396226322373,
+    "rms": 0.5374419709189916,
+    "loop": true
+  },
+  "v6_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.683571459573541,
+    "rms": 0.4165592926910735,
+    "loop": true
+  },
+  "v6_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7906156913519271,
+    "rms": 0.5405691261692573,
+    "loop": true
+  },
+  "v6_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7906215199449727,
+    "rms": 0.5405792418386488,
+    "loop": true
+  },
+  "v6_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7201814678436036,
+    "rms": 0.5359399127264347,
+    "loop": true
+  },
+  "flat4_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7650716308784111,
+    "rms": 0.36508538940788055,
+    "loop": true
+  },
+  "flat4_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.4677996267936944,
+    "loop": true
+  },
+  "flat4_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.467640183655978,
+    "loop": true
+  },
+  "flat4_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7571529937448159,
+    "rms": 0.4673752370950341,
+    "loop": true
+  },
+  "rotor1_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.4385758424813753,
+    "loop": true
+  },
+  "rotor1_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5003000134344933,
+    "loop": true
+  },
+  "rotor1_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5007322792443276,
+    "loop": true
+  },
+  "rotor1_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.8147711023201792,
+    "rms": 0.535110863117043,
+    "loop": true
+  },
+  "rotor2_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.43613844186944245,
+    "loop": true
+  },
+  "rotor2_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5000026363365001,
+    "loop": true
+  },
+  "rotor2_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.49986666476728964,
+    "loop": true
+  },
+  "rotor2_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.809923397752232,
+    "rms": 0.5354693648021502,
+    "loop": true
+  },
+  "rotor3_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.43559378334518345,
+    "loop": true
+  },
+  "rotor3_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5005364972669621,
+    "loop": true
+  },
+  "rotor3_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5005311808026247,
+    "loop": true
+  },
+  "rotor3_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.8052254681122633,
+    "rms": 0.5357959315308313,
+    "loop": true
+  },
+  "rotor4_idle": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.4360039923665044,
+    "loop": true
+  },
+  "rotor4_low": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.501402553666304,
+    "loop": true
+  },
+  "rotor4_high": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.5014428182998067,
+    "loop": true
+  },
+  "rotor4_coast": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.7994311073505163,
+    "rms": 0.5350717342272818,
+    "loop": true
+  },
+  "intake": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.590702178545604,
+    "rms": 0.131986664919766,
+    "loop": true
+  },
+  "exhaust_stock": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.6246466577382683,
+    "rms": 0.30596243393998096,
+    "loop": true
+  },
+  "exhaust_sport": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.6936380927910148,
+    "rms": 0.3318797251345022,
+    "loop": true
+  },
+  "exhaust_open": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.3006684814678103,
+    "loop": true
+  },
+  "turbo": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.4621835255428389,
+    "rms": 0.25080979475215576,
+    "loop": true
+  },
+  "centrifugal": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.4628537774169554,
+    "rms": 0.25053895862772524,
+    "loop": true
+  },
+  "roots": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.6149829759705706,
+    "rms": 0.2760029639975203,
+    "loop": true
+  },
+  "twin_screw": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.4711906061466915,
+    "rms": 0.2507220714840918,
+    "loop": true
+  },
+  "boost_leak": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.6194968865417252,
+    "rms": 0.13201660138892551,
+    "loop": true
+  },
+  "road": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.22878809013821064,
+    "rms": 0.053491878606451784,
+    "loop": true
+  },
+  "gravel": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.038194633425520756,
+    "loop": true
+  },
+  "tire_slip": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.45357670748957857,
+    "rms": 0.18171823403202564,
+    "loop": true
+  },
+  "brake_grind": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.82,
+    "rms": 0.1460599712419904,
+    "loop": true
+  },
+  "bearing": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.5064466807675817,
+    "rms": 0.15825579681217306,
+    "loop": true
+  },
+  "knock": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.8171793597663077,
+    "rms": 0.11905100397697653,
+    "loop": true
+  },
+  "starter": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 3.0,
+    "peak": 0.4965652948662038,
+    "rms": 0.15565416828323164,
+    "loop": true
+  },
+  "release": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 0.65,
+    "peak": 0.6189879646250163,
+    "rms": 0.07070815639019863,
+    "loop": false
+  },
+  "latch": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 0.25,
+    "peak": 0.5518170744286496,
+    "rms": 0.052969733816252335,
+    "loop": false
+  },
+  "impact": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 0.8,
+    "peak": 0.781581325374718,
+    "rms": 0.06846885594246349,
+    "loop": false
+  },
+  "horn": {
+    "channels": 1,
+    "rate": 44100,
+    "seconds": 0.8,
+    "peak": 0.5738845061753547,
+    "rms": 0.2828366251003058,
+    "loop": false
+  }
+}
