@@ -50,11 +50,12 @@ public final class AutoPropulsionAge {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ID);
     public static final DeferredHolder<CreativeModeTab,CreativeModeTab> TAB = TABS.register("garage", () -> CreativeModeTab.builder()
         .title(Component.literal("AutoPropulsion Age")).icon(() -> CAR_CRATE.toStack())
-        .displayItems((parameters,output) -> { output.accept(CAR_CRATE);output.accept(WRENCH);output.accept(FUEL_CAN);output.accept(GARAGE_ITEM);PART_ITEMS.values().forEach(output::accept); }).build());
+        .displayItems((parameters,output) -> { output.accept(CAR_CRATE);output.accept(WRENCH);output.accept(FUEL_CAN);output.accept(GARAGE_ITEM);PART_ITEMS.values().forEach(output::accept);com.photonspark.sparkmotors.charging.Electrification.ITEMS.forEach(output::accept); }).build());
     // Installed only by the client entry point. Dedicated servers never load UI classes.
     public static IntConsumer openGarage = id -> {};
     public static IntConsumer openEngine = id -> {};
     public AutoPropulsionAge(IEventBus bus) {
+        com.photonspark.sparkmotors.charging.Electrification.init(bus);
         ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);
         bus.addListener(CarPackets::register);
     }

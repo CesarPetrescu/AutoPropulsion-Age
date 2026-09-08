@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "sparkmotors:lv_charger",
+    "sparkmotors:home_charger",
+    "sparkmotors:rapid_charger",
+    "sparkmotors:ultra_charger"
+  ]
+}

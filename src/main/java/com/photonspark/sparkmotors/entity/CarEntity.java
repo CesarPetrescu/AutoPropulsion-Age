@@ -3,6 +3,7 @@ package com.photonspark.sparkmotors.entity;
 import com.photonspark.sparkmotors.AutoPropulsionAge;
 import com.photonspark.sparkmotors.net.CarPackets;
 import com.photonspark.sparkmotors.sim.*;
+import com.photonspark.sparkmotors.sim.electric.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,13 @@ public final class CarEntity extends Entity {
         HEALTH=data(EntityDataSerializers.FLOAT),STEER=data(EntityDataSerializers.FLOAT),PITCH=data(EntityDataSerializers.FLOAT),ROLL=data(EntityDataSerializers.FLOAT),FINAL_DRIVE=data(EntityDataSerializers.FLOAT),TEMPERATURE=data(EntityDataSerializers.FLOAT),BOOST=data(EntityDataSerializers.FLOAT),
         OIL_TEMP=data(EntityDataSerializers.FLOAT),OIL_PRESSURE=data(EntityDataSerializers.FLOAT),ENGINE_HEALTH=data(EntityDataSerializers.FLOAT),AFR=data(EntityDataSerializers.FLOAT),THROTTLE=data(EntityDataSerializers.FLOAT),SPOOL=data(EntityDataSerializers.FLOAT),SHAFT_TORQUE=data(EntityDataSerializers.FLOAT),BLOWER_KW=data(EntityDataSerializers.FLOAT),BOOST_TARGET=data(EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> FLAGS=data(EntityDataSerializers.INT),CONFIG=data(EntityDataSerializers.INT),PAINT=data(EntityDataSerializers.INT),GEAR=data(EntityDataSerializers.INT),LIMITER=data(EntityDataSerializers.INT),ENGINE_FAMILY=data(EntityDataSerializers.INT),ENGINE_PARTS=data(EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> POWERTRAIN=data(EntityDataSerializers.INT),EV_MODE=data(EntityDataSerializers.INT),CHARGE_TARGET=data(EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> PLUGGED=data(EntityDataSerializers.BOOLEAN),GENERATOR=data(EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> SOC=data(EntityDataSerializers.FLOAT),PACK_V=data(EntityDataSerializers.FLOAT),PACK_A=data(EntityDataSerializers.FLOAT),PACK_KW=data(EntityDataSerializers.FLOAT),PACK_C=data(EntityDataSerializers.FLOAT),PACK_HEALTH=data(EntityDataSerializers.FLOAT),MOTOR_C=data(EntityDataSerializers.FLOAT),INVERTER_C=data(EntityDataSerializers.FLOAT),REGEN_KW=data(EntityDataSerializers.FLOAT),GEN_KW=data(EntityDataSerializers.FLOAT),CHARGE_KW=data(EntityDataSerializers.FLOAT);
+    private ElectricDynamics.State electricState;
+    private static final EntityDataAccessor<BlockPos> CHARGER_POSITION=data(EntityDataSerializers.BLOCK_POS);
+    private BlockPos chargingPos;
+    private int chargeLease;
     private static final EntityDataAccessor<Optional<UUID>> OWNER=data(EntityDataSerializers.OPTIONAL_UUID);
     private static <T> EntityDataAccessor<T> data(EntityDataSerializer<T> serializer){return SynchedEntityData.defineId(CarEntity.class,serializer);}
     private double speed,verticalSpeed,lerpX,lerpY,lerpZ;
@@ -36,6 +44,8 @@ public final class CarEntity extends Entity {
 
     public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;}
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
+        b.define(CHARGER_POSITION,BlockPos.ZERO);b.define(POWERTRAIN,0);b.define(EV_MODE,0);b.define(CHARGE_TARGET,80);b.define(PLUGGED,false);b.define(GENERATOR,false);
+        b.define(SOC,0f);b.define(PACK_V,0f);b.define(PACK_A,0f);b.define(PACK_KW,0f);b.define(PACK_C,20f);b.define(PACK_HEALTH,1f);b.define(MOTOR_C,20f);b.define(INVERTER_C,20f);b.define(REGEN_KW,0f);b.define(GEN_KW,0f);b.define(CHARGE_KW,0f);
         b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(FINAL_DRIVE,3.7f);b.define(FLAGS,0);b.define(CONFIG,Assembly.stock());b.define(PAINT,0x168A91);b.define(GEAR,1);b.define(LIMITER,6800);b.define(OWNER,Optional.empty());
         b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);
@@ -54,7 +64,46 @@ public final class CarEntity extends Entity {
     public float engineHealth(){return entityData.get(ENGINE_HEALTH);}public float afr(){return entityData.get(AFR);}
     public float throttle(){return entityData.get(THROTTLE);}public float spool(){return entityData.get(SPOOL);}
     public float shaftTorque(){return entityData.get(SHAFT_TORQUE);}public float blowerKw(){return entityData.get(BLOWER_KW);}public float boostTarget(){return entityData.get(BOOST_TARGET);}
-    public String engineProblem(){return Assembly.ENGINE.variant(config())==0?"No engine installed.":EnginePart.problem(engineParts());}
+    public String engineProblem(){if(powertrain().electric()&&!powertrain().hybrid())return "";return Assembly.ENGINE.variant(config())==0?"No engine installed.":EnginePart.problem(engineParts());}
+    public Powertrain powertrain(){return Powertrain.values()[Mth.clamp(entityData.get(POWERTRAIN),0,Powertrain.values().length-1)];}
+    public ElectricDynamics.Mode electricMode(){return ElectricDynamics.Mode.values()[Mth.clamp(entityData.get(EV_MODE),0,2)];}
+    public int chargeTarget(){return entityData.get(CHARGE_TARGET);}
+    public BlockPos chargerPosition(){return entityData.get(CHARGER_POSITION);}
+    public boolean plugged(){return entityData.get(PLUGGED);}
+    public boolean generatorRunning(){return entityData.get(GENERATOR);}
+    public boolean combustionRunning(){return ignition()&&(!powertrain().electric()||generatorRunning());}
+    public float stateOfCharge(){return entityData.get(SOC);}public float packVoltage(){return entityData.get(PACK_V);}
+    public float packCurrent(){return entityData.get(PACK_A);}public float packKw(){return entityData.get(PACK_KW);}
+    public float packTemperature(){return entityData.get(PACK_C);}public float packHealth(){return entityData.get(PACK_HEALTH);}
+    public float motorTemperature(){return entityData.get(MOTOR_C);}public float inverterTemperature(){return entityData.get(INVERTER_C);}
+    public float regenKw(){return entityData.get(REGEN_KW);}public float generatorKw(){return entityData.get(GEN_KW);}public float chargeKw(){return entityData.get(CHARGE_KW);}
+    /** Factory/test initialization, never exposed as a client packet or a free survival conversion. */
+    public void initializePowertrain(Powertrain type,double soc){
+        if(level().isClientSide)return;
+        entityData.set(POWERTRAIN,type.ordinal());electricState=type.electric()?ElectricDynamics.State.initial(type,soc):null;
+        if(type.electric()&&!type.hybrid())entityData.set(FUEL,0f);
+        syncElectric();
+    }
+    public double ambientTemperature(){return VehicleDynamics.clamp(4+20*level().getBiome(blockPosition()).value().getBaseTemperature()-Math.max(0,getY()-64)*.0065,-35,45);}
+    public BatteryModel.State tractionBattery(){return electricState==null?null:electricState.battery();}
+    public boolean attachCharger(BlockPos pos){
+        if(level().isClientSide||!powertrain().plugIn()||ignition()||Math.abs(speed())>.1||distanceToSqr(Vec3.atCenterOf(pos))>36)return false;
+        if(chargingPos!=null&&!chargingPos.equals(pos)&&chargeLease>=tickCount)return false;
+        chargingPos=pos.immutable();entityData.set(CHARGER_POSITION,chargingPos);chargeLease=tickCount+40;entityData.set(PLUGGED,true);return true;
+    }
+    public boolean isConnectedTo(BlockPos pos){return chargingPos!=null&&chargingPos.equals(pos)&&plugged();}
+    public void detachCharger(BlockPos pos){if(isConnectedTo(pos)){chargingPos=null;entityData.set(PLUGGED,false);entityData.set(CHARGE_KW,0f);}}
+    public void acceptCharge(BlockPos pos,ChargingModel.Result result){
+        if(level().isClientSide||!isConnectedTo(pos)||ignition()||electricState==null)return;
+        electricState=electricState.withBattery(result.battery());entityData.set(CHARGE_KW,(float)(result.inputJ()*20/1000));syncElectric();
+    }
+    private void syncElectric(){
+        if(electricState==null)return;var e=electricState;var b=e.battery();
+        entityData.set(SOC,(float)b.soc(powertrain().battery));entityData.set(PACK_C,(float)b.temperatureC());entityData.set(PACK_HEALTH,(float)b.health());
+        entityData.set(PACK_V,(float)e.voltageV());entityData.set(PACK_A,(float)e.currentA());entityData.set(PACK_KW,(float)(e.packW()/1000));
+        entityData.set(MOTOR_C,(float)e.motorC());entityData.set(INVERTER_C,(float)e.inverterC());entityData.set(GENERATOR,e.generating());
+        entityData.set(REGEN_KW,(float)(e.regenW()/1000));entityData.set(GEN_KW,(float)(e.generatorW()/1000));
+    }
     private boolean flag(int flag){return (entityData.get(FLAGS)&flag)!=0;}
     private void flag(int flag,boolean value){entityData.set(FLAGS,value?entityData.get(FLAGS)|flag:entityData.get(FLAGS)&~flag);}
     public void setOwner(UUID owner){entityData.set(OWNER,Optional.of(owner));}
@@ -80,7 +129,8 @@ public final class CarEntity extends Entity {
         }
         boolean driver=getControllingPassenger() instanceof Player;
         if(!driver||tickCount-lastInputTick>10){inputKeys=4;inputSteer=0;}
-        if(health()<=0||engineHealth()<=5||fuel()<=0||isInWater()||!engineProblem().isEmpty()||temperature()>=130)flag(1,false);
+        if(chargingPos!=null&&(chargeLease<tickCount||!level().hasChunkAt(chargingPos))){chargingPos=null;entityData.set(PLUGGED,false);entityData.set(CHARGE_KW,0f);}
+        if(health()<=0||isInWater()||plugged()||(!powertrain().electric()&&(engineHealth()<=5||fuel()<=0||!engineProblem().isEmpty()||temperature()>=130)))flag(1,false);
         if(!ignition())benchTicks=0;
         if(benchTicks>0){benchTicks--;inputKeys=21;inputSteer=0;}
         boolean reverse=(inputKeys&8)!=0;
@@ -95,7 +145,12 @@ public final class CarEntity extends Entity {
         double grip=surfaceGrip();
         float currentFuel=fuel();
         for(int i=0;i<4;i++){
-            var state=VehicleDynamics.step(speed,currentFuel,engineState,ignition(),input,setup,grip,grounded,.0125);
+            VehicleDynamics.State state;
+            if(powertrain().electric()){
+                if(electricState==null)electricState=ElectricDynamics.State.initial(powertrain(),0);
+                var result=ElectricDynamics.step(powertrain(),electricState,electricMode(),speed,currentFuel,engineState,ignition(),input,setup,grip,grounded,plugged(),.0125,ambientTemperature());
+                electricState=result.electric();state=result.road();
+            }else state=VehicleDynamics.step(speed,currentFuel,engineState,ignition(),input,setup,grip,grounded,.0125);
             engineState=state.engine();
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
@@ -116,12 +171,13 @@ public final class CarEntity extends Entity {
             }
             grounded=onGround()||contactCount>=2;
         }
+        syncElectric();
         entityData.set(FUEL,currentFuel);entityData.set(SPEED,(float)speed);entityData.set(STEER,inputSteer);
         float throttle=(inputKeys&1)!=0?1:0;
         entityData.set(BOOST,(float)engineState.boost());entityData.set(OIL_TEMP,(float)engineState.oilTemperature());entityData.set(OIL_PRESSURE,(float)engineState.oilPressure());
         entityData.set(ENGINE_HEALTH,(float)engineState.health());entityData.set(AFR,(float)engineState.afr());entityData.set(THROTTLE,(float)engineState.throttle());entityData.set(SPOOL,(float)engineState.spool());
         entityData.set(SHAFT_TORQUE,(float)engineState.shaftTorque());entityData.set(BLOWER_KW,(float)engineState.blowerKw());
-        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),ignition(),engineParts(),speed,.05));
+        entityData.set(TEMPERATURE,(float)EngineBuild.temperature(temperature(),rpm(),throttle,boost(),combustionRunning(),engineParts(),speed,.05));
         setDeltaMovement(-Math.sin(Math.toRadians(getYRot()))*speed/20,verticalSpeed/20,Math.cos(Math.toRadians(getYRot()))*speed/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
@@ -181,6 +237,9 @@ public final class CarEntity extends Entity {
         if(!(player instanceof ServerPlayer sp))return InteractionResult.PASS;
         if(!mayModify(player)){message(player,"This car belongs to another player.");return InteractionResult.CONSUME;}
         if(entityData.get(OWNER).isEmpty())setOwner(player.getUUID());
+        if(player.getItemInHand(hand).getItem() instanceof com.photonspark.sparkmotors.charging.ChargingCableItem){
+            com.photonspark.sparkmotors.charging.ChargingCableItem.connect(sp,this,player.getItemInHand(hand));return InteractionResult.CONSUME;
+        }
         if(player.getItemInHand(hand).is(AutoPropulsionAge.FUEL_CAN.get()))action(sp,CarPackets.REFUEL,0,0);
         else if(player.isSecondaryUseActive()||player.getItemInHand(hand).is(AutoPropulsionAge.WRENCH.get()))CarPackets.open(sp,this);
         else if(Math.abs(speed())<1)player.startRiding(this);
@@ -205,6 +264,12 @@ public final class CarEntity extends Entity {
         }
         if(action==CarPackets.IGNITION){
             if(ignition()){flag(1,false);return;}
+            if(powertrain().electric()){
+                if(plugged()){message(player,"Disconnect the charging cable before selecting READY.");return;}
+                if(health()<=0||isInWater()||packHealth()<.1){message(player,"Repair the car or service the traction battery first.");return;}
+                if(Assembly.WHEELS.variant(config())==0||Assembly.BRAKES.variant(config())==0||Assembly.SUSPENSION.variant(config())==0){message(player,"Fit wheels, brakes and suspension first.");return;}
+                flag(1,true);playSound(SoundEvents.LEVER_CLICK,.5f,1.5f);return;
+            }
             if(!Assembly.canDrive(config())){message(player,"Install an engine, transmission, wheel set, brakes and suspension first.");return;}
             if(!engineProblem().isEmpty()){message(player,engineProblem());return;}
             if(engineHealth()<=5){message(player,"Engine worn out. Rebuild it in the engine workshop.");return;}
@@ -217,8 +282,21 @@ public final class CarEntity extends Entity {
         if(action==CarPackets.HOOD){flag(8,!hoodOpen());return;}
         if(ignition()){message(player,"Switch the engine off before servicing.");return;}
         boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||action==CarPackets.ENGINE_REBUILD||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
+        if(engineWork&&powertrain().electric()&&!powertrain().hybrid()){message(player,"This vehicle has an electric drive unit, not a combustion engine.");return;}
         if(engineWork&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before working on the engine.");return;}
         switch(action){
+            case CarPackets.REPLACE_BATTERY -> {
+                if(!powertrain().electric()||plugged()||!hoodOpen()||hoodProgress<.95){message(player,"Park, disconnect charging, switch READY off and open the hood to replace the pack.");return;}
+                var item=com.photonspark.sparkmotors.charging.Electrification.PACKS.get(powertrain()).get();
+                ItemStack incoming=ItemStack.EMPTY;
+                for(int i=0;i<player.getInventory().getContainerSize();i++){var stack=player.getInventory().getItem(i);if(stack.is(item)){incoming=stack.copyWithCount(1);stack.shrink(1);break;}}
+                if(incoming.isEmpty()){message(player,"Carry a matching traction battery pack. New packs are uncharged.");return;}
+                var removed=item.write(new ItemStack(item),electricState.battery());
+                electricState=electricState.withBattery(item.read(incoming));give(player,removed);syncElectric();player.getInventory().setChanged();
+                message(player,"Pack replaced; the removed pack retains its charge, temperature and condition.");
+            }
+            case CarPackets.ELECTRIC_MODE -> {if(powertrain().hybrid())entityData.set(EV_MODE,Mth.clamp(a,0,2));}
+            case CarPackets.CHARGE_TARGET -> {if(powertrain().plugIn())entityData.set(CHARGE_TARGET,Mth.clamp(a,50,100));}
             case CarPackets.ENGINE_SWAP -> {
                 if(a<0||a>=EngineFamily.values().length||b<1||b>2)return;
                 swapEngine(player,EngineFamily.values()[a],b);
@@ -237,6 +315,7 @@ public final class CarEntity extends Entity {
                 message(player,part.title+": "+part.label(b));
             }
             case CarPackets.REFUEL -> {
+                if(powertrain().electric()&&!powertrain().hybrid()){message(player,"Electric vehicles require a charger, not fuel.");break;}
                 if(fuel()>=49.9){message(player,"Fuel tank is full.");break;}
                 if(consume(player,AutoPropulsionAge.FUEL_CAN.get(),1)){entityData.set(FUEL,Math.min(50,fuel()+10));message(player,"Added up to 10 L of fuel.");}
                 else message(player,"You need a fuel can in your inventory.");
@@ -317,7 +396,10 @@ public final class CarEntity extends Entity {
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putInt("DataVersion",3);tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putInt("DataVersion",4);
+        tag.putString("Powertrain",powertrain().id());tag.putInt("ElectricMode",entityData.get(EV_MODE));tag.putInt("ChargeTarget",chargeTarget());
+        if(electricState!=null){var e=electricState;var b=e.battery();tag.putDouble("BatteryJ",b.energyJ());tag.putDouble("BatteryC",b.temperatureC());tag.putDouble("BatteryHealth",b.health());tag.putDouble("BatteryThroughputJ",b.throughputJ());tag.putDouble("MotorC",e.motorC());tag.putDouble("InverterC",e.inverterC());}
+        tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());
         tag.putFloat("EngineHealth",engineHealth());tag.putFloat("OilTemperature",oilTemperature());tag.putFloat("BoostTarget",boostTarget());
         tag.putInt("Limiter",limiter());tag.putFloat("FinalDrive",finalDrive());tag.putBoolean("Lights",lights());entityData.get(OWNER).ifPresent(id->tag.putUUID("Owner",id));
@@ -338,6 +420,13 @@ public final class CarEntity extends Entity {
         if(tag.contains("Limiter"))entityData.set(LIMITER,Mth.clamp(tag.getInt("Limiter"),4000,7000));
         if(tag.contains("FinalDrive"))entityData.set(FINAL_DRIVE,(float)VehicleDynamics.clamp(tag.getFloat("FinalDrive"),2.8,4.8));
         if(tag.hasUUID("Owner"))setOwner(tag.getUUID("Owner"));
+        var type=Powertrain.byId(tag.getString("Powertrain"));initializePowertrain(type,0);
+        entityData.set(EV_MODE,Mth.clamp(tag.getInt("ElectricMode"),0,2));entityData.set(CHARGE_TARGET,tag.contains("ChargeTarget")?Mth.clamp(tag.getInt("ChargeTarget"),50,100):80);
+        if(type.electric()){
+            var battery=new BatteryModel.State(tag.getDouble("BatteryJ"),tag.contains("BatteryC")?tag.getDouble("BatteryC"):20,tag.contains("BatteryHealth")?tag.getDouble("BatteryHealth"):1,tag.getDouble("BatteryThroughputJ")).normalized(type.battery);
+            electricState=new ElectricDynamics.State(battery,tag.contains("MotorC")?VehicleDynamics.clamp(tag.getDouble("MotorC"),-60,250):20,tag.contains("InverterC")?VehicleDynamics.clamp(tag.getDouble("InverterC"),-60,250):20,false,0,0,BatteryModel.ocv(type.battery,battery),0,0);syncElectric();
+        }
+        chargingPos=null;chargeLease=0;entityData.set(PLUGGED,false);entityData.set(CHARGE_KW,0f);
         flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
     }
 }

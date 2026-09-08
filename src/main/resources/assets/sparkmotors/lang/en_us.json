@@ -79,5 +79,18 @@
   "item.sparkmotors.performance_oil_system": "Baffled sump",
   "item.sparkmotors.oil_system_3": "Oil cooler",
   "item.sparkmotors.oil_system_4": "Dry sump",
-  "key.sparkmotors.clutch": "Disengage clutch (hold to free-rev)"
+  "key.sparkmotors.clutch": "Disengage clutch (hold to free-rev)",
+  "item.sparkmotors.hybrid_crate": "Series Hybrid Sedan Crate",
+  "item.sparkmotors.hybrid_battery_pack": "Series Hybrid Traction Battery Pack",
+  "item.sparkmotors.plug_in_hybrid_crate": "Plug-in Series Hybrid Sedan Crate",
+  "item.sparkmotors.plug_in_hybrid_battery_pack": "Plug-in Series Hybrid Traction Battery Pack",
+  "item.sparkmotors.electric_400_crate": "400 V Electric Sedan Crate",
+  "item.sparkmotors.electric_400_battery_pack": "400 V Electric Traction Battery Pack",
+  "item.sparkmotors.electric_800_crate": "800 V Electric Sedan Crate",
+  "item.sparkmotors.electric_800_battery_pack": "800 V Electric Traction Battery Pack",
+  "block.sparkmotors.lv_charger": "48 V Workshop Vehicle Charger",
+  "block.sparkmotors.home_charger": "240 V Wallbox Vehicle Charger",
+  "block.sparkmotors.rapid_charger": "480 V Rapid DC Vehicle Charger",
+  "block.sparkmotors.ultra_charger": "3200 V Ultra DC Vehicle Charger",
+  "item.sparkmotors.charging_cable": "Vehicle Charging Cable"
 }

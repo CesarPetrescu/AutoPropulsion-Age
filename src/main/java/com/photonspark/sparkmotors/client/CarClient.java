@@ -40,7 +40,7 @@ public final class CarClient {
         Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.level==null)return;
         sounds.entrySet().removeIf(e->e.getValue().isStopped());
         for(CarEntity nearby:mc.level.getEntitiesOfClass(CarEntity.class,mc.player.getBoundingBox().inflate(32)))
-            if(nearby.ignition()&&!sounds.containsKey(nearby.getId())){var sound=new CarEngineSound(nearby);sounds.put(nearby.getId(),sound);mc.getSoundManager().play(sound);}
+            if(nearby.combustionRunning()&&!sounds.containsKey(nearby.getId())){var sound=new CarEngineSound(nearby);sounds.put(nearby.getId(),sound);mc.getSoundManager().play(sound);}
         CarEntity car=mc.player.getVehicle() instanceof CarEntity c?c:mc.hitResult instanceof EntityHitResult hit&&hit.getEntity() instanceof CarEntity c?c:null;
         if(car==null){lastCar=-1;reverse=false;return;}
         if(mc.screen==null){
@@ -78,13 +78,14 @@ public final class CarClient {
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03d",Math.round(Math.abs(car.speed())*3.6)),0,0,0xFFFFFFFF,false);g.pose().popPose();
         g.drawString(mc.font,"km/h",x+62,y+37,0xFFA2B5C0,false);
         g.drawString(mc.font,"GEAR "+(reverse?"R":car.gear()),x+102,y+24,0xFFFFFFFF,false);
-        g.drawString(mc.font,Math.round(car.rpm())+" RPM",x+167,y+24,0xFFFFFFFF,false);
+        g.drawString(mc.font,car.powertrain().electric()?String.format(java.util.Locale.ROOT,"%.1f kW",car.packKw()):Math.round(car.rpm())+" RPM",x+167,y+24,0xFFFFFFFF,false);
         g.fill(x+102,y+38,x+w-10,y+43,0xFF2A3C49);g.fill(x+102,y+38,x+102+(int)(128*Math.min(1,car.rpm()/car.limiter())),y+43,car.rpm()>car.limiter()*.9?0xFFF17C56:0xFF31C6C9);
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"FUEL %.1f L",car.fuel()),x+10,y+53,car.fuel()<5?0xFFFFA45C:0xFFD1E2E8,false);
+        g.drawString(mc.font,car.powertrain().electric()?String.format(java.util.Locale.ROOT,"SOC %.1f%%",car.stateOfCharge()*100):String.format(java.util.Locale.ROOT,"FUEL %.1f L",car.fuel()),x+10,y+53,car.fuel()<5?0xFFFFA45C:0xFFD1E2E8,false);
         String status=!Assembly.canDrive(car.config())||!car.engineProblem().isEmpty()?"MISSING PARTS":car.health()<=0?"REPAIR REQUIRED":car.temperature()>=125?"ENGINE TOO HOT":car.ignition()?"ENGINE ON":"R: START ENGINE";
+        if(car.powertrain().electric())status=car.plugged()?"CABLE CONNECTED":car.ignition()?"READY":"R: READY";
         g.drawString(mc.font,status,x+102,y+53,car.ignition()?0xFF73D8AA:0xFFFFC172,false);
         g.fill(x,y+68,x+w,y+83,0xE5101A23);
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%.2f bar  AFR %.1f  Oil %.0f C",car.boost(),car.afr(),car.oilTemperature()),x+10,y+71,car.engineHealth()<50?0xFFFF8E60:0xFF7ECED0,false);
+        g.drawString(mc.font,car.powertrain().electric()?String.format(java.util.Locale.ROOT,"%.0f V  %.0f A  Pack %.0f C",car.packVoltage(),car.packCurrent(),car.packTemperature()):String.format(java.util.Locale.ROOT,"%.2f bar  AFR %.1f  Oil %.0f C",car.boost(),car.afr(),car.oilTemperature()),x+10,y+71,car.engineHealth()<50?0xFFFF8E60:0xFF7ECED0,false);
         g.drawCenteredString(mc.font,"W drive  S brake  C clutch  Z reverse  G garage",g.guiWidth()/2,y+89,0xFFDAE6EC);
     }
 }

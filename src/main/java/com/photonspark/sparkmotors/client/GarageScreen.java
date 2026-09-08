@@ -34,7 +34,7 @@ public final class GarageScreen extends Screen {
     @Override public boolean isPauseScreen(){return false;}
     private void request(int action,int a,int b){CarClient.send(car,action,a,b);}
     private boolean serviceAllowed(){return Math.abs(car.speed())<.3&&!car.ignition();}
-    private boolean engineServiceAllowed(){return serviceAllowed()&&car.hoodOpen()&&car.hoodProgress>=.95;}
+    private boolean engineServiceAllowed(){return (!car.powertrain().electric()||car.powertrain().hybrid())&&serviceAllowed()&&car.hoodOpen()&&car.hoodProgress>=.95;}
     private Item assemblyItem(Assembly slot,int v){return slot==Assembly.ENGINE?AutoPropulsionAge.engineItem(car.engineFamily(),v):AutoPropulsionAge.partItem(slot,v);}
     private Button button(String label,int bx,int by,int bw,int bh,Runnable action,String tooltip,boolean service){
         Button b=Button.builder(Component.literal(label),ignored->action.run()).bounds(bx,by,bw,bh).build();
@@ -45,7 +45,7 @@ public final class GarageScreen extends Screen {
         clearWidgets();serviceButtons.clear();w=Math.min(780,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;
         previewWidth=Math.max(120,(int)(w*.38));rx=x+previewWidth+20;rw=w-previewWidth-32;
         button("X",x+w-29,y+9,20,20,this::onClose,"Close garage",false);
-        String[] names={"Garage","Paint","Tuner","Car","Engine","Live"};
+        String[] names={"Garage","Paint","Tuner","Car","Engine","Live","Electric"};
         for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{tab=selected;init();},null,false).active=i!=tab;}
         int top=y+82;
         switch(tab){
@@ -124,6 +124,14 @@ public final class GarageScreen extends Screen {
                 var rebuild=button("Rebuild engine",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(CarPackets.ENGINE_REBUILD,0,0),"Consumes 12 iron ingots to restore engine condition. Open the hood, park and stop the engine.",true);
                 serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.engineHealth()<100&&Assembly.ENGINE.variant(car.config())>0);
             }
+            case 6 -> {
+                button("READY / off",rx,y+h-78,rw/2-3,22,()->request(CarPackets.IGNITION,0,0),"Disconnect the cable before driving.",false);
+                button("Open / close hood",rx+rw/2+2,y+h-78,rw/2-2,22,()->request(CarPackets.HOOD,0,0),"Inspect the motor, inverter or generator.",false);
+                button("80% limit",rx,y+h-49,rw/3-3,22,()->request(CarPackets.CHARGE_TARGET,80,0),"Every charge stops at this ceiling.",true);
+                button("100% limit",rx+rw/3+1,y+h-49,rw/3-3,22,()->request(CarPackets.CHARGE_TARGET,100,0),"Full charge leaves less room for regenerative braking.",true);
+                button(car.powertrain().hybrid()?"Hybrid mode":"Replace pack",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(car.powertrain().hybrid()?CarPackets.ELECTRIC_MODE:CarPackets.REPLACE_BATTERY,(car.electricMode().ordinal()+1)%3,0),"Hybrid: cycles AUTO / EV ONLY / CHARGE SUSTAIN. EV: exchanges a matching pack in your inventory, preserving both packs' state.",true);
+                if(car.powertrain().hybrid())button("Replace battery pack",rx,y+h-106,rw,20,()->request(CarPackets.REPLACE_BATTERY,0,0),"Matching pack required; disconnect cable and open hood. Removed pack retains energy and condition.",true);
+            }
         }
     }
     private int count(Item item){int count=0;if(minecraft.player!=null)for(var s:minecraft.player.getInventory().items)if(s.is(item))count+=s.getCount();return count;}
@@ -155,8 +163,8 @@ public final class GarageScreen extends Screen {
         g.drawString(font,tab==4?"ENGINE / DRAG TO ORBIT":"LIVE VEHICLE",x+20,y+54,MUTED,false);
         drawPreview(g,partial);
         int stats=y+h-83;
-        g.drawString(font,car.ignition()?"ENGINE RUNNING":"ENGINE OFF",x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
-        g.drawString(font,String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
+        g.drawString(font,car.powertrain().electric()?(car.ignition()?"READY":"HIGH VOLTAGE OFF"):(car.ignition()?"ENGINE RUNNING":"ENGINE OFF"),x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
+        g.drawString(font,car.powertrain().electric()?String.format(Locale.ROOT,"Battery  %.1f%%",car.stateOfCharge()*100):String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
         g.drawString(font,tab==4?String.format(Locale.ROOT,"%.0f C  /  %.2f bar",car.temperature(),car.boost()):"Condition  "+Math.round(car.health())+"%",x+18,stats+29,INK,false);
         g.fill(x+18,stats+43,x+previewWidth-10,stats+47,0xFF30424F);g.fill(x+18,stats+43,x+18+(int)((previewWidth-28)*car.health()/100),stats+47,ACCENT);
         int top=y+82;
@@ -206,8 +214,19 @@ public final class GarageScreen extends Screen {
                 int spacing=Math.min(25,Math.max(12,(h-180)/labels.length));
                 for(int i=0;i<labels.length;i++){int by=top+22+i*spacing;g.drawString(font,labels[i],rx,by,MUTED,false);g.drawString(font,values[i],rx+rw-font.width(values[i]),by,i==3&&car.boost()>.1&&car.afr()>13.5?0xFFFF8E60:INK,false);}
             }
+            case 6 -> {
+                g.drawString(font,car.powertrain().title.toUpperCase(Locale.ROOT),rx,top,ACCENT,false);
+                if(!car.powertrain().electric())g.drawWordWrap(font,Component.literal("This is a combustion sedan. Craft an electric or hybrid vehicle crate; the traction pack is not a fuel replacement."),rx,top+25,rw,MUTED);
+                else {
+                    String[] labels={"Charge / ceiling","Battery / health","Pack / current","Battery power (+ draw)","Motor / inverter","Regeneration / generator","Charging input","Hybrid control"};
+                    String[] values={String.format(Locale.ROOT,"%.1f%% / %d%%",car.stateOfCharge()*100,car.chargeTarget()),String.format(Locale.ROOT,"%.1f C / %.1f%%",car.packTemperature(),car.packHealth()*100),String.format(Locale.ROOT,"%.0f V / %.1f A",car.packVoltage(),car.packCurrent()),String.format(Locale.ROOT,"%+.1f kW",car.packKw()),String.format(Locale.ROOT,"%.0f / %.0f C",car.motorTemperature(),car.inverterTemperature()),String.format(Locale.ROOT,"%.1f / %.1f kW",car.regenKw(),car.generatorKw()),car.plugged()?String.format(Locale.ROOT,"CONNECTED / %.2f kW",car.chargeKw()):"UNPLUGGED",car.powertrain().hybrid()?car.electricMode().name():"BATTERY ELECTRIC"};
+                    int spacing=Math.max(12,Math.min(24,(h-232)/labels.length));
+                    for(int i=0;i<labels.length;i++){int by=top+23+i*spacing;g.drawString(font,labels[i],rx,by,MUTED,false);g.drawString(font,values[i],rx+rw-font.width(values[i]),by,INK,false);}
+                }
+            }
         }
         String footer=serviceAllowed()?"Changes save automatically. Survival uses items from your inventory.":"Park and switch off the engine to change parts, paint or tuning.";
+        if(tab==6)footer="Charging cable: charger first, then car. Sneak-click charger to disconnect. Positive pack kW = discharge.";
         if(tab==4)footer=!engineServiceAllowed()?"Park, stop the engine and open the hood fully to work.":!car.engineProblem().isEmpty()?car.engineProblem():"42 hardware choices. Hover a Fit button for the part's behavior and requirements.";
         String clipped=font.plainSubstrByWidth(footer,w-26);
         g.drawString(font,clipped,x+13,y+h-15,serviceAllowed()?MUTED:0xFFFFC675,false);

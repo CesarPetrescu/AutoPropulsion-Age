@@ -6,14 +6,24 @@ version = mod_version
 group = 'com.photonspark.sparkmotors'
 base { archivesName = 'autopropulsion-age' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-repositories { mavenCentral() }
-dependencies { implementation project(':sim') }
+repositories {
+    mavenCentral()
+    maven { url = 'https://thedarkcolour.github.io/KotlinForForge/' }
+}
+dependencies {
+    implementation project(':sim')
+    if (providers.gradleProperty('elnJar').isPresent()) {
+        runtimeOnly files(providers.gradleProperty('elnJar').get())
+        runtimeOnly 'thedarkcolour:kotlinforforge-neoforge:5.12.0'
+    }
+}
 // Include the pure simulation classes in the mod's development and release
 // outputs. FML does not load an ordinary project dependency as a mod module.
 sourceSets.main.output.dir([builtBy: ':sim:classes'], project(':sim').layout.buildDirectory.dir('classes/java/main'))
 if (providers.gradleProperty('withGameTests').isPresent()) {
     sourceSets.main.java.srcDir 'src/gametest/java'
     sourceSets.main.resources.srcDir 'src/gametest/resources'
+    if (providers.gradleProperty('elnJar').isPresent()) sourceSets.main.java.srcDir 'src/elnTest/java'
 }
 neoForge {
     version = project.neo_version
@@ -29,6 +39,11 @@ neoForge {
             programArguments.addAll '--width', '1440', '--height', '900'
             systemProperty 'sparkmotors.clientSmoke', 'true'
             systemProperty 'sparkmotors.clientQuick', 'true'
+        }
+        clientElectricSmoke {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientElectricSmoke', 'true'
         }
         server { server(); programArgument '--nogui' }
         gameTestServer {

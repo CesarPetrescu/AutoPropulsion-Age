@@ -43,6 +43,7 @@ public final class CarMesh {
         render(car,partial,poses,buffers,light,preview,engineOnly,false);
     }
     private static boolean visible(Chunk c,CarEntity car){
+        if(car.powertrain().electric()&&!car.powertrain().hybrid()&&(c.group==0||c.group==1||c.name.contains("exhaust")||c.name.contains("muffler")||c.name.contains("fuel_tank")))return false;
         int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
         if(c.group>=0&&(selected==0||(c.variant>0&&selected!=c.variant)))return false;
         if((c.family&(1<<car.engineFamily().ordinal()))==0||(c.induction&(1<<EnginePart.INDUCTION.variant(car.engineParts())))==0)return false;
@@ -54,6 +55,7 @@ public final class CarMesh {
     }
     public static int visibleEngineFamilies(CarEntity car){int mask=0;for(var c:chunks)if(c.group==0&&c.family!=127&&visible(c,car))mask|=c.family;return mask;}
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway){
+        ElectricGeometry.render(car,poses,buffers,light,preview,engineOnly);
         float panel=Mth.lerp(partial,car.oldPanelProgress,car.panelProgress);
         float hood=Mth.lerp(partial,car.oldHoodProgress,car.hoodProgress);
         float engine=Mth.lerp(partial,car.oldEngineAngle,car.engineAngle);

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sparkmotors:item/plug_in_hybrid_crate"
+  }
+}

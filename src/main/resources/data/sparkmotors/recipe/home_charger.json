@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block"
+    },
+    {
+      "item": "minecraft:copper_block"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:quartz"
+    },
+    {
+      "item": "sparkmotors:lv_charger"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:home_charger",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "sparkmotors:block/rapid_charger",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "sparkmotors:block/rapid_charger",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "sparkmotors:block/rapid_charger",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "sparkmotors:block/rapid_charger",
+      "y": 270
+    }
+  }
+}
