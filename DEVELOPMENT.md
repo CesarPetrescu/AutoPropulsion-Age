@@ -35,7 +35,7 @@ java -version
 
 Development is integrated on `main`. Feature branches run the same required checks; automatic releases come from successful pushes to `main`. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
 
-The main output is `build/libs/autopropulsion-age-0.6.0-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
+The main output is `build/libs/autopropulsion-age-0.6.1-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
 
 If Java is not 21, set the JDK for the current PowerShell session, adapting the path to your installation:
 
@@ -172,14 +172,14 @@ python tools/run_multiplayer_test.py --timeout 720
 
 | Suite | What it must prove |
 |---|---|
-| Simulation JUnit | At least 65 tests: mechanics, traction/differentials, steering, airborne momentum, batteries, regeneration, every engine cold start and all hybrid generator families |
+| Simulation JUnit | At least 74 tests: mechanics, traction/differentials, steering, airborne momentum, batteries, regeneration, every engine cold start, all hybrid generator families, swept collision and heading recovery |
 | Simulation matrices | Existing 7,308 hardware cases plus 294 layout × family × grade × induction drive/brake cases |
-| Dedicated GameTests | At least 30 tests, including 294 actual in-world drive/brake builds, conversion transactions, permissions, condition retention, save migration and spring landing |
+| Dedicated GameTests | At least 41 tests, including 294 combustion and 12 electric in-world drive/brake builds, conversion transactions, permissions, condition retention, save migration, spring landing and collision/relaunch recovery |
 | Native handling client | RWD/FWD/AWD garage buttons, differential/split packets, real key mapping steering/drift/braking, contact loss and landing; screenshots |
 | Native mechanics client | Complete coolant diagnosis/repair/refill/verification, service access, sender behavior, audio channels and cleanup |
 | Full native client matrix | 49 family/induction selections and 42 hardware choices, native GUI and rendering checks |
 | Two-client dedicated fixture | Ownership, synchronized state, worn-item removal, actual drop/pickup and installation in another owner's car |
-| Resource/geometry checks | 424 resources preserved, 48 mono sounds decoded, 294 hardware identities, 49 envelopes and five-position hood checks |
+| Resource/geometry checks | 472 resources preserved, 48 mono sounds decoded, 294 hardware identities, 49 envelopes, five-position hood checks, 20 body-coverage rays and 48 tire/body steering/travel poses |
 
 Do not substitute `runClientSmokeQuick` for the full release matrix. The quick task covers seven I4 layouts and all 42 hardware choices, useful while iterating on the UI.
 
@@ -241,5 +241,7 @@ The canonical [mod logo](src/main/resources/autopropulsion-age.png) is also used
 Minecraft yaw and the existing rig basis turn right for positive input. The client maps A to negative steer and D to positive steer. Preserve the existing lateral/world transform, wheel contact positions and wheel animation together; changing just the chassis basis can swap the relationship between a tire contact and its force. Native handling checks assert the world-space direction, not just a positive simulation yaw reading. Forward/reverse is driver-selected while stopped, never inferred from signed road speed. Clutch slip is crank/input-shaft speed difference; torque capacity, dissipated heat and installed clutch condition determine the mechanical result. The Live page displays synchronized measurements, not a decorative gauge.
 
 ## Electric/hybrid development
+
+For bodywork and collision changes, use [the fit and collision guide](docs/BODY_AND_COLLISION.md). Keep `CarGeometry` corner coordinates, the Blender exporter, the collision hull and the articulated renderer in the same frame. `assets/body_workshop.blend` contains the derived stock/sport inspection scenes. Rerun both geometry validators and the native handling harness after modifying wheel clearances or stance; a static render cannot prove articulation or recovery.
 
 Use `sim/.../electric` for pack, charger and motor energy calculations. Both powertrain types call `VehicleDynamics.chassis` and `WheelDynamics`; do not reintroduce a separate road-speed-only solver. `ElectricScreen` shares workshop scaling and input. Run `./gradlew.bat -PwithGameTests runClientElectricSmoke` for the native electric harness; use CI on Linux to keep the Windows desktop available. The required companion job checks the pinned ElectricalAge API with its actual circuit solver. [Charging specification](docs/ELECTRIFICATION.md).

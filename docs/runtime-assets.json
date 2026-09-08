@@ -1,8 +1,8 @@
 {
   "format": "APA2 gzip, big endian",
   "source": "assets/modular_car_kit/sparkmotors_modular.blend",
-  "chunks": 734,
-  "triangles": 268980,
+  "chunks": 788,
+  "triangles": 287040,
   "families": [
     "i4_engine",
     "v6_engine",
@@ -22,6 +22,6 @@
     "twin-screw"
   ],
   "runtime_file": "src/main/resources/assets/sparkmotors/models/entity/sedan.mesh.gz",
-  "bytes": 3237722,
+  "bytes": 3487989,
   "scope": "Seven cores, ten service slots, 42 named hardware choices with distinct geometry, seven induction configurations; internals retained for inspection."
 }

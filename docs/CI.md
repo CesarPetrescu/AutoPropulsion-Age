@@ -7,13 +7,13 @@ The **Test and release** workflow runs on every branch push, pull request and ma
 | Required job | Fresh evidence |
 |---|---|
 | Workflow and release gate tests | actionlint, shell validation and 28 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
-| Build, simulation and dedicated server | Java 21 build; at least 65 JUnit cases with no skips; at least 38 native GameTests, including 294 combustion and 12 electric drivetrain cases; simulation benchmark report; installable JAR inspection |
+| Build, simulation and dedicated server | Java 21 build; at least 74 JUnit cases with no skips; at least 41 native GameTests, including 294 combustion and 12 electric drivetrain cases, oriented collision and crash/spin recovery; simulation benchmark report; installable JAR inspection |
 | Native client (ui) | Loaded Mods-list logo plus 156 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation and screenshots |
-| Resources, audio and geometry | Regeneration of 472 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions plus targeted non-mating intersections |
+| Resources, audio and geometry | Regeneration of 472 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions; 20 body-coverage rays and 48 tire/body steering/travel poses |
 | Native client (electric) | Four vehicle variants and chargers rendered; actual GUI charge-target packets, charging, cable interlocks, READY, electric driving and braking |
-| ElectricalAge compatibility | Pinned companion build and tests; 39 native GameTests including real cable/MNA power, energy accounting, overvoltage recovery and unload; combined-mod client charging and driving |
+| ElectricalAge compatibility | Pinned companion build and tests; 42 native GameTests including real cable/MNA power, energy accounting, overvoltage recovery and unload; combined-mod client charging and driving |
 | Native client (mechanics) | Actual GUI/network coolant diagnosis, targeted repair, fluid refill, timed verification, jack/tire service, failed sender, driving, active audio channels and cleanup |
-| Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, airborne contact loss and spring landing |
+| Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, forward relaunch aligned to the rendered heading, airborne contact loss and spring landing |
 | Native client (matrix) | All 49 engine/induction layouts and 42 hardware choices through native GUI buttons and packets, plus garage, driving, paint, tuning and parked rev test |
 | Two native clients and dedicated server | Owner-only service, worn-part removal, real item drop/pickup, installation into a second owner's car and synchronization to both clients |
 | Required checks | Stable aggregate check: every job above must return `success` |
@@ -55,6 +55,7 @@ python tools/ci/resources.py
 python tools/verify_powertrain_mesh.py
 python tools/verify_engine_fit.py
 blender --background --factory-startup --python-exit-code 1 --python tools/validate_engine_geometry.py
+blender --background --factory-startup --python-exit-code 1 --python tools/validate_body_geometry.py
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientHandling
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientMechanics
 LIBGL_ALWAYS_SOFTWARE=true ALSOFT_DRIVERS=null xvfb-run -a ./gradlew -PwithGameTests runClientSmoke

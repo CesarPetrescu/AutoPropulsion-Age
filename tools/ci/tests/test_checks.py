@@ -48,7 +48,10 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        self.assertEqual(checks.server('All 38 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12')['dedicated_gametests_passed'], 38)
+        log='All 41 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
+        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 41)
+        for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
+            with self.assertRaises(ValueError):checks.server(log.replace(marker,''))
 
     def test_server_missing_driving_matrix_blocks_release(self):
         with self.assertRaises(ValueError):
@@ -61,8 +64,10 @@ class ReleaseGates(unittest.TestCase):
                 checks.client('ALPHA_CLIENT_SMOKE PASS: ' + log, 'PASS: ok', 'handling')
 
     def test_native_handling_complete_pass(self):
-        log = 'ALPHA_CLIENT_SMOKE PASS: HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD DRIVE_LAYOUT_PASS FWD DRIVE_LAYOUT_PASS AWD'
+        log = 'ALPHA_CLIENT_SMOKE PASS: HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD DRIVE_LAYOUT_PASS FWD DRIVE_LAYOUT_PASS AWD HEADING_RECOVERY_CLIENT_PASS RWD HEADING_RECOVERY_CLIENT_PASS FWD HEADING_RECOVERY_CLIENT_PASS AWD'
         self.assertEqual(checks.client(log, 'PASS: ok', 'handling')['native_drive_layouts_passed'], ['AWD', 'FWD', 'RWD'])
+        for layout in ('RWD','FWD','AWD'):
+            with self.assertRaises(ValueError):checks.client(log.replace('HEADING_RECOVERY_CLIENT_PASS '+layout,''),'PASS: ok','handling')
 
     def test_client_missing_result_is_failure(self):
         with self.assertRaises(ValueError):

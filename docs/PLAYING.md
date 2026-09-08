@@ -1,4 +1,4 @@
-# Playing AutoPropulsion Age 0.6.0-alpha
+# Playing AutoPropulsion Age 0.6.1-alpha
 
 Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 
@@ -44,6 +44,8 @@ Open **G → Drive** to choose RWD, FWD or AWD. Exit, park with the engine off a
 You can also select open, limited-slip or locked axle differentials. AWD front torque adjusts from 20–80% while parked with the engine off; this adjustment is free. FWD tires share propulsion and steering grip. RWD power can break rear traction. AWD improves traction but still slides when all tire grip is used. The Drive diagram shows actual installed routing and synchronized wheel contact/slip.
 
 Springs support the chassis, and gravity acts when road contact is lost. Steering and braking in the air do not create tire-road forces. Current handling has planar yaw/lateral motion and vertical spring movement; it does not simulate full rollovers or soft-body deformation. [Development architecture and reproducible tests](../DEVELOPMENT.md#handling-and-drivetrain-work).
+
+0.6.1 fits the resting shell to its wheel openings and uses oriented body collision shapes. Angled cars can pass beside blocks occupying the empty corners of their enclosing rectangle. Brake to a complete stop after a spin, then accelerate to resume driving along the nose. If a damaged tire or steering link still causes poor handling, inspect and repair that corner. [Body fit, collision scope and renders](BODY_AND_COLLISION.md).
 
 ## Complete a coolant-leak repair
 

@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=65):
+def junit(directory, minimum=74):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,12 +36,14 @@ def junit(directory, minimum=65):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=38):
+def server(log, minimum=41):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
     require('DRIVETRAIN_SERVER_MATRIX_PASS 294' in log, 'Missing complete drivetrain/engine driving matrix')
     require('ELECTRIC_SERVER_MATRIX_PASS 12' in log, 'Missing electric drivetrain matrix')
+    for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
+        require(marker in log,f'Missing {marker}')
     return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
 
 
@@ -66,7 +68,9 @@ def client(log, result, mode):
             require(marker in log, f'Missing {marker}')
         layouts = set(re.findall(r'DRIVE_LAYOUT_PASS (RWD|FWD|AWD)\b', log))
         require(layouts == {'RWD', 'FWD', 'AWD'}, 'Incomplete native drivetrain coverage')
-        return {'native_drive_layouts_passed': sorted(layouts), 'airborne_landing': True}
+        recovery=set(re.findall(r'HEADING_RECOVERY_CLIENT_PASS (RWD|FWD|AWD)\b',log))
+        require(recovery==layouts,'Incomplete native drift/stop/relaunch heading coverage')
+        return {'native_drive_layouts_passed': sorted(layouts), 'airborne_landing': True,'heading_recovery':sorted(recovery)}
     layouts = set(re.findall(r'ENGINE_LAYOUT_PASS ([\w-]+)', log))
     hardware = set(re.findall(r'HARDWARE_UI_PASS ([\w-]+)', log))
     require(len(layouts) == 49 and len(hardware) == 42,

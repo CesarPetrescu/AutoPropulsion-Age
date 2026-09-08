@@ -44,10 +44,10 @@ public final class CarMesh {
     }
     private static final Map<String,String> componentKeys=new HashMap<>();
     private static String componentKey(Chunk c){return componentKeys.computeIfAbsent(c.name,name->{
-        var match=java.util.regex.Pattern.compile("(?:^|_)(fl|fr|rl|rr)(?:_|$)").matcher(name);
-        if(match.find()){
-            String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.startsWith("suspension_spring_")?"spring":name.contains("coilover")||name.startsWith("suspension_damper_")?"damper":name.startsWith("brake_hose_")?"brake_hose":name.contains("tie_rod")||name.contains("control_arm")?"link":null;
-            if(part!=null)return "wheel."+match.group(1)+"."+part;
+        int corner=CarGeometry.corner(name);
+        if(corner>=0){
+            String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.startsWith("suspension_spring_")?"spring":name.contains("coilover")||name.startsWith("suspension_damper_")?"damper":name.startsWith("brake_hose_")?"brake_hose":name.contains("knuckle")||name.contains("tie_rod")||name.contains("control_arm")?"link":null;
+            if(part!=null)return "wheel."+ComponentSlot.CORNERS[corner]+"."+part;
         }
         if(name.startsWith("coolant_upper_hose"))return "cooling.upper_hose";
         if(name.startsWith("coolant_lower_hose"))return "cooling.lower_hose";
@@ -67,7 +67,7 @@ public final class CarMesh {
         if(name.equals("clutch_disc"))return "driveline.clutch";
         if(name.equals("manual_5speed"))return "driveline.gearbox";
         if(name.equals("rear_differential"))return "driveline.differential";
-        if(name.contains("driveshaft")||name.equals("propeller_shaft"))return "driveline.shaft";
+        if(name.contains("driveshaft")||name.equals("propeller_shaft")||name.startsWith("cv_axle_"))return "driveline.shaft";
         if(name.equals("exhaust_system")||name.equals("exhaust_tip"))return "exhaust.pipe";
         if(name.startsWith("gauge_")||name.startsWith("needle_")||name.equals("instrument_cluster"))return "body.instruments";
         if(name.contains("bumper")||name.equals("hood"))return name.startsWith("rear")?"body.rear":"body.front";
@@ -108,6 +108,9 @@ public final class CarMesh {
         float engine=Mth.lerp(partial,car.oldEngineAngle,car.engineAngle);
         float wheel=Mth.lerp(partial,car.oldWheelAngle,car.wheelAngle);
         var readings=CockpitInstruments.read(car);
+        var inverseBody=new org.joml.Quaternionf();
+        if(!preview)inverseBody.rotationZ((float)Math.toRadians(-car.roadRoll())).rotateX((float)Math.toRadians(car.roadPitch()));
+        var moving=new org.joml.Vector3f();
         for(Chunk c:chunks){
             int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
             if(!visible(c,car)||engineOnly&&c.group!=0)continue;
@@ -115,8 +118,14 @@ public final class CarMesh {
             if(cutaway&&c.group==0&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
             poses.pushPose();
             String component=componentKey(c);var part=component.isEmpty()?null:car.mechanics().get(component);
-            int corner=component.startsWith("wheel.")?java.util.Arrays.asList(ComponentSlot.CORNERS).indexOf(component.split("\\.")[1]):-1;
-            if(corner>=0)poses.translate(0,car.wheelTravel(corner),0);
+            int corner=CarGeometry.corner(c.name);
+            boolean rigidWheel=corner>=0&&CarGeometry.steers(c.name);
+            boolean flexible=corner>=0&&!rigidWheel&&(component.startsWith("wheel.")||c.name.startsWith("cv_axle_"));
+            float travel=corner<0?0:car.wheelTravel(corner);
+            if(rigidWheel){
+                // Unsprung parts stay on the tire contact frame while the shell pitches/rolls.
+                poses.mulPose(inverseBody);poses.translate(0,travel,0);
+            }
             if(c.hinge>0){
                 poses.translate(c.px,c.py,c.pz);
                 poses.mulPose((c.hinge<=4?Axis.YP:Axis.XP).rotationDegrees(c.angle*(c.hinge==5?hood:panel)));
@@ -131,17 +140,15 @@ public final class CarMesh {
             }
             if(c.name.equals("steering_wheel")){poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees(car.steer()*125));poses.translate(-c.px,-c.py,-c.pz);}
             if(c.name.endsWith("_pedal")){float depressed=c.name.startsWith("throttle")?car.throttle():c.name.startsWith("brake")&&car.serviceBrake()?1:0;poses.translate(0,-depressed*.025,depressed*.02);}
-            if(c.category==13||c.name.startsWith("brake_disc_")||c.name.startsWith("hub_")){
-                String tag=c.name.substring(c.name.length()-2);
-                if(tag.matches("[fr][lr]")){
-                    float x=tag.charAt(1)=='l'?-.83f:.83f,z=tag.charAt(0)=='f'?1.35f:-1.30f;
+            if(rigidWheel){
+                    float x=(float)CarGeometry.wheelX(corner),z=(float)CarGeometry.wheelZ(corner);
                     poses.translate(x,.34,z);
-                    if(tag.charAt(0)=='f')poses.mulPose(Axis.YP.rotation(-car.steeringAngle()));
-                    float individual=corner<0?wheel:Mth.lerp(partial,car.oldWheelAngles[corner],car.wheelAngles[corner]);
-                    poses.mulPose(Axis.XP.rotation(individual));
+                    if(corner<2)poses.mulPose(Axis.YP.rotation(-car.steeringAngle()));
+                    float individual=Mth.lerp(partial,car.oldWheelAngles[corner],car.wheelAngles[corner]);
+                    if(part!=null&&component.endsWith(".tire"))poses.scale(1,(float)(.78+.22*Math.min(1,part.reserve()/2.3)),1);
+                    if(CarGeometry.spins(c.name))poses.mulPose(Axis.XP.rotation(individual));
                     if(part!=null&&component.endsWith(".rim")&&(part.faults()&PartInstance.BENT)!=0)poses.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(individual*2)*part.damage()*8)));
-                    if(part!=null&&component.endsWith(".tire"))poses.scale(1,(float)(.78+.22*Math.min(1,part.reserve()/2.3)),1);poses.translate(-x,-.34,-z);
-                }
+                    poses.translate(-x,-.34,-z);
             }
             VertexConsumer buffer=buffers.getBuffer(c.kind==2?RenderType.entityTranslucent(WHITE):RenderType.entityCutoutNoCull(WHITE));
             var pose=poses.last();int brightness=c.kind==3&&car.lights()&&car.mechanics().capability("body.lamps")>.2&&CircuitPhysics.batteryCharge(car.mechanics())>.1?LightTexture.FULL_BRIGHT:light;
@@ -154,9 +161,17 @@ public final class CarMesh {
                     if(c.kind==2)color=(color&0xFFFFFF)|0x30000000;
                     if(c.group==0&&selected==2&&(c.category==19||c.name.startsWith("rotor_housing")))color=0xFFDBAC4C;
                     if(c.group==3&&selected==2&&c.name.startsWith("brake_caliper"))color=0xFF3FA7F5;
-                    float vy=c.vertices[v+1],vz=c.vertices[v+2];
+                    float vx=c.vertices[v],vy=c.vertices[v+1],vz=c.vertices[v+2];
+                    if(flexible){
+                        float weight=c.name.startsWith("cv_axle_")?Mth.clamp((Math.abs(vx)-.13f)/.625f,0,1):c.name.startsWith("tie_rod_")?Mth.clamp((Math.abs(vx)-.53f)/.18f,0,1):c.name.startsWith("control_arm_")?Mth.clamp((Math.abs(vx)-.37f)/.33f,0,1):
+                            c.name.startsWith("brake_hose_")?Mth.clamp((.59f-vy)/.23f,0,1):Mth.clamp((.94f-vy)/.60f,0,1);
+                        moving.set(vx,vy,vz);
+                        if(corner<2){float cx=(float)CarGeometry.wheelX(corner),cz=(float)CarGeometry.wheelZ(corner);moving.sub(cx,.34f,cz).rotateY(-car.steeringAngle()).add(cx,.34f,cz);}
+                        moving.add(0,travel,0).rotate(inverseBody);
+                        vx=Mth.lerp(weight,vx,moving.x);vy=Mth.lerp(weight,vy,moving.y);vz=Mth.lerp(weight,vz,moving.z);
+                    }
                     if(part!=null&&component.equals("body.front")){vy-=(float)(part.damage()*.08);vz-=(float)(part.damage()*.10);}
-                    buffer.addVertex(pose,c.vertices[v],vy,vz).setColor(color).setUv(.5f,.5f)
+                    buffer.addVertex(pose,vx,vy,vz).setColor(color).setUv(.5f,.5f)
                         .setOverlay(OverlayTexture.NO_OVERLAY).setLight(brightness).setNormal(pose,c.vertices[v+3],c.vertices[v+4],c.vertices[v+5]);
                 }
             }

@@ -72,7 +72,11 @@ for part in manifest:
     root=bpy.data.objects[part['object']]
     for ob in scene.objects:
         if ob.type in {'MESH','CURVE','FONT'} and owner(ob)==root:
+            # Rebuilt below with closed mating surfaces, circular beads and continuous arch trim.
+            if name.startswith(('tire_','slick_tire_','side_skirt_','sport_skirt_')) or ob.name.startswith(('Wheel arch trim','Door outer','Rocker')):continue
             target=m
+            if name.startswith('rear_cv_axle_'):target=dict(m,name='cv_axle_'+('rl' if name.endswith('-1') else 'rr'))
+            if name=='steering_rack' and ob.name.startswith('Tie rod'):target=dict(m,name='tie_rod_'+('fl' if sum((ob.matrix_world@Vector(v)).x for v in ob.bound_box)<0 else 'fr'))
             if name.startswith(('coilover_','sport_coilover_')):target=dict(m,name=('suspension_spring_' if 'spring' in ob.name.lower() else 'suspension_damper_')+name[-2:])
             if name=='radiator_fan' and 'shroud' in ob.name.lower():target=dict(m,name='radiator_fan_shroud')
             collect(ob,target)
@@ -103,6 +107,7 @@ def pipe(name,points,radius,mat,m,sides=10):
 
 box('rear_valance',(0,2.115,.92),(1.76,.05,.21),bpy.data.materials['SM_paint'],meta('rear_valance',cat=3,group=-1))
 box('scuttle',(0,-.77,1.008),(1.55,.11,.055),black,meta('scuttle',cat=3,group=-1))
+exec(compile((repo/'tools/build_body_geometry.py').read_text(),str(repo/'tools/build_body_geometry.py'),'exec'))
 # Detailed hardware is generated separately using the same native Blender mesh helpers.
 exec(compile((repo/'tools/build_powertrain_hardware.py').read_text(),str(repo/'tools/build_powertrain_hardware.py'),'exec'))
 # Shared cooling hoses and exhaust adapters to each family's port height and core width.

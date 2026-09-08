@@ -2,7 +2,9 @@ package com.photonspark.sparkmotors.sim;
 
 /** Unilateral spring/damper support. A tire can push the body up, never pull it to the road. */
 public final class SuspensionPhysics {
-    public static final double REACH=.28, REST_GAP=.14;
+    // The authored tire bottoms and the car origin share the road plane at rest.
+    // A second 14 cm ride-height offset used to lift the shell away from its wheels.
+    public static final double REACH=.14, REST_GAP=0, MAX_BUMP=.07;
     public static double acceleration(double[] gaps,double verticalSpeed,MechanicalState m,DriveConfig drive){
         return acceleration(gaps,verticalSpeed,m,drive,VehicleDynamics.MASS);
     }

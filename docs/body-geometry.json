@@ -1,0 +1,596 @@
+{
+  "scope": "Exact runtime stock/sport surface coverage and 48 tire/body poses; outer painted skin excludes intentional internal mount joints.",
+  "coverage": [
+    {
+      "grade": 1,
+      "surface": "front_fascia",
+      "sample": -0.32,
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "front_fascia",
+      "sample": -0.37,
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        -0.7
+      ],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        0.6
+      ],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "front_fascia",
+      "sample": 0.32,
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "front_fascia",
+      "sample": 0.37,
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        -0.7
+      ],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        0.6
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "front_fascia",
+      "sample": -0.32,
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "front_fascia",
+      "sample": -0.37,
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        -0.7
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        -1,
+        0.6
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "front_fascia",
+      "sample": 0.32,
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "front_fascia",
+      "sample": 0.37,
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        -0.7
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "surface": "floor_sill",
+      "sample": [
+        1,
+        0.6
+      ],
+      "passed": true
+    }
+  ],
+  "clearances": [
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rl",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rl",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rl",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rr",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rr",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 1,
+      "corner": "rr",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": -0.14,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fl",
+      "travel": 0.07,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": -0.14,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": -0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "fr",
+      "travel": 0.07,
+      "steer": 0.55,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rl",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rl",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rl",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rr",
+      "travel": -0.14,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rr",
+      "travel": 0,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    },
+    {
+      "grade": 2,
+      "corner": "rr",
+      "travel": 0.07,
+      "steer": 0,
+      "intersections": 0,
+      "parts": [],
+      "passed": true
+    }
+  ],
+  "passed": true
+}

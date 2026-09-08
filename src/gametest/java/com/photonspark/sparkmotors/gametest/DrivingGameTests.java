@@ -82,7 +82,7 @@ public final class DrivingGameTests {
         var c=car(h);c.setPos(c.getX(),c.getY()+2,c.getZ());double initial=c.getY();
         h.runAfterDelay(5,()->{h.assertTrue(c.getY()<initial-.10,"Unsupported chassis must fall under gravity");for(int i=0;i<4;i++)h.assertTrue(!c.wheelContact(i),"High chassis has no imaginary road contact");});
         h.runAfterDelay(65,()->{double gap=c.getY()-h.absoluteVec(new Vec3(8,2,8)).y;
-            h.assertTrue(gap>.08&&gap<.23,"Springs settle above the road instead of snapping to it: "+gap);
+            h.assertTrue(Math.abs(gap-com.photonspark.sparkmotors.sim.SuspensionPhysics.REST_GAP)<.025,"Springs settle at the authored tire/road plane: "+gap);
             for(int i=0;i<4;i++)h.assertTrue(c.wheelContact(i),"Settled wheel must reach road");h.succeed();});
     }
 }

@@ -59,7 +59,7 @@ final class HandlingClient {
             if(ticks==240)CarClient.send(car,CarPackets.IGNITION,0,0);
             if(ticks==270){require(car.engineRunning(),"Engine did not start");phase=1;ticks=0;peak=0;lateral=0;rearSlip=0;leftYaw=0;}
         }else if(phase==1){
-            keys(mc,ticks<100,ticks>=145,ticks>=100&&ticks<112,ticks>=112&&ticks<120,ticks>=108&&ticks<112,ticks>=100);
+            keys(mc,ticks<100||ticks>=280&&ticks<330,ticks>=145&&ticks<280||ticks>=330,ticks>=100&&ticks<112,ticks>=112&&ticks<120,ticks>=108&&ticks<112,ticks>=100&&ticks<280||ticks>=330);
             peak=Math.max(peak,car.horizontalSpeed());
             if(ticks>=100&&ticks<145){lateral=Math.max(lateral,Math.abs(car.lateralSpeed()));rearSlip=Math.max(rearSlip,Math.max(car.wheelSlip(2),car.wheelSlip(3)));}
             if(ticks==99){entryYaw=car.getYRot();worldLeft=0;}
@@ -71,7 +71,16 @@ final class HandlingClient {
                 require(worldLeft<-.5,"A key must turn toward driver left in Minecraft world coordinates: "+worldLeft);
                 require(car.horizontalSpeed()<.3&&car.fuel()<40,"Service brakes/fuel failed: speed="+car.horizontalSpeed());
                 System.out.printf(Locale.ROOT,"DRIVE_LAYOUT_PASS %s peak=%.3f lateral=%.3f rearSlip=%.3f leftYaw=%.3f%n",layout,peak,lateral,rearSlip,leftYaw);
-                keys(mc,false,false,false,false,false,true);CarClient.send(car,CarPackets.IGNITION,0,0);phase=2;ticks=0;
+            }
+            if(ticks==325){
+                var velocity=car.getDeltaMovement();double yaw=Math.toRadians(car.getYRot());
+                require(car.speed()>3&&CarGeometry.forward(velocity.x,velocity.z,yaw)>0,"Relaunch does not follow the rendered nose");
+                require(Math.abs(car.lateralSpeed())<.1&&Math.abs(CarGeometry.lateral(velocity.x,velocity.z,yaw))<.02,"Persistent sideways frame after drift");
+                require(!car.reverseSelected()&&car.gear()>0,"Drift changed the selected forward direction");
+                System.out.println("HEADING_RECOVERY_CLIENT_PASS "+layout);ClientSmoke.screenshot("handling-"+layout.name().toLowerCase(Locale.ROOT)+"-recovered.png");
+            }
+            if(ticks==395){
+                require(car.horizontalSpeed()<.3,"Relaunch braking failed");keys(mc,false,false,false,false,false,true);CarClient.send(car,CarPackets.IGNITION,0,0);phase=2;ticks=0;
             }
         }else if(phase==2&&ticks==20){
             if(++job<3){

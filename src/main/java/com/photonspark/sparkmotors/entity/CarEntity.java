@@ -187,7 +187,10 @@ public final class CarEntity extends Entity {
     }
     @Override public void tick(){
         super.tick();oldWheelAngle=wheelAngle;oldPanelProgress=panelProgress;oldHoodProgress=hoodProgress;oldEngineAngle=engineAngle;
-        wheelAngle+=speed()*.05f/.34f;for(int c=0;c<4;c++){oldWheelAngles[c]=wheelAngles[c];wheelAngles[c]+=wheelOmega(c)*.05f;}
+        wheelAngle+=speed()*.05f/.34f;for(int c=0;c<4;c++){
+            oldWheelAngles[c]=wheelAngles[c];wheelAngles[c]+=wheelOmega(c)*.05f;
+            float offset=(float)(Math.floor(wheelAngles[c]/(Math.PI*2))*Math.PI*2);wheelAngles[c]-=offset;oldWheelAngles[c]-=offset;
+        }
         panelProgress=Mth.clamp(panelProgress+(panels()?.09f:-.09f),0,1);
         hoodProgress=Mth.clamp(hoodProgress+(hoodOpen()?.09f:-.09f),0,1);
         if(CircuitPhysics.measure(mechanics(),rpm(),ignition(),speed()).fan())fanAngle+=6;
@@ -196,6 +199,7 @@ public final class CarEntity extends Entity {
             if(lerpSteps>0){
                 setPos(getX()+(lerpX-getX())/lerpSteps,getY()+(lerpY-getY())/lerpSteps,getZ()+(lerpZ-getZ())/lerpSteps);
                 setYRot(getYRot()+Mth.wrapDegrees(lerpYaw-getYRot())/lerpSteps);setXRot(lerpPitch);lerpSteps--;
+                rebaseHeading();
                 setBoundingBox(makeBoundingBox());
             }
             return;
@@ -215,13 +219,14 @@ public final class CarEntity extends Entity {
         double[] contact=wheelContacts();
         int contactCount=0;
         float currentFuel=fuel();
+        double tickImpact=0;VehicleCollision.Hit impactContact=null;
         for(int i=0;i<4;i++){
             contact=wheelContacts();contactCount=0;
             boolean[] touching=new boolean[4];double[] travels=new double[4],gaps=new double[4],grips=new double[4];
             for(int c=0;c<4;c++){
                 gaps[c]=getY()-contact[c];touching[c]=Double.isFinite(contact[c])&&!raised()&&gaps[c]<=SuspensionPhysics.REACH;
                 if(touching[c])contactCount++;
-                travels[c]=touching[c]?Math.clamp(-gaps[c],-.28,.16):-.28;
+                travels[c]=touching[c]?Math.clamp(-gaps[c],-SuspensionPhysics.REACH,SuspensionPhysics.MAX_BUMP):-SuspensionPhysics.REACH;
                 grips[c]=touching[c]?surfaceGrip(new Vec3(wheelPoint(c).x,contact[c]-.02,wheelPoint(c).z)):0;
                 if(!touching[c])gaps[c]=Double.NaN;
             }
@@ -236,23 +241,39 @@ public final class CarEntity extends Entity {
             if(!powertrain().electric()&&engineState.mode()==EnginePhysics.Mode.STALLED)flag(1,false);
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
-            float previousYaw=getYRot(),attemptedYaw=previousYaw+(float)Math.toDegrees(state.yawDelta());
-            setYRot(attemptedYaw);
-            double yaw=Math.toRadians(attemptedYaw),vx=-Math.sin(yaw)*speed-Math.cos(yaw)*transmissionState.lateralSpeed(),vz=Math.cos(yaw)*speed-Math.sin(yaw)*transmissionState.lateralSpeed();
-            if(!level().noCollision(this,makeBoundingBox().deflate(.015))){setYRot(previousYaw);transmissionState=transmissionState.motion(transmissionState.lateralSpeed(),0,transmissionState.steering(),0,0);}
-            setBoundingBox(makeBoundingBox());
+            double previousYaw=Math.toRadians(getYRot()),attemptedYaw=previousYaw+state.yawDelta();
+            // The simulation already rotated velocity into the attempted body frame. Keep its
+            // world momentum even when contact permits only part of the requested body rotation.
+            double vx=CarGeometry.worldX(speed,transmissionState.lateralSpeed(),attemptedYaw),vz=CarGeometry.worldZ(speed,transmissionState.lateralSpeed(),attemptedYaw);
             verticalSpeed=raised()?0:VehicleDynamics.clamp(verticalSpeed+SuspensionPhysics.acceleration(gaps,verticalSpeed,mechanics(),driveConfig(),powertrain().massKg)*.0125,-30,30);
-            Vec3 move=new Vec3(vx*.0125,verticalSpeed*.0125,vz*.0125);
-            double oldX=getX(),oldZ=getZ();
-            move(MoverType.SELF,move);
-            if(verticalCollision)verticalSpeed=0;
-            double lostX=Math.abs(getX()-oldX-move.x)>.0001?vx:0,lostZ=Math.abs(getZ()-oldZ-move.z)>.0001?vz:0;
-            if(lostX!=0)vx=0;if(lostZ!=0)vz=0;
-            double impact=Math.hypot(lostX,lostZ);
-            if(impact>5){impactComponents(speed>=0?"front":"rear",impact);entityData.set(HEALTH,Math.max(0,health()-(float)(impact-5)*1.3f));if(tickCount%5==0)playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("impact").get(),.5f,1);}
-            yaw=Math.toRadians(getYRot());speed=-Math.sin(yaw)*vx+Math.cos(yaw)*vz;
-            transmissionState=transmissionState.motion(-Math.cos(yaw)*vx-Math.sin(yaw)*vz,impact>0?transmissionState.yawRate()*.5:transmissionState.yawRate(),transmissionState.steering(),transmissionState.longitudinalAcceleration(),transmissionState.lateralAcceleration());
+            VehicleCollision.Result resolved;
+            if(contactCount==4&&Math.abs(vx)+Math.abs(vz)+Math.abs(verticalSpeed)+Math.abs(transmissionState.yawRate())<.0001){
+                // Settled vehicles need no repeated broad-phase world scan. Suspension and
+                // mechanics still run, so losing support or fitting a part wakes motion normally.
+                resolved=new VehicleCollision.Result(getX(),getY(),getZ(),previousYaw,0,0,0,0,false,false,0,null);
+            }else{
+                var area=makeBoundingBox().inflate(.25).expandTowards(vx*.0125,verticalSpeed*.0125,vz*.0125);
+                resolved=VehicleCollision.move(collisionHull(),collisionObstacles(area),getX(),getY(),getZ(),previousYaw,state.yawDelta(),vx,verticalSpeed,vz,transmissionState.yawRate(),powertrain().massKg,.0125);
+            }
+            double dy=resolved.y()-getY();
+            setYRot((float)Math.toDegrees(resolved.yaw()));setPos(resolved.x(),resolved.y(),resolved.z());
+            horizontalCollision=resolved.horizontal();verticalCollision=resolved.vertical();verticalCollisionBelow=verticalCollision&&verticalSpeed<0;
+            setOnGround(verticalCollisionBelow||contactCount>0&&Math.abs(verticalSpeed)<.1);verticalSpeed=resolved.vy();
+            var ground=getOnPos();checkFallDamage(dy,onGround(),level().getBlockState(ground),ground);
+            if(resolved.impact()>tickImpact){tickImpact=resolved.impact();impactContact=resolved.contact();}
+            double yaw=resolved.yaw();speed=CarGeometry.forward(resolved.vx(),resolved.vz(),yaw);
+            transmissionState=transmissionState.motion(CarGeometry.lateral(resolved.vx(),resolved.vz(),yaw),resolved.yawRate(),transmissionState.steering(),transmissionState.longitudinalAcceleration(),transmissionState.lateralAcceleration());
         }
+        if(tickImpact>5&&impactContact!=null&&tickCount-lastImpactTick>=10){
+            var point=new Vec3(impactContact.x()-getX(),0,impactContact.z()-getZ()).yRot((float)Math.toRadians(getYRot()));
+            String region=Math.abs(point.z)>1.8?(point.z>0?"front":"rear"):(point.z>=0?"f":"r")+(point.x<0?"l":"r");
+            impactComponents(region,tickImpact);entityData.set(HEALTH,Math.max(0,health()-(float)(tickImpact-5)*1.3f));
+            playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("impact").get(),.5f,1);
+        }
+        // Rebase the old and current angle together: clients interpolate a short arc even
+        // after many spins, and the server never accumulates a low-precision huge float yaw.
+        rebaseHeading();
+        tryCheckInsideBlocks();
         entityData.set(CLUTCH_STATE,new org.joml.Vector3f((float)transmissionState.clutchSlipRpm(),(float)transmissionState.clutchTorque(),(float)transmissionState.clutchEngagement()));
         entityData.set(LATERAL_SPEED,(float)transmissionState.lateralSpeed());entityData.set(YAW_RATE,(float)transmissionState.yawRate());entityData.set(STEERING_ANGLE,(float)transmissionState.steering());
         syncElectric();
@@ -281,12 +302,15 @@ public final class CarEntity extends Entity {
             else{testPressure*=CircuitPhysics.pressureHold(mechanics(),.05);pressureTestTicks--;if(pressureTestTicks%20==0)entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Cooling pressure: %.2f bar / 1.00 initial. %s",testPressure,pressureTestTicks==0?(testPressure>.90?"Holds pressure.":"Pressure loss: inspect circuit joints and radiator."):(pressureTestTicks/20)+" seconds remaining."));}
         }
         if(tickCount%10==0&&coolant()>0&&CircuitPhysics.coolantLeak(mechanics())>.005&&level() instanceof net.minecraft.server.level.ServerLevel server){var at=position().add(new Vec3(.35,.6,1.7).yRot((float)-Math.toRadians(getYRot())));server.sendParticles(net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER,at.x,at.y,at.z,2,.08,.04,.08,0);}
-        double worldYaw=Math.toRadians(getYRot());setDeltaMovement((-Math.sin(worldYaw)*speed-Math.cos(worldYaw)*transmissionState.lateralSpeed())/20,verticalSpeed/20,(Math.cos(worldYaw)*speed-Math.sin(worldYaw)*transmissionState.lateralSpeed())/20);
+        double worldYaw=Math.toRadians(getYRot());setDeltaMovement(CarGeometry.worldX(speed,transmissionState.lateralSpeed(),worldYaw)/20,verticalSpeed/20,CarGeometry.worldZ(speed,transmissionState.lateralSpeed(),worldYaw)/20);
         if(contactCount==4){
             float pitch=(float)Math.toDegrees(Math.atan2((contact[0]+contact[1]-contact[2]-contact[3])/2,2.65));
             float roll=(float)Math.toDegrees(Math.atan2((contact[0]+contact[2]-contact[1]-contact[3])/2,1.66));
-            entityData.set(PITCH,Mth.lerp(.25f,roadPitch(),Mth.clamp(pitch+(float)transmissionState.longitudinalAcceleration()*.5f,-18,18)));
-            entityData.set(ROLL,Mth.lerp(.25f,roadRoll(),Mth.clamp(roll-(float)transmissionState.lateralAcceleration()*.7f,-18,18)));
+            float nextPitch=Mth.lerp(.25f,roadPitch(),Mth.clamp(pitch+(float)transmissionState.longitudinalAcceleration()*.5f,-18,18));
+            float nextRoll=Mth.lerp(.25f,roadRoll(),Mth.clamp(roll-(float)transmissionState.lateralAcceleration()*.7f,-18,18));
+            double[] travel=new double[4];for(int c=0;c<4;c++)travel[c]=wheelState.corners().get(c).travel();
+            double fit=CarGeometry.tiltFraction(nextPitch,nextRoll,travel);
+            entityData.set(PITCH,(float)(nextPitch*fit));entityData.set(ROLL,(float)(nextRoll*fit));
         }
     }
     private double surfaceGrip(){return surfaceGrip(position().add(0,-.2,0));}
@@ -296,7 +320,7 @@ public final class CarEntity extends Entity {
         if(block.is(net.minecraft.tags.BlockTags.SAND)||block.is(net.minecraft.tags.BlockTags.DIRT)||block.is(net.minecraft.world.level.block.Blocks.GRAVEL))return .70;
         return 1;
     }
-    private Vec3 wheelPoint(int c){return position().add(new Vec3(c%2==0?-.83:.83,0,c<2?1.35:-1.30).yRot((float)-Math.toRadians(getYRot())));}
+    private Vec3 wheelPoint(int c){return position().add(new Vec3(CarGeometry.wheelX(c),0,CarGeometry.wheelZ(c)).yRot((float)-Math.toRadians(getYRot())));}
     private double[] wheelContacts(){
         double[] heights=new double[4];
         for(int c=0;c<4;c++){
@@ -306,9 +330,31 @@ public final class CarEntity extends Entity {
         }
         return heights;
     }
+    public List<VehicleCollision.Box> collisionHull(){
+        double[] travels=new double[4];for(int c=0;c<4;c++)travels[c]=wheelState==null?0:level().isClientSide?wheelTravel(c):wheelState.corners().get(c).travel();
+        return CarGeometry.hull(Assembly.BODY.variant(config())==2,Assembly.WHEELS.variant(config())>0,travels,level().isClientSide?steeringAngle():transmissionState.steering());
+    }
+    private void rebaseHeading(){float offset=getYRot()-Mth.wrapDegrees(getYRot());setYRot(getYRot()-offset);yRotO-=offset;}
+    public boolean hasBodyClearance(){return VehicleCollision.clear(collisionHull(),collisionObstacles(makeBoundingBox()),getX(),getY(),getZ(),Math.toRadians(getYRot()));}
+    private List<VehicleCollision.Box> collisionObstacles(AABB area){
+        var boxes=new ArrayList<VehicleCollision.Box>();
+        for(var shape:level().getBlockCollisions(this,area))for(var b:shape.toAabbs())boxes.add(VehicleCollision.Box.bounds(b.minX,b.minY,b.minZ,b.maxX,b.maxY,b.maxZ));
+        for(var other:level().getEntities(this,area,e->canCollideWith(e))){
+            if(other instanceof CarEntity car){for(var b:car.collisionHull())boxes.add(b.at(car.getX(),car.getY(),car.getZ(),Math.toRadians(car.getYRot())));}
+            else{var b=other.getBoundingBox();boxes.add(VehicleCollision.Box.bounds(b.minX,b.minY,b.minZ,b.maxX,b.maxY,b.maxZ));}
+        }
+        var border=level().getWorldBorder();
+        if(area.minX<border.getMinX()||area.maxX>border.getMaxX()||area.minZ<border.getMinZ()||area.maxZ>border.getMaxZ())for(var b:border.getCollisionShape().toAabbs()){
+            // Border voxel shapes use infinite Y; keep the SAT arithmetic finite.
+            double x0=Math.max(b.minX,area.minX-10),z0=Math.max(b.minZ,area.minZ-10),x1=Math.min(b.maxX,area.maxX+10),z1=Math.min(b.maxZ,area.maxZ+10);
+            if(x0<x1&&z0<z1)boxes.add(VehicleCollision.Box.bounds(x0,area.minY-10,z0,x1,area.maxY+10,z1));
+        }
+        return boxes;
+    }
     @Override protected AABB makeBoundingBox(){
         double yaw=Math.toRadians(getYRot()),c=Math.abs(Math.cos(yaw)),s=Math.abs(Math.sin(yaw));
-        double x=.98*c+2.25*s,z=2.25*c+.98*s;
+        double x=1.12*c+2.37*s,z=2.37*c+1.12*s;
+        // Broad phase and entity queries only. Movement uses the oriented component hull.
         return new AABB(getX()-x,getY(),getZ()-z,getX()+x,getY()+1.52,getZ()+z);
     }
     @Override public float maxUpStep(){return horizontalSpeed()<4?.3f:0;}

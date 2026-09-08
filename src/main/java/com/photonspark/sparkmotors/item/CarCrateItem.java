@@ -20,7 +20,7 @@ public final class CarCrateItem extends Item {
         state.putInt("EngineParts",EngineItem.parts(ctx.getItemInHand()));state.putFloat("EngineTemperature",EngineItem.temperature(ctx.getItemInHand()));
         state.putFloat("OilTemperature",EngineItem.oilTemperature(ctx.getItemInHand()));state.putFloat("EngineHealth",EngineItem.health(ctx.getItemInHand()));state.remove("Mechanics");car.load(state);
         var donor=MechanicalData.get(ctx.getItemInHand());if(donor!=null)car.setMechanics(donor);
-        if(!ctx.getLevel().noCollision(car,car.getBoundingBox())) {
+        if(!car.hasBodyClearance()) {
             player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
         }
         car.initializePowertrain(powertrain,player.isCreative()?.65:0);

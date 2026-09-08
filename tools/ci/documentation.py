@@ -27,7 +27,7 @@ class Links(HTMLParser):
 
 def validate():
     checked = 0
-    for name in ('README.md', 'DEVELOPMENT.md', 'docs/PLAYING.md', 'docs/CI.md', 'docs/BRANDING.md'):
+    for name in ('README.md', 'DEVELOPMENT.md', 'docs/PLAYING.md', 'docs/CI.md', 'docs/BRANDING.md', 'docs/BODY_AND_COLLISION.md'):
         path = REPO / name
         text = path.read_text(encoding='utf-8')
         parser = Links()

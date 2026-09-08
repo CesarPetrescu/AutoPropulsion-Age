@@ -114,6 +114,7 @@ jobs:
           python tools/verify_powertrain_mesh.py
           python tools/verify_engine_fit.py
           blender --background --factory-startup --python-exit-code 1 --python tools/validate_engine_geometry.py
+          blender --background --factory-startup --python-exit-code 1 --python tools/validate_body_geometry.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

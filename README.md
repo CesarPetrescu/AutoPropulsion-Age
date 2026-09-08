@@ -20,11 +20,23 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.6.0 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.6.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
 ![Opening hood and four-rotor twin-screw engine in the actual game](docs/screenshots/hood-rotor4-twin-screw.png)
+
+## Body fit and collision update
+
+0.6.1 closes the lamp/floor/door gaps, reshapes the rear doors and rockers around the tires, adds wheel-well liners and improves the tire geometry. Calipers, pads, hubs and suspension joints now follow their actual wheel mounts. The resting body height matches the authored model, and shell roll stays within the available tire clearance.
+
+Walls now collide with a set of oriented shapes fitted to the car's body, cabin, mirrors and wheels. Empty corners of the old enclosing rectangle no longer stop angled cars. Continuous movement checks stop thin-wall tunnelling; contact impulses preserve sliding motion and localize damage. Native tests cover drift → stop → forward relaunch in all three driveline layouts, plus a real wall impact and recovery.
+
+| Refitted stock body | Wheel wells and underbody |
+|---|---|
+| ![Stock sedan rendered from the current exported geometry](docs/body-review/stock-front.png) | ![Connected floor, wheel wells and serviceable underbody](docs/body-review/stock-under.png) |
+
+[All eight body renders, source files and verification scope](docs/BODY_AND_COLLISION.md). These are Blender renders of the exported game mesh; native Minecraft captures remain in the CI evidence.
 
 ## Electric and hybrid cars
 
@@ -121,7 +133,7 @@ Set-Location AutoPropulsion-Age
 .\gradlew.bat runClient
 ```
 
-Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.6.0-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
+Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.6.1-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
 
 | What you need | Where to find it |
 |---|---|
