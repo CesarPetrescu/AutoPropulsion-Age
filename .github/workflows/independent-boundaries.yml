@@ -1,0 +1,103 @@
+name: Independent energy and interlock audit
+on:
+  push:
+    branches: [qa/full-stack-2026-09-08]
+    paths: ['tools/qa/**', '.github/workflows/independent-boundaries.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  boundaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Compile actual simulation without mocks or dependency downloads
+        run: |
+          mkdir -p build/qa/classes
+          git rev-parse HEAD > build/qa/tested-commit.txt
+          find sim/src/main/java -name '*.java' -print > build/qa/sources.txt
+          javac -d build/qa/classes @build/qa/sources.txt tools/qa/IndependentAudit.java
+      - name: Independent invariants (retain nonzero exit on reproduced defects)
+        run: java -cp build/qa/classes IndependentAudit 2>&1 | tee build/qa/independent.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: independent-boundary-results
+          path: |
+            build/qa/*.log
+            build/qa/tested-commit.txt
+          retention-days: 14
+  legacy-retry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {label: damage-audio, ref: d1538b95fb8b8e2ec3edb99c4a7e4d00b52138a4, client: runClientSmokeQuick, result: alpha-smoke-result.txt}
+          - {label: electric, ref: f9a5be417f1dc7962d15e24fd531426f3290baf9, client: runClientElectricSmoke, result: electric-smoke-result.txt}
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      ALSOFT_DRIVERS: 'null'
+      APA_METADATA_REPO: ${{ github.workspace }}/metadata/gradle/minecraft-metadata
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.ref }}
+          path: old
+      - uses: actions/checkout@v4
+        with:
+          ref: 9ec1e9f468b066dc64b6641aad31e32e4a4b0d7a
+          path: metadata
+          sparse-checkout: gradle
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      - name: Build unchanged branch code with verified official metadata
+        id: build
+        working-directory: old
+        run: |
+          mkdir -p audit
+          git rev-parse HEAD > audit/tested-commit.txt
+          chmod +x gradlew
+          ./gradlew --no-daemon --max-workers=2 -I ../metadata/gradle/companion-metadata.init.gradle -PwithGameTests build 2>&1 | tee audit/build.log
+      - name: Dedicated tests
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: old
+        run: ./gradlew --no-daemon --max-workers=2 -I ../metadata/gradle/companion-metadata.init.gradle -PwithGameTests runGameTestServer 2>&1 | tee audit/gametest.log
+      - name: Install display
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: sudo apt-get update -qq && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1
+      - name: Native client
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: old
+        env:
+          CLIENT_TASK: ${{ matrix.client }}
+          RESULT_FILE: ${{ matrix.result }}
+        run: |
+          rm -f "run/$RESULT_FILE"
+          xvfb-run -a -s '-screen 0 1440x900x24' timeout 900 ./gradlew --no-daemon --max-workers=2 -I ../metadata/gradle/companion-metadata.init.gradle -PwithGameTests "$CLIENT_TASK" 2>&1 | tee audit/client.log
+          grep -q '^PASS' "run/$RESULT_FILE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: legacy-retry-${{ matrix.label }}
+          path: |
+            old/audit/
+            old/sim/build/test-results/
+            old/run/*result*
+            old/run/screenshots/
+            old/run/logs/
+          retention-days: 14

@@ -1,0 +1,106 @@
+name: Historical native client and server audit
+on:
+  push:
+    branches: [qa/full-stack-2026-09-08]
+    paths: ['.github/workflows/historical-native-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {label: damage-audio, ref: d1538b95fb8b8e2ec3edb99c4a7e4d00b52138a4, gametest: runGameTestServer}
+          - {label: vehicle-foundation, ref: 8076f765b86fcb68cc0959a249b2253f10147e8e, gametest: ':mod:runGameTestServer'}
+          - {label: playable-foundation, ref: 2995e169abe7768c8c01659a8dbf420e5725cfac, gametest: ':mod:runGameTestServer'}
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      ALSOFT_DRIVERS: 'null'
+      LP_NUM_THREADS: '2'
+      ACCEPT_MINECRAFT_EULA: 'true'
+      MC_EULA: 'true'
+      APA_METADATA_REPO: ${{ github.workspace }}/metadata/gradle/minecraft-metadata
+      AUDIT_LABEL: ${{ matrix.label }}
+      GAMETEST_TASK: ${{ matrix.gametest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.ref }}
+          path: old
+      - uses: actions/checkout@v4
+        with:
+          ref: 9ec1e9f468b066dc64b6641aad31e32e4a4b0d7a
+          path: metadata
+          sparse-checkout: gradle
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      - name: Record source and install isolated metadata override
+        working-directory: old
+        run: |
+          mkdir -p audit "$HOME/.gradle/init.d"
+          cp ../metadata/gradle/companion-metadata.init.gradle "$HOME/.gradle/init.d/qa-metadata.gradle"
+          git rev-parse HEAD > audit/tested-commit.txt
+          python3 - <<'PY'
+          import subprocess
+          names=subprocess.check_output(['git','ls-tree','--name-only','HEAD'],text=True).splitlines()
+          paths=[n for n in names if n in ('mod','src','sim','tools','scripts','art','gradle','gradlew','build.gradle','settings.gradle','gradle.properties','README.md','.github')]
+          subprocess.run(['git','archive','--format=tar.gz','-o','audit/source.tar.gz','HEAD',*paths],check=True)
+          PY
+          chmod +x gradlew
+      - name: Build unmodified branch
+        id: build
+        working-directory: old
+        run: ./gradlew --no-daemon --max-workers=2 -PwithGameTests build 2>&1 | tee audit/build.log
+      - name: Dedicated Minecraft tests using branch-specific task names
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: old
+        run: |
+          mkdir -p mod/run/gametest
+          printf 'eula=true\n' > mod/run/gametest/eula.txt
+          printf 'online-mode=false\nserver-ip=127.0.0.1\n' > mod/run/gametest/server.properties
+          timeout 600 ./gradlew --no-daemon --max-workers=2 -PwithGameTests "$GAMETEST_TASK" 2>&1 | tee audit/gametest.log
+          grep -Eq 'All [0-9]+ required tests passed' audit/gametest.log
+      - name: Install software graphical runtime
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: sudo apt-get update -qq && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libopenal1 libasound2t64
+      - name: Execute actual historical client harness
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: old
+        run: |
+          if test "$AUDIT_LABEL" = damage-audio; then
+            rm -f run/alpha-smoke-result.txt
+            xvfb-run -a -s '-screen 0 1440x900x24' timeout 1500 ./gradlew --no-daemon --max-workers=2 -PwithGameTests runClientSmoke 2>&1 | tee audit/client.log
+            grep -q '^PASS' run/alpha-smoke-result.txt
+          elif test "$AUDIT_LABEL" = vehicle-foundation; then
+            timeout 1500 python3 scripts/test-runtime.py 2>&1 | tee audit/client.log
+          else
+            timeout 1500 python3 tools/mod_tester.py 2>&1 | tee audit/client.log
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: historical-native-${{ matrix.label }}
+          path: |
+            old/audit/
+            old/build/reports/
+            old/reports/minecraft/
+            old/sim/build/test-results/
+            old/mod/build/test-results/
+            old/mod/run/**/screenshots/
+            old/mod/run/**/logs/
+            old/run/*result*
+            old/run/screenshots/
+            old/run/logs/
+          retention-days: 14
