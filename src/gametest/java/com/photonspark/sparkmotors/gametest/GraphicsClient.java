@@ -3,6 +3,7 @@ package com.photonspark.sparkmotors.gametest;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import net.minecraft.client.*;
 import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.*;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -13,6 +14,8 @@ final class GraphicsClient {
     private static final GraphicsStatus[] MODES={GraphicsStatus.FABULOUS,GraphicsStatus.FAST,GraphicsStatus.FANCY,GraphicsStatus.FABULOUS,GraphicsStatus.FAST};
     private static final String[] CASES={"startup-fabulous","menu-fast","menu-fancy","menu-fabulous","menu-fast-again"};
     private static int stage,ticks,frames;
+    private static int screenFrames;
+    private static Screen renderedScreen;
     private static boolean observing,done;
     private static void require(boolean ok,String message){if(!ok)throw new IllegalStateException(message);}
     static void beforeWorld(Minecraft mc){
@@ -22,6 +25,14 @@ final class GraphicsClient {
     }
     static void rendered(RenderLevelStageEvent event){
         if(observing&&!done&&event.getStage()==RenderLevelStageEvent.Stage.AFTER_LEVEL)frames++;
+    }
+    static void frame(Minecraft mc){
+        if(renderedScreen!=mc.screen){renderedScreen=mc.screen;screenFrames=1;}else screenFrames++;
+    }
+    private static void click(Minecraft mc,AbstractWidget button){
+        var screen=mc.screen;double x=button.getX()+button.getWidth()/2.,y=button.getY()+button.getHeight()/2.;
+        boolean accepted=screen.mouseClicked(x,y,0);screen.mouseReleased(x,y,0);
+        require(accepted,"Video widget click rejected after "+screenFrames+" rendered frames: "+button.getMessage().getString()+" at "+x+","+y+" screen="+screen.width+"x"+screen.height);
     }
     static void tick(Minecraft mc,CarEntity car){
         if(done){if(++ticks>=5)mc.stop();return;}
@@ -37,10 +48,13 @@ final class GraphicsClient {
             else mc.setScreen(null);
         }
         if(stage>0&&!observing){
+            // A slow renderer may process several client ticks before its next frame.
+            // OptionsList positions its child widgets during rendering, not Screen.init().
+            if(renderedScreen!=mc.screen||screenFrames<2)return;
             if(mc.screen instanceof UnsupportedGraphicsWarningScreen){
                 String accept=Component.translatable("options.graphics.warning.accept").getString();
                 var button=(Button)mc.screen.children().stream().filter(c->c instanceof Button b&&b.getMessage().getString().equals(accept)).findFirst().orElseThrow();
-                require(mc.screen.mouseClicked(button.getX()+button.getWidth()/2.,button.getY()+button.getHeight()/2.,0),"GPU warning accept click rejected");
+                click(mc,button);
                 return;
             }
             require(mc.screen instanceof VideoSettingsScreen,"Expected vanilla Video Settings");
@@ -48,7 +62,7 @@ final class GraphicsClient {
                 var list=(OptionsList)mc.screen.children().stream().filter(OptionsList.class::isInstance).findFirst().orElseThrow();
                 var button=list.findOption(mc.options.graphicsMode());
                 require(button!=null&&button.active,"Graphics widget unavailable");
-                require(mc.screen.mouseClicked(button.getX()+button.getWidth()/2.,button.getY()+button.getHeight()/2.,0),"Graphics widget click rejected");
+                click(mc,button);
                 return;
             }
             mc.screen.onClose();require(mc.screen==null,"Video settings did not close");

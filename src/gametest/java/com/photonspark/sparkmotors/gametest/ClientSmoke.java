@@ -245,6 +245,7 @@ public final class ClientSmoke {
         }
     }
     @SubscribeEvent public static void frame(RenderFrameEvent.Post e){
+        if(Boolean.getBoolean("sparkmotors.clientGraphics"))GraphicsClient.frame(Minecraft.getInstance());
         if(pendingScreenshot!=null){var mc=Minecraft.getInstance();String name=pendingScreenshot;pendingScreenshot=null;
             Screenshot.grab(mc.gameDirectory,name,mc.getMainRenderTarget(),text->System.out.println("ALPHA_SCREENSHOT "+name));}
     }
