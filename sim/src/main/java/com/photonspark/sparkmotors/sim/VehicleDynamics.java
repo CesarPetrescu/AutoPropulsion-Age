@@ -57,6 +57,14 @@ public final class VehicleDynamics {
         return new State(result.speed,result.rpm,result.gear,result.fuel,yaw,used,result.engine,result.wheels,result.transmission,result.load);
     }
     private static State integrate(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,boolean ignition,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double dt){
+        var power=powerStage(speed,fuel,engine,wheels,trans,ignition,in,setup,contacts,0,dt);
+        var road=chassisTorques(speed,fuel,power.engine(),wheels,power.transmission(),in,setup,grip,contacts,travel,power.torques(),new double[4],dt);
+        return new State(road.speed,power.engine.rpm(),road.gear,Math.max(0,fuel-power.fuelUsed),road.yawDelta,power.fuelUsed,power.engine,road.wheels,road.transmission,power.load);
+    }
+    public record PowerStage(EnginePhysics.State engine,TransmissionPhysics.State transmission,double[] torques,double fuelUsed,double generatorW,double load) {}
+    /** Integrate the crank and clutch once, then combine its wheel torques with electric assistance.
+     * The generator only takes spare positive crank torque. Tires are integrated by the caller. */
+    public static PowerStage powerStage(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,boolean ignition,Input in,Setup setup,boolean[] contacts,double requestedGeneratorW,double dt){
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         int gear=in.reverse?-1:1;double finalRatio=setup.finalDrive*(Assembly.TRANSMISSION.variant(setup.config)==2?1.10:1);
         if(!in.reverse)while(gear<5&&Math.abs(speed)/WHEEL_RADIUS*GEARS[gear-1]*finalRatio*60/(2*Math.PI)>Math.min(5800,setup.limiter-250))gear++;
@@ -72,7 +80,7 @@ public final class VehicleDynamics {
         double clutchTorque=0,engagement=0;
         if(drive&&!in.clutch&&trans.remaining()==0){
             engagement=clamp((engine.rpm()-950)/850,0,1);
-            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*engagement*MechanicalCapabilities.clutch(setup.mechanics)*PowertrainTopology.availability(setup.mechanics,setup.powertrain,setup.drive);
+            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*engagement*MechanicalCapabilities.clutch(setup.mechanics)*PowertrainTopology.availability(setup.mechanics,Powertrain.COMBUSTION,setup.drive);
             // Couple the crank to the driven wheels, including airborne spin. Tire forces,
             // rather than an engine-side grip clamp, determine how much reaches the road.
             double roadCoupling=0;
@@ -80,17 +88,27 @@ public final class VehicleDynamics {
             double wheelInertia=WheelDynamics.INERTIA*(setup.drive.layout()==DriveConfig.Layout.AWD?4:2)+roadCoupling*MASS*WHEEL_RADIUS*WHEEL_RADIUS;
             clutchTorque=clamp((engine.omega()-wheelOmega*ratio)/(.06+dt*(1/EngineBuild.inertia(setup.family,setup.engineParts)+ratio*ratio/wheelInertia)),-capacity,capacity);
         }
-        engine=EnginePhysics.step(engine,setup,running,in.throttle,clutchTorque,dt);
+        double beforeOmega=engine.omega();
+        double generatorLoad=running&&engine.rpm()>1100?Math.min(Math.max(0,requestedGeneratorW)/(.91*Math.max(100,beforeOmega)),Math.max(0,engine.shaftTorque()-Math.max(0,clutchTorque))):0;
+        engine=EnginePhysics.step(engine,setup,running,in.throttle,clutchTorque+generatorLoad,dt);
+        double generatorW=generatorLoad*(beforeOmega+engine.omega())*.5*.91;
         double used=running&&engine.mode()==EnginePhysics.Mode.RUNNING?(.00022+Math.max(0,engine.shaftTorque())*engine.rpm()*1e-8)*setup.family.fuelScale*dt:0;
-        var road=chassis(speed,fuel,engine,wheels,trans,in,setup,grip,contacts,travel,clutchTorque*ratio*setup.drive.efficiency()*direction,0,dt);
-        wheels=road.wheels;trans=road.transmission;
+        if(setup.powertrain.hybrid()){
+            double work=Math.max(0,engine.shaftTorque())*(beforeOmega+engine.omega())*.5;
+            double efficiency=com.photonspark.sparkmotors.sim.electric.ElectricDynamics.generatorEfficiency(setup.family,engine.rpm(),in.throttle);
+            used=running&&engine.mode()==EnginePhysics.Mode.RUNNING?(work/efficiency+4500)*dt/34_200_000:0;
+        }
+        double paid=used>0?Math.min(1,fuel/used):1;
+        double axleTorque=clutchTorque*ratio*setup.drive.efficiency()*direction*paid;
+        double fa=setup.drive.frontFraction()*PowertrainTopology.axleCapability(setup.mechanics,Powertrain.COMBUSTION,setup.drive,0),ra=(1-setup.drive.frontFraction())*PowertrainTopology.axleCapability(setup.mechanics,Powertrain.COMBUSTION,setup.drive,1),sum=fa+ra;
+        var torques=PowertrainTopology.torques(setup.mechanics,Powertrain.COMBUSTION,setup.drive,wheels,sum>0?axleTorque*fa/sum:0,sum>0?axleTorque*ra/sum:0,dt);
         double slipPower=Math.abs(clutchTorque*(engine.omega()-wheelOmega*ratio))/1000;
         double heat=clamp(trans.clutchHeat()+(slipPower/3-(trans.clutchHeat()-20)*.025)*dt,20,1000);
         trans=trans.heat(heat).clutch(Math.abs(engine.omega()-wheelOmega*ratio)*60/(2*Math.PI),clutchTorque,engagement);
         double load=clamp(Math.max(0,clutchTorque)/Math.max(1,EngineBuild.naturalTorque(engine.rpm(),setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter)),0,1);
-        return new State(road.speed,engine.rpm(),gear,Math.max(0,fuel-used),road.yawDelta,used,engine,wheels,trans,load);
+        return new PowerStage(engine,trans,torques,Math.min(fuel,used),generatorW*paid,load);
     }
-    /** Shared rigid body and tire integration for combustion, battery and series-hybrid drives. */
+    /** Shared rigid body and tire integration for combustion, battery and parallel-hybrid drives. */
     public static State chassis(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double axleTorque,double regenBrakeTorque,double dt){
         double front=setup.drive.frontFraction(),rear=1-front;
         double fa=front*PowertrainTopology.axleCapability(setup.mechanics,setup.powertrain,setup.drive,0),ra=rear*PowertrainTopology.axleCapability(setup.mechanics,setup.powertrain,setup.drive,1),sum=fa+ra;

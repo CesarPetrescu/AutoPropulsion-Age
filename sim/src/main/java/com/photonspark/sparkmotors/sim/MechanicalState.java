@@ -7,7 +7,7 @@ import static com.photonspark.sparkmotors.sim.VehicleDynamics.clamp;
 /** Common persistent authority. A bundle uses the same representation with only its own slots. */
 public record MechanicalState(int version,Map<String,PartInstance> parts,double coolant,double oil,double brakeFluid,
                               double coolantTemperature,double oilTemperature,double distance,Set<String> faultHistory) {
-    public static final int VERSION=2;
+    public static final int VERSION=3;
     public MechanicalState {
         if(version<1||version>VERSION)throw new IllegalArgumentException("Unsupported mechanical data version "+version);
         if(parts.size()>256||faultHistory.size()>128)throw new IllegalArgumentException("Mechanical data exceeds bounds");

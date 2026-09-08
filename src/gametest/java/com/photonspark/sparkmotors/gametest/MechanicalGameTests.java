@@ -22,7 +22,7 @@ public final class MechanicalGameTests {
             buffer.writeNbt(MechanicalData.write(state));int bytes=buffer.readableBytes();
             h.assertTrue(bytes<40000,"Full tracked component snapshot stays below 40 KB");
             h.assertTrue(MechanicalData.read(buffer.readNbt()).equals(state),"Full tracked snapshot round trips exactly");
-            String report="{\"scope\":\"One version 2 AWD V6 plug-in hybrid's serialized mechanical NBT; excludes other entity packets and compression\",\"parts\":"+state.parts().size()+",\"snapshotBytes\":"+bytes+",\"periodicSnapshotsPerSecond\":1}";
+            String report="{\"scope\":\"One version 3 AWD V6 plug-in hybrid's serialized mechanical NBT; excludes other entity packets and compression\",\"parts\":"+state.parts().size()+",\"snapshotBytes\":"+bytes+",\"periodicSnapshotsPerSecond\":1}";
             var out=java.nio.file.Path.of("mechanics-network-size.json");java.nio.file.Files.writeString(out,report);System.out.println("MECHANICS_NETWORK_SIZE "+report);h.succeed();
         }catch(java.io.IOException ex){throw new RuntimeException(ex);}finally{buffer.release();}
     }

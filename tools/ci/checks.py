@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=87):
+def junit(directory, minimum=97):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,7 +36,7 @@ def junit(directory, minimum=87):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=46):
+def server(log, minimum=47):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -120,7 +120,8 @@ def inspect_jar(path):
                      'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
                      'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
                      'com/photonspark/sparkmotors/client/ElectricScreen.class',
-                     'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/sounds.json'):
+                       'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
+                       'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz', 'assets/sparkmotors/models/entity/lod-manifest.json', 'assets/sparkmotors/sounds.json'):
             require(name in names, f'Missing runtime entry: {name}')
         metadata = tomllib.loads(archive.read('META-INF/neoforge.mods.toml').decode())
         mod = next(m for m in metadata['mods'] if m['modId'] == 'sparkmotors')

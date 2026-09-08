@@ -22,9 +22,17 @@ public final class ElectricGeometry {
         if(!engineOnly){
             double length=type.hybrid()?(type.plugIn()?1.45:.5):2.1;
             double center=-.1; // All packs stay between the axles; the compact HEV pack must not intersect the rear drive unit.
-            box(out,poses,-.66,.25,center-length/2,.66,.39,center+length/2,DARK,light);
-            box(out,poses,-.68,.27,center-length/2-.025,.68,.30,center+length/2+.025,ALLOY,light);
-            for(int i=0;i<6;i++)box(out,poses,-.62+i*.21,.30,center-length/2+.03,-.60+i*.21,.40,center+length/2-.03,ALLOY,light);
+            // Hybrid modules leave a real center tunnel for gearbox, transfer case and shaft.
+            if(type.hybrid())for(int side:new int[]{-1,1}){
+                double left=side<0?-.66:.23,right=side<0?-.23:.66;
+                box(out,poses,left,.25,center-length/2,right,.39,center+length/2,DARK,light);
+                box(out,poses,left-.01,.27,center-length/2-.025,right+.01,.30,center+length/2+.025,ALLOY,light);
+                for(int i=0;i<3;i++)box(out,poses,left+.04+i*.15,.30,center-length/2+.03,left+.06+i*.15,.40,center+length/2-.03,ALLOY,light);
+            }else{
+                box(out,poses,-.66,.25,center-length/2,.66,.39,center+length/2,DARK,light);
+                box(out,poses,-.68,.27,center-length/2-.025,.68,.30,center+length/2+.025,ALLOY,light);
+                for(int i=0;i<6;i++)box(out,poses,-.62+i*.21,.30,center-length/2+.03,-.60+i*.21,.40,center+length/2-.03,ALLOY,light);
+            }
             box(out,poses,.963,.72,-1.53,.987,.88,-1.34,DARK,light);
             box(out,poses,.988,.76,-1.49,1.005,.84,-1.38,car.plugged()?TEAL:ALLOY,light);
         }

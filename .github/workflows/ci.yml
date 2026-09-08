@@ -60,7 +60,7 @@ jobs:
       - name: Build and execute JUnit and native GameTests
         run: |
           mkdir -p build/ci
-          ./gradlew --no-daemon --max-workers=2 -PwithGameTests build :sim:test --rerun runGameTestServer :sim:mechanicsBenchmark 2>&1 | tee build/ci/server.log
+          ./gradlew --no-daemon --max-workers=2 -PwithGameTests build :sim:test --rerun runGameTestServer :sim:mechanicsBenchmark :sim:powertrainBenchmark 2>&1 | tee build/ci/server.log
           python tools/ci/checks.py junit --report build/ci/junit.json
           python tools/ci/checks.py server --log build/ci/server.log --report build/ci/server.json
       - name: Run independent boundary and energy audit
@@ -115,6 +115,8 @@ jobs:
         run: python tools/ci/documentation.py
       - name: Regenerate resources and decode every mechanical sound
         run: python tools/ci/resources.py
+      - name: Validate world detail meshes and preserved body topology
+        run: python tools/verify_car_lods.py
       - name: Validate all hardware geometry, envelopes and hood intersections
         run: |
           python tools/verify_powertrain_mesh.py

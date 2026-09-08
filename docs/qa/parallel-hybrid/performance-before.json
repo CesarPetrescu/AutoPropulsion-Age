@@ -1,0 +1,12 @@
+{"scope":"20 cars, 4 physics substeps; excludes Minecraft world/render/network","java":"21.0.11","results":[
+{"type":"COMBUSTION","driving":false,"ticks":600,"meanMs":0.9152,"p95Ms":1.8430,"bytesPerCarTick":143453,"checksum":266636.503},
+{"type":"COMBUSTION","driving":true,"ticks":600,"meanMs":0.8845,"p95Ms":1.1670,"bytesPerCarTick":144009,"checksum":539917.127},
+{"type":"HYBRID","driving":false,"ticks":600,"meanMs":1.4268,"p95Ms":1.7391,"bytesPerCarTick":264829,"checksum":240000.000},
+{"type":"HYBRID","driving":true,"ticks":600,"meanMs":4.2304,"p95Ms":5.4474,"bytesPerCarTick":534989,"checksum":459850.279},
+{"type":"PLUG_IN_HYBRID","driving":false,"ticks":600,"meanMs":1.3178,"p95Ms":1.3905,"bytesPerCarTick":264816,"checksum":240000.000},
+{"type":"PLUG_IN_HYBRID","driving":true,"ticks":600,"meanMs":4.0972,"p95Ms":5.0679,"bytesPerCarTick":529638,"checksum":491182.699},
+{"type":"ELECTRIC_400","driving":false,"ticks":600,"meanMs":0.9550,"p95Ms":1.0179,"bytesPerCarTick":170723,"checksum":240000.000},
+{"type":"ELECTRIC_400","driving":true,"ticks":600,"meanMs":3.6417,"p95Ms":4.6705,"bytesPerCarTick":435494,"checksum":507773.830},
+{"type":"ELECTRIC_800","driving":false,"ticks":600,"meanMs":0.9528,"p95Ms":1.0456,"bytesPerCarTick":170672,"checksum":240000.000},
+{"type":"ELECTRIC_800","driving":true,"ticks":600,"meanMs":3.6211,"p95Ms":4.5746,"bytesPerCarTick":435494,"checksum":533609.807}
+]}

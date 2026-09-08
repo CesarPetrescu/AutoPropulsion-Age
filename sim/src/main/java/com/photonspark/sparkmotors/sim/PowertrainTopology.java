@@ -19,9 +19,9 @@ public final class PowertrainTopology {
             if(k.endsWith("_rear"))return rear(d);
             return true;
         }
-        if(k.equals("driveline.clutch")||k.equals("driveline.gearbox"))return !type.electric();
-        if(k.equals("driveline.shaft"))return !type.electric()&&rear(d);
-        if(k.equals("driveline.transfer"))return !type.electric()&&d.layout()==DriveConfig.Layout.AWD;
+        if(k.equals("driveline.clutch")||k.equals("driveline.gearbox"))return !type.electric()||type.hybrid();
+        if(k.equals("driveline.shaft"))return (!type.electric()||type.hybrid())&&rear(d);
+        if(k.equals("driveline.transfer"))return (!type.electric()||type.hybrid())&&d.layout()==DriveConfig.Layout.AWD;
         if(k.equals("driveline.differential"))return rear(d);
         if(k.equals("driveline.front_differential"))return front(d);
         if(k.startsWith("driveline.cv_"))return k.charAt(13)=='f'?front(d):rear(d);
@@ -33,7 +33,17 @@ public final class PowertrainTopology {
     /** V1 identities and condition stay intact. New child IDs derive from their old parent, once only.
      * Missing V2 slots are never filled by migration, reload or a configuration toggle. */
     public static MechanicalState migrate(MechanicalState m,Powertrain type,DriveConfig d,EngineFamily family,int config,int hardware){
-        if(m.version()>=2)return m;
+        if(m.version()>=MechanicalState.VERSION)return m;
+        if(m.version()==2){
+            var upgraded=new LinkedHashMap<>(m.parts());
+            // Series hybrids had no mechanical output path. Derive its new mounts once from
+            // the installed generator, preserving its condition; a missing donor stays missing.
+            if(type.hybrid()&&m.get("traction.generator")!=null)for(String key:List.of("driveline.clutch","driveline.gearbox","driveline.shaft","driveline.transfer")){
+                var slot=ComponentSlot.byKey(key);
+                if(applicable(slot,type,d,family)&&!upgraded.containsKey(key))upgraded.put(key,derived(m.get("traction.generator"),slot));
+            }
+            return current(m.update(upgraded,m.coolant(),m.oil(),m.brakeFluid(),m.coolantTemperature(),m.oilTemperature(),m.distance(),m.faultHistory()));
+        }
         var map=new LinkedHashMap<>(m.parts());
         for(var s:slots(type,d,family))if(s.detailed()&&s.installedBy(config,hardware)&&!map.containsKey(s.key())){
             PartInstance donor=m.get(InternalMechanics.internal(s.key())?"engine.internals":s.key().startsWith("driveline.cv_")?"driveline.shaft":s.key().contains("differential")?"driveline.differential":"driveline.gearbox");

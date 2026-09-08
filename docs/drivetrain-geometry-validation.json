@@ -1,0 +1,2216 @@
+{
+  "scope": "Exact exported service geometry: every configured torque path, body clearance and family binding.\nIntended shaft/housing joints are not tested against their mating parts.\n",
+  "checks": [
+    {
+      "kind": "family_service_geometry",
+      "family": 0,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 1,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 2,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 3,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 4,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 5,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "family_service_geometry",
+      "family": 6,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 1,
+      "layout": 1,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|5|5|driveline.shaft",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 1,
+      "layout": 2,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|5|6|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 1,
+      "layout": 4,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|5|4|driveline.transfer",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|5|5|driveline.shaft",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|5|6|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 1,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 2,
+      "layout": 1,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|6|5|traction.reduction_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 1,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 2,
+      "layout": 2,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|6|6|traction.reduction_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 2,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 2,
+      "layout": 4,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|6|traction.reduction_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|5|traction.reduction_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 2,
+      "layout": 4,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 4,
+      "layout": 1,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|5|5|driveline.shaft",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|6|5|traction.reduction_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|7|driveline.clutch",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|5|driveline.shaft",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.differential",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rl",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rr",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.reduction_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|7|traction.contactor",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|7|driveline.clutch",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|5|5|driveline.shaft",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.differential",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rl",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|7|5|driveline.cv_rr",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.reduction_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|7|traction.contactor",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 1,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 1,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 1,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 4,
+      "layout": 2,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|5|6|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|6|6|traction.reduction_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|7|driveline.clutch",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|6|driveline.gearbox",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.front_differential",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fl",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fr",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.reduction_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|7|traction.contactor",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|7|driveline.clutch",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|5|6|driveline.gearbox",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.front_differential",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fl",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|7|6|driveline.cv_fr",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.reduction_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|7|traction.contactor",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 2,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 2,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 2,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "configured_path",
+      "type": 4,
+      "layout": 4,
+      "missing": [],
+      "unexpected": [],
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|5|7|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|5|7|driveline.clutch",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|5|4|driveline.transfer",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|5|5|driveline.shaft",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|5|6|driveline.gearbox",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|6|driveline.front_differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|6|traction.reduction_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|5|driveline.differential",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rl",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rr",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|5|traction.reduction_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|7|traction.contactor",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|6|7|traction.dc_dc",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "outer_body_clearance",
+      "type": 4,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|7|driveline.clutch",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|4|driveline.transfer",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|5|driveline.shaft",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|6|driveline.gearbox",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.front_differential",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fl",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fr",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.reduction_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.differential",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rl",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rr",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.reduction_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|7|traction.contactor",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "side": -0.67,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|7|driveline.gearbox",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|7|driveline.clutch",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|4|driveline.transfer",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|5|driveline.shaft",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|5|6|driveline.gearbox",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.front_differential",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fl",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|6|driveline.cv_fr",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.reduction_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.differential",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rl",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|7|5|driveline.cv_rr",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.reduction_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|7|traction.contactor",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|6|7|traction.dc_dc",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_pack_clearance",
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "side": 0.22,
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 0,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 1,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 2,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 3,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 4,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 5,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 4,
+      "part": "pt|6|6|traction.motor_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 4,
+      "part": "pt|6|6|traction.inverter_front",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 4,
+      "part": "pt|6|5|traction.motor_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 4,
+      "part": "pt|6|5|traction.inverter_rear",
+      "intersections": 0,
+      "passed": true
+    },
+    {
+      "kind": "hybrid_core_clearance",
+      "family": 6,
+      "layout": 4,
+      "part": "pt|4|7|traction.generator",
+      "intersections": 0,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

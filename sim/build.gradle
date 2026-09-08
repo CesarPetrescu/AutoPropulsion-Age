@@ -19,3 +19,9 @@ tasks.register('mechanicsBenchmark', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.photonspark.sparkmotors.sim.MechanicsBenchmark'
 }
+
+tasks.register('powertrainBenchmark', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.photonspark.sparkmotors.sim.PowertrainBenchmark'
+    maxHeapSize = '1g'
+}

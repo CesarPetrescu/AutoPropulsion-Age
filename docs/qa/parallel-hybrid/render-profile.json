@@ -1,0 +1,16 @@
+{
+  "before": {
+    "scope": "CPU world car vertex submission, excludes GPU and other rendering",
+    "samples": 265,
+    "meanMs": 11.8448,
+    "p95Ms": 17.8604,
+    "meanVisibleTriangles": 55004
+  },
+  "after": {
+    "scope": "CPU world car vertex submission, excludes GPU and other rendering",
+    "samples": 269,
+    "meanMs": 5.899,
+    "p95Ms": 9.0333,
+    "meanVisibleTriangles": 34274
+  }
+}

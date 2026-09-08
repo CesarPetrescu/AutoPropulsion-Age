@@ -34,11 +34,11 @@
 
 Piston engines have individual piston/ring/bearing/valve assemblies; rotary engines have rotor housings, seals, bearings and an eccentric shaft. Their condition changes compression, starting, torque and mechanical noise. Removing and refitting an internal kit carries its child parts, including missing mounts and worn state.
 
-Regen follows the electrical drive path and wheel contact independently of brake pads. Motor/inverter heat belongs to the removable part and feeds the cooling circuit. The HV harness and contactor gate READY and charging. These remain calibrated component simulations; hybrids use a series generator layout.
+Regen follows the electrical drive path and wheel contact independently of brake pads. Motor/inverter heat belongs to the removable part and feeds the cooling circuit. The HV harness and contactor gate READY and charging. These remain calibrated component simulations; hybrids now combine mechanical engine drive, electric assistance and surplus charging. See [hybrid behavior and measured performance](docs/HYBRID_AND_PERFORMANCE.md).
 
 | Combustion AWD | Electric AWD | Series hybrid AWD |
 |---|---|---|
-| ![AWD gearbox, transfer case, differentials and CV shafts](docs/drivetrain-review/combustion-awd.png) | ![Independent front and rear electric drive units](docs/drivetrain-review/electric-awd.png) | ![Series generator engine and both electric axles](docs/drivetrain-review/series-hybrid-awd.png) |
+| ![AWD gearbox, transfer case, differentials and CV shafts](docs/drivetrain-review/combustion-awd.png) | ![Independent front and rear electric drive units](docs/drivetrain-review/electric-awd.png) | ![Parallel hybrid engine drive and electric axles](docs/drivetrain-review/parallel-hybrid-awd.png) |
 
 [All nine drivetrain renders, service instructions and migration details](docs/CONFIGURED_POWERTRAINS.md).
 
@@ -56,9 +56,9 @@ Walls now collide with a set of oriented shapes fitted to the car's body, cabin,
 
 ## Electric and hybrid cars
 
-Version 0.6.0 integrates **400 V and 800 V EVs**, a **series hybrid** and a **plug-in series hybrid** with the same individual tire, brake, suspension and RWD/FWD/AWD systems as combustion cars. Each traction motor has its own torque/power rating, constant-torque and constant-power regions, thermal limits and regenerative braking. Seven combustion families use separate explicit torque maps, with installed hardware and component condition applied afterward.
+Version 0.8.0 integrates **400 V and 800 V EVs**, a **parallel hybrid** and a **plug-in parallel hybrid** with the same individual tire, brake, suspension and RWD/FWD/AWD systems as combustion cars. Each traction motor has its own torque/power rating, constant-torque and constant-power regions, thermal limits and regenerative braking. Seven combustion families use separate explicit torque maps, with installed hardware and component condition applied afterward.
 
-In Creative, use `electric_400_crate`, `electric_800_crate`, `hybrid_crate` or `plug_in_hybrid_crate` from the mod tab. Press **R** for READY, **W** to drive and **S** for service brakes/regen. **G → Electric** opens motor curves, battery measurements, generator RPM, charge targets and pack replacement. EVs and series hybrids use fixed reduction and have no driver-operated clutch.
+In Creative, use `electric_400_crate`, `electric_800_crate`, `hybrid_crate` or `plug_in_hybrid_crate` from the mod tab. Press **R** for READY, **W** to drive and **S** for service brakes/regen. **G → Electric** opens motor curves, battery measurements, generator RPM, charge targets and pack replacement. EV motors use fixed reduction. Hybrids also have a five-speed mechanical engine path with clutch slip. Park and switch READY off, then use **Hybrid mode** to select Auto, Electric Only or Charge Sustain. Auto preserves a propulsion reserve; at high speed the engine drives the wheels and spare output can charge the battery.
 
 Survival packs start empty. External survival charging requires the optional ElectricalAge companion; a non-plug-in hybrid can charge from its fuel-powered generator. Creative chargers have an explicitly labelled test supply. [Vehicles, charging, hybrid modes and limitations →](docs/ELECTRIFICATION.md)
 

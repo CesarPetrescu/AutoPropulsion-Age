@@ -1,4 +1,4 @@
-# Configured powertrains — 0.7.0
+# Configured powertrains — 0.8.0
 
 The same immutable `MechanicalState` drives torque routing, compression, heat, service inventory and renderer visibility. The car has 136 possible service paths; only the installed powertrain/family/layout paths are active. Catalog positions and old item IDs remain stable. This is a component simulation with calibrated values, not an OEM mechanical model.
 
@@ -9,7 +9,7 @@ Use **G → Drive**. Park, switch off, exit and raise the service jack. Hover a 
 | Path | RWD | FWD | AWD |
 |---|---|---|---|
 | Combustion | Clutch, gearbox, propeller shaft, rear differential and rear CVs | Clutch, front transaxle/final drive and front CVs | Gearbox, transfer, propeller shaft, both differentials and all CVs |
-| Electric / series hybrid | Rear motor, inverter, reduction, differential and CVs | Front motor, inverter, reduction, differential and CVs | Separate drive units on both axles; same total rated vehicle torque/power |
+| Electric motor path (EV and hybrid) | Rear motor, inverter, reduction, differential and CVs | Front motor, inverter, reduction, differential and CVs | Separate drive units on both axles; same total rated vehicle torque/power |
 
 Open differentials lose axle drive with a broken output. Limited slip has bounded bias; locked diffs can retain the other connected output. Missing front EV components do not turn off the rear drive unit. Failed shared HV wiring/contactors interrupt both. The differential mode remains a vehicle-wide workshop setting. This does not model every planetary gear or individual differential tooth.
 
@@ -31,11 +31,11 @@ Regen requires a working motor/inverter/output path, wheel contact, rotation and
 
 Motor copper/conversion losses heat the individual motor and inverter; cooling uses coolant quantity and pump capability, with heat transferred into the radiator circuit. Thermal limits reduce that unit's output. The 12 V converter can recharge the accessory battery only when the traction system paid for available accessory power. Missing contactor/HV harness blocks READY and charging before the charger debits energy. Coolant, fuel, batteries and used parts are not refilled by storage or reinstallation.
 
-The seven generator engines retain their individual crank torque curves. The series controller uses family-dependent governed RPM and bounded efficiency: I4 3,200; V6 2,600; flat-four 3,000; rotary 4,000–4,450 RPM targets. These are fictional calibration targets, not guaranteed measured operating RPM. Hybrids remain series hybrids: the engine supplies electricity, not a mechanical wheel connection. No parallel/power-split architecture is claimed.
+Hybrids combine the combustion and electric paths in the table. The engine drives through a serviceable clutch, gearbox and the selected FWD/RWD/AWD hardware. Electric axles assist at low speed and recover braking energy; generator load takes spare crank torque to recharge. Each engine retains its own torque curve, inertia and clutch slip. Parked charging uses family-dependent governed RPM targets. See [hybrid control and performance](HYBRID_AND_PERFORMANCE.md) for modes, reserve bands and limits.
 
 ## Migration and evidence
 
-Network protocol **8**, vehicle save schema **7**, mechanical item schema **2**. Matching client/server builds are required. Version 1 components migrate once: old identities remain intact and new children receive deterministic identities with inherited condition. Removed version 2 slots are never filled by migration, item placement or reload. Inactive old parts remain recoverable spares. Vehicle conversion recipes manufacture only newly introduced topology from their ingredients and preserve shared missing/used mounts.
+Network protocol **9**, vehicle save schema **7**, mechanical item schema **3**. Matching client/server builds are required. Version 1 components migrate once: old identities remain intact and new children receive deterministic identities with inherited condition. The v2-to-v3 hybrid migration adds only the previously absent engine-drive clutch, gearbox, shaft and transfer mounts, derived from the installed generator with its wear, damage and faults. Existing parts remain unchanged; a missing generator supplies no new mounts. Missing v3 slots stay missing on subsequent migration, item placement or reload. Inactive old parts remain recoverable spares. Vehicle conversion recipes manufacture only newly introduced topology from their ingredients and preserve shared missing/used mounts.
 
 Required CI runs the simulation suite, actual dedicated GameTests, native UI/matrix/handling/electric/mechanics clients, two-client trading, ElectricalAge compatibility, the independent energy audit and regeneration/geometry checks. Downloaded releases include their fresh logs, screenshots, provenance and checksums. See [CI](CI.md) for the gate and [Windows development](../DEVELOPMENT.md) for commands. The QA branch's older failures are historical evidence, not a claim that the current build failed those same tests.
 
@@ -45,8 +45,8 @@ The geometry check uses exact exported triangles for all configured paths, outer
 
 These views show the exported runtime drive-unit geometry and the principal battery envelope, with the stock body. They are Blender inspections, not gameplay screenshots. The editable derived scene is [drivetrain_workshop.blend](../assets/drivetrain_workshop.blend). The original modular kit is preserved.
 
-| Layout | Combustion | Battery electric | Plug-in series hybrid |
+| Layout | Combustion | Battery electric | Plug-in parallel hybrid |
 |---|---|---|---|
-| RWD | ![RWD combustion](drivetrain-review/combustion-rwd.png) | ![RWD electric](drivetrain-review/electric-rwd.png) | ![RWD hybrid](drivetrain-review/series-hybrid-rwd.png) |
-| FWD | ![FWD combustion](drivetrain-review/combustion-fwd.png) | ![FWD electric](drivetrain-review/electric-fwd.png) | ![FWD hybrid](drivetrain-review/series-hybrid-fwd.png) |
-| AWD | ![AWD combustion](drivetrain-review/combustion-awd.png) | ![AWD electric](drivetrain-review/electric-awd.png) | ![AWD hybrid](drivetrain-review/series-hybrid-awd.png) |
+| RWD | ![RWD combustion](drivetrain-review/combustion-rwd.png) | ![RWD electric](drivetrain-review/electric-rwd.png) | ![RWD hybrid](drivetrain-review/parallel-hybrid-rwd.png) |
+| FWD | ![FWD combustion](drivetrain-review/combustion-fwd.png) | ![FWD electric](drivetrain-review/electric-fwd.png) | ![FWD hybrid](drivetrain-review/parallel-hybrid-fwd.png) |
+| AWD | ![AWD combustion](drivetrain-review/combustion-awd.png) | ![AWD electric](drivetrain-review/electric-awd.png) | ![AWD hybrid](drivetrain-review/parallel-hybrid-awd.png) |

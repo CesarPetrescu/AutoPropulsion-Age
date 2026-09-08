@@ -225,7 +225,7 @@ public final class CarEntity extends Entity {
         boolean braking=(inputKeys&2)!=0;flag(32,braking);flag(64,(inputKeys&4)!=0);flag(128,surfaceGrip()<.9);
         var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse,(inputKeys&16)!=0,(inputKeys&4)!=0);
         var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget(),mechanics(),driveConfig()).withPowertrain(powertrain());
-        double[] contact=wheelContacts();
+        double[] contact=null;
         int contactCount=0;
         float currentFuel=fuel();
         double tickImpact=0;VehicleCollision.Hit impactContact=null;
@@ -433,7 +433,7 @@ public final class CarEntity extends Entity {
             }return;
         }
         if(action==CarPackets.REV_TEST){
-            if(powertrain().electric()){message(player,"Electric drive has no clutch rev test. Use Electric diagnostics for motor and generator readings.");return;}
+            if(powertrain().electric()&&!powertrain().hybrid()){message(player,"Electric drive has no clutch rev test. Use Electric diagnostics for motor and generator readings.");return;}
             if(engineRunning()&&horizontalSpeed()<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
             else message(player,"Park, open the hood and start the engine before a rev test.");return;
         }

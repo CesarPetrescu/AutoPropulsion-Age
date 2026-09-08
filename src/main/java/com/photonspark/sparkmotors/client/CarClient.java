@@ -85,9 +85,12 @@ public final class CarClient {
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h   %s   %04.0f RPM",r.speed(),car.gear()<0?"R":"G"+car.gear(),r.rpm()),x+9,y+8,0xFFFFFFFF,false);
         if(car.powertrain().electric()){
             g.fill(x+1,y+2,x+w-1,y+(performance?61:46),0xFF101A23);
-            g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h  %s  %+.1f kW",car.horizontalSpeed()*3.6,car.reverseSelected()?"R":"D",car.packKw()),x+9,y+8,0xFFFFFFFF,false);
-            g.drawString(mc.font,String.format(java.util.Locale.ROOT,"SOC %.1f%%  %.0f C  %s",car.stateOfCharge()*100,car.packTemperature(),car.plugged()?"PLUGGED":car.ignition()?"READY":"OFF"),x+9,y+21,car.stateOfCharge()<.1?0xFFFFA45C:0xFF97CDBE,false);
-            if(performance)g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%.0f motor RPM  Regen %.1f kW",car.motorRpm(),car.regenKw()),x+9,y+35,0xFF9EC9D4,false);
+            String gear=car.reverseSelected()?"R":car.powertrain().hybrid()&&car.engineRunning()?"G"+car.gear():"D";
+            g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h  %s  %+.1f kW",car.horizontalSpeed()*3.6,gear,car.packKw()),x+9,y+8,0xFFFFFFFF,false);
+            String status=car.plugged()?"PLUGGED":!car.ignition()?"OFF":car.powertrain().hybrid()?(car.engineRunning()?"ENGINE":"ELECTRIC"):"READY";
+            String supply=car.powertrain().hybrid()?String.format(java.util.Locale.ROOT,"SOC %.1f%%  Fuel %.1f L  %s",car.stateOfCharge()*100,car.fuel(),status):String.format(java.util.Locale.ROOT,"SOC %.1f%%  %.0f C  %s",car.stateOfCharge()*100,car.packTemperature(),status);
+            g.drawString(mc.font,mc.font.plainSubstrByWidth(supply,w-18),x+9,y+21,car.stateOfCharge()<.1?0xFFFFA45C:0xFF97CDBE,false);
+            if(performance)g.drawString(mc.font,car.powertrain().hybrid()?String.format(java.util.Locale.ROOT,"Engine %.0f RPM  Gen %.1f kW",car.rpm(),car.generatorKw()):String.format(java.util.Locale.ROOT,"%.0f motor RPM  Regen %.1f kW",car.motorRpm(),car.regenKw()),x+9,y+35,0xFF9EC9D4,false);
             g.drawString(mc.font,"R ready  S brake/regen  Space handbrake",x+9,y+(performance?49:34),0xFF9FB1BE,false);
             g.pose().popPose();return;
         }

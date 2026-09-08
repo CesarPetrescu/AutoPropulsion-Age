@@ -39,7 +39,7 @@ with gzip.open(repo/'src/main/resources/assets/sparkmotors/models/entity/sedan.m
 bindings=json.loads((repo/'src/main/resources/assets/sparkmotors/models/entity/mechanical-models.json').read_text())
 for type_,layout in [(t,l) for t in [1,2,4] for l in [1,2,4]]:
     grade=1
-    label={1:'combustion',2:'electric',4:'series-hybrid'}[type_]+'-'+{1:'rwd',2:'fwd',4:'awd'}[layout]
+    label={1:'combustion',2:'electric',4:'parallel-hybrid'}[type_]+'-'+{1:'rwd',2:'fwd',4:'awd'}[layout]
     s=bpy.data.scenes.new(prefix+label);s.render.engine='BLENDER_EEVEE';s.render.resolution_x=1440;s.render.resolution_y=1000;s.render.resolution_percentage=100
     s.render.image_settings.file_format='PNG';s.view_settings.view_transform='AgX'
     for name,cat,group,variant,kind,vs in chunks:
@@ -59,9 +59,10 @@ for type_,layout in [(t,l) for t in [1,2,4] for l in [1,2,4]]:
     if type_!=1:
         length=2.1 if type_==2 else 1.45;center=-.1
         # Exact primary pack envelope from ElectricGeometry.render; front/rear drive units are exported meshes.
-        verts=[(x,-z,y) for x,y,z in [(-.66,.25,center-length/2),(.66,.25,center-length/2),(.66,.39,center-length/2),(-.66,.39,center-length/2),(-.66,.25,center+length/2),(.66,.25,center+length/2),(.66,.39,center+length/2),(-.66,.39,center+length/2)]]
-        mesh=bpy.data.meshes.new(prefix+'pack');mesh.from_pydata(verts,[],[(0,3,2,1),(4,5,6,7),(0,4,7,3),(1,2,6,5),(3,7,6,2),(0,1,5,4)]);mesh.materials.append(material(0xFF303A45,0))
-        ob=bpy.data.objects.new(prefix+'pack',mesh);s.collection.objects.link(ob)
+        for left,right in ([(-.66,-.23),(.23,.66)] if type_==4 else [(-.66,.66)]):
+            verts=[(x,-z,y) for x,y,z in [(left,.25,center-length/2),(right,.25,center-length/2),(right,.39,center-length/2),(left,.39,center-length/2),(left,.25,center+length/2),(right,.25,center+length/2),(right,.39,center+length/2),(left,.39,center+length/2)]]
+            mesh=bpy.data.meshes.new(prefix+'pack');mesh.from_pydata(verts,[],[(0,3,2,1),(4,5,6,7),(0,4,7,3),(1,2,6,5),(3,7,6,2),(0,1,5,4)]);mesh.materials.append(material(0xFF303A45,0))
+            ob=bpy.data.objects.new(prefix+'pack',mesh);s.collection.objects.link(ob)
     w=bpy.data.worlds.new(prefix+'world');w.use_nodes=True;w.node_tree.nodes['Background'].inputs[0].default_value=(.13,.16,.21,1);w.node_tree.nodes['Background'].inputs[1].default_value=.5;s.world=w
     for loc,power in [((2,-4,5),1500),((-4,-1,3),1100),((1,4,3),1500),((0,0,-3),600)]:
         ld=bpy.data.lights.new(prefix+'light','AREA');ld.energy=power;ld.size=5

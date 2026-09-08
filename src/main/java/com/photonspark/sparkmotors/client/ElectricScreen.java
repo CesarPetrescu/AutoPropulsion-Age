@@ -34,7 +34,7 @@ public final class ElectricScreen extends WorkshopScreen {
         button("Replace pack",x+28+2*bw,y+326,bw,()->send(CarPackets.REPLACE_BATTERY,0),()->parked()&&car.powertrain().electric()&&!car.plugged()&&car.hoodOpen()&&car.hoodProgress>=.95,"Carry a matching pack. Charge, temperature and wear stay with each pack.");
         button("80% limit",x+16,y+356,bw,()->send(CarPackets.CHARGE_TARGET,80),()->parked()&&car.powertrain().plugIn(),"Leave room for regenerative braking.");
         button("100% limit",x+22+bw,y+356,bw,()->send(CarPackets.CHARGE_TARGET,100),()->parked()&&car.powertrain().plugIn(),"Stop charging at full capacity; regen fades as the pack fills.");
-        button("Hybrid mode",x+28+2*bw,y+356,bw,()->send(CarPackets.ELECTRIC_MODE,(car.electricMode().ordinal()+1)%3),()->parked()&&car.powertrain().hybrid(),"AUTO / ELECTRIC ONLY / CHARGE SUSTAIN. The engine powers a generator.");
+        button("Hybrid mode",x+28+2*bw,y+356,bw,()->send(CarPackets.ELECTRIC_MODE,(car.electricMode().ordinal()+1)%3),()->parked()&&car.powertrain().hybrid(),"AUTO / ELECTRIC ONLY / CHARGE SUSTAIN. AUTO uses engine drive, electric assist and surplus charging. Electric Only preserves 4% reserve.");
     }
     @Override public void tick(){if(car.isRemoved()||minecraft.player==null||car.distanceToSqr(minecraft.player)>160){onClose();return;}enabled.forEach((b,f)->b.active=f.getAsBoolean());}
     @Override protected void renderWorkshop(GuiGraphics g,int mx,int my,float partial){
@@ -63,10 +63,14 @@ public final class ElectricScreen extends WorkshopScreen {
                 g.drawString(font,font.plainSubstrByWidth(name+": "+reading,bw),cx,y+274+axle*15,MUTED,false);
             }
             g.drawString(font,PowertrainTopology.liveHv(car.mechanics())?"HV control circuit: available":"HV control circuit: open",cx,y+305,MUTED,false);
-            String[] labels={"Drive state","Charge / target","Pack power (+ draw)","Voltage / current","Pack / condition","Motor / inverter","Motor speed","Regen / generator","Generator crank","Charging","Hybrid control"};
+            String[] labels={"Drive state","Charge / target","Pack power (+ draw)","Voltage / current","Pack / condition","Motor / inverter","Motor speed","Regen / generator","Engine crank","Charging","Hybrid control"};
             String[] values={car.plugged()?"PLUGGED":car.ignition()?"READY":"OFF",String.format(Locale.ROOT,"%.1f%% / %d%%",car.stateOfCharge()*100,car.chargeTarget()),String.format(Locale.ROOT,"%+.1f kW",car.packKw()),String.format(Locale.ROOT,"%.0f V / %.1f A",car.packVoltage(),car.packCurrent()),String.format(Locale.ROOT,"%.0f C / %.0f%%",car.packTemperature(),car.packHealth()*100),String.format(Locale.ROOT,"%.0f C / %.0f C",car.motorTemperature(),car.inverterTemperature()),String.format(Locale.ROOT,"%.0f RPM",car.motorRpm()),String.format(Locale.ROOT,"%.1f / %.1f kW",car.regenKw(),car.generatorKw()),car.powertrain().hybrid()?String.format(Locale.ROOT,"%.0f RPM",car.rpm()):"None",car.plugged()?String.format(Locale.ROOT,"%.2f kW input",car.chargeKw()):"Unplugged",car.powertrain().hybrid()?car.electricMode().name().replace('_',' '):"Battery electric"};
             g.drawString(font,"ASSISTED LIVE TELEMETRY",col,y+72,ACCENT,false);
             for(int i=0;i<labels.length;i++){int by=y+96+i*19;g.drawString(font,labels[i],col,by,MUTED,false);g.drawString(font,values[i],col+cw-font.width(values[i]),by,INK,false);}
+            if(car.powertrain().hybrid()){
+                String status=String.format(Locale.ROOT,"Reserve %.0f%% | Clutch %+.0f Nm",com.photonspark.sparkmotors.sim.electric.HybridControl.reserve(car.powertrain(),car.electricMode())*100,car.clutchTorque());
+                g.drawString(font,font.plainSubstrByWidth(status,cw),col,y+305,ACCENT,false);
+            }
         }
         g.drawString(font,"Cable: charger first, then car. Sneak-click charger to unplug. S: brake / regen.",x+16,y+399,MUTED,false);
         super.renderWorkshop(g,mx,my,partial);

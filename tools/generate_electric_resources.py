@@ -21,7 +21,7 @@ types=[('hybrid','HEV',220,1.8),('plug_in_hybrid','PHEV',400,18),('electric_400'
 for index,(key,label,voltage,kwh) in enumerate(types):
     for suffix in ('crate','battery_pack'):
         name=key+'_'+suffix
-        title={'hybrid':'Series Hybrid','plug_in_hybrid':'Plug-in Series Hybrid','electric_400':'400 V Electric','electric_800':'800 V Electric'}[key]
+        title={'hybrid':'Parallel Hybrid','plug_in_hybrid':'Plug-in Parallel Hybrid','electric_400':'400 V Electric','electric_800':'800 V Electric'}[key]
         lang['item.sparkmotors.'+name]=title+(' Sedan Crate' if suffix=='crate' else ' Traction Battery Pack')
         write(ASSET/'models/item'/f'{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':'sparkmotors:item/'+name}})
         image=Image.new('RGBA',(64,64));draw=ImageDraw.Draw(image)

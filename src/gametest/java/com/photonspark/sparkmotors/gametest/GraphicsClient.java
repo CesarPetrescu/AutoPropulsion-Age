@@ -48,6 +48,7 @@ final class GraphicsClient {
             capturing=false;ticks=0;
             if(++stage==MODES.length){
                 done=true;System.out.println("GRAPHICS_CLIENT_PASS 5");
+                System.out.println("CAR_RENDER_PROFILE "+com.photonspark.sparkmotors.client.CarMesh.profileReport());
                 ClientSmoke.write(mc,"PASS: Fabulous before world loading and native Video Settings transitions through Fast, Fancy, Fabulous and Fast; car scene rendered in every mode with matching transparency framebuffers.");
             }
             return;

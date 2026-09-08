@@ -4,7 +4,7 @@ final class ElectricTest {
     @Test void batteryEnergyAndTemperatureMatrix(){ElectricChecks.batteryConservation();}
     @Test void chargingLimitsVoltageAndEnergyMatrix(){ElectricChecks.chargers();}
     @Test void tractionRegenerationAndInterlocks(){ElectricChecks.driving();}
-    @Test void seriesHybridGeneratorPaysForElectricity(){ElectricChecks.generator();}
+    @Test void hybridGeneratorPaysForElectricity(){ElectricChecks.generator();}
     @Test void chargeTelemetryFaultPriorityAndOneThermalClock(){
         var type=Powertrain.ELECTRIC_400;var b=BatteryModel.State.initial(type.battery,.25);
         var t=ChargingModel.Tier.RAPID;

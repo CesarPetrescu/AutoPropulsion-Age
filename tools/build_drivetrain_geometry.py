@@ -1,6 +1,6 @@
 """Blender export helpers: connected, selectable drivetrain parts in the runtime metre frame.
 
-Type masks: 1 combustion, 2 battery EV, 4 series hybrid. Layout masks: 1 RWD, 2 FWD, 4 AWD.
+Type masks: 1 combustion, 2 battery EV, 4 parallel hybrid. Layout masks: 1 RWD, 2 FWD, 4 AWD.
 Each mesh root names its real service slot. No changes to the original kit datablocks.
 """
 orange=material('APA HV orange',(.80,.16,.015))
@@ -22,14 +22,14 @@ def housing(key,center,size,types=7,layouts=7):
         for end in [-1,1]:ptpipe(key,[(x+side*dx*.4,y-dy*.51,z+end*dz*.35),(x+side*dx*.4,y-dy*.56,z+end*dz*.35)],.012,black,types,layouts,12)
 
 # Longitudinal combustion gearbox; FWD transaxle ends before the cabin, RWD/AWD outputs aft.
-housing('driveline.gearbox',(0,.40,.74),(.32,.24,.43),1,7)
-ptpipe('driveline.clutch',[(0,.52,.95),(0,.52,1.04)],.13,metal,1,7,48)
-ptpipe('driveline.gearbox',[(0,.52,.95),(0,.40,.87)],.06,metal,1,7)
-housing('driveline.transfer',(0,.34,.40),(.35,.20,.22),1,4)
-ptpipe('driveline.shaft',[(0,.31,.52),(0,.30,-1.30)],.033,metal,1,5)
-for z in [.48,-1.16]:ptpipe('driveline.shaft',[(0,.30,z-.045),(0,.30,z+.045)],.052,black,1,5)
+housing('driveline.gearbox',(0,.40,.74),(.32,.24,.43),5,7)
+ptpipe('driveline.clutch',[(0,.52,.95),(0,.52,1.04)],.13,metal,5,7,48)
+ptpipe('driveline.gearbox',[(0,.52,.95),(0,.40,.87)],.06,metal,5,7)
+housing('driveline.transfer',(0,.34,.40),(.35,.20,.22),5,4)
+ptpipe('driveline.shaft',[(0,.31,.52),(0,.30,-1.30)],.033,metal,5,5)
+for z in [.48,-1.16]:ptpipe('driveline.shaft',[(0,.30,z-.045),(0,.30,z+.045)],.052,black,5,5)
 # Front final-drive link is part of the transaxle, not a rear propeller shaft on FWD.
-ptpipe('driveline.gearbox',[(.16,.34,.76),(.16,.34,1.35),(0,.34,1.35)],.035,metal,1,6)
+ptpipe('driveline.gearbox',[(.16,.34,.76),(.16,.34,1.35),(0,.34,1.35)],.035,metal,5,6)
 for axle,z in [('front',1.35),('rear',-1.30)]:
     layouts=6 if axle=='front' else 5
     key='driveline.front_differential' if axle=='front' else 'driveline.differential'
@@ -51,8 +51,8 @@ for axle,z in [('front',1.35),('rear',-1.30)]:
     ptpipe('traction.hv_cable',[(-.58,.44,motor_z),(-.40,.55,motor_z),(-.30,.55,motor_z)],.013,orange,6,layouts)
     drive_report.append({'axle':axle,'layout_mask':layouts,'hub_x':[-.83,.83],'axle_y':.34,'axle_z':z,'motor_center':[0,motor_y,motor_z]})
 ptpipe('traction.hv_cable',[(-.58,.44,-1.65),(-.58,.44,1.64)],.015,orange,6,7)
-housing('traction.contactor',(-.50,.43,.44),(.18,.09,.18),6,7)
-housing('traction.dc_dc',(-.50,.43,.68),(.18,.10,.20),6,7)
+housing('traction.contactor',(-.50,.47,.44),(.18,.09,.18),6,7)
+housing('traction.dc_dc',(-.50,.48,.68),(.18,.10,.20),6,7)
 ptpipe('traction.generator',[(.43,.60,1.20),(.64,.60,1.20)],.11,metal,4,7,48)
 ptpipe('traction.hv_cable',[(.64,.67,1.20),(.64,.91,.98),(-.58,.91,.98),(-.58,.44,.90)],.013,orange,4,7)
 (repo/'docs/drivetrain-geometry.json').write_text(json.dumps({'source':'tools/build_drivetrain_geometry.py','axles':drive_report,'scope':'Authored runtime e-axles, differentials, CV shafts and ICE gearbox/transfer/propeller paths. Masks select actual installed topology.'},indent=2)+'\n')

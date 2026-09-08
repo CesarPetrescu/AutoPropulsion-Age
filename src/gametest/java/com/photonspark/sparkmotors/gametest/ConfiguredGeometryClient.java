@@ -17,7 +17,12 @@ final class ConfiguredGeometryClient {
             for(var slot:ComponentSlot.ALL)if(slot.detailed()){
                 int visible=CarMesh.visibleComponentTriangles(car,slot.key());boolean expected=PowertrainTopology.applicable(slot,type,drive,family);
                 if(expected!=(visible>0))throw new IllegalStateException("Configured geometry mismatch "+type+" "+layout+" "+family+" "+slot.key()+" triangles="+visible);
-                if(expected){car.setMechanics(mechanical.with(slot.key(),null));if(CarMesh.visibleComponentTriangles(car,slot.key())!=0)throw new IllegalStateException("Removed component still visible: "+slot.key());car.setMechanics(mechanical);removals++;}
+                for(int lod=0;lod<2;lod++)if((CarMesh.visibleWorldComponentTriangles(car,slot.key(),lod)>0)!=expected)throw new IllegalStateException("World LOD topology mismatch: "+slot.key());
+                if(expected){car.setMechanics(mechanical.with(slot.key(),null));if(CarMesh.visibleComponentTriangles(car,slot.key())!=0)throw new IllegalStateException("Removed component still visible: "+slot.key());
+                    for(int lod=0;lod<2;lod++)if(CarMesh.visibleWorldComponentTriangles(car,slot.key(),lod)!=0)throw new IllegalStateException("World LOD retained removed part: "+slot.key());
+                    car.setMechanics(mechanical);
+                    for(int lod=0;lod<2;lod++)if(CarMesh.visibleWorldComponentTriangles(car,slot.key(),lod)==0)throw new IllegalStateException("World LOD did not restore installed part: "+slot.key());
+                    removals++;}
             }
             cases++;
         }

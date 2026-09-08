@@ -1,0 +1,20 @@
+{
+  "source_sha256": "d9863044cbef80e74975abe631d249717b3bd4ca166cccf25b984509f596e320",
+  "chunks": 854,
+  "lods": [
+    {
+      "level": 1,
+      "ratio": 0.28,
+      "all_variant_triangles_before": 320168,
+      "all_variant_triangles_after": 277910,
+      "sha256": "f4b46823f4716c94a757fffd23cb823d9a6552a638c5bbfbbfbdb4c0b4e32176"
+    },
+    {
+      "level": 2,
+      "ratio": 0.1,
+      "all_variant_triangles_before": 320168,
+      "all_variant_triangles_after": 273320,
+      "sha256": "6d17e3966ee2501d48f429bf13a742c269c3fa9e71d5727b8b6a47115f9875ee"
+    }
+  ]
+}

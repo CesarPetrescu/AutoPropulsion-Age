@@ -22,6 +22,6 @@
     "twin-screw"
   ],
   "runtime_file": "src/main/resources/assets/sparkmotors/models/entity/sedan.mesh.gz",
-  "bytes": 3872904,
+  "bytes": 3872871,
   "scope": "Seven cores, ten service slots, 42 named hardware choices with distinct geometry, seven induction configurations; internals retained for inspection."
 }

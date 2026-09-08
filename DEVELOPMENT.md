@@ -46,7 +46,17 @@ $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
 .\gradlew.bat --version
 ```
 
-Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **8** requires matching client/server builds. Vehicle save schema **7** combines drivetrain routing, electric/hybrid state and persistent mechanical components. Older cars remain combustion cars with the RWD road preset; mechanical items retain their separate typed schema.
+Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **9** requires matching client/server builds. Vehicle save schema **7** combines drivetrain routing, electric/hybrid state and persistent mechanical components. Older cars remain combustion cars with the RWD road preset; mechanical items use typed schema **3**. Existing series hybrids migrate their mechanical engine output mounts once; see [hybrid behavior and profiling](docs/HYBRID_AND_PERFORMANCE.md).
+
+After exporting `sedan.mesh.gz`, regenerate the sparse world detail meshes with Blender before building. Workshop inspection continues using the canonical full mesh. The validator detects stale LODs, changed part masks and excessive envelope changes:
+
+```powershell
+& 'T:\Blender\blender.exe' --background --python-exit-code 1 --python tools/generate_car_lods.py
+python tools/verify_car_lods.py
+.\gradlew.bat --no-daemon --max-workers=2 :sim:powertrainBenchmark
+```
+
+Use your installed Blender/Python paths if different. The benchmark report is `sim/build/reports/powertrain-performance.json`; it compares parked/driving combustion, HEV, PHEV and both EVs. `runClientGraphics` also prints CPU car-render timing under `CAR_RENDER_PROFILE`. These commands use background Blender and the hidden native client harness, leaving desktop input free.
 
 ## Daily edit, run and debug loop
 

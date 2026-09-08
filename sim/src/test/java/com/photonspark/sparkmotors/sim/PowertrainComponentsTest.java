@@ -10,10 +10,10 @@ class PowertrainComponentsTest {
     private static VehicleDynamics.Setup setup(MechanicalState m,Powertrain t,DriveConfig.Layout d,EngineFamily f){return new VehicleDynamics.Setup(Assembly.stock(),6800,3.7,f,EnginePart.stock(),m.coolantTemperature(),1.4,m,DriveConfig.preset(d)).withPowertrain(t);}
     @Test void everyVehicleAndLayoutHasOnlyItsInstalledTopology(){
         for(var t:Powertrain.values())for(var d:DriveConfig.Layout.values())for(var f:EngineFamily.values()){
-            var m=fresh(t,d,f);assertEquals(2,m.version());assertTrue(m.validFor(s->PowertrainTopology.applicable(s,t,DriveConfig.preset(d),f)));
+            var m=fresh(t,d,f);assertEquals(MechanicalState.VERSION,m.version());assertTrue(m.validFor(s->PowertrainTopology.applicable(s,t,DriveConfig.preset(d),f)));
             assertEquals(d!=DriveConfig.Layout.RWD,m.get("driveline.cv_fl")!=null);
             assertEquals(d!=DriveConfig.Layout.FWD,m.get("driveline.cv_rr")!=null);
-            assertEquals(!t.electric(),m.get("driveline.clutch")!=null);
+            assertEquals(!t.electric()||t.hybrid(),m.get("driveline.clutch")!=null);
             assertEquals(t.hybrid(),m.get("traction.generator")!=null);
             assertEquals(!t.electric()||t.hybrid(),m.get(f.rotary()?"internal.eccentric":"internal.crank")!=null);
             assertEquals(m.parts().size(),m.parts().values().stream().map(PartInstance::id).distinct().count());

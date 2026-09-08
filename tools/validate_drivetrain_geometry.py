@@ -37,11 +37,11 @@ for type_ in [1,2,4]:
             if enabled:
                 expected.update('driveline.cv_'+('f' if axle=='front' else 'r')+s for s in ['l','r'])
                 if type_!=1:expected.update('traction.'+unit+'_'+axle for unit in ['motor','inverter','reduction'])
-        if type_==1:
+        if type_ in [1,4]:
             expected.update(['driveline.clutch','driveline.gearbox'])
             if rear:expected.add('driveline.shaft')
             if layout==4:expected.add('driveline.transfer')
-        else:
+        if type_!=1:
             expected.update(['traction.hv_cable','traction.contactor','traction.dc_dc'])
             if type_==4:expected.add('traction.generator')
         checks.append(dict(kind='configured_path',type=type_,layout=layout,missing=sorted(expected-keys),unexpected=sorted(keys-expected),passed=keys==expected))
@@ -50,6 +50,17 @@ for type_ in [1,2,4]:
             hits=len(tree([c]).overlap(body))
             checks.append(dict(kind='outer_body_clearance',type=type_,layout=layout,part=c['name'],intersections=hits,passed=hits==0))
         if type_==4:
+            # Conservative envelope includes the split pack's mounting flanges / upper fins.
+            # Check the PHEV envelope (larger than HEV) against every rigid drivetrain mount.
+            for left,right in [(-.67,-.22),(.22,.67)]:
+                v=[(x,y,z) for x,y,z in [(left,.25,-.85),(right,.25,-.85),(right,.40,-.85),(left,.40,-.85),(left,.25,.65),(right,.25,.65),(right,.40,.65),(left,.40,.65)]]
+                faces=[(0,3,2,1),(4,5,6,7),(0,4,7,3),(1,2,6,5),(3,7,6,2),(0,1,5,4)]
+                pack=BVHTree.FromPolygons(v,faces,all_triangles=False,epsilon=0)
+                for unit in parts:
+                    if 'hv_cable' in unit['name']:continue
+                    hits=len(tree([unit]).overlap(pack))
+                    contained=any(left<x<right and .25<y<.40 and -.85<z<.65 for x,y,z in unit['vs'])
+                    checks.append(dict(kind='hybrid_pack_clearance',layout=layout,part=unit['name'],side=left,intersections=hits,passed=hits==0 and not contained))
             units=[c for c in parts if any(k in c['name'] for k in ['traction.motor','traction.inverter','traction.generator'])]
             for family in range(7):
                 core=[c for c in chunks if c['group']==0 and c['family']&(1<<family) and c['induction']&1 and c['tier']<=1 and not c['name'].startswith(('hardware_','service_','coolant_')) and c['cat'] in [18,19,20,21,22,23,24,28]]

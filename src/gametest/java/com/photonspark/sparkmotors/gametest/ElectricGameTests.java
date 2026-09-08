@@ -5,6 +5,7 @@ import com.photonspark.sparkmotors.charging.*;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.net.CarPackets;
 import com.photonspark.sparkmotors.sim.electric.*;
+import com.photonspark.sparkmotors.sim.MechanicalState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.*;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,17 @@ import net.neoforged.neoforge.gametest.*;
 
 @GameTestHolder("sparkmotors") @PrefixGameTestTemplate(false)
 public final class ElectricGameTests {
+    @GameTest(template="test_track",timeoutTicks=150) public void depletedHybridDrivesOnEngineAndRetainsReserve(GameTestHelper h){
+        var car=car(h,Powertrain.PLUG_IN_HYBRID,.12);var p=h.makeMockServerPlayerInLevel();
+        p.moveTo(car.position());car.setOwner(p.getUUID());p.startRiding(car,true);car.action(p,CarPackets.IGNITION,0,0);
+        float before=car.fuel();float[] peak={0};int[] ticks={0};
+        h.onEachTick(()->{car.receiveInput(++ticks[0]<100?1:2,0);peak[0]=Math.max(peak[0],car.horizontalSpeed());});
+        h.runAfterDelay(125,()->{
+            h.assertTrue(peak[0]>3,"Actual server hybrid launches on engine at reserve: "+peak[0]);
+            h.assertTrue(car.fuel()<before&&car.stateOfCharge()>.11,"Engine drive consumes fuel and retains battery reserve");
+            p.stopRiding();car.discard();h.succeed();
+        });
+    }
     @GameTest(template="test_track",timeoutTicks=1800) public void allTwelveElectricLayoutsDriveBrakeAndKeepMechanicalState(GameTestHelper h){
         var p=h.makeMockServerPlayerInLevel();CarEntity[] active={null};int[] ticks={0};float[] peak={0};double[] start={0};
         h.onEachTick(()->{
@@ -64,7 +76,7 @@ public final class ElectricGameTests {
         h.assertTrue(output.is(Electrification.CRATES.get(Powertrain.ELECTRIC_400).get()),"conversion resolves the EV recipe");
         var converted=com.photonspark.sparkmotors.item.MechanicalData.get(output);
         h.assertTrue(mechanical.parts().entrySet().stream().allMatch(e->e.getValue().equals(converted.get(e.getKey())))&&mechanical.coolant()==converted.coolant()&&mechanical.oil()==converted.oil(),"typed donor component wear/serials and fluid quantities survive electric crafting");
-        h.assertTrue(converted.get("traction.motor_rear")!=null&&converted.version()==2,"Conversion ingredients supply the new electric drive mounts");
+        h.assertTrue(converted.get("traction.motor_rear")!=null&&converted.version()==MechanicalState.VERSION,"Conversion ingredients supply the new electric drive mounts");
         var data=output.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag();
         h.assertTrue(data.getInt("EngineParts")==1234,"donor parts preserved");
         var stored=item.read(pack);var nested=data.getCompound("TractionBattery");
