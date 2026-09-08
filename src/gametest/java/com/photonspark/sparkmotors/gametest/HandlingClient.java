@@ -64,6 +64,11 @@ final class HandlingClient {
             if(ticks>=100&&ticks<145){lateral=Math.max(lateral,Math.abs(car.lateralSpeed()));rearSlip=Math.max(rearSlip,Math.max(car.wheelSlip(2),car.wheelSlip(3)));}
             if(ticks==99){entryYaw=car.getYRot();worldLeft=0;}
             if(ticks>=103&&ticks<110)worldLeft=Math.min(worldLeft,net.minecraft.util.Mth.wrapDegrees(car.getYRot()-(float)entryYaw));
+            if(ticks>=99&&ticks<=120){
+                int sample=ticks;double clientYaw=car.getYRot(),clientRate=car.yawRate();
+                System.out.printf(Locale.ROOT,"QA_HANDLING_CLIENT layout=%s tick=%d heading=%.5f reference=%.5f yawRate=%.5f speed=%.5f%n",layout,sample,clientYaw,entryYaw,clientRate,car.horizontalSpeed());
+                server(mc,car,(p,c)->System.out.printf(Locale.ROOT,"QA_HANDLING_SERVER layout=%s sample=%d serverTick=%d heading=%.5f yawRate=%.5f speed=%.5f raised=%s%n",layout,sample,c.tickCount,c.getYRot(),c.yawRate(),c.horizontalSpeed(),c.raised()));
+            }
             if(ticks>=103&&ticks<110)leftYaw=Math.max(leftYaw,-car.yawRate());
             if(ticks==113)ClientSmoke.screenshot("handling-"+layout.name().toLowerCase(Locale.ROOT)+"-drift.png");
             if(ticks==265){
