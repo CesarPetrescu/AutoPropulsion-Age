@@ -36,9 +36,12 @@ public final class ServiceScreen extends Screen {
         button("Parts",rx,y+29,rw/2-3,()->{tests=false;init();});button("Tests / fluids",rx+rw/2+2,y+29,rw/2-2,()->{tests=true;init();});
         if(tests){
             button("Pressure test / 10s",rx,y+81,rw,()->send(CarPackets.DIAGNOSE,0,0));
-            button("Inspect fluid levels",rx,y+108,rw,()->send(CarPackets.DIAGNOSE,1,0));
-            button("Measure selected tire",rx,y+135,rw,()->send(CarPackets.DIAGNOSE,2,Math.max(0,ComponentSlot.ALL.get(selected).corner())));
-            button("Multimeter",rx,y+162,rw,()->send(CarPackets.DIAGNOSE,3,0));
+            button("Inspect fluids",rx,y+108,rw/2-3,()->send(CarPackets.DIAGNOSE,1,0));
+            button("Compression test",rx+rw/2+2,y+108,rw/2-2,()->send(CarPackets.DIAGNOSE,5,0));
+            button("Measure tire",rx,y+135,rw/2-3,()->send(CarPackets.DIAGNOSE,2,Math.max(0,ComponentSlot.ALL.get(selected).corner())));
+            button("Inflate tire",rx+rw/2+2,y+135,rw/2-2,()->send(CarPackets.FLUID_SERVICE,3,Math.max(0,ComponentSlot.ALL.get(selected).corner())));
+            button("Multimeter",rx,y+162,rw/2-3,()->send(CarPackets.DIAGNOSE,3,0));
+            button("Oil pressure test",rx+rw/2+2,y+162,rw/2-2,()->send(CarPackets.DIAGNOSE,4,0));
             button("Fill coolant",rx,y+197,rw/2-3,()->send(CarPackets.FLUID_SERVICE,0,0));
             button("Fill oil",rx+rw/2+2,y+197,rw/2-2,()->send(CarPackets.FLUID_SERVICE,1,0));
             button("Fill brake fluid",rx,y+224,rw/2-3,()->send(CarPackets.FLUID_SERVICE,2,0));

@@ -47,5 +47,8 @@
   "service_jack": "Service Jack",
   "pressure_tester": "Cooling Pressure Tester",
   "multimeter": "Multimeter",
-  "tire_gauge": "Tire Pressure Gauge"
+  "tire_gauge": "Tire Pressure Gauge",
+  "oil_pressure_gauge": "Mechanical Oil Pressure Gauge",
+  "compression_tester": "Compression Tester",
+  "tire_pump": "Hand Tire Pump"
 }

@@ -18,14 +18,20 @@ public final class CircuitPhysics {
         double thermostat=clamp((m.coolantTemperature()-78)/12,0,1)*m.capability("cooling.thermostat");
         double flow=running?clamp(rpm/2200,.18,1.5)*m.capability("cooling.pump")*fill*thermostat:0;
         double pressure=clamp((m.coolantTemperature()-65)/40,0,1.3)*fill*pressureHold(m,1);
-        return new Measurements(leak,pressure,flow,fan,0,12.0+Math.min(1,batteryCharge(m)/48)*.7);
+        double oil=running?clamp((.8+rpm*.0008)*m.capability("oil.pump")*m.capability("oil.filter")*m.capability("oil.feed")*clamp(m.oil()/2.5,0,1)*(1-clamp((m.oilTemperature()-110)/100,0,.65)),0,6.5):0;
+        double charging=running?m.capability("electrical.alternator")*m.capability("electrical.belt")*clamp(rpm/1600,0,1):0;
+        return new Measurements(leak,pressure,flow,fan,oil,charging>.3?14.2:10.5+Math.min(1,batteryCharge(m)/48)*2.2);
     }
     public static double batteryCharge(MechanicalState m){var p=m.get("electrical.battery");return p==null?0:p.reserve()*p.capability();}
     public static MechanicalState step(MechanicalState m,double rpm,double throttle,double boost,boolean running,double speed,boolean brake,double dt){
+        return step(m,rpm,throttle,boost,running,false,false,speed,brake,dt);
+    }
+    public static MechanicalState step(MechanicalState m,double rpm,double throttle,double boost,boolean running,boolean cranking,boolean lights,double speed,boolean brake,double dt){
         dt=clamp(dt,.0001,.05);var read=measure(m,rpm,running,speed);var parts=new HashMap<>(m.parts());var faults=new HashSet<>(m.faultHistory());
         double coolant=Math.max(0,m.coolant()-read.coolantLeak*(.35+read.coolantPressure*.65)*dt);
         double heat=running?7+rpm*.0025+throttle*42+boost*20:0;
-        double radiator=m.capability("engine.cooling");
+        var radiatorPart=m.get("engine.cooling");String radiatorItem=radiatorPart==null?"":radiatorPart.item();
+        double radiator=m.capability("engine.cooling")*(radiatorItem.equals("performance_cooling")?1.3:radiatorItem.equals("cooling_3")?1.25:radiatorItem.equals("cooling_4")?1.65:1);
         double cooling=(m.coolantTemperature()-20)*(.07+read.circulation*radiator*(.12+Math.abs(speed)*.024+(read.fan?.32:0)));
         double capacity=26+coolant*4.18;
         double temperature=m.coolantTemperature()+(heat-cooling)/capacity*dt;
@@ -37,8 +43,23 @@ public final class CircuitPhysics {
             var tire=parts.get(prefix+"tire");
             if(tire!=null){double pressure=Math.max(0,tire.reserve()-leak(tire,.10)*dt);double wear=tire.wear()+Math.abs(speed)*dt*(pressure<1?.000005:.00000015);parts.put(prefix+"tire",tire.condition(wear,tire.damage(),tire.faults()).operating(pressure,tire.temperature()));}
         }
+        double oilLeak=leak(m.get("engine.oil"),.06)+leak(m.get("oil.feed"),.045);
+        double oil=Math.max(0,m.oil()-oilLeak*(running?.5+read.oilPressure*.1:.15)*dt);
+        double oilCooler=m.get("engine.oil")==null?0:m.get("engine.oil").item().equals("oil_system_3")?.055:m.get("engine.oil").item().equals("oil_system_4")?.08:0;
+        double oilHeat=(running?1+rpm*.001+throttle*4+boost*4:0)+(temperature-m.oilTemperature())*.06;
+        double oilTemp=m.oilTemperature()+(oilHeat-(m.oilTemperature()-20)*(.025+oilCooler+Math.abs(speed)*.0015))/(6+oil*2)*dt;
+        if(running&&rpm>1200&&read.oilPressure<.65){
+            faults.add("OIL_PRESSURE_LOW");
+            for(String key:List.of("engine.internals","engine.induction")){var p=parts.get(key);if(p!=null)parts.put(key,p.condition(p.wear()+(.65-read.oilPressure)*rpm/3500*.004*dt,p.damage(),p.faults()));}
+        }
+        var battery=parts.get("electrical.battery");
+        if(battery!=null){double demand=(cranking?180:running?8:0)+(read.fan?18:0)+(lights?12:0);
+            double charging=running?60*m.capability("electrical.alternator")*m.capability("electrical.belt")*clamp(rpm/1600,0,1):0;
+            parts.put("electrical.battery",battery.operating(clamp(battery.reserve()+(charging-demand)*dt/3600,0,48),battery.temperature()));
+            if(running&&charging<demand)faults.add("CHARGING_LOW");}
+        if(oil<1)faults.add("OIL_LEVEL_LOW");
         if(coolant<2)faults.add("COOLANT_LOW");if(temperature>110)faults.add("COOLANT_HOT");if(brakeFluid<.2)faults.add("BRAKE_PRESSURE_LOW");
-        return m.update(parts,coolant,m.oil(),brakeFluid,temperature,m.oilTemperature(),m.distance()+Math.abs(speed)*dt,faults);
+        return m.update(parts,coolant,oil,brakeFluid,temperature,oilTemp,m.distance()+Math.abs(speed)*dt,faults);
     }
     /** One bounded allocation per contact event; unaffected parts retain exactly their prior state. */
     public static MechanicalState impact(MechanicalState m,String region,double speed){

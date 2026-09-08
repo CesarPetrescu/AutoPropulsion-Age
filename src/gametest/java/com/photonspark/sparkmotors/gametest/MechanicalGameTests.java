@@ -89,4 +89,16 @@ public final class MechanicalGameTests {
         act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(from),0);act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(to),1);
         h.assertTrue(c.mechanics().get(to.key()).equals(used)&&c.mechanics().get(from.key())==null,"Same used tire can move across corners without refreshing pressure, wear or identity");h.succeed();
     }
+
+    @GameTest(template="test_track",timeoutTicks=170) public void electricalAndOilFailuresReachTheRunningServerEngine(GameTestHelper h){
+        var c=car(h);var p=owner(h,c);hood(c,p);
+        var battery=c.mechanics().get("electrical.battery");c.setMechanics(c.mechanics().with("electrical.battery",battery.operating(0,20)));act(c,p,CarPackets.IGNITION,0,0);h.assertTrue(!c.ignition(),"Flat battery prevents actual starting");
+        c.setMechanics(c.mechanics().with("electrical.battery",battery).with("oil.pump",null));act(c,p,CarPackets.IGNITION,0,0);
+        h.runAfterDelay(18,()->{h.assertTrue(c.engineRunning(),"Engine starts with oil pump missing, allowing causal starvation");act(c,p,CarPackets.REV_TEST,0,0);});
+        h.runAfterDelay(48,()->{h.assertTrue(c.oilPressure()==0&&c.mechanics().faultHistory().contains("OIL_PRESSURE_LOW"),"Actual engine measurements and warnings reflect missing pump");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Running without oil pressure wears the actual internal assembly");act(c,p,CarPackets.IGNITION,0,0);});
+        h.runAfterDelay(80,()->{
+            var slot=ComponentSlot.byKey("oil.pump");p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get(slot.item()).get()));act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(slot),1);act(c,p,CarPackets.IGNITION,0,0);
+        });
+        h.runAfterDelay(110,()->{h.assertTrue(c.oilPressure()>.5,"Targeted oil-pump replacement restores measured pressure");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Replacement retains pre-existing internal wear");h.succeed();});
+    }
 }

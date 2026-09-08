@@ -120,7 +120,7 @@ public final class GarageScreen extends Screen {
             case 5 -> {
                 button("Start / stop",rx,y+h-49,rw/3-3,22,()->request(CarPackets.IGNITION,0,0),"Start the engine for live readings. Hold C + W while driving to rev with the clutch disengaged.",false);
                 var rev=button("Rev test / 2s",rx+rw/3+1,y+h-49,rw/3-3,22,()->request(CarPackets.REV_TEST,0,0),"A two-second throttle test with the clutch disengaged and brakes held. Open the hood, park and start the engine first.",false);
-                serviceButtons.put(rev,()->car.ignition()&&car.hoodOpen()&&Math.abs(car.speed())<.3);
+                serviceButtons.put(rev,()->car.engineRunning()&&car.hoodOpen()&&Math.abs(car.speed())<.3);
                 var rebuild=button("Rebuild engine",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(CarPackets.ENGINE_REBUILD,0,0),"Consumes 12 iron ingots to restore engine condition. Open the hood, park and stop the engine.",true);
                 serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.engineHealth()<100&&Assembly.ENGINE.variant(car.config())>0);
             }

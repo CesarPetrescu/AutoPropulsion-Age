@@ -15,7 +15,7 @@ for line in source.splitlines():
         for key,title in zip(pairs[::2],pairs[1::2]):catalog[system+'_'+key]=title
     if 'corner(all,' in line:
         for key,title in zip(fields[::2],fields[1::2]):catalog['service_'+key]=title
-catalog.update(sport_muffler='Sport Muffler',coolant_bottle='Coolant (1 L)',oil_bottle='Engine Oil (1 L)',brake_fluid_bottle='Brake Fluid (1 L)',service_jack='Service Jack',pressure_tester='Cooling Pressure Tester',multimeter='Multimeter',tire_gauge='Tire Pressure Gauge')
+catalog.update(sport_muffler='Sport Muffler',coolant_bottle='Coolant (1 L)',oil_bottle='Engine Oil (1 L)',brake_fluid_bottle='Brake Fluid (1 L)',service_jack='Service Jack',pressure_tester='Cooling Pressure Tester',multimeter='Multimeter',tire_gauge='Tire Pressure Gauge',oil_pressure_gauge='Mechanical Oil Pressure Gauge',compression_tester='Compression Tester',tire_pump='Hand Tire Pump')
 def write(path,value):
     path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,indent=2)+'\n')
 langfile=assets/'lang/en_us.json';lang=json.loads(langfile.read_text())

@@ -128,5 +128,8 @@
   "item.sparkmotors.service_jack": "Service Jack",
   "item.sparkmotors.pressure_tester": "Cooling Pressure Tester",
   "item.sparkmotors.multimeter": "Multimeter",
-  "item.sparkmotors.tire_gauge": "Tire Pressure Gauge"
+  "item.sparkmotors.tire_gauge": "Tire Pressure Gauge",
+  "item.sparkmotors.oil_pressure_gauge": "Mechanical Oil Pressure Gauge",
+  "item.sparkmotors.compression_tester": "Compression Tester",
+  "item.sparkmotors.tire_pump": "Hand Tire Pump"
 }

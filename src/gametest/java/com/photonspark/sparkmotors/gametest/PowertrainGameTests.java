@@ -20,7 +20,7 @@ public final class PowertrainGameTests {
     @GameTest(template="test_track") public void everyHardwareItemCanBeCraftedAndInstalledWithoutDuplication(GameTestHelper h){
         var c=car(h);var p=owner(h,c);p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);int count=0;
         for(var slot:EnginePart.values())for(int v=1;v<=slot.maxVariant();v++){
-            var tag=new CompoundTag();c.saveWithoutId(tag);tag.putInt("EngineParts",slot.with(EnginePart.boosted(3),0));tag.putBoolean("HoodOpen",true);
+            var tag=new CompoundTag();c.saveWithoutId(tag);tag.remove("Mechanics");tag.putInt("EngineParts",slot.with(EnginePart.boosted(3),0));tag.putBoolean("HoodOpen",true);
             // Test each supporting choice on a natural build so high-compression internals remain valid.
             if(slot!=EnginePart.INDUCTION)tag.putInt("EngineParts",slot.with(EnginePart.stock(),0));c.load(tag);
             var item=AutoPropulsionAge.enginePartItem(slot,v);
@@ -44,7 +44,7 @@ public final class PowertrainGameTests {
     }
     @GameTest(template="test_track") public void boostTuneAndRebuildAreBoundedAndPreserved(GameTestHelper h){
         var c=car(h);var p=owner(h,c);p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
-        var tag=new CompoundTag();c.saveWithoutId(tag);tag.putFloat("EngineHealth",3);tag.putFloat("OilTemperature",112);tag.putBoolean("HoodOpen",true);c.load(tag);
+        var tag=new CompoundTag();c.saveWithoutId(tag);tag.remove("Mechanics");tag.putFloat("EngineHealth",3);tag.putFloat("OilTemperature",112);tag.putBoolean("HoodOpen",true);c.load(tag);
         act(c,p,CarPackets.IGNITION,0,0);h.assertTrue(!c.ignition(),"Worn out engine refuses to start");
         act(c,p,CarPackets.ENGINE_REBUILD,0,0);h.assertTrue(c.engineHealth()==3,"Cannot rebuild for free");
         p.getInventory().add(new ItemStack(Items.IRON_INGOT,12));act(c,p,CarPackets.ENGINE_REBUILD,0,0);
@@ -61,9 +61,9 @@ public final class PowertrainGameTests {
         h.runAfterDelay(160,()->{h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Brakes stop the new drivetrain");p.stopRiding();h.succeed();});
     }
     @GameTest(template="test_track",timeoutTicks=180) public void workshopRevTestTimesOutAndKeepsTheCarParked(GameTestHelper h){
-        var c=car(h);var p=owner(h,c);act(c,p,CarPackets.HOOD,0,0);c.hoodProgress=1;act(c,p,CarPackets.IGNITION,0,0);act(c,p,CarPackets.REV_TEST,0,0);
+        var c=car(h);var p=owner(h,c);act(c,p,CarPackets.HOOD,0,0);c.hoodProgress=1;act(c,p,CarPackets.IGNITION,0,0);h.runAfterDelay(15,()->act(c,p,CarPackets.REV_TEST,0,0));
         double start=c.getZ();
-        h.runAfterDelay(25,()->h.assertTrue(c.rpm()>3000&&Math.abs(c.speed())<.01,"Bench test revs a parked, unoccupied engine"));
+        h.runAfterDelay(45,()->h.assertTrue(c.rpm()>3000&&Math.abs(c.speed())<.01,"Bench test revs a parked, unoccupied engine"));
         h.runAfterDelay(150,()->{h.assertTrue(c.throttle()<.01&&Math.abs(c.speed())<.01&&Math.abs(c.getZ()-start)<.01,"Bench timer releases throttle without rolling the car");h.succeed();});
     }
 }

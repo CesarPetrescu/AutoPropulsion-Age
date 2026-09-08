@@ -31,11 +31,14 @@ public final class CarEntity extends Entity {
     private MechanicalState mechanical=MechanicalState.legacy(Assembly.stock(),EnginePart.stock(),20,20,100);
     private CompoundTag lastMechanicalTag;
     private WheelDynamics.State wheelState=WheelDynamics.State.stopped();
+    private TransmissionPhysics.State transmissionState=TransmissionPhysics.State.stopped();
     private int lastImpactTick=-100,pressureTestTicks;
     private double testPressure=1;
     private static final EntityDataAccessor<String> DIAGNOSTIC=data(EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Float> COOLANT=data(EntityDataSerializers.FLOAT),OIL_QUANTITY=data(EntityDataSerializers.FLOAT),BRAKE_FLUID=data(EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Integer> CONTACTS=data(EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> CONTACTS=data(EntityDataSerializers.INT),ENGINE_MODE=data(EntityDataSerializers.INT);
+    public EnginePhysics.Mode engineMode(){return EnginePhysics.Mode.values()[entityData.get(ENGINE_MODE)];}
+    public boolean engineRunning(){return engineMode()==EnginePhysics.Mode.RUNNING;}
     private static final java.util.List<EntityDataAccessor<org.joml.Vector3f>> WHEELS=java.util.List.of(data(EntityDataSerializers.VECTOR3),data(EntityDataSerializers.VECTOR3),data(EntityDataSerializers.VECTOR3),data(EntityDataSerializers.VECTOR3));
     public final float[] wheelAngles=new float[4],oldWheelAngles=new float[4];
     public float coolant(){return entityData.get(COOLANT);}public float oilQuantity(){return entityData.get(OIL_QUANTITY);}public float brakeFluid(){return entityData.get(BRAKE_FLUID);}
@@ -50,7 +53,16 @@ public final class CarEntity extends Entity {
         if(level().isClientSide){var tag=entityData.get(MECHANICS);if(tag!=lastMechanicalTag&&!tag.isEmpty()){mechanical=MechanicalData.read(tag);lastMechanicalTag=tag;}}
         return mechanical;
     }
-    public void setMechanics(MechanicalState value){mechanical=value;if(!level().isClientSide){entityData.set(MECHANICS,MechanicalData.write(value));fluidReadings();}}
+    public void setMechanics(MechanicalState value){
+        mechanical=value;
+        if(!level().isClientSide){
+            entityData.set(MECHANICS,MechanicalData.write(value));fluidReadings();
+            entityData.set(TEMPERATURE,(float)value.coolantTemperature());entityData.set(OIL_TEMP,(float)value.oilTemperature());
+            var internal=value.get("engine.internals");entityData.set(ENGINE_HEALTH,internal==null?0f:(float)((1-internal.damage())*100));
+            if(engineState!=null)engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),value.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff(),engineState.mode(),engineState.startTime());
+            var clutch=value.get("driveline.clutch");if(clutch!=null&&transmissionState!=null)transmissionState=new TransmissionPhysics.State(transmissionState.gear(),transmissionState.target(),transmissionState.remaining(),clutch.temperature(),transmissionState.lateralSpeed(),transmissionState.yawRate());
+        }
+    }
     private double speed,verticalSpeed,lerpX,lerpY,lerpZ;
     private float lerpYaw,lerpPitch;
     private int lerpSteps,lastInputTick=-100,inputKeys,lastActionTick=-100,benchTicks;
@@ -62,7 +74,7 @@ public final class CarEntity extends Entity {
 
     public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;}
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
-        b.define(DIAGNOSTIC,"No test performed.");b.define(COOLANT,8f);b.define(OIL_QUANTITY,5f);b.define(BRAKE_FLUID,1f);b.define(CONTACTS,0);for(var wheel:WHEELS)b.define(wheel,new org.joml.Vector3f());b.define(MECHANICS,new CompoundTag());b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
+        b.define(DIAGNOSTIC,"No test performed.");b.define(COOLANT,8f);b.define(OIL_QUANTITY,5f);b.define(BRAKE_FLUID,1f);b.define(CONTACTS,0);b.define(ENGINE_MODE,0);for(var wheel:WHEELS)b.define(wheel,new org.joml.Vector3f());b.define(MECHANICS,new CompoundTag());b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(FINAL_DRIVE,3.7f);b.define(FLAGS,0);b.define(CONFIG,Assembly.stock());b.define(PAINT,0x168A91);b.define(GEAR,1);b.define(LIMITER,6800);b.define(OWNER,Optional.empty());
         b.define(ENGINE_FAMILY,0);b.define(ENGINE_PARTS,EnginePart.stock());b.define(TEMPERATURE,20f);b.define(BOOST,0f);
         b.define(OIL_TEMP,20f);b.define(OIL_PRESSURE,0f);b.define(ENGINE_HEALTH,100f);b.define(AFR,14.7f);b.define(THROTTLE,0f);b.define(SPOOL,0f);b.define(SHAFT_TORQUE,0f);b.define(BLOWER_KW,0f);b.define(BOOST_TARGET,1.4f);
@@ -81,7 +93,7 @@ public final class CarEntity extends Entity {
     public float engineHealth(){return entityData.get(ENGINE_HEALTH);}public float afr(){return entityData.get(AFR);}
     public float throttle(){return entityData.get(THROTTLE);}public float spool(){return entityData.get(SPOOL);}
     public float shaftTorque(){return entityData.get(SHAFT_TORQUE);}public float blowerKw(){return entityData.get(BLOWER_KW);}public float boostTarget(){return entityData.get(BOOST_TARGET);}
-    public String engineProblem(){return Assembly.ENGINE.variant(config())==0?"No engine installed.":EnginePart.problem(engineParts());}
+    public String engineProblem(){return Assembly.ENGINE.variant(config())==0?"No engine installed.":MechanicalCapabilities.buildProblem(engineParts());}
     private boolean flag(int flag){return (entityData.get(FLAGS)&flag)!=0;}
     private void flag(int flag,boolean value){entityData.set(FLAGS,value?entityData.get(FLAGS)|flag:entityData.get(FLAGS)&~flag);}
     public void setOwner(UUID owner){entityData.set(OWNER,Optional.of(owner));}
@@ -126,8 +138,9 @@ public final class CarEntity extends Entity {
         double grip=surfaceGrip();
         float currentFuel=fuel();
         for(int i=0;i<4;i++){
-            var state=VehicleDynamics.step(speed,currentFuel,engineState,wheelState,ignition(),input,setup,grip,touching,travels,.0125);
-            engineState=state.engine();wheelState=state.wheels();
+            var state=VehicleDynamics.step(speed,currentFuel,engineState,wheelState,transmissionState,ignition(),input,setup,grip,touching,travels,.0125);
+            engineState=state.engine();wheelState=state.wheels();transmissionState=state.transmission();
+            if(engineState.mode()==EnginePhysics.Mode.STALLED)flag(1,false);
             speed=state.speed();currentFuel=(float)state.fuel();
             entityData.set(RPM,(float)state.rpm());entityData.set(GEAR,state.gear());
             float previousYaw=getYRot();
@@ -137,7 +150,7 @@ public final class CarEntity extends Entity {
             setBoundingBox(makeBoundingBox());
             double yaw=Math.toRadians(getYRot());
             verticalSpeed=raised()?0:Math.max(-30,verticalSpeed-9.81*.0125);
-            Vec3 move=new Vec3(-Math.sin(yaw)*speed*.0125,verticalSpeed*.0125,Math.cos(yaw)*speed*.0125);
+            Vec3 move=new Vec3((-Math.sin(yaw)*speed+Math.cos(yaw)*transmissionState.lateralSpeed())*.0125,verticalSpeed*.0125,(Math.cos(yaw)*speed+Math.sin(yaw)*transmissionState.lateralSpeed())*.0125);
             double oldX=getX(),oldZ=getZ(),impact=Math.abs(speed);
             move(MoverType.SELF,move);
             if(verticalCollision)verticalSpeed=0;
@@ -153,11 +166,13 @@ public final class CarEntity extends Entity {
         entityData.set(BOOST,(float)engineState.boost());entityData.set(OIL_TEMP,(float)engineState.oilTemperature());entityData.set(OIL_PRESSURE,(float)engineState.oilPressure());
         entityData.set(ENGINE_HEALTH,(float)engineState.health());entityData.set(AFR,(float)engineState.afr());entityData.set(THROTTLE,(float)engineState.throttle());entityData.set(SPOOL,(float)engineState.spool());
         entityData.set(SHAFT_TORQUE,(float)engineState.shaftTorque());entityData.set(BLOWER_KW,(float)engineState.blowerKw());
-        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),ignition(),speed,braking,.05);
+        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),engineState.mode()==EnginePhysics.Mode.RUNNING,engineState.mode()==EnginePhysics.Mode.CRANKING,lights(),speed,braking,.05);
         mechanical=WheelDynamics.wear(mechanical,wheelState,speed,.05);
         var internals=mechanical.get("engine.internals");
         if(internals!=null){double damage=Math.max(internals.damage(),1-engineState.health()/100);mechanical=mechanical.with("engine.internals",internals.condition(internals.wear(),damage,internals.faults()));entityData.set(ENGINE_HEALTH,(float)(100*(1-damage)));}
-        engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),engineState.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff());
+        engineState=new EnginePhysics.State(engineState.omega(),engineState.throttle(),engineState.spool(),engineState.boost(),engineState.oilTemperature(),engineState.oilPressure(),engineHealth(),engineState.afr(),engineState.shaftTorque(),engineState.blowerKw(),engineState.blowOff(),engineState.mode(),engineState.startTime());
+        var clutch=mechanical.get("driveline.clutch");if(clutch!=null)mechanical=mechanical.with("driveline.clutch",clutch.condition(clutch.wear()+Math.max(0,transmissionState.clutchHeat()-220)*.0000005*.05,clutch.damage(),clutch.faults()).operating(clutch.reserve(),transmissionState.clutchHeat()));
+        entityData.set(ENGINE_MODE,engineState.mode().ordinal());
         entityData.set(TEMPERATURE,(float)mechanical.coolantTemperature());fluidReadings();
         int mask=0;for(int c=0;c<4;c++){var wheel=wheelState.corners().get(c);if(wheel.contact())mask|=1<<c;entityData.set(WHEELS.get(c),new org.joml.Vector3f((float)wheel.omega(),(float)wheel.travel(),(float)wheel.slip()));}entityData.set(CONTACTS,mask);
         if(tickCount%20==0)setMechanics(mechanical);
@@ -243,18 +258,28 @@ public final class CarEntity extends Entity {
         lastActionTick=tickCount;
         if(action==CarPackets.LIGHTS){flag(2,!lights());return;}
         if(action==CarPackets.HORN){playSound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(),1,.8f);return;}
+        if(action==CarPackets.DIAGNOSE&&a>=3&&a<=5){
+            if(a==3&&hasTool(player,"multimeter"))entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Battery terminals %.2f V; stored charge %.1f Ah. Mode: %s.",CircuitPhysics.measure(mechanics(),rpm(),engineRunning(),speed()).voltage(),CircuitPhysics.batteryCharge(mechanics()),engineMode().name().toLowerCase(Locale.ROOT)));
+            if(a==4&&hasTool(player,"oil_pressure_gauge"))entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Mechanical oil gauge: %.2f bar at %.0f RPM. Sender bypassed by this physical test.",CircuitPhysics.measure(mechanics(),rpm(),engineRunning(),speed()).oilPressure(),rpm()));
+            if(a==5&&hasTool(player,"compression_tester")){
+                if(ignition()||!hoodOpen()||!MechanicalCapabilities.canCrank(mechanics())){message(player,"Stop the engine, open the hood, and provide a working starter circuit.");return;}
+                var internal=mechanics().get("engine.internals");double compression=internal==null?0:internal.capability()*((internal.faults()&PartInstance.MISFIRE)!=0?.7:1)*(engineFamily().rotary()?8.5:12);
+                entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"%s assembly compression: %.2f bar equivalent. This grouped test does not identify an individual seal or cylinder.",engineFamily().rotary()?"Rotary chamber":"Piston",compression));
+            }return;
+        }
         if(action==CarPackets.REV_TEST){
-            if(ignition()&&Math.abs(speed())<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
+            if(engineRunning()&&Math.abs(speed())<.3&&hoodOpen()){benchTicks=40;message(player,"Two-second rev test. Clutch disengaged and brakes held.");}
             else message(player,"Park, open the hood and start the engine before a rev test.");return;
         }
         if(action==CarPackets.IGNITION){
             if(ignition()){flag(1,false);return;}
             if(raised()){message(player,"Lower the service jack before starting.");return;}
             if(!engineProblem().isEmpty()){message(player,engineProblem());return;}
+            if(!MechanicalCapabilities.canCrank(mechanics())){message(player,"Starter cannot turn the engine. Test battery, starting circuit and mechanical resistance.");return;}
             if(engineHealth()<=5){message(player,"Engine worn out. Rebuild it in the engine workshop.");return;}
             if(temperature()>=125){message(player,"Engine too hot. Let it cool before restarting.");return;}
             if(fuel()<=0||isInWater()){message(player,"Refuel or repair the car before starting.");return;}
-            flag(1,true);playSound(SoundEvents.PISTON_EXTEND,.7f,.7f);return;
+            engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());flag(1,true);playSound(SoundEvents.PISTON_EXTEND,.7f,.7f);return;
         }
         if(Math.abs(speed())>.3){message(player,"Stop the car before servicing it.");return;}
         if(action==CarPackets.PANELS){boolean open=!panels();flag(4,open);flag(8,open);return;}
@@ -271,6 +296,10 @@ public final class CarEntity extends Entity {
             }
             case CarPackets.CLEAR_FAULTS -> {setMechanics(mechanics().update(mechanics().parts(),coolant(),oilQuantity(),brakeFluid(),temperature(),oilTemperature(),mechanics().distance(),Set.of()));entityData.set(DIAGNOSTIC,"Stored warnings cleared. Active conditions will be logged again.");}
             case CarPackets.FLUID_SERVICE -> {
+                if(a==3){
+                    if(b<0||b>3||!hasTool(player,"tire_pump"))return;String key="wheel."+ComponentSlot.CORNERS[b]+".tire";var tire=mechanics().get(key);if(tire==null){message(player,"Install a tire first.");return;}
+                    setMechanics(mechanics().with(key,tire.operating(2.3,tire.temperature())));entityData.set(DIAGNOSTIC,"Tire inflated to 2.30 bar. Existing punctures remain and can leak again.");return;
+                }
                 if(!hoodOpen()||hoodProgress<.95){message(player,"Open the hood fully for fluid service.");return;}
                 if(a<0||a>2)return;
                 if((a==0&&temperature()>60)||(a==1&&oilTemperature()>70)){message(player,"Let the fluid cool before opening its circuit.");return;}
@@ -421,7 +450,9 @@ public final class CarEntity extends Entity {
     @Override public boolean hurt(DamageSource source,float amount){
         if(level().isClientSide||isInvulnerableTo(source))return false;
         if(source.getEntity() instanceof Player p&&p.isCreative()&&mayModify(p)&&getPassengers().isEmpty()){discard();return true;}
-        entityData.set(HEALTH,Math.max(0,health()-Math.min(amount,50)));return true;
+        var sourcePos=source.getSourcePosition();String region="front";
+        if(sourcePos!=null){var local=sourcePos.subtract(position()).yRot((float)Math.toRadians(getYRot()));region=Math.abs(local.x)>Math.abs(local.z)*.6?(local.z>=0?"f":"r")+(local.x<0?"l":"r"):local.z<0?"rear":"front";}
+        impactComponents(region,Math.sqrt(25+Math.min(50,amount)*9));entityData.set(HEALTH,Math.max(0,health()-Math.min(amount,50)));return true;
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
@@ -448,6 +479,6 @@ public final class CarEntity extends Entity {
         if(tag.hasUUID("Owner"))setOwner(tag.getUUID("Owner"));
         if(tag.contains("Mechanics",10))setMechanics(MechanicalData.read(tag.getCompound("Mechanics")));
         else setMechanics(MechanicalState.legacy(config(),engineParts(),temperature(),oilTemperature(),engineHealth()));
-        flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
+        wheelState=WheelDynamics.State.stopped();transmissionState=TransmissionPhysics.State.stopped();entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));speed=0;verticalSpeed=0;benchTicks=0;flag(1,false);
     }
 }

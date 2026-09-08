@@ -19,3 +19,11 @@ Fresh M1 checks: 22 simulation tests and 22 server GameTests passed, including f
 ## Next milestone
 
 M2: coolant circuit causality, pressure testing, conserved refill transactions, localized collision damage, independent tire/brake behavior and a complete playable repair scenario. M3â€“M6 remain unfinished.
+
+## M3 — connected powertrain, oil and electrical systems
+
+The starter now physically spins the crank before combustion catches; a flat battery, failed starting circuit or seized assembly can prevent cranking. Ignition/fuel/compression faults can permit cranking without sustained running. Engine, transmission, rolling and braking capabilities are independent. Ancillary cooling/oil/exhaust removal no longer makes the combustion assembly disappear; running without them has the corresponding fluid/heat consequences.
+
+Oil quantity, pump/filter/feed restriction and temperature produce pressure. Low-pressure running wears the actual engine and compressor; changing a turbo cannot repair its supply. Battery charge changes with starter/accessory demand and alternator/belt output. Clutch condition/heat changes torque capacity, gearbox/differential/shaft faults interrupt drive, shifts take finite time, and steering links, damping, bearings and corner travel influence motion. Engine families now have differing torque-curve shapes as gameplay calibrations. Rotary diagnostic vocabulary uses chambers, seals and ports.
+
+Fresh checks: 35 simulation tests and all 25 server GameTests pass, including all 98 family/grade/induction layouts. The layout test now allows the starter to finish before its existing acceleration interval, and legacy test fixtures explicitly discard generated mechanical data before assigning legacy aggregate fields. The new server test reproduces a flat battery, missing oil pump, measured pressure loss, internal wear, targeted replacement and retained damage. The compression tool reports a grouped assembly estimate; individual cylinder/chamber internals are not separately simulated. Native client regression is running before M4.

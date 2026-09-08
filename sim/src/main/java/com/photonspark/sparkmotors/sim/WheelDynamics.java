@@ -25,7 +25,10 @@ public final class WheelDynamics {
         for(int c=0;c<4;c++){
             var old=previous.corners.get(c);boolean contact=contacts[c]&&Assembly.WHEELS.variant(config)>0;
             double traction=tireGrip(m,c)*grip*(Assembly.WHEELS.variant(config)==2?1.17:1);
-            double limit=MASS*9.81*.25*traction;
+            double spring=m==null?1:m.capability("wheel."+ComponentSlot.CORNERS[c]+".spring");
+            double damper=m==null?1:m.capability("wheel."+ComponentSlot.CORNERS[c]+".damper");
+            double load=clamp(.25*(.35+.65*spring)+travels[c]*.4+(travels[c]-old.travel)/Math.max(.001,dt)*damper*.003,.04,.42);
+            double limit=MASS*9.81*load*traction;
             double service=in.brake()&&Assembly.BRAKES.variant(config)>0?MASS*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true):0;
             double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?MASS*3*brakeCapability(m,c,false):0;
             double fade=clamp(1-(old.temperature-350)/500,.15,1);
@@ -34,11 +37,11 @@ public final class WheelDynamics {
             double wheelForce=c>=2?driveForce*.5:0;
             // A locked wheel balances opposing engine/brake torques before the tire contact limit.
             double brake=contact?Math.min(request,Math.abs(speed)<.1?Math.max(limit,Math.abs(wheelForce)):limit):0;brakes+=brake;moment+=(c%2==0?-1:1)*brake*.83;
-            if(contact){rolling+=35+(1-traction)*140;if(c>=2)driveGrip+=traction*.5;}
+            if(contact){rolling+=35+(1-traction)*140+(m==null?0:(1-m.capability("wheel."+ComponentSlot.CORNERS[c]+".bearing"))*220);if(c>=2)driveGrip+=traction*.5;}
             double omega=old.omega;
             if(contact){double slip=clamp((Math.abs(wheelForce)+request)/Math.max(100,limit)-1,0,2);omega=speed/WHEEL_RADIUS*(1+(wheelForce>request?slip:-Math.min(1,slip)));}
             else{omega+=(wheelForce*WHEEL_RADIUS-Math.signum(omega)*Math.min(Math.abs(omega)*1.5/dt,request*WHEEL_RADIUS))*dt/1.5;}
-            omega=clamp(omega,-300,300);double travel=old.travel+(travels[c]-old.travel)*(1-Math.exp(-dt*12));
+            omega=clamp(omega,-300,300);double travel=old.travel+(travels[c]-(1-spring)*.12-old.travel)*(1-Math.exp(-dt*(3+damper*9)));
             double temperature=old.temperature+(brake*Math.abs(speed)/1000/8-(old.temperature-20)*(.016+Math.abs(speed)*.002))*dt;
             double slip=contact?Math.abs(omega*WHEEL_RADIUS-speed)/Math.max(1,Math.abs(speed)):0;
             result.add(new Corner(omega,old.angle+omega*dt,travel,contact,slip,brake,clamp(temperature,20,1000)));
@@ -49,6 +52,7 @@ public final class WheelDynamics {
         for(int c=0;c<4;c++){
             var w=wheels.corners.get(c);String k="wheel."+ComponentSlot.CORNERS[c]+".";var pad=m.get(k+"pad");
             if(pad!=null)m=m.with(k+"pad",pad.condition(pad.wear()+w.brakeForce*Math.abs(speed)*dt/2e9,pad.damage(),pad.faults()).operating(pad.reserve(),w.temperature));
+            var disc=m.get(k+"disc");if(disc!=null)m=m.with(k+"disc",disc.operating(disc.reserve(),w.temperature));
             var tire=m.get(k+"tire");if(tire!=null&&w.contact)m=m.with(k+"tire",tire.condition(tire.wear()+w.slip*Math.abs(speed)*dt*.000005,tire.damage(),tire.faults()).operating(tire.reserve(),20+Math.abs(speed)*1.2+w.slip*30));
         }return m;
     }

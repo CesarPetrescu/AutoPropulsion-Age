@@ -54,8 +54,8 @@ public final class AutoPropulsionAge {
             String key=slot.item();PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
         }
         PART_ITEMS.put("sport_muffler",ITEMS.register("sport_muffler",()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
-        for(String key:List.of("coolant_bottle","oil_bottle","brake_fluid_bottle","service_jack","pressure_tester","multimeter","tire_gauge"))
-            PART_ITEMS.put(key,ITEMS.registerSimpleItem(key,new Item.Properties().stacksTo(1)));
+        for(String key:List.of("coolant_bottle","oil_bottle","brake_fluid_bottle","service_jack","pressure_tester","multimeter","tire_gauge","oil_pressure_gauge","compression_tester","tire_pump"))
+            PART_ITEMS.put(key,ITEMS.register(key,()->new com.photonspark.sparkmotors.item.ServicePartItem(new Item.Properties().stacksTo(1))));
     }
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ID);
     public static final DeferredHolder<CreativeModeTab,CreativeModeTab> TAB = TABS.register("garage", () -> CreativeModeTab.builder()
