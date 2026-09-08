@@ -1,0 +1,50 @@
+name: ElectricalAge companion verification
+on:
+  push:
+    branches: [feat/electrified-powertrains]
+    paths:
+      - '.github/workflows/eln-compat.yml'
+      - 'src/main/java/com/photonspark/sparkmotors/compat/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  companion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: CesarPetrescu/ElectricalAge
+          path: eln
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Record companion source
+        run: |
+          git -C eln rev-parse HEAD > electricalage-commit.txt
+          tar -czf electricalage-source.tar.gz --exclude='*.png' --exclude='*.obj' --exclude='*.ogg' --exclude='*.blend' --exclude='.git' eln/src eln/build.gradle* eln/settings.gradle* eln/gradle* eln/docs eln/.github
+      - uses: actions/upload-artifact@v4
+        with:
+          name: electricalage-inspection
+          path: |
+            electricalage-source.tar.gz
+            electricalage-commit.txt
+          retention-days: 3
+      - name: Compile Kotlin and run companion tests
+        working-directory: eln
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon compileKotlin test build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: electricalage-test-results
+          path: |
+            electricalage-commit.txt
+            eln/build/libs/*.jar
+            eln/build/test-results/
+            eln/build/reports/
+          retention-days: 14
