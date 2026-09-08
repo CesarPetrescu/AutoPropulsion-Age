@@ -1,13 +1,15 @@
 name: Electrified powertrain verification
 on:
   push:
-    branches: [feat/electrified-powertrains]
+    branches: [feat/electrified-powertrains, main]
+    paths-ignore: ['.ci/**', 'docs/**', 'README.md']
   pull_request:
+    paths-ignore: ['.ci/**', 'docs/**', 'README.md']
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: electrified-${{ github.ref }}
+  group: electrified-${{ github.event.pull_request.number || github.ref_name }}
   cancel-in-progress: true
 jobs:
   verify:
@@ -20,39 +22,57 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Archive inspection workspace
-        run: |
-          tar -czf inspection-workspace.tar.gz src sim tools build.gradle settings.gradle gradle.properties gradle gradlew docs/DEVELOPMENT.md docs/PLAYING.md docs/screenshots/alpha-garage.png docs/screenshots/hood-i4-natural.png
-      - uses: actions/upload-artifact@v4
-        with:
-          name: inspection-workspace
-          path: inspection-workspace.tar.gz
-          retention-days: 3
+      - name: Record tested source
+        run: git rev-parse HEAD > tested-commit.txt
       - name: Build and simulation tests
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon build :sim:test
+          ./gradlew --no-daemon -PwithGameTests build :sim:test 2>&1 | tee compile.log
       - name: Dedicated Minecraft GameTests
-        run: ./gradlew --no-daemon -PwithGameTests runGameTestServer
+        run: ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee gametest.log
       - name: Install native client dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 pulseaudio
-      - name: Native Minecraft client smoke
+      - name: Native electric vehicle client smoke
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
           ALSOFT_DRIVERS: 'null'
         run: |
-          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientSmokeQuick
+          rm -f run/electric-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientElectricSmoke 2>&1 | tee electric-client.log
+          cat run/electric-smoke-result.txt
+          grep -q '^PASS' run/electric-smoke-result.txt
+      - name: Native combustion regression smoke
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/alpha-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientSmokeQuick 2>&1 | tee combustion-client.log
           cat run/alpha-smoke-result.txt
-          grep -q PASS run/alpha-smoke-result.txt
+          grep -q '^PASS' run/alpha-smoke-result.txt
+      - name: Inspect release isolation
+        run: |
+          python3 - <<'PY'
+          import pathlib,zipfile
+          jars=list(pathlib.Path('build/libs').glob('*.jar'))
+          assert jars
+          for path in jars:
+              names=zipfile.ZipFile(path).namelist()
+              assert not any('/gametest/' in n or '/structure/test_track.nbt' in n for n in names),path
+              assert 'com/photonspark/sparkmotors/sim/electric/BatteryModel.class' in names,path
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: electrified-verification
           path: |
+            tested-commit.txt
+            *.log
             build/libs/*.jar
             build/reports/
             sim/build/reports/
-            run/alpha-smoke-result.txt
+            sim/build/test-results/
+            run/*smoke-result.txt
             run/screenshots/
             run/logs/
             run/gametest/logs/
