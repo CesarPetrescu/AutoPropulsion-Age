@@ -68,9 +68,9 @@ def client(log, result, mode):
         require('MOD_LOGO_CLIENT_PASS' in log, 'Missing native loaded logo check')
         return {'workshop_page_scale_cases': 192, 'native_mod_logo': True, 'scaled_navigation': True}
     if mode == 'mechanics':
-        for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS'):
+        for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS', 'COOLANT_REFILL_CLIENT_PASS'):
             require(marker in log, f'Missing {marker}')
-        return {'native_mechanics_passed': True, 'audio_channels_and_cleanup': True, 'sender_test': True}
+        return {'native_mechanics_passed': True, 'audio_channels_and_cleanup': True, 'sender_test': True, 'acknowledged_coolant_refill': True}
     if mode == 'handling':
         for marker in ('HANDLING_CLIENT_PASS', 'AIRBORNE_LANDING_PASS'):
             require(marker in log, f'Missing {marker}')

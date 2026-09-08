@@ -121,7 +121,7 @@ public final class ClientSmoke {
             if(ticks==300){if(!car.diagnostic().contains("Pressure loss"))throw new IllegalStateException("Timed leak test did not synchronize: "+car.diagnostic());pendingScreenshot="mechanics-pressure-loss.png";}
             if(ticks==320){press(mc,"Parts",0);press(mc,"Install part",0);}
             if(ticks==340){if(CircuitPhysics.coolantLeak(car.mechanics())>.005)throw new IllegalStateException("Hose replacement did not stop the leak");if(car.coolant()>2.5)throw new IllegalStateException("Part replacement secretly refilled coolant");press(mc,"Tests / fluids",0);}
-            if(ticks>=355&&ticks<=385&&ticks%5==0)press(mc,"Fill coolant",0);
+            if(ticks==355&&!CoolantRefill.tick(mc,car)){ticks--;return;}
             if(ticks==400){if(car.coolant()<7.999)throw new IllegalStateException("Full coolant refill packet sequence failed");press(mc,"Pressure test / 10s",0);}
             if(ticks==615){if(!car.diagnostic().contains("Holds pressure"))throw new IllegalStateException("Repaired circuit failed pressure verification");pendingScreenshot="mechanics-repair-verified.png";}
             if(ticks==620){if(car.mechanics().get("engine.internals").wear()<.34)throw new IllegalStateException("Hose replacement healed unrelated internal wear");press(mc,"Garage",0);press(mc,"Live",0);}

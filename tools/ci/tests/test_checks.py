@@ -106,8 +106,9 @@ class ReleaseGates(unittest.TestCase):
             checks.client('ALPHA_CLIENT_SMOKE PASS: MECHANICS_CLIENT_PASS', 'PASS: ok', 'mechanics')
 
     def test_mechanics_complete_pass(self):
-        log = 'ALPHA_CLIENT_SMOKE PASS: MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS INSTRUMENT_SENDER_PASS'
+        log = 'ALPHA_CLIENT_SMOKE PASS: MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS INSTRUMENT_SENDER_PASS COOLANT_REFILL_CLIENT_PASS'
         self.assertTrue(checks.client(log, 'PASS: ok', 'mechanics')['native_mechanics_passed'])
+        with self.assertRaises(ValueError):checks.client(log.replace('COOLANT_REFILL_CLIENT_PASS',''),'PASS: ok','mechanics')
 
     def test_duplicate_layout_logs_cannot_fake_coverage(self):
         log = 'ALPHA_CLIENT_SMOKE PASS:\n' + 'ENGINE_LAYOUT_PASS i4-natural\n' * 49 + 'HARDWARE_UI_PASS stock_intake\n' * 42
