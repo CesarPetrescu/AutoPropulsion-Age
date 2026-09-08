@@ -83,7 +83,7 @@ public final class ElectricClientSmoke {
             if(ticks==90){mc.setScreen(null);var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);if(p.level().getBlockEntity(c.chargerPosition()) instanceof ChargerBlockEntity charger)charger.disconnect();c.tickCount+=4;c.action(p,CarPackets.HOOD,0,0);p.startRiding(c,true);});phase=3;ticks=0;}
         }else if(phase==3){
             if(ticks==20){CarClient.send(car,CarPackets.IGNITION,0,0);mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);}
-            if(ticks>30){PacketDistributor.sendToServer(new CarPackets.Input(car.getId(),ticks<95?1:4,0));peak=Math.max(peak,Math.abs(car.speed()));}
+            if(ticks>30){mc.options.keyUp.setDown(ticks<95);mc.options.keyJump.setDown(ticks>=95);peak=Math.max(peak,Math.abs(car.speed()));}
             if(ticks==80)screenshot="electric-driving-native.png";
             if(ticks==160){if(peak<5||Math.abs(car.speed())>.2||car.fuel()!=0||car.rpm()!=0){finish(mc,"FAILED: EV native driving/braking peak="+peak+" speed="+car.speed());return;}
                 finish(mc,"PASS: four electrified vehicle variants and four charger models rendered; charge energy and ceiling synchronized through real GUI packets; cable interlock/disconnect; battery-only driving and friction braking; screenshots captured. ELN="+ModList.get().isLoaded("eln")+" peak_mps="+peak);}
@@ -92,7 +92,7 @@ public final class ElectricClientSmoke {
     private static void press(Minecraft mc,String label){mc.screen.children().stream().filter(c->c instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().equals(label)&&b.active).map(c->(net.minecraft.client.gui.components.Button)c).findFirst().orElseThrow().onPress();}
     @SubscribeEvent public static void frame(RenderFrameEvent.Post event){if(screenshot!=null){var mc=Minecraft.getInstance();String name=screenshot;screenshot=null;Screenshot.grab(mc.gameDirectory,name,mc.getMainRenderTarget(),text->System.out.println("ELECTRIC_SCREENSHOT "+name));}}
     private static void finish(Minecraft mc,String text){
-        if(phase==99)return;phase=99;System.out.println("ELECTRIC_CLIENT_SMOKE "+text);
+        if(phase==99)return;phase=99;mc.options.keyUp.setDown(false);mc.options.keyJump.setDown(false);System.out.println("ELECTRIC_CLIENT_SMOKE "+text);
         try{Files.writeString(mc.gameDirectory.toPath().resolve("electric-smoke-result.txt"),text);}catch(Exception e){throw new IllegalStateException(e);}mc.stop();
     }
 }

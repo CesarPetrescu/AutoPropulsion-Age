@@ -48,6 +48,10 @@ public final class BatteryModel {
         return v*current+r*current*current;
     }
     public static Exchange exchange(Spec spec,State original,double terminalW,double dt,double ambientC,double speed){
+        return exchange(spec,original,terminalW,dt,ambientC,speed,true);
+    }
+    /** External charging shares the vehicle's thermal clock: ohmic heat only when passiveCooling=false. */
+    public static Exchange exchange(Spec spec,State original,double terminalW,double dt,double ambientC,double speed,boolean passiveCooling){
         validDt(dt);State s=original.normalized(spec);
         double v=ocv(spec,s),r=resistance(spec,s),p=clamp(terminalW,-1e7,1e7);
         p=clamp(p,-chargeLimitW(spec,s,dt),dischargeLimitW(spec,s,dt));
@@ -65,7 +69,7 @@ public final class BatteryModel {
         double thermalMass=spec.massKg*900;
         double conductance=8+2*clamp(Math.abs(speed),0,65);
         double ambient=clamp(ambientC,-50,60),equilibrium=ambient+ohmic/dt/conductance;
-        double temperature=equilibrium+(s.temperatureC-equilibrium)*Math.exp(-conductance*dt/thermalMass);
+        double temperature=passiveCooling?equilibrium+(s.temperatureC-equilibrium)*Math.exp(-conductance*dt/thermalMass):s.temperatureC+ohmic/thermalMass;
         return new Exchange(new State(energy,temperature,health,throughput),p*dt,current,v-current*r,ohmic,fade);
     }
     /** Heater energy is supplied separately by the charger, never created in the pack. */

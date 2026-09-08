@@ -29,6 +29,7 @@ public final class CarEntity extends Entity {
     private static final EntityDataAccessor<Boolean> PLUGGED=data(EntityDataSerializers.BOOLEAN),GENERATOR=data(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> SOC=data(EntityDataSerializers.FLOAT),PACK_V=data(EntityDataSerializers.FLOAT),PACK_A=data(EntityDataSerializers.FLOAT),PACK_KW=data(EntityDataSerializers.FLOAT),PACK_C=data(EntityDataSerializers.FLOAT),PACK_HEALTH=data(EntityDataSerializers.FLOAT),MOTOR_C=data(EntityDataSerializers.FLOAT),INVERTER_C=data(EntityDataSerializers.FLOAT),REGEN_KW=data(EntityDataSerializers.FLOAT),GEN_KW=data(EntityDataSerializers.FLOAT),CHARGE_KW=data(EntityDataSerializers.FLOAT);
     private ElectricDynamics.State electricState;
+    private double chargingTerminalW,chargingCurrentA,chargingVoltageV;
     private static final EntityDataAccessor<BlockPos> CHARGER_POSITION=data(EntityDataSerializers.BLOCK_POS);
     private BlockPos chargingPos;
     private int chargeLease;
@@ -95,12 +96,17 @@ public final class CarEntity extends Entity {
     public void detachCharger(BlockPos pos){if(isConnectedTo(pos)){chargingPos=null;entityData.set(PLUGGED,false);entityData.set(CHARGE_KW,0f);}}
     public void acceptCharge(BlockPos pos,ChargingModel.Result result){
         if(level().isClientSide||!isConnectedTo(pos)||ignition()||electricState==null)return;
-        electricState=electricState.withBattery(result.battery());entityData.set(CHARGE_KW,(float)(result.inputJ()*20/1000));syncElectric();
+        electricState=electricState.withBattery(result.battery());
+        chargingTerminalW=result.terminalJ()*20;chargingCurrentA=result.currentA();
+        chargingVoltageV=result.voltageV()>0?result.voltageV():BatteryModel.ocv(powertrain().battery,result.battery());
+        entityData.set(CHARGE_KW,(float)(result.inputJ()*20/1000));syncElectric();
     }
     private void syncElectric(){
         if(electricState==null)return;var e=electricState;var b=e.battery();
         entityData.set(SOC,(float)b.soc(powertrain().battery));entityData.set(PACK_C,(float)b.temperatureC());entityData.set(PACK_HEALTH,(float)b.health());
-        entityData.set(PACK_V,(float)e.voltageV());entityData.set(PACK_A,(float)e.currentA());entityData.set(PACK_KW,(float)(e.packW()/1000));
+        entityData.set(PACK_V,(float)(plugged()&&chargingVoltageV>0?chargingVoltageV:e.voltageV()));
+        entityData.set(PACK_A,(float)(plugged()?chargingCurrentA:e.currentA()));
+        entityData.set(PACK_KW,(float)((plugged()?chargingTerminalW:e.packW())/1000));
         entityData.set(MOTOR_C,(float)e.motorC());entityData.set(INVERTER_C,(float)e.inverterC());entityData.set(GENERATOR,e.generating());
         entityData.set(REGEN_KW,(float)(e.regenW()/1000));entityData.set(GEN_KW,(float)(e.generatorW()/1000));
     }

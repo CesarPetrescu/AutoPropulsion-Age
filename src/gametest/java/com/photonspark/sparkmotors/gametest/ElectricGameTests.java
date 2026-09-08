@@ -26,6 +26,24 @@ public final class ElectricGameTests {
         h.assertTrue(!loaded.ignition()&&!loaded.plugged(),"READY and cable do not resurrect on reload");
         tag.remove("Powertrain");tag.putInt("DataVersion",3);loaded.load(tag);h.assertTrue(loaded.powertrain()==Powertrain.COMBUSTION,"old sedan migrates to combustion, never silently EV");h.succeed();
     }
+    @GameTest(template="test_track") public void craftingConversionPreservesUsedBattery(GameTestHelper h){
+        var item=Electrification.PACKS.get(Powertrain.ELECTRIC_400).get();
+        var pack=item.write(new ItemStack(item),new BatteryModel.State(2_345_678,38,.73,123456));
+        var donor=new ItemStack(AutoPropulsionAge.CAR_CRATE.get());
+        var donorData=new CompoundTag();donorData.putInt("EngineParts",1234);
+        donor.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.of(donorData));
+        var input=net.minecraft.world.item.crafting.CraftingInput.of(3,3,java.util.List.of(
+            new ItemStack(net.minecraft.world.item.Items.COPPER_BLOCK),new ItemStack(net.minecraft.world.item.Items.REDSTONE_BLOCK),new ItemStack(net.minecraft.world.item.Items.QUARTZ),
+            ItemStack.EMPTY,donor,ItemStack.EMPTY,ItemStack.EMPTY,pack,ItemStack.EMPTY));
+        var recipe=h.getLevel().getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,h.getLevel()).orElseThrow();
+        var output=recipe.value().assemble(input,h.getLevel().registryAccess());
+        h.assertTrue(output.is(Electrification.CRATES.get(Powertrain.ELECTRIC_400).get()),"conversion resolves the EV recipe");
+        var data=output.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag();
+        h.assertTrue(data.getInt("EngineParts")==1234,"donor parts preserved");
+        var stored=item.read(pack);var nested=data.getCompound("TractionBattery");
+        var saved=new ItemStack(item);saved.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.of(nested));
+        h.assertTrue(item.read(saved).equals(stored),"crafting does not refill, repair, cool or reset battery cycles");h.succeed();
+    }
     @GameTest(template="test_track",timeoutTicks=150) public void electricCarDrivesWithNoFuelAndBrakes(GameTestHelper h){
         var car=car(h,Powertrain.ELECTRIC_400,.5);var p=h.makeMockServerPlayerInLevel();p.moveTo(car.position());car.setOwner(p.getUUID());p.startRiding(car,true);car.action(p,CarPackets.IGNITION,0,0);
         double initial=car.tractionBattery().energyJ(),start=car.getZ();int[] tick={0};h.onEachTick(()->{tick[0]++;car.receiveInput(tick[0]<45?1:4,0);});

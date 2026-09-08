@@ -20,16 +20,21 @@ public final class ChargingModel {
         public String id(){return name().toLowerCase(java.util.Locale.ROOT)+"_charger";}
     }
     public enum Status { UNPLUGGED, INCOMPATIBLE, INTERLOCK, NO_POWER, UNDERVOLTAGE, OVERVOLTAGE, COLD, HOT, COMPLETE, CHARGING, PREHEATING }
-    public record Result(BatteryModel.State battery,double inputJ,double storedJ,double lossJ,double heaterJ,Status status){}
+    public record Result(BatteryModel.State battery,double inputJ,double storedJ,double lossJ,double heaterJ,Status status,
+                         double terminalJ,double currentA,double voltageV){
+        public Result(BatteryModel.State battery,double inputJ,double storedJ,double lossJ,double heaterJ,Status status){this(battery,inputJ,storedJ,lossJ,heaterJ,status,0,0,0);}
+    }
+    /** Electrical/heat exchange only; the vehicle simulation advances passive cooling exactly once. */
     public static Result step(Powertrain type,BatteryModel.State battery,Tier tier,double suppliedV,double availableJ,
                               double targetSoc,boolean connected,boolean ready,double speed,double dt,double ambientC){
         if(!Double.isFinite(dt)||dt<=0||dt>.25)throw new IllegalArgumentException("Invalid charge timestep");
         if(!connected)return idle(battery,Status.UNPLUGGED);
         if(!type.plugIn()||tier.dc&&type.dcChargeKw<=0)return idle(battery,Status.INCOMPATIBLE);
         if(ready||Math.abs(speed)>.1)return idle(battery,Status.INTERLOCK);
-        if(!Double.isFinite(suppliedV)||suppliedV<=0||!Double.isFinite(availableJ)||availableJ<=0)return idle(battery,Status.NO_POWER);
+        if(!Double.isFinite(suppliedV)||suppliedV<=0)return idle(battery,Status.NO_POWER);
         if(suppliedV>tier.inputV*1.10)return idle(battery,Status.OVERVOLTAGE);
         if(suppliedV<tier.inputV*.80)return idle(battery,Status.UNDERVOLTAGE);
+        if(!Double.isFinite(availableJ)||availableJ<=0)return idle(battery,Status.NO_POWER);
         var spec=type.battery;var b=battery.normalized(spec);
         if(b.temperatureC()>=55||b.health()<.1)return idle(b,Status.HOT);
         double target=clamp(targetSoc,.5,1);
@@ -47,9 +52,9 @@ public final class ChargingModel {
         double room=Math.max(0,target*b.capacityJ(spec)-b.energyJ());
         double v=BatteryModel.ocv(spec,b),r=BatteryModel.resistance(spec,b),i=room/(v*dt);
         packW=Math.min(packW,v*i+r*i*i);
-        var exchange=BatteryModel.exchange(spec,b,-packW,dt,ambientC,0);
+        var exchange=BatteryModel.exchange(spec,b,-packW,dt,ambientC,0,false);
         double input=-exchange.terminalJ()/tier.efficiency,stored=exchange.state().energyJ()-b.energyJ();
-        return new Result(exchange.state(),input,stored,input-stored,0,input>0?Status.CHARGING:Status.COLD);
+        return new Result(exchange.state(),input,stored,input-stored,0,input>0?Status.CHARGING:Status.COLD,exchange.terminalJ(),exchange.currentA(),exchange.voltageV());
     }
     private static Result idle(BatteryModel.State battery,Status status){return new Result(battery,0,0,0,0,status);}
 }
