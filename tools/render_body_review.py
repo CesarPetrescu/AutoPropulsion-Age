@@ -33,6 +33,10 @@ with gzip.open(repo/'src/main/resources/assets/sparkmotors/models/entity/sedan.m
         name=f.read(struct.unpack('>H',f.read(2))[0]).decode()
         cat,group,variant,hinge,px,py,pz,angle,family,slot,tier,induction,kind,n=struct.unpack('>iiii4f6i',f.read(56))
         vs=[struct.unpack('>6fI',f.read(28)) for _ in range(n)]
+        if name.startswith('pt|'):
+            _,types,layouts,_=name.split('|',3)
+            if not int(types)&1 or not int(layouts)&1:continue
+        elif group==1:continue
         if name=='service_jack' or not family&1 or not induction&1 or slot>=0 and tier>1:continue
         chunks.append((name,cat,group,variant,kind,vs))
 for grade in [1,2]:

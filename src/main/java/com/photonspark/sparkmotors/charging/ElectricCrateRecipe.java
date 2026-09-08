@@ -1,6 +1,9 @@
 package com.photonspark.sparkmotors.charging;
 
 import com.photonspark.sparkmotors.item.CarCrateItem;
+import com.photonspark.sparkmotors.sim.*;
+import com.photonspark.sparkmotors.item.MechanicalData;
+import com.photonspark.sparkmotors.item.EngineItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +23,17 @@ public record ElectricCrateRecipe(ShapedRecipe delegate) implements CraftingReci
             {
             data=input.getItem(i).getOrDefault(DataComponents.CUSTOM_DATA,CustomData.EMPTY).copyTag();
             var mechanical=com.photonspark.sparkmotors.item.MechanicalData.get(input.getItem(i));
-            if(mechanical!=null)com.photonspark.sparkmotors.item.MechanicalData.set(result,mechanical);
+            if(mechanical!=null){
+                var from=((CarCrateItem)input.getItem(i).getItem()).powertrain();var to=((CarCrateItem)result.getItem()).powertrain();
+                var drive=DriveConfig.preset(DriveConfig.Layout.RWD);
+                mechanical=PowertrainTopology.migrate(mechanical,from,drive,EngineFamily.I4,Assembly.stock(),EngineItem.parts(input.getItem(i)));
+                // Conversion ingredients manufacture only newly introduced mounts. Shared missing/used parts stay exact.
+                var fresh=PowertrainTopology.fresh(to,drive,EngineFamily.I4,Assembly.stock(),EngineItem.parts(input.getItem(i)));
+                for(var slot:PowertrainTopology.slots(to,drive,EngineFamily.I4))
+                    if(!PowertrainTopology.applicable(slot,from,drive,EngineFamily.I4)&&mechanical.get(slot.key())==null)
+                        mechanical=mechanical.with(slot.key(),fresh.get(slot.key()));
+                MechanicalData.set(result,mechanical);
+            }
         }
         for(int i=0;i<input.size();i++)if(input.getItem(i).getItem() instanceof TractionBatteryItem item){
             var pack=item.write(new ItemStack(item),item.read(input.getItem(i)));

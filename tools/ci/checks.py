@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=74):
+def junit(directory, minimum=87):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,7 +36,7 @@ def junit(directory, minimum=74):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=41):
+def server(log, minimum=46):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -44,6 +44,8 @@ def server(log, minimum=41):
     require('ELECTRIC_SERVER_MATRIX_PASS 12' in log, 'Missing electric drivetrain matrix')
     for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
         require(marker in log,f'Missing {marker}')
+    for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'):
+        require('CONFIGURED_COMPONENTS_SERVER_PASS '+case in log, 'Missing native configured component test: '+case)
     return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
 
 
@@ -56,9 +58,10 @@ def client(log, result, mode):
             'Missing native client PASS or explicit failure present')
     if mode == 'ui':
         cases = set(re.findall(r'WORKSHOP_UI_CASE_PASS (\d+ [\w-]+)', log))
-        require(len(cases) == 156 and 'WORKSHOP_UI_PASS 156' in log, 'Incomplete workshop page/scale coverage')
+        require(len(cases) == 192 and 'WORKSHOP_UI_PASS 192' in log, 'Incomplete workshop page/scale coverage')
+        require('CONFIGURED_GEOMETRY_CLIENT_PASS cases=105' in log,'Missing complete configured service geometry/removal coverage')
         require('MOD_LOGO_CLIENT_PASS' in log, 'Missing native loaded logo check')
-        return {'workshop_page_scale_cases': 156, 'native_mod_logo': True, 'scaled_navigation': True}
+        return {'workshop_page_scale_cases': 192, 'native_mod_logo': True, 'scaled_navigation': True}
     if mode == 'mechanics':
         for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS'):
             require(marker in log, f'Missing {marker}')
@@ -100,6 +103,9 @@ def inspect_jar(path):
                 'Development harness/test track leaked into release JAR')
         for name in ('META-INF/neoforge.mods.toml', 'com/photonspark/sparkmotors/entity/CarEntity.class',
                      'com/photonspark/sparkmotors/sim/MechanicalState.class',
+                     'com/photonspark/sparkmotors/sim/PowertrainTopology.class',
+                     'com/photonspark/sparkmotors/sim/InternalMechanics.class',
+                     'assets/sparkmotors/models/entity/mechanical-models.json',
                      'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
                      'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
                      'com/photonspark/sparkmotors/client/ElectricScreen.class',

@@ -20,11 +20,25 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.6.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.7.0 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
 ![Opening hood and four-rotor twin-screw engine in the actual game](docs/screenshots/hood-rotor4-twin-screw.png)
+
+## Connected powertrain components
+
+0.7.0 connects the rendered drivetrain to individual serviceable parts. FWD has a front final drive and CV shafts, RWD has its rear drive path, and AWD includes both. Electric AWD has independent front and rear motors, inverters and reduction gears sharing one vehicle power budget. A broken CV, failed inverter or missing motor affects its actual axle.
+
+Piston engines have individual piston/ring/bearing/valve assemblies; rotary engines have rotor housings, seals, bearings and an eccentric shaft. Their condition changes compression, starting, torque and mechanical noise. Removing and refitting an internal kit carries its child parts, including missing mounts and worn state.
+
+Regen follows the electrical drive path and wheel contact independently of brake pads. Motor/inverter heat belongs to the removable part and feeds the cooling circuit. The HV harness and contactor gate READY and charging. These remain calibrated component simulations; hybrids use a series generator layout.
+
+| Combustion AWD | Electric AWD | Series hybrid AWD |
+|---|---|---|
+| ![AWD gearbox, transfer case, differentials and CV shafts](docs/drivetrain-review/combustion-awd.png) | ![Independent front and rear electric drive units](docs/drivetrain-review/electric-awd.png) | ![Series generator engine and both electric axles](docs/drivetrain-review/series-hybrid-awd.png) |
+
+[All nine drivetrain renders, service instructions and migration details](docs/CONFIGURED_POWERTRAINS.md).
 
 ## Body fit and collision update
 
@@ -88,7 +102,7 @@ Workshop pages fit the available screen without changing Minecraft's GUI setting
 | Power can break rear traction | Front tires share steering and propulsion grip | Extra traction; still capable of sliding |
 | ![RWD garage preset](docs/screenshots/handling-rwd-setup.png) | ![FWD garage preset](docs/screenshots/handling-fwd-setup.png) | ![AWD garage preset](docs/screenshots/handling-awd-setup.png) |
 
-Open **G → Drive**. Stop, switch off, exit and raise the car on a **Service Jack** before a conversion. In Survival it costs **eight iron ingots** and preserves installed part condition. Open, limited-slip and locked axle differentials are available; AWD front torque adjusts from 20–80%.
+Open **G → Drive**. Stop, switch off, exit and raise the car on a **Service Jack** before a conversion. In Survival it costs **eight iron ingots plus the components for new mounts**. Hover a preset to see its parts list. Removed components return to inventory; shared components keep their condition. Open, limited-slip and locked axle differentials are available; AWD front torque adjusts from 20–80%.
 
 For a first slide, briefly pull **Space** while turning, release it and countersteer. Holding the handbrake can spin the car. [Drive layouts, drifting and limits →](docs/PLAYING.md#drive-layouts-and-drifting)
 

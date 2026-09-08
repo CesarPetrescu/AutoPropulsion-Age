@@ -35,7 +35,7 @@ java -version
 
 Development is integrated on `main`. Feature branches run the same required checks; automatic releases come from successful pushes to `main`. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
 
-The main output is `build/libs/autopropulsion-age-0.6.1-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
+The main output is `build/libs/autopropulsion-age-0.7.0-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
 
 If Java is not 21, set the JDK for the current PowerShell session, adapting the path to your installation:
 
@@ -46,7 +46,7 @@ $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
 .\gradlew.bat --version
 ```
 
-Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **7** requires matching client/server builds. Vehicle save schema **6** combines drivetrain routing, electric/hybrid state and persistent mechanical components. Older cars remain combustion cars with the RWD road preset; mechanical items retain their separate typed schema.
+Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **8** requires matching client/server builds. Vehicle save schema **7** combines drivetrain routing, electric/hybrid state and persistent mechanical components. Older cars remain combustion cars with the RWD road preset; mechanical items retain their separate typed schema.
 
 ## Daily edit, run and debug loop
 
@@ -69,7 +69,7 @@ For the game's basic loop: create a Creative flat world, take a Sedan Crate from
 
 ## Handling and drivetrain work
 
-Use **G → Drive** for actual installed routing and wheel contact/slip readings. Stop fully, switch off, exit, and raise the car with the service jack before a layout or differential conversion. Survival needs a service jack and **eight iron ingots per conversion**. The conversion retains every installed component's identity, wear, damage and faults. A repeated current preset is a no-op. A missing or broken gearbox, shaft or differential must be repaired first. Lower the jack before starting.
+Use **G → Drive** for actual installed routing and wheel contact/slip readings. Stop fully, switch off, exit, and raise the car with the service jack before a layout or differential conversion. Survival needs a service jack and **eight iron ingots plus the components for newly introduced mounts per conversion**. The conversion retains every installed component's identity, wear, damage and faults. A repeated current preset is a no-op. A missing or broken gearbox, shaft or differential must be repaired first. Lower the jack before starting.
 
 | Road preset | Driven axles | Axle differential | Behavior |
 |---|---|---|---|
@@ -234,7 +234,7 @@ For gameplay detail see [PLAYING.md](docs/PLAYING.md). For the original engine/r
 
 `WorkshopScreen` fits a minimum 760 × 460 logical canvas inside the current GUI viewport. It scales rendering, tooltips, scissor regions and mouse/drag/scroll input together, without changing the player's global GUI option. Garage, Service and Drive share this layout boundary. Page controls remain separated from selected-part details and footers. The driving HUD caps its physical scale independently.
 
-Run `.\gradlew.bat -PwithGameTests runClientUi` for the native UI suite. It checks all six garage tabs, engine pages, every component-list page, muffler operations, fluid/tests and Drive: 156 page/scale combinations across 1024 × 600, 1440 × 900 and 1920 × 1080, using explicit and Auto GUI scales. It checks widget bounds, overlapping controls, label widths and actual scaled mouse navigation, and captures screenshots under `run/screenshots/ui-*.png`. Inspect the images as well as the PASS marker: widget bounds alone do not validate text clipping or presentation. The same run opens NeoForge's Mods screen and checks the loaded logo texture.
+Run `.\gradlew.bat -PwithGameTests runClientUi` for the native UI suite. It checks all six garage tabs, engine pages, every component-list page, muffler operations, fluid/tests and Drive: 192 page/scale combinations across 1024 × 600, 1440 × 900 and 1920 × 1080, using explicit and Auto GUI scales. It checks widget bounds, overlapping controls, label widths and actual scaled mouse navigation, and captures screenshots under `run/screenshots/ui-*.png`. Inspect the images as well as the PASS marker: widget bounds alone do not validate text clipping or presentation. The same run opens NeoForge's Mods screen and checks the loaded logo texture.
 
 The canonical [mod logo](src/main/resources/autopropulsion-age.png) is also used by the README. [Branding provenance](docs/BRANDING.md) records its generation prompt. Run `python tools/ci/documentation.py` to validate the full galleries and local links without rebuilding the model ZIP.
 
@@ -245,3 +245,18 @@ Minecraft yaw and the existing rig basis turn right for positive input. The clie
 For bodywork and collision changes, use [the fit and collision guide](docs/BODY_AND_COLLISION.md). Keep `CarGeometry` corner coordinates, the Blender exporter, the collision hull and the articulated renderer in the same frame. `assets/body_workshop.blend` contains the derived stock/sport inspection scenes. Rerun both geometry validators and the native handling harness after modifying wheel clearances or stance; a static render cannot prove articulation or recovery.
 
 Use `sim/.../electric` for pack, charger and motor energy calculations. Both powertrain types call `VehicleDynamics.chassis` and `WheelDynamics`; do not reintroduce a separate road-speed-only solver. `ElectricScreen` shares workshop scaling and input. Run `./gradlew.bat -PwithGameTests runClientElectricSmoke` for the native electric harness; use CI on Linux to keep the Windows desktop available. The required companion job checks the pinned ElectricalAge API with its actual circuit solver. [Charging specification](docs/ELECTRIFICATION.md).
+
+## Version 2 component and model workflow
+
+Read [configured powertrains](docs/CONFIGURED_POWERTRAINS.md) before changing slot topology. `PowertrainTopology` selects actual mounts; `InternalMechanics` owns per-cylinder/rotor behavior. Do not fill missing versioned slots when loading, crafting or installing used data. Parent bundles retain children. Keep factory fixture creation separate from player item placement.
+
+`tools/build_drivetrain_geometry.py` authors the layout-specific gearbox, CVs and e-axles. `tools/internal_model_bindings.py` binds original engine roots to service keys; `tools/build_internal_service_geometry.py` supplies missing family internals. The Blender MCP export emits `sedan.mesh.gz` and `mechanical-models.json`. Their type/layout masks are renderer metadata, not additional Minecraft entities. Do not edit the original kit destructively.
+
+```powershell
+# Run in the repository, with Blender available on PATH.
+blender --background --factory-startup --python-exit-code 1 --python tools/validate_drivetrain_geometry.py
+blender --background --factory-startup --python-exit-code 1 --python tools/render_drivetrain_review.py
+.\gradlew.bat -PwithGameTests runClientUi
+```
+
+The native UI harness also checks 105 configured component-visibility combinations against the actual loaded mesh and removes each detailed part. It injects Minecraft-level controls and hides its GLFW window; it does not take operating-system keyboard/mouse input. Save fresh test evidence outside the tracked source when experimenting.

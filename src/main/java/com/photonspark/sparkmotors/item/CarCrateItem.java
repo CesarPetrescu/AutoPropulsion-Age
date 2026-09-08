@@ -8,6 +8,7 @@ public final class CarCrateItem extends Item {
     private final com.photonspark.sparkmotors.sim.electric.Powertrain powertrain;
     public CarCrateItem(Properties properties) { this(properties,com.photonspark.sparkmotors.sim.electric.Powertrain.COMBUSTION); }
     public CarCrateItem(Properties properties,com.photonspark.sparkmotors.sim.electric.Powertrain type) { super(properties);powertrain=type; }
+    public com.photonspark.sparkmotors.sim.electric.Powertrain powertrain(){return powertrain;}
     @Override public InteractionResult useOn(UseOnContext ctx) {
         if(ctx.getLevel().isClientSide) return InteractionResult.SUCCESS;
         var player=ctx.getPlayer();if(player==null)return InteractionResult.FAIL;
@@ -19,11 +20,12 @@ public final class CarCrateItem extends Item {
         var state=new net.minecraft.nbt.CompoundTag();car.saveWithoutId(state);
         state.putInt("EngineParts",EngineItem.parts(ctx.getItemInHand()));state.putFloat("EngineTemperature",EngineItem.temperature(ctx.getItemInHand()));
         state.putFloat("OilTemperature",EngineItem.oilTemperature(ctx.getItemInHand()));state.putFloat("EngineHealth",EngineItem.health(ctx.getItemInHand()));state.remove("Mechanics");car.load(state);
-        var donor=MechanicalData.get(ctx.getItemInHand());if(donor!=null)car.setMechanics(donor);
+        var donor=MechanicalData.get(ctx.getItemInHand());
         if(!car.hasBodyClearance()) {
             player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
         }
         car.initializePowertrain(powertrain,player.isCreative()?.65:0);
+        if(donor!=null)car.setMechanics(com.photonspark.sparkmotors.sim.PowertrainTopology.migrate(donor,powertrain,car.driveConfig(),car.engineFamily(),car.config(),car.engineParts()));
         var stored=ctx.getItemInHand().getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
         if(powertrain.electric()&&stored.contains("TractionBattery")){
             // Crafting a vehicle with a used battery must not refill or rejuvenate it.

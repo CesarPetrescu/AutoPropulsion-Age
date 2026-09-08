@@ -1,5 +1,7 @@
 package com.photonspark.sparkmotors.sim;
 
+import com.photonspark.sparkmotors.sim.electric.Powertrain;
+
 /** Four tire forces drive a planar rigid body. SI units; forward and signed lateral/yaw axes follow the existing rig. Positive steer turns right in Minecraft. */
 public final class VehicleDynamics {
     public static final double MASS = 1280, WHEEL_RADIUS = .34, WHEELBASE = 2.65, TRACK=1.66, YAW_INERTIA=2350, CG_HEIGHT=.54;
@@ -9,9 +11,12 @@ public final class VehicleDynamics {
         public Input(double throttle,double steer,boolean brake,boolean reverse){this(throttle,steer,brake,reverse,false);}
         public Input { throttle = clamp(throttle, 0, 1); steer = clamp(steer, -1, 1); }
     }
-    public record Setup(int config, int limiter, double finalDrive, EngineFamily family, int engineParts, double temperature, double boostTarget, MechanicalState mechanics, DriveConfig drive, double mass) {
+    public record Setup(int config, int limiter, double finalDrive, EngineFamily family, int engineParts, double temperature, double boostTarget, MechanicalState mechanics, DriveConfig drive, double mass,Powertrain powertrain) {
+        public Setup(int c,int l,double f,EngineFamily family,int parts,double t,double boost,MechanicalState m,DriveConfig drive,double mass){this(c,l,f,family,parts,t,boost,m,drive,mass,Powertrain.COMBUSTION);}
         public Setup(int c,int l,double f,EngineFamily family,int parts,double t,double boost,MechanicalState m,DriveConfig drive){this(c,l,f,family,parts,t,boost,m,drive,MASS);}
-        public Setup withMass(double mass){return new Setup(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,mechanics,drive,mass);}
+        public Setup withMass(double mass){return new Setup(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,mechanics,drive,mass,powertrain);}
+        public Setup withPowertrain(Powertrain type){return new Setup(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,mechanics,drive,type.massKg,type);}
+        public Setup withMechanics(MechanicalState m){return new Setup(config,limiter,finalDrive,family,engineParts,m==null?temperature:m.coolantTemperature(),boostTarget,m,drive,mass,powertrain);}
         public Setup(int c,int l,double f,EngineFamily family,int parts,double t,double boost,MechanicalState m){this(c,l,f,family,parts,t,boost,m,DriveConfig.stock());}
         public Setup(int config,int limiter,double finalDrive,EngineFamily family,int engineParts,double temperature,double boostTarget){this(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,null);}
         public Setup(int config,int limiter,double finalDrive){this(config,limiter,finalDrive,EngineFamily.I4,EnginePart.stock(),90);}
@@ -67,7 +72,7 @@ public final class VehicleDynamics {
         double clutchTorque=0,engagement=0;
         if(drive&&!in.clutch&&trans.remaining()==0){
             engagement=clamp((engine.rpm()-950)/850,0,1);
-            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*engagement*MechanicalCapabilities.clutch(setup.mechanics)*MechanicalCapabilities.transmission(setup.mechanics);
+            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*engagement*MechanicalCapabilities.clutch(setup.mechanics)*PowertrainTopology.availability(setup.mechanics,setup.powertrain,setup.drive);
             // Couple the crank to the driven wheels, including airborne spin. Tire forces,
             // rather than an engine-side grip clamp, determine how much reaches the road.
             double roadCoupling=0;
@@ -87,11 +92,19 @@ public final class VehicleDynamics {
     }
     /** Shared rigid body and tire integration for combustion, battery and series-hybrid drives. */
     public static State chassis(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double axleTorque,double regenBrakeTorque,double dt){
+        double front=setup.drive.frontFraction(),rear=1-front;
+        double fa=front*PowertrainTopology.axleCapability(setup.mechanics,setup.powertrain,setup.drive,0),ra=rear*PowertrainTopology.axleCapability(setup.mechanics,setup.powertrain,setup.drive,1),sum=fa+ra;
+        double[] torques=PowertrainTopology.torques(setup.mechanics,setup.powertrain,setup.drive,wheels,sum>0?axleTorque*fa/sum:0,sum>0?axleTorque*ra/sum:0,dt);
+        double[] regen={regenBrakeTorque*front*.5,regenBrakeTorque*front*.5,regenBrakeTorque*rear*.5,regenBrakeTorque*rear*.5};
+        return chassisTorques(speed,fuel,engine,wheels,trans,in,setup,grip,contacts,travel,torques,regen,dt);
+    }
+    /** Explicit wheel torque inputs let independent e-axles account for their own work and failures. */
+    public static State chassisTorques(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double[] torques,double[] regen,double dt){
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         double response=Assembly.SUSPENSION.variant(setup.config)==2?1.08:1;
         double target=in.steer*.55*response/(1+Math.abs(speed)*.025);
         double steering=trans.steering()+clamp(target-trans.steering(),-1.8*response*dt,1.8*response*dt);
-        var forces=WheelDynamics.step(wheels,setup,in,speed,lateral,yawRate,steering,axleTorque,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt,regenBrakeTorque);
+        var forces=WheelDynamics.stepTorques(wheels,setup,in,speed,lateral,yawRate,steering,torques,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt,regen);
         double magnitude=Math.hypot(speed,lateral),drag=Assembly.BODY.variant(setup.config)==2?.40:.43;
         double fx=forces.forward()-drag*speed*magnitude,fy=forces.lateral()-drag*lateral*magnitude;
         double ax=fx/setup.mass,ay=fy/setup.mass,newYaw=clamp(yawRate+forces.yawMoment()/(YAW_INERTIA*setup.mass/MASS)*dt,-5,5);

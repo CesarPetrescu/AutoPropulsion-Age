@@ -30,7 +30,7 @@ public final class VehicleAudio {
             if(s.induction==1||s.induction==3||s.induction==4)add(result,"induction","turbo",s.spool*s.spool*.13*m.capability("engine.induction"),.6+s.spool*1.35,-1);
             else if(s.induction>0){String sound=s.induction==2?"centrifugal":s.induction==5?"roots":"twin_screw";add(result,"induction",sound,(.02+s.boost*.10)*m.capability("induction.belt")*m.capability("engine.induction"),rpm/3500,-1);}
             add(result,"leak","boost_leak",s.boost*CircuitPhysics.leak(m.get("induction.pipe"),1)*.2,1,-1);
-            var internal=m.get("engine.internals");if(internal!=null)add(result,"knock","knock",Math.max(0,internal.wear()-.65)*.18+((internal.faults()&PartInstance.MISFIRE)!=0?.08:0),rpm/3000,-1);
+            var internal=m.get("engine.internals");if(internal!=null)add(result,"knock","knock",Math.max(0,internal.wear()-.65)*.18+((internal.faults()&PartInstance.MISFIRE)!=0?.08:0)+(InternalMechanics.hasFailure(m,s.family)?(1-InternalMechanics.output(m,s.family,rpm))*.12:0),rpm/3000,-1);
         }
         for(int c=0;c<4;c++){
             var wheel=s.wheels.corners().get(c);String prefix="wheel."+ComponentSlot.CORNERS[c]+".";double speed=Math.max(Math.abs(s.speed),Math.abs(wheel.omega()*.34));

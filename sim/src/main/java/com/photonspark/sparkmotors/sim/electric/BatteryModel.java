@@ -52,7 +52,9 @@ public final class BatteryModel {
     }
     /** External charging shares the vehicle's thermal clock: ohmic heat only when passiveCooling=false. */
     public static Exchange exchange(Spec spec,State original,double terminalW,double dt,double ambientC,double speed,boolean passiveCooling){
-        validDt(dt);State s=original.normalized(spec);
+        validDt(dt);
+        if(!Double.isFinite(terminalW))throw new IllegalArgumentException("Battery power must be finite");
+        State s=original.normalized(spec);
         double v=ocv(spec,s),r=resistance(spec,s),p=clamp(terminalW,-1e7,1e7);
         p=clamp(p,-chargeLimitW(spec,s,dt),dischargeLimitW(spec,s,dt));
         // Stable quadratic roots, including tiny power near the end of a charge.

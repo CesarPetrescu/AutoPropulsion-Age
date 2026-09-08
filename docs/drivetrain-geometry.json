@@ -1,0 +1,36 @@
+{
+  "source": "tools/build_drivetrain_geometry.py",
+  "axles": [
+    {
+      "axle": "front",
+      "layout_mask": 6,
+      "hub_x": [
+        -0.83,
+        0.83
+      ],
+      "axle_y": 0.34,
+      "axle_z": 1.35,
+      "motor_center": [
+        0,
+        0.22,
+        1.6400000000000001
+      ]
+    },
+    {
+      "axle": "rear",
+      "layout_mask": 5,
+      "hub_x": [
+        -0.83,
+        0.83
+      ],
+      "axle_y": 0.34,
+      "axle_z": -1.3,
+      "motor_center": [
+        0,
+        0.34,
+        -1.62
+      ]
+    }
+  ],
+  "scope": "Authored runtime e-axles, differentials, CV shafts and ICE gearbox/transfer/propeller paths. Masks select actual installed topology."
+}

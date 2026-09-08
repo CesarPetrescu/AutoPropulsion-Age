@@ -15,25 +15,27 @@ public final class DriveScreen extends WorkshopScreen {
     private final CarEntity car;
     private final Map<Button,java.util.function.BooleanSupplier> enabled=new LinkedHashMap<>();
     private int x,y,w,h,rx,rw,scroll;
+    private final Map<Button,DriveConfig> conversions=new LinkedHashMap<>();
     private static final int TEXT=0xFFE6F1F3,MUTED=0xFF9CB1BD,ACCENT=0xFF42D2C6;
     public DriveScreen(CarEntity car){super(Component.literal("Driveline setup"));this.car=car;}
     @Override public boolean isPauseScreen(){return false;}
     private boolean parked(){return car.horizontalSpeed()<.3&&!car.ignition();}
-    private boolean conversionAllowed(){return parked()&&car.raised()&&MechanicalCapabilities.transmission(car.mechanics())>.01;}
+    private boolean conversionAllowed(){return parked()&&car.raised()&&Assembly.TRANSMISSION.variant(car.config())>0&&PowertrainTopology.availability(car.mechanics(),car.powertrain(),car.driveConfig())>.01;}
     private void fit(DriveConfig config){CarClient.send(car,CarPackets.DRIVE_SETUP,config.packed(),config.frontPercent());}
     private Button button(String label,int bx,int by,int width,Runnable action,java.util.function.BooleanSupplier available,String tip){
         var b=Button.builder(Component.literal(label),ignored->action.run()).bounds(bx,by,width,22).build();
         b.setTooltip(Tooltip.create(Component.literal(tip)));addRenderableWidget(b);enabled.put(b,available);return b;
     }
     @Override protected void initWorkshop(){
-        clearWidgets();enabled.clear();w=Math.min(790,width-16);h=420;
+        clearWidgets();enabled.clear();conversions.clear();w=Math.min(790,width-16);h=420;
         int view=Math.min(h,height-16);scroll=Math.clamp(scroll,0,h-view);x=(width-w)/2;y=(height-view)/2-scroll;rx=x+w/2+10;rw=w/2-28;
         button("Garage",x+w-88,y+10,76,()->minecraft.setScreen(new GarageScreen(car)),()->true,"Return to the garage");
         int gap=6,bw=(rw-gap*2)/3;
         for(var layout:DriveConfig.Layout.values()){
             var preset=DriveConfig.preset(layout);
-            button(layout.name(),rx+layout.ordinal()*(bw+gap),y+80,bw,()->fit(preset),()->conversionAllowed()&&!preset.equals(car.driveConfig()),
-                "Fit the "+layout+" road preset. Requires the service jack and 8 iron ingots. Existing part wear and damage remain.");
+            var control=button(layout.name(),rx+layout.ordinal()*(bw+gap),y+80,bw,()->fit(preset),()->conversionAllowed()&&!preset.equals(car.driveConfig()),
+                "Fit "+layout+". Requires a jack, 8 iron ingots and components for new mounts. Removed parts return to inventory; used condition is retained.");
+            conversions.put(control,preset);
         }
         String[] names={"Open diff","Limited slip","Locked diff"};
         for(var differential:DriveConfig.Differential.values())button(names[differential.ordinal()],rx,y+133+differential.ordinal()*29,rw,
@@ -50,6 +52,12 @@ public final class DriveScreen extends WorkshopScreen {
     @Override public void tick(){
         if(car.isRemoved()||minecraft.player==null||car.distanceToSqr(minecraft.player)>160){onClose();return;}
         enabled.forEach((button,available)->button.active=available.getAsBoolean());
+        conversions.forEach((button,target)->{
+            var names=PowertrainTopology.slots(car.powertrain(),target,car.engineFamily()).stream()
+                .filter(s->!PowertrainTopology.applicable(s,car.powertrain(),car.driveConfig(),car.engineFamily())&&car.mechanics().get(s.key())==null)
+                .map(ComponentSlot::title).toList();
+            button.setTooltip(Tooltip.create(Component.literal("Required: jack + 8 iron"+(names.isEmpty()?"":", "+String.join(", ",names))+". Removed components return to inventory. Shared missing mounts must be repaired first.")));
+        });
     }
     @Override protected void renderWorkshop(GuiGraphics g,int mx,int my,float partial){
         clip(g,0,8,width,height-8);
@@ -57,10 +65,10 @@ public final class DriveScreen extends WorkshopScreen {
         g.drawString(font,"DRIVELINE / HANDLING",x+16,y+15,ACCENT,false);
         var drive=car.driveConfig();g.drawString(font,"INSTALLED: "+drive.layout()+" / "+drive.differential().name().replace('_',' '),x+16,y+42,TEXT,false);
         int center=x+w/4,frontY=y+104,rearY=y+226;
-        boolean shaft=MechanicalCapabilities.transmission(car.mechanics())>.01;
-        g.fill(center-3,frontY,center+3,rearY,drive.layout()!=DriveConfig.Layout.FWD&&shaft?ACCENT:0xFF324652);
+        boolean shaft=PowertrainTopology.availability(car.mechanics(),car.powertrain(),drive)>.01;
+        g.fill(center-3,frontY,center+3,rearY,!car.powertrain().electric()&&drive.layout()!=DriveConfig.Layout.FWD&&shaft?ACCENT:0xFF324652);
         for(int axle=0;axle<2;axle++){
-            boolean powered=shaft&&(axle==0?drive.frontPercent()>0:drive.frontPercent()<100);int by=axle==0?frontY:rearY;
+            boolean powered=PowertrainTopology.axleCapability(car.mechanics(),car.powertrain(),drive,axle)>.01;int by=axle==0?frontY:rearY;
             g.fill(center-66,by-3,center+66,by+3,powered?ACCENT:0xFF324652);
             for(int side=0;side<2;side++){
                 int c=axle*2+side,bx=center+(side==0?-84:54);boolean present=car.mechanics().get("wheel."+ComponentSlot.CORNERS[c]+".tire")!=null;
@@ -81,9 +89,9 @@ public final class DriveScreen extends WorkshopScreen {
             }),rx,y+282,rw,MUTED);
             g.drawString(font,"ASSISTED HANDLING READINGS",x+16,y+h-95,ACCENT,false);
             g.drawString(font,String.format(Locale.ROOT,"%.0f km/h  Slip angle %.1f deg",car.horizontalSpeed()*3.6,Math.toDegrees(Math.atan2(car.lateralSpeed(),Math.max(.5,Math.abs(car.speed()))))),x+16,y+h-77,TEXT,false);
-            g.drawString(font,"Space: rear handbrake  |  C: clutch",x+16,y+h-59,MUTED,false);
+            g.drawString(font,car.powertrain().electric()?"Space: rear handbrake | S: blended brakes":"Space: rear handbrake  |  C: clutch",x+16,y+h-59,MUTED,false);
         }
-        g.drawString(font,"Conversions: park, engine off, leave car, jack up. 8 iron ingots; part condition retained.",x+14,y+h-20,MUTED,false);
+        g.drawString(font,"Convert: park, switch off, jack up. Carry new components + 8 iron. Removed parts returned.",x+14,y+h-20,MUTED,false);
         super.renderWorkshop(g,mx,my,partial);
         g.disableScissor();
     }

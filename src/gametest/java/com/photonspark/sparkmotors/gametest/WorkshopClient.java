@@ -55,6 +55,7 @@ final class WorkshopClient {
     private static void step(Minecraft mc,CarEntity car)throws Exception{
         ticks++;
         if(ticks==1){
+            if(combo==0)ConfiguredGeometryClient.verify(mc);
             int[] size=SIZES[combo];
             GLFW.glfwSetWindowSize(mc.getWindow().getWindow(),size[0],size[1]);
             mc.options.guiScale().set(size[2]);mc.resizeDisplay();

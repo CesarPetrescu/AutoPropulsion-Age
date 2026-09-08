@@ -81,7 +81,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40632,
+      "triangles": 54100,
       "passed": true
     },
     {
@@ -91,7 +91,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41272,
+      "triangles": 54740,
       "passed": true
     },
     {
@@ -101,7 +101,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41280,
+      "triangles": 54748,
       "passed": true
     },
     {
@@ -111,7 +111,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41832,
+      "triangles": 55300,
       "passed": true
     },
     {
@@ -121,7 +121,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 42944,
+      "triangles": 56412,
       "passed": true
     },
     {
@@ -131,7 +131,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 45092,
+      "triangles": 58560,
       "passed": true
     },
     {
@@ -141,7 +141,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 45128,
+      "triangles": 58596,
       "passed": true
     },
     {
@@ -151,7 +151,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40392,
+      "triangles": 49412,
       "passed": true
     },
     {
@@ -161,7 +161,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41032,
+      "triangles": 50052,
       "passed": true
     },
     {
@@ -171,7 +171,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41040,
+      "triangles": 50060,
       "passed": true
     },
     {
@@ -181,7 +181,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41592,
+      "triangles": 50612,
       "passed": true
     },
     {
@@ -191,7 +191,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 42704,
+      "triangles": 51724,
       "passed": true
     },
     {
@@ -201,7 +201,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44852,
+      "triangles": 53872,
       "passed": true
     },
     {
@@ -211,7 +211,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44888,
+      "triangles": 53908,
       "passed": true
     },
     {

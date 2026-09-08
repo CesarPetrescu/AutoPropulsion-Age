@@ -3,6 +3,7 @@ package com.photonspark.sparkmotors.client;
 import com.photonspark.sparkmotors.entity.CarEntity;
 import com.photonspark.sparkmotors.net.CarPackets;
 import com.photonspark.sparkmotors.sim.electric.ElectricDynamics;
+import com.photonspark.sparkmotors.sim.PowertrainTopology;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -25,6 +26,7 @@ public final class ElectricScreen extends WorkshopScreen {
     }
     @Override protected void initWorkshop(){
         clearWidgets();enabled.clear();w=Math.min(780,width-16);x=(width-w)/2;y=(height-420)/2;
+        button("Service parts",x+w-212,y+12,114,()->minecraft.setScreen(new ServiceScreen(car)),()->true,"Inspect, remove and install the actual drive units, inverter, CVs and HV components.");
         button("Garage",x+w-90,y+12,74,()->minecraft.setScreen(new GarageScreen(car)),()->true,"Return to the garage");
         int bw=(w-44)/3;
         button("READY / off",x+16,y+326,bw,()->send(CarPackets.IGNITION,0),()->car.powertrain().electric(),"Disconnect charging and lower the jack before driving.");
@@ -54,7 +56,13 @@ public final class ElectricScreen extends WorkshopScreen {
             g.drawString(font,"0                    Motor RPM 18,000",cx,cy+bh+7,MUTED,false);
             g.drawString(font,String.format(Locale.ROOT,"Torque %.0f Nm",car.powertrain().torqueNm),cx,cy+bh+25,ACCENT,false);
             g.drawString(font,String.format(Locale.ROOT,"Power %.0f kW",car.powertrain().motorKw),cx+bw/2,cy+bh+25,POWER,false);
-            g.drawWordWrap(font,Component.literal("Battery charge, temperature and installed driveline condition can reduce this output."),cx,y+274,bw,MUTED);
+            for(int axle=0;axle<2;axle++){
+                String name=axle==0?"Front":"Rear";var motor=car.mechanics().get(PowertrainTopology.unit("motor",axle));var inverter=car.mechanics().get(PowertrainTopology.unit("inverter",axle));
+                boolean driven=axle==0?PowertrainTopology.front(car.driveConfig()):PowertrainTopology.rear(car.driveConfig());
+                String reading=!driven?"Not driven by this layout":motor==null||inverter==null?"Drive unit incomplete":String.format(Locale.ROOT,"%.0f C motor / %.0f C inverter",motor.temperature(),inverter.temperature());
+                g.drawString(font,font.plainSubstrByWidth(name+": "+reading,bw),cx,y+274+axle*15,MUTED,false);
+            }
+            g.drawString(font,PowertrainTopology.liveHv(car.mechanics())?"HV control circuit: available":"HV control circuit: open",cx,y+305,MUTED,false);
             String[] labels={"Drive state","Charge / target","Pack power (+ draw)","Voltage / current","Pack / condition","Motor / inverter","Motor speed","Regen / generator","Generator crank","Charging","Hybrid control"};
             String[] values={car.plugged()?"PLUGGED":car.ignition()?"READY":"OFF",String.format(Locale.ROOT,"%.1f%% / %d%%",car.stateOfCharge()*100,car.chargeTarget()),String.format(Locale.ROOT,"%+.1f kW",car.packKw()),String.format(Locale.ROOT,"%.0f V / %.1f A",car.packVoltage(),car.packCurrent()),String.format(Locale.ROOT,"%.0f C / %.0f%%",car.packTemperature(),car.packHealth()*100),String.format(Locale.ROOT,"%.0f C / %.0f C",car.motorTemperature(),car.inverterTemperature()),String.format(Locale.ROOT,"%.0f RPM",car.motorRpm()),String.format(Locale.ROOT,"%.1f / %.1f kW",car.regenKw(),car.generatorKw()),car.powertrain().hybrid()?String.format(Locale.ROOT,"%.0f RPM",car.rpm()):"None",car.plugged()?String.format(Locale.ROOT,"%.2f kW input",car.chargeKw()):"Unplugged",car.powertrain().hybrid()?car.electricMode().name().replace('_',' '):"Battery electric"};
             g.drawString(font,"ASSISTED LIVE TELEMETRY",col,y+72,ACCENT,false);

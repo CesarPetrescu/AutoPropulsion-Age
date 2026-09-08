@@ -48,8 +48,9 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        log='All 41 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
-        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 41)
+        log='All 46 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
+        log+='\n'+'\n'.join('CONFIGURED_COMPONENTS_SERVER_PASS '+case for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'))
+        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 46)
         for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
             with self.assertRaises(ValueError):checks.server(log.replace(marker,''))
 
@@ -113,6 +114,9 @@ class ReleaseGates(unittest.TestCase):
             archive.writestr('META-INF/neoforge.mods.toml', '[[mods]]\nmodId="sparkmotors"\nversion="0.4.0-alpha"\nlogoFile="logo.png"\n')
             for name in ('com/photonspark/sparkmotors/entity/CarEntity.class',
                          'com/photonspark/sparkmotors/sim/MechanicalState.class',
+                         'com/photonspark/sparkmotors/sim/PowertrainTopology.class',
+                         'com/photonspark/sparkmotors/sim/InternalMechanics.class',
+                         'assets/sparkmotors/models/entity/mechanical-models.json',
                          'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
                          'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
                          'com/photonspark/sparkmotors/client/ElectricScreen.class',
@@ -129,13 +133,13 @@ class ReleaseGates(unittest.TestCase):
         return path
 
     def test_incomplete_ui_or_missing_logo_blocks_release(self):
-        log = 'ALPHA_CLIENT_SMOKE PASS: WORKSHOP_UI_PASS 156\n'
-        log += '\n'.join(f'WORKSHOP_UI_CASE_PASS {i} page' for i in range(156))
+        log = 'ALPHA_CLIENT_SMOKE PASS: WORKSHOP_UI_PASS 192\n'
+        log += '\n'.join(f'WORKSHOP_UI_CASE_PASS {i} page' for i in range(192))
         with self.assertRaises(ValueError):
             checks.client(log, 'PASS: ok', 'ui')
-        self.assertEqual(checks.client(log+' MOD_LOGO_CLIENT_PASS', 'PASS: ok', 'ui')['workshop_page_scale_cases'], 156)
+        self.assertEqual(checks.client(log+' MOD_LOGO_CLIENT_PASS CONFIGURED_GEOMETRY_CLIENT_PASS cases=105', 'PASS: ok', 'ui')['workshop_page_scale_cases'], 192)
         with self.assertRaises(ValueError):
-            checks.client('ALPHA_CLIENT_SMOKE PASS: MOD_LOGO_CLIENT_PASS WORKSHOP_UI_PASS 156', 'PASS: ok', 'ui')
+            checks.client('ALPHA_CLIENT_SMOKE PASS: MOD_LOGO_CLIENT_PASS WORKSHOP_UI_PASS 192', 'PASS: ok', 'ui')
 
     def test_missing_packaged_logo_blocks_release(self):
         jar = self.make_jar()

@@ -104,7 +104,7 @@ public final class CarEntity extends Entity {
     public float wheelAngle,oldWheelAngle,panelProgress,oldPanelProgress;
     public float hoodProgress,oldHoodProgress,engineAngle,oldEngineAngle;
 
-    public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;}
+    public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;if(!level.isClientSide)setMechanics(PowertrainTopology.fresh(Powertrain.COMBUSTION,driveConfig(),engineFamily(),config(),engineParts()));}
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
         b.define(DRIVE_SETUP,DriveConfig.stock().packed());b.define(FRONT_SPLIT,0);b.define(LATERAL_SPEED,0f);b.define(YAW_RATE,0f);b.define(STEERING_ANGLE,0f);
         b.define(CLUTCH_STATE,new org.joml.Vector3f());b.define(TRIP_START,0f);b.define(ENGINE_LOAD,0f);b.define(VENT_EVENTS,0);b.define(DIAGNOSTIC,"No test performed.");b.define(COOLANT,8f);b.define(OIL_QUANTITY,5f);b.define(BRAKE_FLUID,1f);b.define(CONTACTS,0);b.define(ENGINE_MODE,0);for(var wheel:WHEELS)b.define(wheel,new org.joml.Vector3f());b.define(MECHANICS,new CompoundTag());b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
@@ -146,14 +146,23 @@ public final class CarEntity extends Entity {
     /** Factory/test initialization, never exposed as a client packet or a free survival conversion. */
     public void initializePowertrain(Powertrain type,double soc){
         if(level().isClientSide)return;
+        var fresh=PowertrainTopology.fresh(type,driveConfig(),engineFamily(),config(),engineParts());
+        var prior=PowertrainTopology.migrate(mechanics(),type,driveConfig(),engineFamily(),config(),engineParts());
+        for(var slot:PowertrainTopology.slots(type,driveConfig(),engineFamily()))if(prior.get(slot.key())!=null)fresh=fresh.with(slot.key(),prior.get(slot.key()));
+        fresh=fresh.fluids(prior.coolant(),type.electric()&&!type.hybrid()?0:prior.oil(),prior.brakeFluid());
         entityData.set(POWERTRAIN,type.ordinal());electricState=type.electric()?ElectricDynamics.State.initial(type,soc):null;
+        setMechanics(fresh);
         if(type.electric()&&!type.hybrid())entityData.set(FUEL,0f);
         syncElectric();
+    }
+    public double accessoryVoltage(){
+        if(flag(512))return 14;
+        return powertrain().electric()&&!powertrain().hybrid()?10.5+Math.min(1,CircuitPhysics.batteryCharge(mechanics())/48)*2.2:CircuitPhysics.measure(mechanics(),rpm(),engineRunning(),speed()).voltage();
     }
     public double ambientTemperature(){return VehicleDynamics.clamp(4+20*level().getBiome(blockPosition()).value().getBaseTemperature()-Math.max(0,getY()-64)*.0065,-35,45);}
     public BatteryModel.State tractionBattery(){return electricState==null?null:electricState.battery();}
     public boolean attachCharger(BlockPos pos){
-        if(level().isClientSide||!powertrain().plugIn()||ignition()||horizontalSpeed()>.1||distanceToSqr(Vec3.atCenterOf(pos))>36)return false;
+        if(level().isClientSide||!powertrain().plugIn()||!PowertrainTopology.liveHv(mechanics())||ignition()||horizontalSpeed()>.1||distanceToSqr(Vec3.atCenterOf(pos))>36)return false;
         if(chargingPos!=null&&!chargingPos.equals(pos)&&chargeLease>=tickCount)return false;
         chargingPos=pos.immutable();entityData.set(CHARGER_POSITION,chargingPos);chargeLease=tickCount+40;entityData.set(PLUGGED,true);return true;
     }
@@ -193,7 +202,7 @@ public final class CarEntity extends Entity {
         }
         panelProgress=Mth.clamp(panelProgress+(panels()?.09f:-.09f),0,1);
         hoodProgress=Mth.clamp(hoodProgress+(hoodOpen()?.09f:-.09f),0,1);
-        if(CircuitPhysics.measure(mechanics(),rpm(),ignition(),speed()).fan())fanAngle+=6;
+        if(CircuitPhysics.measure(mechanics(),rpm(),ignition(),speed(),powertrain().electric()&&!powertrain().hybrid()).fan())fanAngle+=6;
         engineAngle+=rpm()*.05f*(float)(Math.PI/30);
         if(level().isClientSide){
             if(lerpSteps>0){
@@ -208,18 +217,19 @@ public final class CarEntity extends Entity {
         boolean driver=getControllingPassenger() instanceof Player;
         if(!driver||tickCount-lastInputTick>10){inputKeys=20;inputSteer=0;}
         if(chargingPos!=null&&(chargeLease<tickCount||!level().hasChunkAt(chargingPos))){chargingPos=null;entityData.set(PLUGGED,false);entityData.set(CHARGE_KW,0f);}
-        if(isInWater()||plugged()||(!powertrain().electric()&&(engineHealth()<=5||fuel()<=0||!engineProblem().isEmpty())))flag(1,false);
+        if(isInWater()||plugged()||powertrain().electric()&&!PowertrainTopology.liveHv(mechanics())||(!powertrain().electric()&&(engineHealth()<=5||fuel()<=0||!engineProblem().isEmpty())))flag(1,false);
         if(!ignition()){benchTicks=0;benchRecovery=0;}
         if(benchTicks>0){benchTicks--;benchRecovery=100;inputKeys=23;inputSteer=0;}
         else if(benchRecovery>0){benchRecovery--;inputKeys=22;inputSteer=0;if(rpm()<1100&&throttle()<.05)benchRecovery=0;}
         boolean reverse=reverseSelected();
         boolean braking=(inputKeys&2)!=0;flag(32,braking);flag(64,(inputKeys&4)!=0);flag(128,surfaceGrip()<.9);
         var input=new VehicleDynamics.Input((inputKeys&1)!=0?1:0,inputSteer,braking,reverse,(inputKeys&16)!=0,(inputKeys&4)!=0);
-        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget(),mechanics(),driveConfig());
+        var setup=new VehicleDynamics.Setup(config(),limiter(),finalDrive(),engineFamily(),engineParts(),temperature(),boostTarget(),mechanics(),driveConfig()).withPowertrain(powertrain());
         double[] contact=wheelContacts();
         int contactCount=0;
         float currentFuel=fuel();
         double tickImpact=0;VehicleCollision.Hit impactContact=null;
+        double auxiliaryW=0;
         for(int i=0;i<4;i++){
             contact=wheelContacts();contactCount=0;
             boolean[] touching=new boolean[4];double[] travels=new double[4],gaps=new double[4],grips=new double[4];
@@ -234,7 +244,7 @@ public final class CarEntity extends Entity {
             if(powertrain().electric()){
                 if(electricState==null)electricState=ElectricDynamics.State.initial(powertrain(),0);
                 var result=ElectricDynamics.step(powertrain(),electricState,electricMode(),speed,currentFuel,engineState,wheelState,transmissionState,ignition(),input,setup,grips,touching,travels,plugged(),.0125,ambientTemperature());
-                electricState=result.electric();state=result.road();
+                electricState=result.electric();state=result.road();auxiliaryW+=result.auxiliaryW()/4;if(result.mechanics()!=null){mechanical=result.mechanics();setup=setup.withMechanics(mechanical);}
             }else state=VehicleDynamics.step(speed,currentFuel,engineState,wheelState,transmissionState,ignition(),input,setup,grips,touching,travels,.0125);
             if(state.engine().blowOff()&&!engineState.blowOff())entityData.set(VENT_EVENTS,ventEvents()+1);entityData.set(ENGINE_LOAD,(float)state.load());
             engineState=state.engine();wheelState=state.wheels();transmissionState=state.transmission();
@@ -283,10 +293,13 @@ public final class CarEntity extends Entity {
         entityData.set(ENGINE_HEALTH,(float)engineState.health());entityData.set(AFR,(float)engineState.afr());entityData.set(THROTTLE,(float)engineState.throttle());entityData.set(SPOOL,(float)engineState.spool());
         entityData.set(SHAFT_TORQUE,(float)engineState.shaftTorque());entityData.set(BLOWER_KW,(float)engineState.blowerKw());
         double roadSpeed=Math.hypot(speed,transmissionState.lateralSpeed());
-        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),engineState.mode()==EnginePhysics.Mode.RUNNING,engineState.mode()==EnginePhysics.Mode.CRANKING,lights(),roadSpeed,braking,.05);
+        boolean electricOnly=powertrain().electric()&&!powertrain().hybrid();
+        mechanical=CircuitPhysics.step(mechanical,rpm(),throttle,boost(),electricOnly?ignition():engineState.mode()==EnginePhysics.Mode.RUNNING,engineState.mode()==EnginePhysics.Mode.CRANKING,lights(),roadSpeed,braking,.05,electricOnly);
+        if(!powertrain().electric()||powertrain().hybrid())mechanical=InternalMechanics.step(mechanical,engineFamily(),rpm(),throttle,engineState.mode()==EnginePhysics.Mode.RUNNING,.05);
+        flag(512,false);
         // 10 A auxiliary charging at 14 V is included in the traction model's 450 W accessory budget.
-        if(powertrain().electric()&&ignition()&&packKw()>0&&mechanical.capability("electrical.fuse")>.2&&mechanical.capability("electrical.wiring")>.2){
-            var accessory=mechanical.get("electrical.battery");if(accessory!=null)mechanical=mechanical.with("electrical.battery",accessory.operating(Math.min(48,accessory.reserve()+10*.05/3600),accessory.temperature()));
+        if(powertrain().electric()&&ignition()&&auxiliaryW>=140&&PowertrainTopology.liveHv(mechanical)&&mechanical.capability("traction.dc_dc")>.2){
+            var accessory=mechanical.get("electrical.battery");if(accessory!=null){flag(512,true);mechanical=mechanical.with("electrical.battery",accessory.operating(Math.min(48,accessory.reserve()+10*.05/3600),accessory.temperature()));}
         }
         mechanical=WheelDynamics.wear(mechanical,wheelState,roadSpeed,.05);
         var internals=mechanical.get("engine.internals");
@@ -406,16 +419,17 @@ public final class CarEntity extends Entity {
     public void action(ServerPlayer player,int action,int a,int b){
         if(!mayModify(player)||distanceToSqr(player)>100||tickCount-lastActionTick<3)return;
         lastActionTick=tickCount;
+        if(action==CarPackets.COMPONENT_SWAP&&powertrain().electric()&&!powertrain().hybrid()&&a==ComponentSlot.ALL.indexOf(ComponentSlot.engine(EnginePart.COOLING))&&b>=0&&b<=1){action=CarPackets.ENGINE_PART;a=EnginePart.COOLING.ordinal();}
         if(action==CarPackets.TRIP_RESET){tripStart=mechanics().distance();entityData.set(TRIP_START,(float)(tripStart/1000));return;}
         if(action==CarPackets.LIGHTS){flag(2,!lights());return;}
         if(action==CarPackets.HORN){playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("horn").get(),.7f,1);return;}
         if(action==CarPackets.DIAGNOSE&&a>=3&&a<=5){
-            if(a==3&&hasTool(player,"multimeter"))entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Battery terminals %.2f V; stored charge %.1f Ah. Mode: %s.",CircuitPhysics.measure(mechanics(),rpm(),engineRunning(),speed()).voltage(),CircuitPhysics.batteryCharge(mechanics()),engineMode().name().toLowerCase(Locale.ROOT)));
+            if(a>=4&&powertrain().electric()&&!powertrain().hybrid()){message(player,"No combustion oil circuit or cylinders. Inspect drive units in Electric diagnostics.");return;}
+            if(a==3&&hasTool(player,"multimeter"))entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Battery terminals %.2f V; stored charge %.1f Ah. Mode: %s.",accessoryVoltage(),CircuitPhysics.batteryCharge(mechanics()),engineMode().name().toLowerCase(Locale.ROOT)));
             if(a==4&&hasTool(player,"oil_pressure_gauge"))entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"Mechanical oil gauge: %.2f bar at %.0f RPM. Sender bypassed by this physical test.",CircuitPhysics.measure(mechanics(),rpm(),engineRunning(),speed()).oilPressure(),rpm()));
             if(a==5&&hasTool(player,"compression_tester")){
-                if(ignition()||!hoodOpen()||!MechanicalCapabilities.canCrank(mechanics())){message(player,"Stop the engine, open the hood, and provide a working starter circuit.");return;}
-                var internal=mechanics().get("engine.internals");double compression=internal==null?0:internal.capability()*((internal.faults()&PartInstance.MISFIRE)!=0?.7:1)*(engineFamily().rotary()?8.5:12);
-                entityData.set(DIAGNOSTIC,String.format(Locale.ROOT,"%s assembly compression: %.2f bar equivalent. This grouped test does not identify an individual seal or cylinder.",engineFamily().rotary()?"Rotary chamber":"Piston",compression));
+                if(ignition()||!hoodOpen()||!MechanicalCapabilities.canCrank(mechanics(),engineFamily())){message(player,"Stop the engine, open the hood, and provide a working starter circuit.");return;}
+                entityData.set(DIAGNOSTIC,InternalMechanics.report(mechanics(),engineFamily()));
             }return;
         }
         if(action==CarPackets.REV_TEST){
@@ -428,12 +442,11 @@ public final class CarEntity extends Entity {
             if(raised()){message(player,"Lower the service jack before starting.");return;}
             if(powertrain().electric()){
                 if(plugged()){message(player,"Disconnect the charging cable before selecting READY.");return;}
-                if(health()<=0||isInWater()||packHealth()<.1){message(player,"Repair the car or service the traction battery first.");return;}
-                if(Assembly.WHEELS.variant(config())==0||Assembly.BRAKES.variant(config())==0||Assembly.SUSPENSION.variant(config())==0){message(player,"Fit wheels, brakes and suspension first.");return;}
+                if(isInWater()||packHealth()<.1||!PowertrainTopology.liveHv(mechanics())){message(player,"Test the traction pack, HV harness/contactor and 12 V supply before READY.");return;}
                 flag(1,true);playSound(SoundEvents.LEVER_CLICK,.5f,1.5f);return;
             }
             if(!engineProblem().isEmpty()){message(player,engineProblem());return;}
-            if(!MechanicalCapabilities.canCrank(mechanics())){message(player,"Starter cannot turn the engine. Test battery, starting circuit and mechanical resistance.");return;}
+            if(!MechanicalCapabilities.canCrank(mechanics(),engineFamily())){message(player,"Starter cannot turn the engine. Test battery, starting circuit and mechanical resistance.");return;}
             if(engineHealth()<=5){message(player,"Engine worn out. Rebuild it in the engine workshop.");return;}
             if(temperature()>=125){message(player,"Engine too hot. Let it cool before restarting.");return;}
             if(fuel()<=0||isInWater()){message(player,"Refuel or repair the car before starting.");return;}
@@ -444,7 +457,7 @@ public final class CarEntity extends Entity {
         if(action==CarPackets.HOOD){flag(8,!hoodOpen());playSound(AutoPropulsionAge.MECHANICAL_SOUNDS.get("latch").get(),.4f,1);return;}
         if(ignition()){message(player,"Switch the engine off before servicing.");return;}
         boolean engineWork=action==CarPackets.ENGINE_SWAP||action==CarPackets.ENGINE_PART||action==CarPackets.ENGINE_REBUILD||(action==CarPackets.INSTALL&&a==Assembly.ENGINE.ordinal());
-        if(engineWork&&powertrain().electric()&&!powertrain().hybrid()){message(player,"This vehicle has an electric drive unit, not a combustion engine.");return;}
+        if(engineWork&&powertrain().electric()&&!powertrain().hybrid()&&!(action==CarPackets.ENGINE_PART&&a==EnginePart.COOLING.ordinal())){message(player,"This vehicle has an electric drive unit, not a combustion engine.");return;}
         if(engineWork&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully before working on the engine.");return;}
         switch(action){
             case CarPackets.DRIVE_SETUP -> {
@@ -452,10 +465,10 @@ public final class CarEntity extends Entity {
                 var next=DriveConfig.decode(a,b);if(next.equals(driveConfig()))return;
                 boolean conversion=next.layout()!=driveConfig().layout()||next.differential()!=driveConfig().differential();
                 if(conversion&&!raised()){message(player,"Leave the car and raise it on a service jack before converting the driveline.");return;}
-                if(Assembly.TRANSMISSION.variant(config())==0||MechanicalCapabilities.transmission(mechanics())<=.01){message(player,"Fit a working gearbox, shaft and differential first.");return;}
-                if(conversion&&!consume(player,Items.IRON_INGOT,8)){message(player,"Driveline conversion requires 8 iron ingots.");return;}
+                if(Assembly.TRANSMISSION.variant(config())==0||PowertrainTopology.availability(mechanics(),powertrain(),driveConfig())<=.01){message(player,"Repair the installed torque path before a driveline conversion.");return;}
+                if(!convertDriveline(player,next,conversion))return;
                 setDriveConfig(next);transmissionState=transmissionState.motion(0,0,0,0,0);
-                message(player,next.layout()+" / "+next.differential().name().replace('_',' ')+" saved. Installed part condition is retained.");
+                message(player,next.layout()+" / "+next.differential().name().replace('_',' ')+" saved. Removed components returned; retained parts keep their condition.");
             }
             case CarPackets.DIAGNOSE -> {
                 if(a==0){if(!hasTool(player,"pressure_tester"))return;if(!hoodOpen()||temperature()>60){message(player,"Open the hood and let the coolant cool below 60 C before pressure testing.");return;}pressureTestTicks=200;testPressure=1;entityData.set(DIAGNOSTIC,"Cooling circuit pumped to 1.00 bar. Holding for ten seconds.");}
@@ -471,6 +484,7 @@ public final class CarEntity extends Entity {
                 }
                 if(!hoodOpen()||hoodProgress<.95){message(player,"Open the hood fully for fluid service.");return;}
                 if(a<0||a>2)return;
+                if(a==1&&powertrain().electric()&&!powertrain().hybrid()){message(player,"This electric vehicle has no combustion oil circuit.");return;}
                 if((a==0&&temperature()>60)||(a==1&&oilTemperature()>70)){message(player,"Let the fluid cool before opening its circuit.");return;}
                 double current=a==0?mechanics().coolant():a==1?mechanics().oil():mechanics().brakeFluid(),capacity=a==0?8:a==1?5:1;
                 if(capacity-current<.00001){message(player,"The reservoir is full.");return;}
@@ -491,6 +505,8 @@ public final class CarEntity extends Entity {
             case CarPackets.COMPONENT_SWAP -> {
                 if(a<0||a>=ComponentSlot.ALL.size()||b<0||b>2)return;
                 var slot=ComponentSlot.ALL.get(a);
+                if(!PowertrainTopology.applicable(slot,powertrain(),driveConfig(),engineFamily())&&b!=0){message(player,"This mount is not used by the installed powertrain.");return;}
+                if(slot.key().startsWith("traction.")&&plugged()){message(player,"Unplug the charging cable before electrical service.");return;}
                 if(slot.hardware()!=null){message(player,"Use the Engine tab for this hardware assembly.");return;}
                 if(slot.assembly().variant(config())==0){message(player,"Fit the parent assembly first.");return;}
                 if(slot.access()==ComponentSlot.Access.HOOD&&(!hoodOpen()||hoodProgress<.95)){message(player,"Open the hood fully first.");return;}
@@ -532,7 +548,15 @@ public final class CarEntity extends Entity {
                 if(b>0&&incoming.isEmpty()){message(player,"Required engine part is missing from your inventory.");return;}
                 var replacement=b==0?null:MechanicalData.part(incoming,slot);
                 if(b>0&&replacement==null){give(player,incoming);message(player,"Invalid component data; item returned.");return;}
-                var removed=mechanics().get(slot.key());setMechanics(mechanics().with(slot.key(),replacement));
+                var removed=mechanics().get(slot.key());
+                if(part==EnginePart.INTERNALS){
+                    var bundle=b==0?MechanicalState.empty():MechanicalData.internalBundle(incoming,engineFamily(),slot,replacement);
+                    if(bundle==null){give(player,incoming);message(player,"Invalid internal assembly data; item returned.");return;}
+                    var saved=mechanics().select(s->s.key().equals(slot.key())||InternalMechanics.internal(s.key()),false);
+                    setMechanics(mechanics().replace(s->s.key().equals(slot.key())||InternalMechanics.internal(s.key()),bundle,false));
+                    if(old>0&&removed!=null&&!player.isCreative())give(player,MechanicalData.set(new ItemStack(AutoPropulsionAge.enginePartItem(part,old)),saved));
+                    removed=null;
+                }else setMechanics(mechanics().with(slot.key(),replacement));
                 entityData.set(ENGINE_PARTS,next);
                 engineState=EnginePhysics.State.stopped(oilTemperature(),engineHealth());entityData.set(BOOST,0f);
                 if(old>0&&removed!=null&&!player.isCreative())give(player,MechanicalData.single(new ItemStack(AutoPropulsionAge.enginePartItem(part,old)),slot,removed));
@@ -556,7 +580,7 @@ public final class CarEntity extends Entity {
                 ItemStack incoming=b==0?ItemStack.EMPTY:takePart(player,AutoPropulsionAge.partItem(slot,b));
                 if(b>0&&incoming.isEmpty()){message(player,"Required assembly is missing from your inventory.");return;}
                 java.util.function.Predicate<ComponentSlot> selection=c->c.assembly()==slot;
-                var replacement=b==0?MechanicalState.empty():MechanicalData.bundle(incoming,selection,slot.with(config(),b),engineParts());
+                var replacement=b==0?MechanicalState.empty():PowertrainTopology.migrate(MechanicalData.bundle(incoming,selection,slot.with(config(),b),engineParts()),powertrain(),driveConfig(),engineFamily(),slot.with(config(),b),engineParts()).select(selection,false);
                 if(!replacement.validFor(selection)){if(!incoming.isEmpty())give(player,incoming);message(player,"Invalid assembly data; item returned.");return;}
                 var removed=mechanics().select(selection,false);setMechanics(mechanics().replace(selection,replacement,false));
                 setConfiguration(slot.with(config(),b));
@@ -578,7 +602,7 @@ public final class CarEntity extends Entity {
             case CarPackets.BOOST_TUNE -> {entityData.set(BOOST_TARGET,Mth.clamp(a/1000f,.2f,1.4f));message(player,"Boost target saved. Hardware limits still apply.");}
             case CarPackets.ENGINE_REBUILD -> {
                 if(!needsEngineRebuild())return;
-                if(consume(player,Items.IRON_INGOT,12)){var internal=mechanics().get("engine.internals");if(internal!=null)setMechanics(mechanics().with("engine.internals",internal.condition(0,0,0)));entityData.set(ENGINE_HEALTH,100f);engineState=EnginePhysics.State.stopped(oilTemperature(),100);message(player,"Engine rebuilt. Temperatures and installed parts retained.");}
+                if(consume(player,Items.IRON_INGOT,12)){var m=mechanics();for(String key:m.parts().keySet())if(key.equals("engine.internals")||InternalMechanics.keys(engineFamily()).contains(key)){var p=m.get(key);m=m.with(key,p.condition(0,0,0));}setMechanics(m);entityData.set(ENGINE_HEALTH,100f);engineState=EnginePhysics.State.stopped(oilTemperature(),100);message(player,"Installed internal parts rebuilt. Missing parts, external causes and fluid quantities retained.");}
                 else message(player,"Engine rebuild requires 12 iron ingots.");
             }
             default -> {}
@@ -586,7 +610,33 @@ public final class CarEntity extends Entity {
     }
     public boolean needsEngineRebuild(){
         var internal=mechanics().get("engine.internals");
-        return internal!=null&&Assembly.ENGINE.variant(config())>0&&(internal.wear()>0||internal.damage()>0||internal.faults()!=0);
+        return internal!=null&&Assembly.ENGINE.variant(config())>0&&(internal.wear()>0||internal.damage()>0||internal.faults()!=0||mechanics().parts().entrySet().stream().anyMatch(e->InternalMechanics.keys(engineFamily()).contains(e.getKey())&&(e.getValue().wear()>0||e.getValue().damage()>0||e.getValue().faults()!=0)));
+    }
+    /** Stage a complete inventory transaction before consuming anything or changing the car. */
+    private boolean convertDriveline(ServerPlayer player,DriveConfig next,boolean paid){
+        var inventory=player.getInventory();var staged=new ArrayList<ItemStack>();
+        for(int i=0;i<inventory.getContainerSize();i++)staged.add(inventory.getItem(i).copy());
+        var m=mechanics();var removed=new ArrayList<ItemStack>();
+        for(var slot:ComponentSlot.ALL){
+            if(slot.assembly()!=Assembly.TRANSMISSION)continue;
+            boolean before=PowertrainTopology.applicable(slot,powertrain(),driveConfig(),engineFamily()),after=PowertrainTopology.applicable(slot,powertrain(),next,engineFamily());
+            if(after&&!before&&m.get(slot.key())==null){
+                PartInstance part=null;
+                if(player.isCreative())part=slot.fresh(config(),engineParts());
+                else for(var stack:staged)if(!stack.isEmpty()&&stack.is(AutoPropulsionAge.PART_ITEMS.get(slot.item()).get())){
+                    part=MechanicalData.part(stack,slot);if(part==null){message(player,"Invalid stored component: "+slot.title());return false;}stack.shrink(1);break;
+                }
+                if(part==null){message(player,"Conversion needs: "+slot.title()+". Carry the required parts and 8 iron ingots; removed parts are returned.");return false;}
+                m=m.with(slot.key(),part);
+            }
+            if(before&&!after&&m.get(slot.key())!=null){var part=m.get(slot.key());removed.add(MechanicalData.single(new ItemStack(AutoPropulsionAge.PART_ITEMS.get(part.item()).get()),slot,part));m=m.with(slot.key(),null);}
+        }
+        if(paid&&!player.isCreative()){
+            int remaining=8;for(var stack:staged)if(stack.is(Items.IRON_INGOT)){int count=Math.min(remaining,stack.getCount());stack.shrink(count);remaining-=count;}
+            if(remaining>0){message(player,"Driveline conversion requires 8 iron ingots. No items consumed.");return false;}
+        }
+        if(!player.isCreative()){for(int i=0;i<staged.size();i++)inventory.setItem(i,staged.get(i));for(var stack:removed)give(player,stack);inventory.setChanged();}
+        setMechanics(m);return true;
     }
     private void swapEngine(ServerPlayer player,EngineFamily family,int grade){
         int old=Assembly.ENGINE.variant(config());
@@ -601,7 +651,7 @@ public final class CarEntity extends Entity {
             if(incoming.isEmpty()){message(player,"Required engine assembly is missing from your inventory.");return;}
         }
         java.util.function.Predicate<ComponentSlot> selection=c->c.assembly()==Assembly.ENGINE;
-        var replacement=grade==0?MechanicalState.empty():MechanicalData.bundle(incoming,selection,Assembly.ENGINE.with(config(),grade),com.photonspark.sparkmotors.item.EngineItem.parts(incoming));
+        var replacement=grade==0?MechanicalState.empty():InternalMechanics.migrateBundle(MechanicalData.bundle(incoming,selection,Assembly.ENGINE.with(config(),grade),com.photonspark.sparkmotors.item.EngineItem.parts(incoming)),family);
         if(!replacement.validFor(selection)){if(!incoming.isEmpty())give(player,incoming);message(player,"Invalid engine data; item returned.");return;}
         ItemStack removed=old==0?ItemStack.EMPTY:com.photonspark.sparkmotors.item.EngineItem.withParts(new ItemStack(AutoPropulsionAge.engineItem(engineFamily(),old)),engineParts());
         if(!removed.isEmpty())com.photonspark.sparkmotors.item.EngineItem.withTemperature(removed,temperature());
@@ -642,7 +692,7 @@ public final class CarEntity extends Entity {
     }
     @Override public void lerpTo(double x,double y,double z,float yaw,float pitch,int steps){lerpX=x;lerpY=y;lerpZ=z;lerpYaw=yaw;lerpPitch=pitch;lerpSteps=Math.min(3,Math.max(1,steps));}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",6);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",7);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());tag.putBoolean("Raised",raised());
         tag.putString("Powertrain",powertrain().id());tag.putInt("ElectricMode",entityData.get(EV_MODE));tag.putInt("ChargeTarget",chargeTarget());
         if(electricState!=null){var e=electricState;var b=e.battery();tag.putDouble("BatteryJ",b.energyJ());tag.putDouble("BatteryC",b.temperatureC());tag.putDouble("BatteryHealth",b.health());tag.putDouble("BatteryThroughputJ",b.throughputJ());tag.putDouble("MotorC",e.motorC());tag.putDouble("InverterC",e.inverterC());}
@@ -671,7 +721,8 @@ public final class CarEntity extends Entity {
         if(tag.contains("Mechanics",10))setMechanics(MechanicalData.read(tag.getCompound("Mechanics")));
         else setMechanics(MechanicalState.legacy(config(),engineParts(),temperature(),oilTemperature(),engineHealth()));
         tripStart=VehicleDynamics.clamp(tag.getDouble("TripStart"),0,mechanics().distance());entityData.set(TRIP_START,(float)(tripStart/1000));entityData.set(ENGINE_MODE,0);flag(2,tag.getBoolean("Lights"));flag(256,tag.getBoolean("ReverseSelected"));speed=0;verticalSpeed=0;benchTicks=0;benchRecovery=0;flag(1,false);
-        var type=Powertrain.byId(tag.getString("Powertrain"));initializePowertrain(type,0);
+        var type=Powertrain.byId(tag.getString("Powertrain"));entityData.set(POWERTRAIN,type.ordinal());electricState=type.electric()?ElectricDynamics.State.initial(type,0):null;
+        setMechanics(PowertrainTopology.migrate(mechanics(),type,driveConfig(),engineFamily(),config(),engineParts()));
         entityData.set(EV_MODE,Mth.clamp(tag.getInt("ElectricMode"),0,2));entityData.set(CHARGE_TARGET,tag.contains("ChargeTarget")?Mth.clamp(tag.getInt("ChargeTarget"),50,100):80);
         if(type.electric()){
             var battery=new BatteryModel.State(tag.getDouble("BatteryJ"),tag.contains("BatteryC")?tag.getDouble("BatteryC"):20,tag.contains("BatteryHealth")?tag.getDouble("BatteryHealth"):1,tag.getDouble("BatteryThroughputJ")).normalized(type.battery);

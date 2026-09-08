@@ -56,11 +56,18 @@ public final class DrivingGameTests {
         h.assertTrue(c.driveConfig().equals(DriveConfig.stock())&&p.getInventory().countItem(Items.IRON_INGOT)==16,"Conversion needs a raised jack");
         p.getInventory().add(AutoPropulsionAge.PART_ITEMS.get("service_jack").toStack());act(c,p,CarPackets.JACK,0,0);
         h.assertTrue(c.raised(),"Actual service jack raises the car");fit(c,p,next);
+        h.assertTrue(c.driveConfig().equals(DriveConfig.stock())&&p.getInventory().countItem(Items.IRON_INGOT)==16,"Missing new components must reject the whole transaction without consuming ingots");
+        for(String key:java.util.List.of("driveline_front_differential","driveline_cv_fl","driveline_cv_fr"))p.getInventory().add(AutoPropulsionAge.PART_ITEMS.get(key).toStack());
+        fit(c,p,next);
         h.assertTrue(c.driveConfig().equals(next)&&p.getInventory().countItem(Items.IRON_INGOT)==8,"Conversion consumes exactly eight ingots");
-        h.assertTrue(c.mechanics().get("driveline.differential").equals(used),"Conversion keeps differential identity, wear and damage");
+        h.assertTrue(c.mechanics().get("driveline.differential")==null,"FWD removes the rear differential from the car");
+        boolean returned=false;for(var stack:p.getInventory().items){var data=com.photonspark.sparkmotors.item.MechanicalData.get(stack);if(data!=null&&used.equals(data.get("driveline.differential")))returned=true;}
+        h.assertTrue(returned,"Conversion returns the actual used differential with its original identity and condition");
         fit(c,p,next);h.assertTrue(p.getInventory().countItem(Items.IRON_INGOT)==8,"Repeated current preset must not charge twice");
+        p.getInventory().add(AutoPropulsionAge.PART_ITEMS.get("driveline_transfer").toStack());
         fit(c,p,DriveConfig.preset(DriveConfig.Layout.AWD));
         h.assertTrue(c.driveConfig().layout()==DriveConfig.Layout.AWD&&p.getInventory().countItem(Items.IRON_INGOT)==0,"Second conversion consumes remaining materials");
+        h.assertTrue(used.equals(c.mechanics().get("driveline.differential")),"AWD reuses the returned worn rear differential without healing it");
         var split=new DriveConfig(DriveConfig.Layout.AWD,DriveConfig.Differential.LIMITED_SLIP,70);fit(c,p,split);
         h.assertTrue(c.driveConfig().equals(split),"Center split adjustment is free and separate from conversion");
         fit(c,p,next);h.assertTrue(c.driveConfig().equals(split),"No free conversion without materials");h.succeed();

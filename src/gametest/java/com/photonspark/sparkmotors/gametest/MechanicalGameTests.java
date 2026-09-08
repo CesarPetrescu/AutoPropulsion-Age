@@ -16,13 +16,13 @@ import java.util.*;
 @GameTestHolder("sparkmotors") @PrefixGameTestTemplate(false)
 public final class MechanicalGameTests {
     @GameTest(template="test_track") public void fullMechanicalSnapshotIsBoundedAndRoundTrips(GameTestHelper h){
-        var state=MechanicalState.legacy(Assembly.stock(),EnginePart.boosted(1),85,90,100);
+        var state=PowertrainTopology.fresh(com.photonspark.sparkmotors.sim.electric.Powertrain.PLUG_IN_HYBRID,DriveConfig.preset(DriveConfig.Layout.AWD),EngineFamily.V6,Assembly.stock(),EnginePart.boosted(1));
         var buffer=new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
         try{
             buffer.writeNbt(MechanicalData.write(state));int bytes=buffer.readableBytes();
-            h.assertTrue(bytes<20000,"Full tracked component snapshot stays below 20 KB");
+            h.assertTrue(bytes<40000,"Full tracked component snapshot stays below 40 KB");
             h.assertTrue(MechanicalData.read(buffer.readNbt()).equals(state),"Full tracked snapshot round trips exactly");
-            String report="{\"scope\":\"One healthy boosted car's serialized mechanical NBT; excludes other entity packets and compression\",\"parts\":"+state.parts().size()+",\"snapshotBytes\":"+bytes+",\"periodicSnapshotsPerSecond\":1}";
+            String report="{\"scope\":\"One version 2 AWD V6 plug-in hybrid's serialized mechanical NBT; excludes other entity packets and compression\",\"parts\":"+state.parts().size()+",\"snapshotBytes\":"+bytes+",\"periodicSnapshotsPerSecond\":1}";
             var out=java.nio.file.Path.of("mechanics-network-size.json");java.nio.file.Files.writeString(out,report);System.out.println("MECHANICS_NETWORK_SIZE "+report);h.succeed();
         }catch(java.io.IOException ex){throw new RuntimeException(ex);}finally{buffer.release();}
     }
@@ -110,14 +110,14 @@ public final class MechanicalGameTests {
         var battery=c.mechanics().get("electrical.battery");c.setMechanics(c.mechanics().with("electrical.battery",battery.operating(0,20)));act(c,p,CarPackets.IGNITION,0,0);h.assertTrue(!c.ignition(),"Flat battery prevents actual starting");
         c.setMechanics(c.mechanics().with("electrical.battery",battery).with("oil.pump",null));act(c,p,CarPackets.IGNITION,0,0);
         h.runAfterDelay(18,()->{h.assertTrue(c.engineRunning(),"Engine starts with oil pump missing, allowing causal starvation");act(c,p,CarPackets.REV_TEST,0,0);});
-        h.runAfterDelay(48,()->{h.assertTrue(c.oilPressure()==0&&c.mechanics().faultHistory().contains("OIL_PRESSURE_LOW"),"Actual engine measurements and warnings reflect missing pump");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Running without oil pressure wears the actual internal assembly");act(c,p,CarPackets.IGNITION,0,0);});
+        h.runAfterDelay(48,()->{h.assertTrue(c.oilPressure()==0&&c.mechanics().faultHistory().contains("OIL_PRESSURE_LOW"),"Actual engine measurements and warnings reflect missing pump");h.assertTrue(c.mechanics().get("cylinder.1.bearing").wear()>0,"Running without oil pressure wears the actual internal assembly");act(c,p,CarPackets.IGNITION,0,0);});
         h.runAfterDelay(80,()->{
             var slot=ComponentSlot.byKey("oil.pump");p.getInventory().add(new ItemStack(AutoPropulsionAge.PART_ITEMS.get(slot.item()).get()));act(c,p,CarPackets.COMPONENT_SWAP,ComponentSlot.ALL.indexOf(slot),1);act(c,p,CarPackets.IGNITION,0,0);
         });
-        h.runAfterDelay(110,()->{h.assertTrue(c.oilPressure()>.5,"Targeted oil-pump replacement restores measured pressure");h.assertTrue(c.mechanics().get("engine.internals").wear()>0,"Replacement retains pre-existing internal wear");act(c,p,CarPackets.IGNITION,0,0);});
+        h.runAfterDelay(110,()->{h.assertTrue(c.oilPressure()>.5,"Targeted oil-pump replacement restores measured pressure");h.assertTrue(c.mechanics().get("cylinder.1.bearing").wear()>0,"Replacement retains pre-existing internal wear");act(c,p,CarPackets.IGNITION,0,0);});
         h.runAfterDelay(140,()->{
             double oil=c.oilQuantity();p.getInventory().add(new ItemStack(Items.IRON_INGOT,12));act(c,p,CarPackets.ENGINE_REBUILD,0,0);
-            h.assertTrue(c.mechanics().get("engine.internals").wear()==0,"Rebuild repairs wear even when structural engine health is still 100 percent");
+            h.assertTrue(c.mechanics().get("cylinder.1.bearing").wear()==0,"Rebuild repairs wear even when structural engine health is still 100 percent");
             h.assertTrue(c.oilQuantity()==oil&&p.getInventory().countItem(Items.IRON_INGOT)==0,"Internal rebuild consumes its materials and retains oil quantity");h.succeed();
         });
     }

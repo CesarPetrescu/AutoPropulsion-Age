@@ -23,6 +23,7 @@ public final class ElectricGameTests {
                 if(active[0]!=null){p.stopRiding();active[0].discard();}
                 var type=Powertrain.values()[job/3+1];var c=car(h,type,.6);active[0]=c;
                 c.setDriveConfig(com.photonspark.sparkmotors.sim.DriveConfig.preset(com.photonspark.sparkmotors.sim.DriveConfig.Layout.values()[job%3]));
+                c.initializePowertrain(type,.6); // Manufacture the fixture with the actual parts for its chosen layout.
                 p.moveTo(c.position());c.setOwner(p.getUUID());p.startRiding(c,true);c.action(p,CarPackets.IGNITION,0,0);start[0]=c.tractionBattery().energyJ();peak[0]=0;
             }
             var c=active[0];c.receiveInput(step<10?4:step<65?1:2,0);peak[0]=Math.max(peak[0],c.horizontalSpeed());
@@ -61,7 +62,9 @@ public final class ElectricGameTests {
         var recipe=h.getLevel().getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,h.getLevel()).orElseThrow();
         var output=recipe.value().assemble(input,h.getLevel().registryAccess());
         h.assertTrue(output.is(Electrification.CRATES.get(Powertrain.ELECTRIC_400).get()),"conversion resolves the EV recipe");
-        h.assertTrue(mechanical.equals(com.photonspark.sparkmotors.item.MechanicalData.get(output)),"typed component wear/serials and fluid quantities survive electric crafting");
+        var converted=com.photonspark.sparkmotors.item.MechanicalData.get(output);
+        h.assertTrue(mechanical.parts().entrySet().stream().allMatch(e->e.getValue().equals(converted.get(e.getKey())))&&mechanical.coolant()==converted.coolant()&&mechanical.oil()==converted.oil(),"typed donor component wear/serials and fluid quantities survive electric crafting");
+        h.assertTrue(converted.get("traction.motor_rear")!=null&&converted.version()==2,"Conversion ingredients supply the new electric drive mounts");
         var data=output.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag();
         h.assertTrue(data.getInt("EngineParts")==1234,"donor parts preserved");
         var stored=item.read(pack);var nested=data.getCompound("TractionBattery");

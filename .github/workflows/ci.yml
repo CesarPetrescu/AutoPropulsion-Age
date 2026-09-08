@@ -63,6 +63,12 @@ jobs:
           ./gradlew --no-daemon --max-workers=2 -PwithGameTests build :sim:test --rerun runGameTestServer :sim:mechanicsBenchmark 2>&1 | tee build/ci/server.log
           python tools/ci/checks.py junit --report build/ci/junit.json
           python tools/ci/checks.py server --log build/ci/server.log --report build/ci/server.json
+      - name: Run independent boundary and energy audit
+        run: |
+          mkdir -p build/qa/classes
+          find sim/src/main/java -name '*.java' > build/qa/sources.txt
+          javac -d build/qa/classes @build/qa/sources.txt tools/qa/IndependentAudit.java
+          java -cp build/qa/classes IndependentAudit 2>&1 | tee build/ci/independent-audit.log
       - name: Inspect and checksum the installable JAR from this run
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -115,6 +121,7 @@ jobs:
           python tools/verify_engine_fit.py
           blender --background --factory-startup --python-exit-code 1 --python tools/validate_engine_geometry.py
           blender --background --factory-startup --python-exit-code 1 --python tools/validate_body_geometry.py
+          blender --background --factory-startup --python-exit-code 1 --python tools/validate_drivetrain_geometry.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -282,7 +289,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 156 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 192 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})

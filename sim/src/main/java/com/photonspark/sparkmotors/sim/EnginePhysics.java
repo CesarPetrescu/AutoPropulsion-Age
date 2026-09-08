@@ -22,13 +22,13 @@ public final class EnginePhysics {
             else if(mode==Mode.OFF){mode=Mode.CRANKING;startTime=0;}
             if(mode==Mode.CRANKING){
                 startTime+=dt;
-                double starter=MechanicalCapabilities.canCrank(mechanical)?65*mechanical.capability("electrical.starter")*clamp(CircuitPhysics.batteryCharge(mechanical)/8,0,1):0;
+                double starter=MechanicalCapabilities.canCrank(mechanical,setup.family())?65*mechanical.capability("electrical.starter")*clamp(CircuitPhysics.batteryCharge(mechanical)/8,0,1):0;
                 double omega=clamp(s.omega+(starter-15-s.omega*.8)/EngineBuild.inertia(setup.family(),parts)*dt,0,40);
-                if(startTime>.45&&omega>18&&MechanicalCapabilities.canRun(mechanical,parts))mode=Mode.RUNNING;
+                if(startTime>.45&&omega>18&&MechanicalCapabilities.canRun(mechanical,parts)&&InternalMechanics.output(mechanical,setup.family(),rpmForStart(omega))>.08)mode=Mode.RUNNING;
                 else if(startTime>3)mode=Mode.STALLED;
                 if(mode!=Mode.RUNNING)return new State(omega,0,0,0,mechanical.oilTemperature(),0,s.health,14.7,starter,0,false,mode,startTime);
             }
-            running=running&&mode==Mode.RUNNING&&MechanicalCapabilities.canRun(mechanical,parts);
+            running=running&&mode==Mode.RUNNING&&MechanicalCapabilities.canRun(mechanical,parts)&&InternalMechanics.output(mechanical,setup.family(),s.rpm())>.04;
             if(mode==Mode.RUNNING&&!running)mode=Mode.STALLED;
         }
         running=running&&(mechanical==null?EnginePart.ready(parts):MechanicalCapabilities.buildProblem(parts).isEmpty())&&Assembly.ENGINE.variant(setup.config())>0&&s.health()>5;
@@ -61,7 +61,8 @@ public final class EnginePhysics {
         double blower=EngineBuild.blowerTorque(rpm,boost,parts)*Math.max(.15,throttle);
         double friction=12+omega*.045,idle=running?clamp((850*Math.PI/30-omega)*1.4+friction,0,70):0;
         double heatDerate=1-clamp((setup.temperature()-110)/35,0,.6);
-        double shaft=running?potential*throttle*fuelFraction*heatDerate*MechanicalCapabilities.combustion(mechanical,rpm)*(.5+.5*s.health()/100)+(idle-friction)*(1-throttle)-blower:-friction;
+        double internals=InternalMechanics.output(mechanical,setup.family(),rpm);
+        double shaft=running?potential*throttle*fuelFraction*heatDerate*MechanicalCapabilities.combustion(mechanical,rpm)*(mechanical!=null&&mechanical.version()>=2?internals:(.5+.5*s.health()/100))+(idle-friction)*(1-throttle)-blower:-friction;
         // Fuel cut still leaves friction and driveline load above the limiter.
         if(rpm>=setup.limiter()&&running)shaft=-friction-blower;
         double nextOmega=clamp(omega+(shaft-loadTorque)/EngineBuild.inertia(setup.family(),parts)*dt,0,setup.limiter()*Math.PI/30*1.04);
@@ -78,4 +79,5 @@ public final class EnginePhysics {
         double health=s.health()-(lean*lean*.45+hot*hot*.10)*dt;
         return new State(nextOmega,throttle,spool,boost,oil,pressure,health,afr,shaft,blower*omega/1000,vent,mode,startTime);
     }
+    private static double rpmForStart(double omega){return omega*30/Math.PI;}
 }

@@ -33,8 +33,8 @@ final class ElectricHandlingTest {
         var m=c.setup.mechanics();for(String corner:ComponentSlot.CORNERS)m=m.with("wheel."+corner+".pad",null);
         c.setup=new VehicleDynamics.Setup(c.setup.config(),6800,3.7,EngineFamily.I4,EnginePart.stock(),90,1.4,m,c.setup.drive());
         c.step(new VehicleDynamics.Input(0,0,true,false),true,ROAD);
-        assertEquals(0,c.e.regenW(),1e-9,"missing service brakes do not invent regen command");
-        assertTrue(before.speed()-c.road.speed()<.1,"no stock brake fallback");
+        assertTrue(c.e.regenW()>0,"The brake pedal still requests electrical braking with missing friction pads");
+        assertTrue(c.road.wheels().corners().stream().allMatch(w->w.brakeForce()==0),"Missing pads do not acquire a stock friction-brake fallback");
         c.setup=setup(DriveConfig.Layout.RWD);c.road=before;c.e=electric;
         c.step(new VehicleDynamics.Input(0,0,true,false),true,AIR);
         assertEquals(0,c.e.regenW(),1e-9);assertTrue(before.speed()-c.road.speed()<.01,"airborne service brake does not stop body");

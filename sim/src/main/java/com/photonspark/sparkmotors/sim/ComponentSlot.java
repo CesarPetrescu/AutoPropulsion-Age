@@ -23,8 +23,18 @@ public record ComponentSlot(String key,String title,Assembly assembly,EnginePart
             corner(all,c,names[c],Assembly.BRAKES,"pad","Brake pads","disc","Brake disc","caliper","Caliper","brake_hose","Brake hose");
             corner(all,c,names[c],Assembly.SUSPENSION,"spring","Spring","damper","Damper","link","Steering / alignment link");
         }
+        // Append only: packet slot indices and old item IDs remain stable.
+        add(all,"driveline",Assembly.TRANSMISSION,Access.LIFT,"front_differential","Front differential","transfer","Transfer case","cv_fl","Front left CV shaft","cv_fr","Front right CV shaft","cv_rl","Rear left CV shaft","cv_rr","Rear right CV shaft");
+        add(all,"traction",Assembly.TRANSMISSION,Access.LIFT,"motor_front","Front traction motor","motor_rear","Rear traction motor","inverter_front","Front inverter","inverter_rear","Rear inverter","reduction_front","Front reduction gear","reduction_rear","Rear reduction gear","hv_cable","HV supply harness","contactor","Traction contactor","dc_dc","12 V converter","generator","Engine generator");
+        add(all,"internal",Assembly.ENGINE,Access.HOOD,"crank","Crankshaft","timing","Timing drive","eccentric","Eccentric shaft");
+        repeated(all,"cylinder",6,"piston","Piston","rings","Piston rings","bearing","Connecting rod bearing","valves","Valve assembly");
+        repeated(all,"rotor",4,"housing","Rotor housing","seals","Apex and side seals","bearing","Rotor bearing");
         ALL=List.copyOf(all);
     }
+    private static void repeated(List<ComponentSlot> all,String system,int count,String... pairs){
+        for(int n=1;n<=count;n++)for(int i=0;i<pairs.length;i+=2)all.add(new ComponentSlot(system+"."+n+"."+pairs[i],system+" "+n+" "+pairs[i+1],Assembly.ENGINE,null,system+"_"+pairs[i],-1,Access.HOOD));
+    }
+    public boolean detailed(){return key.startsWith("traction.")||key.startsWith("internal.")||key.startsWith("cylinder.")||key.startsWith("rotor.")||key.startsWith("driveline.cv_")||key.equals("driveline.front_differential")||key.equals("driveline.transfer");}
     private static void add(List<ComponentSlot> all,String system,Assembly assembly,Access access,String... pairs){
         for(int i=0;i<pairs.length;i+=2)all.add(new ComponentSlot(system+"."+pairs[i],pairs[i+1],assembly,null,system+"_"+pairs[i],-1,access));
     }

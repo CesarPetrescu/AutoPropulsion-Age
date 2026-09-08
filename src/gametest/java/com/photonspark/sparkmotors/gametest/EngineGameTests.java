@@ -115,12 +115,14 @@ public final class EngineGameTests {
                 var c=car(h);active[0]=c;var state=new CompoundTag();c.saveWithoutId(state);
                 state.remove("Mechanics");state.putInt("EngineFamily",(job%98)/14);state.putInt("Assemblies",Assembly.ENGINE.with(Assembly.stock(),1+(job/7)%2));state.putInt("EngineParts",EnginePart.boosted(job%7));c.load(state);
                 c.setDriveConfig(DriveConfig.preset(DriveConfig.Layout.values()[job/98]));
+                c.setMechanics(PowertrainTopology.fresh(c.powertrain(),c.driveConfig(),c.engineFamily(),c.config(),c.engineParts()));
                 p.moveTo(c.position());c.setOwner(p.getUUID());h.assertTrue(p.startRiding(c,true),"Driver must mount layout "+job);act(c,p,CarPackets.IGNITION,0,0);start[0]=c.getZ();peak[0]=0;
             }
             var c=active[0];c.receiveInput(step<15?4:step<70?1:2,0);peak[0]=Math.max(peak[0],Math.abs(c.speed()));
             if(step==133){
                 h.assertTrue(peak[0]>3&&c.getZ()>start[0]+2,"Every family/grade/induction layout must drive: "+job+" peak="+peak[0]+" displacement="+(c.getZ()-start[0]));
                 h.assertTrue(Math.abs(c.speed())<.3&&c.fuel()<40,"Every layout must brake and use fuel: "+job+" speed="+c.speed()+" fuel="+c.fuel()+" rpm="+c.rpm()+" peak="+peak[0]);
+                if(job%14==13)System.out.println("DRIVETRAIN_MATRIX_PROGRESS "+(job+1)+"/294");
                 if(job==293){p.stopRiding();c.discard();System.out.println("DRIVETRAIN_SERVER_MATRIX_PASS 294");h.succeed();}
             }
         });

@@ -13,6 +13,8 @@ import java.util.Locale;
 final class HandlingClient {
     private static int phase,ticks,job;
     private static boolean done,sawAir;
+    private static volatile boolean resetReady;
+    private static int resetStable;
     private static Vec3 origin;
     private static double peak,lateral,rearSlip,leftYaw,airY,entryYaw,worldLeft;
     static void tick(Minecraft mc,CarEntity car){
@@ -89,13 +91,19 @@ final class HandlingClient {
             }
         }else if(phase==2&&ticks==20){
             if(++job<3){
+                resetReady=false;resetStable=0;
                 server(mc,car,(p,c)->{
                     p.stopRiding();var tag=new CompoundTag();c.saveWithoutId(tag);c.load(tag);
-                    c.moveTo(origin.x,origin.y,origin.z,0,0);p.teleportTo(origin.x+4,origin.y+1,origin.z-3);CarPackets.open(p,c);
-                });phase=0;ticks=0;
+                    c.moveTo(origin.x,origin.y,origin.z,0,0);p.teleportTo(origin.x+4,origin.y+1,origin.z-3);CarPackets.open(p,c);resetReady=true;
+                });phase=4;ticks=0;
             }else{
                 airY=car.getY();server(mc,car,(p,c)->c.setPos(c.getX(),c.getY()+3,c.getZ()));phase=3;ticks=0;
             }
+        }else if(phase==4){
+            keys(mc,false,false,false,false,false,false);
+            if(resetReady&&car.position().distanceToSqr(origin)<.03&&Math.abs(net.minecraft.util.Mth.wrapDegrees(car.getYRot()))<.2)resetStable++;else resetStable=0;
+            if(resetStable>=3){System.out.println("HANDLING_RESET_CONVERGED "+layout);phase=0;ticks=0;}
+            else require(ticks<200,"Client never converged to the authoritative fixture reset; heading="+car.getYRot()+" position="+car.position());
         }else if(phase==3){
             keys(mc,false,false,true,false,true,true);
             boolean contact=false;for(int c=0;c<4;c++)contact|=car.wheelContact(c);

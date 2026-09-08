@@ -1,0 +1,44 @@
+{
+  "source_base": "339ac5d13d41676eed2a969fdad900fc786ea1a4",
+  "integrated_qa": "2fddb59",
+  "status": "Pre-commit local validation; full immutable release evidence is produced by required CI.",
+  "simulation_tests": 87,
+  "independent_audit": {
+    "suites": 7,
+    "assertions": 22171,
+    "failed": 0
+  },
+  "release_gate_tests": 28,
+  "native_ui": {
+    "cases": 192,
+    "configured_type_layout_family_cases": 105,
+    "component_removals": 1851
+  },
+  "geometry": {
+    "drivetrain_checks": 179,
+    "hardware_cases": 294,
+    "engine_layouts": 49,
+    "hood_positions": 5,
+    "tire_poses": 48,
+    "body_coverage_rays": 20
+  },
+  "local_server": "Initial run passed 294 driving cases and original integration tests. Five new native tests now pass: used motor, internal bundle/upgrade, versioned crate, HV interlock, and all 78 mirrored service recipes. Final full run and immutable release gates execute in required CI.",
+  "mesh_sha256": "88c6249cf4c549cec9391c93973ba9b0b91ed6ee6de3ca87a3162139ef68b170",
+  "limitations": [
+    "No subjective audio listening test in this run",
+    "Calibrated series hybrids only",
+    "No full rollover or soft-body simulation",
+    "Pure simulation benchmark excludes Minecraft renderer and world cost"
+  ],
+  "pure_simulation_benchmark": {
+    "scope": "Version 2 individual combustion components, seven families; excludes Minecraft entity, rendering and networking costs",
+    "java": "21.0.11",
+    "cars": 20,
+    "ticks": 1000,
+    "substepsPerTick": 4,
+    "meanBatchMilliseconds": 0.9957,
+    "p95BatchMilliseconds": 1.7465,
+    "meanMicrosecondsPerCarTick": 49.7838,
+    "checksum": 836019.4574
+  }
+}

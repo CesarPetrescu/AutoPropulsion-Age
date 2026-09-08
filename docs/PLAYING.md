@@ -1,4 +1,4 @@
-# Playing AutoPropulsion Age 0.6.1-alpha
+# Playing AutoPropulsion Age 0.7.0-alpha
 
 Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 
@@ -33,7 +33,7 @@ Garage screens fit themselves to the available window, including high/Auto GUI s
 
 The car keeps sideways momentum and turns from independent tire forces. Too much power, braking or steering can use up grip. Ice and loose ground, pressure loss, worn tires and individual corner damage change the result. A short **Space** pull while turning initiates rear slip; release it, lift and countersteer promptly. Holding the handbrake can spin the car. Use **S** for a normal stop.
 
-Open **G → Drive** to choose RWD, FWD or AWD. Exit, park with the engine off and raise the car on a **Service Jack** before converting. Survival requires **eight iron ingots** for each layout/differential conversion and retains all installed part identities and condition. A repeated current preset costs nothing. Lower the jack before starting.
+Open **G → Drive** to choose RWD, FWD or AWD. Exit, park with the engine off and raise the car on a **Service Jack** before converting. Survival requires **eight iron ingots plus the components for new mounts** for each layout/differential conversion and retains all installed part identities and condition. A repeated current preset costs nothing. Lower the jack before starting.
 
 | Preset | Power routing | Differential |
 |---|---|---|

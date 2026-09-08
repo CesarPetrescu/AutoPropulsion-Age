@@ -34,10 +34,14 @@ public final class WheelDynamics {
         return step(previous,setup,in,speed,lateral,yawRate,steering,driveTorque,grip,contacts,travels,ax,ay,dt,0);
     }
     public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt,double regenBrakeTorque){
+        double front=setup.drive().frontFraction()*.5,rear=(1-setup.drive().frontFraction())*.5;
+        return stepTorques(previous,setup,in,speed,lateral,yawRate,steering,setup.drive().wheelTorques(driveTorque,previous,dt),grip,contacts,travels,ax,ay,dt,new double[]{regenBrakeTorque*front,regenBrakeTorque*front,regenBrakeTorque*rear,regenBrakeTorque*rear});
+    }
+    public static Forces stepTorques(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double[] torques,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt,double[] regen){
+        if(torques.length!=4||regen.length!=4)throw new IllegalArgumentException("Four drive and regen torques required");
         double mass=setup.mass();
         var result=new ArrayList<Corner>();var m=setup.mechanics();int config=setup.config();
         double brakes=0,rolling=0,moment=0,forward=0,sideways=0,driveGrip=0,holding=0;
-        double[] torques=setup.drive().wheelTorques(driveTorque,previous,dt);
         double front=setup.drive().frontWeight(),longTransfer=clamp(ax,-15,15)*CG_HEIGHT/(WHEELBASE*9.81);
         for(int c=0;c<4;c++){
             var old=previous.corners.get(c);boolean contact=contacts[c]&&Assembly.WHEELS.variant(config)>0&&tireGrip(m,c)>0;
@@ -60,7 +64,7 @@ public final class WheelDynamics {
             double service=in.brake()&&Assembly.BRAKES.variant(config)>0?mass*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true):0;
             // Regeneration replaces friction braking only at the driven corners. A rear motor must
             // never reduce the driver's front hydraulic brake pressure.
-            service=Math.max(0,service-Math.max(0,regenBrakeTorque)/WHEEL_RADIUS*(c<2?setup.drive().frontFraction()*.5:(1-setup.drive().frontFraction())*.5));
+            service=Math.max(0,service-Math.max(0,regen[c])/WHEEL_RADIUS);
             double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?mass*3*brakeCapability(m,c,false):0;
             double fade=clamp(1-(old.temperature-350)/500,.15,1),dragBrake=0;
             if(m!=null){var caliper=m.get("wheel."+ComponentSlot.CORNERS[c]+".caliper");if(caliper!=null&&(caliper.faults()&PartInstance.SEIZED)!=0)dragBrake=1000;}

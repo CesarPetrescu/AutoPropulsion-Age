@@ -12,6 +12,8 @@ lookup={p['id']:p for p in manifest}
 scene=bpy.data.scenes['SM_01_Assembled'];bpy.context.window.scene=scene;scene.frame_set(1);bpy.context.view_layer.update()
 families=['i4_engine','v6_engine','flat4_engine']+[f'rotary_{i}rotor' for i in range(1,5)]
 chunks=[];temporary=[]
+bindings={}
+exec(compile((repo/'tools/internal_model_bindings.py').read_text(),str(repo/'tools/internal_model_bindings.py'),'exec'))
 def owner(ob):
     while ob and 'part_id' not in ob:ob=ob.parent
     return ob
@@ -70,6 +72,8 @@ for part in manifest:
     m=meta(name,cat,group,variant,hinge,hp['mount_world_m'],hp.get('hinge',{}).get('open_degrees',0) if hinge else 0,1<<family if family is not None else 127,slot)
     if name in ['radiator','radiator_fan']:m['tier']=1
     root=bpy.data.objects[part['object']]
+    binding=internal_binding(name,cat,family,part)
+    if binding:bindings[name]=binding
     for ob in scene.objects:
         if ob.type in {'MESH','CURVE','FONT'} and owner(ob)==root:
             # Rebuilt below with closed mating surfaces, circular beads and continuous arch trim.
@@ -108,6 +112,8 @@ def pipe(name,points,radius,mat,m,sides=10):
 box('rear_valance',(0,2.115,.92),(1.76,.05,.21),bpy.data.materials['SM_paint'],meta('rear_valance',cat=3,group=-1))
 box('scuttle',(0,-.77,1.008),(1.55,.11,.055),black,meta('scuttle',cat=3,group=-1))
 exec(compile((repo/'tools/build_body_geometry.py').read_text(),str(repo/'tools/build_body_geometry.py'),'exec'))
+exec(compile((repo/'tools/build_drivetrain_geometry.py').read_text(),str(repo/'tools/build_drivetrain_geometry.py'),'exec'))
+exec(compile((repo/'tools/build_internal_service_geometry.py').read_text(),str(repo/'tools/build_internal_service_geometry.py'),'exec'))
 # Detailed hardware is generated separately using the same native Blender mesh helpers.
 exec(compile((repo/'tools/build_powertrain_hardware.py').read_text(),str(repo/'tools/build_powertrain_hardware.py'),'exec'))
 # Shared cooling hoses and exhaust adapters to each family's port height and core width.
@@ -148,6 +154,7 @@ for mode in range(1,7):
 # Individual service mounts and cockpit instruments share the existing car coordinate frame.
 exec(compile((repo/'tools/build_service_geometry.py').read_text(),str(repo/'tools/build_service_geometry.py'),'exec'))
 merged={}
+(output/'mechanical-models.json').write_text(json.dumps(bindings,indent=2,sort_keys=True)+'\n')
 for c in chunks:
     key=(c['name'],c['cat'],c['group'],c['variant'],c['hinge'],*c['pivot'],c['angle'],c['family'],c['slot'],c['tier'],c['induction'],c['kind'])
     merged.setdefault(key,[]).extend(c['vertices'])

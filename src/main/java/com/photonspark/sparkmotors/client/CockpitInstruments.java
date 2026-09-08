@@ -15,8 +15,12 @@ public final class CockpitInstruments {
         if(!c.powertrain().electric())return r;
         var warnings=new java.util.ArrayList<String>();
         if(c.stateOfCharge()<.1)warnings.add("LOW SOC");if(c.packTemperature()>55)warnings.add("PACK HOT");
+        if(!com.photonspark.sparkmotors.sim.PowertrainTopology.liveHv(c.mechanics()))warnings.add("HV OPEN");
+        if(c.motorTemperature()>140||c.inverterTemperature()>100)warnings.add("DRIVE HOT");
+        if(c.coolant()<2||c.temperature()>110)warnings.add("COOLANT");
+        if(c.powertrain().hybrid()&&c.generatorRunning()&&c.oilPressure()<.65)warnings.add("OIL");
         if(c.brakeFluid()<.2)warnings.add("BRAKE");if(c.powertrain().hybrid()&&c.fuel()<5)warnings.add("FUEL");if(c.plugged())warnings.add("PLUGGED");
-        return new InstrumentReadings(r.powered(),r.speed(),c.motorRpm(),r.fuel(),c.packTemperature(),Double.NaN,r.voltage(),0,r.odometer(),java.util.List.copyOf(warnings));
+        return new InstrumentReadings(r.powered(),r.speed(),c.motorRpm(),r.fuel(),c.packTemperature(),Double.NaN,c.accessoryVoltage(),0,r.odometer(),java.util.List.copyOf(warnings));
     }
     public static double fraction(CarEntity c,InstrumentReadings r,String gauge){
         if(!c.powertrain().electric())return r.fraction(gauge);if(!r.powered())return 0;

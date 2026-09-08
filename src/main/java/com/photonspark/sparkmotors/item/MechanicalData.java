@@ -21,7 +21,7 @@ public final class MechanicalData {
         Codec.DOUBLE.optionalFieldOf("temperature",20d).forGetter(PartInstance::temperature)
     ).apply(i,PartInstance::new));
     public static final Codec<MechanicalState> CODEC=RecordCodecBuilder.create(i->i.group(
-        Codec.intRange(1,1).fieldOf("version").forGetter(MechanicalState::version),
+        Codec.intRange(1,MechanicalState.VERSION).fieldOf("version").forGetter(MechanicalState::version),
         Codec.unboundedMap(Codec.STRING,PART).fieldOf("parts").forGetter(MechanicalState::parts),
         Codec.DOUBLE.optionalFieldOf("coolant",0d).forGetter(MechanicalState::coolant),
         Codec.DOUBLE.optionalFieldOf("oil",0d).forGetter(MechanicalState::oil),
@@ -47,7 +47,16 @@ public final class MechanicalData {
         var stored=get(stack);
         if(stored==null)return PartInstance.fresh(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath(),slot.key().endsWith(".tire")?2.3:slot.key().equals("electrical.battery")?48:0);
         // A used tire may move to a different corner without changing identity or pressure.
+        if(slot.hardware()==EnginePart.INTERNALS){var root=stored.get(slot.key());return root!=null&&slot.accepts(root)?root:null;}
         if(stored.parts().size()!=1)return null;
         var part=stored.parts().values().iterator().next();return slot.accepts(part)?part:null;
+    }
+    public static MechanicalState internalBundle(ItemStack stack,EngineFamily family,ComponentSlot slot,PartInstance root){
+        var stored=get(stack);
+        if(stored==null)stored=new MechanicalState(1,Map.of(slot.key(),root),0,0,0,20,20,0,Set.of());
+        // Original v1 single internal kits represented all internals. Only those acquire child identities.
+        stored=InternalMechanics.migrateBundle(stored,family);
+        if(!stored.validFor(s->s.key().equals(slot.key())||InternalMechanics.internal(s.key())))return null;
+        return stored;
     }
 }

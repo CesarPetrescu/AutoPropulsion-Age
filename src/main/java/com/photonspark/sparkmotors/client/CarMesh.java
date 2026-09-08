@@ -17,9 +17,13 @@ import java.util.zip.GZIPInputStream;
 public final class CarMesh {
     private static final net.minecraft.resources.ResourceLocation WHITE=AutoPropulsionAge.id("textures/entity/white.png");
     private static List<Chunk> chunks=List.of();
+    private static Map<String,String> authoredComponents=Map.of();
     private record Chunk(String name,int category,int group,int variant,int hinge,float px,float py,float pz,float angle,int family,int slot,int tier,int induction,int kind,float[] vertices,int[] colors){}
     public static void reload(ResourceManager resources){
         var result=new ArrayList<Chunk>();
+        try(var reader=resources.openAsReader(AutoPropulsionAge.id("models/entity/mechanical-models.json"))){
+            var map=new HashMap<String,String>();net.minecraft.util.GsonHelper.parse(reader).entrySet().forEach(e->map.put(e.getKey(),e.getValue().getAsString()));authoredComponents=Map.copyOf(map);
+        }catch(IOException e){throw new IllegalStateException("Missing mechanical model bindings",e);}
         try(var in=new DataInputStream(new GZIPInputStream(resources.open(AutoPropulsionAge.id("models/entity/sedan.mesh.gz"))))){
             if(in.readInt()!=0x41504132)throw new IOException("Unknown car mesh format");
             int count=in.readInt();if(count<0||count>10000)throw new IOException("Invalid chunk count");
@@ -44,6 +48,8 @@ public final class CarMesh {
     }
     private static final Map<String,String> componentKeys=new HashMap<>();
     private static String componentKey(Chunk c){return componentKeys.computeIfAbsent(c.name,name->{
+        if(name.startsWith("pt|"))return name.split("\\|")[3];
+        if(authoredComponents.containsKey(name))return authoredComponents.get(name);
         int corner=CarGeometry.corner(name);
         if(corner>=0){
             String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.startsWith("suspension_spring_")?"spring":name.contains("coilover")||name.startsWith("suspension_damper_")?"damper":name.startsWith("brake_hose_")?"brake_hose":name.contains("knuckle")||name.contains("tie_rod")||name.contains("control_arm")?"link":null;
@@ -87,7 +93,11 @@ public final class CarMesh {
     private static boolean visible(Chunk c,CarEntity car){
         if(c.name.equals("service_jack")&&!car.raised())return false;
         String component=componentKey(c);if(!component.isEmpty()&&car.mechanics().get(component)==null)return false;
-        if(car.powertrain().electric()&&!car.powertrain().hybrid()&&(c.group==0||c.group==1||c.name.contains("exhaust")||c.name.contains("muffler")||c.name.contains("fuel_tank")))return false;
+        boolean topology=c.name.startsWith("pt|");
+        if(topology){var fields=c.name.split("\\|");int type=car.powertrain().hybrid()?4:car.powertrain().electric()?2:1;if((Integer.parseInt(fields[1])&type)==0||(Integer.parseInt(fields[2])&(1<<car.driveConfig().layout().ordinal()))==0)return false;}
+        if(!topology&&(c.group==1||component.startsWith("driveline.")))return false;
+        if(!component.isEmpty()&&!PowertrainTopology.applicable(ComponentSlot.byKey(component),car.powertrain(),car.driveConfig(),car.engineFamily()))return false;
+        if(car.powertrain().electric()&&!car.powertrain().hybrid()&&(c.group==0&&!component.startsWith("cooling.")&&!component.equals("engine.cooling")||c.name.contains("exhaust")||c.name.contains("muffler")||c.name.contains("fuel_tank")))return false;
         int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
         if(c.group>=0&&(selected==0||(c.variant>0&&selected!=c.variant)))return false;
         if((c.family&(1<<car.engineFamily().ordinal()))==0||(c.induction&(1<<EnginePart.INDUCTION.variant(car.engineParts())))==0)return false;
@@ -113,14 +123,14 @@ public final class CarMesh {
         var moving=new org.joml.Vector3f();
         for(Chunk c:chunks){
             int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
-            if(!visible(c,car)||engineOnly&&c.group!=0)continue;
+            if(!visible(c,car)||engineOnly&&c.group!=0&&!(car.powertrain().electric()&&c.name.startsWith("pt|")))continue;
             if(c.group==0&&!preview&&hood<.05)continue;
-            if(cutaway&&c.group==0&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
+            if(cutaway&&!componentKey(c).equals(highlight)&&c.group==0&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
             poses.pushPose();
             String component=componentKey(c);var part=component.isEmpty()?null:car.mechanics().get(component);
             int corner=CarGeometry.corner(c.name);
             boolean rigidWheel=corner>=0&&CarGeometry.steers(c.name);
-            boolean flexible=corner>=0&&!rigidWheel&&(component.startsWith("wheel.")||c.name.startsWith("cv_axle_"));
+            boolean flexible=corner>=0&&!rigidWheel&&(component.startsWith("wheel.")||component.startsWith("driveline.cv_"));
             float travel=corner<0?0:car.wheelTravel(corner);
             if(rigidWheel){
                 // Unsprung parts stay on the tire contact frame while the shell pitches/rolls.
@@ -163,7 +173,7 @@ public final class CarMesh {
                     if(c.group==3&&selected==2&&c.name.startsWith("brake_caliper"))color=0xFF3FA7F5;
                     float vx=c.vertices[v],vy=c.vertices[v+1],vz=c.vertices[v+2];
                     if(flexible){
-                        float weight=c.name.startsWith("cv_axle_")?Mth.clamp((Math.abs(vx)-.13f)/.625f,0,1):c.name.startsWith("tie_rod_")?Mth.clamp((Math.abs(vx)-.53f)/.18f,0,1):c.name.startsWith("control_arm_")?Mth.clamp((Math.abs(vx)-.37f)/.33f,0,1):
+                        float weight=component.startsWith("driveline.cv_")?Mth.clamp((Math.abs(vx)-.13f)/.625f,0,1):c.name.startsWith("tie_rod_")?Mth.clamp((Math.abs(vx)-.53f)/.18f,0,1):c.name.startsWith("control_arm_")?Mth.clamp((Math.abs(vx)-.37f)/.33f,0,1):
                             c.name.startsWith("brake_hose_")?Mth.clamp((.59f-vy)/.23f,0,1):Mth.clamp((.94f-vy)/.60f,0,1);
                         moving.set(vx,vy,vz);
                         if(corner<2){float cx=(float)CarGeometry.wheelX(corner),cz=(float)CarGeometry.wheelZ(corner);moving.sub(cx,.34f,cz).rotateY(-car.steeringAngle()).add(cx,.34f,cz);}
