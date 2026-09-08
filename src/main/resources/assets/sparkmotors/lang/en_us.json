@@ -179,5 +179,6 @@
   "subtitles.sparkmotors.release": "Release",
   "subtitles.sparkmotors.latch": "Latch",
   "subtitles.sparkmotors.impact": "Impact",
-  "subtitles.sparkmotors.horn": "Horn"
+  "subtitles.sparkmotors.horn": "Horn",
+  "key.sparkmotors.instruments": "Toggle performance instruments"
 }

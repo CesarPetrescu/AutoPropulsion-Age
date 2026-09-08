@@ -11,7 +11,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 59140,
+      "triangles": 59464,
       "passed": true
     },
     {
@@ -21,7 +21,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 59780,
+      "triangles": 60104,
       "passed": true
     },
     {
@@ -31,7 +31,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 59788,
+      "triangles": 60112,
       "passed": true
     },
     {
@@ -41,7 +41,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 60340,
+      "triangles": 60664,
       "passed": true
     },
     {
@@ -51,7 +51,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 61452,
+      "triangles": 61776,
       "passed": true
     },
     {
@@ -61,7 +61,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 63600,
+      "triangles": 63924,
       "passed": true
     },
     {
@@ -71,7 +71,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1265,
       "core_to_firewall_m": 0.24,
-      "triangles": 63636,
+      "triangles": 63960,
       "passed": true
     },
     {
@@ -81,7 +81,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40308,
+      "triangles": 40632,
       "passed": true
     },
     {
@@ -91,7 +91,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40948,
+      "triangles": 41272,
       "passed": true
     },
     {
@@ -101,7 +101,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40956,
+      "triangles": 41280,
       "passed": true
     },
     {
@@ -111,7 +111,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41508,
+      "triangles": 41832,
       "passed": true
     },
     {
@@ -121,7 +121,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 42620,
+      "triangles": 42944,
       "passed": true
     },
     {
@@ -131,7 +131,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44768,
+      "triangles": 45092,
       "passed": true
     },
     {
@@ -141,7 +141,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44804,
+      "triangles": 45128,
       "passed": true
     },
     {
@@ -151,7 +151,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40068,
+      "triangles": 40392,
       "passed": true
     },
     {
@@ -161,7 +161,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40708,
+      "triangles": 41032,
       "passed": true
     },
     {
@@ -171,7 +171,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 40716,
+      "triangles": 41040,
       "passed": true
     },
     {
@@ -181,7 +181,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 41268,
+      "triangles": 41592,
       "passed": true
     },
     {
@@ -191,7 +191,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 42380,
+      "triangles": 42704,
       "passed": true
     },
     {
@@ -201,7 +201,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44528,
+      "triangles": 44852,
       "passed": true
     },
     {
@@ -211,7 +211,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1625,
       "core_to_firewall_m": 0.2135,
-      "triangles": 44564,
+      "triangles": 44888,
       "passed": true
     },
     {
@@ -221,7 +221,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 37980,
+      "triangles": 38304,
       "passed": true
     },
     {
@@ -231,7 +231,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 38620,
+      "triangles": 38944,
       "passed": true
     },
     {
@@ -241,7 +241,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 38628,
+      "triangles": 38952,
       "passed": true
     },
     {
@@ -251,7 +251,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 39180,
+      "triangles": 39504,
       "passed": true
     },
     {
@@ -261,7 +261,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 40292,
+      "triangles": 40616,
       "passed": true
     },
     {
@@ -271,7 +271,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 42440,
+      "triangles": 42764,
       "passed": true
     },
     {
@@ -281,7 +281,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 42476,
+      "triangles": 42800,
       "passed": true
     },
     {
@@ -291,7 +291,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 38792,
+      "triangles": 39116,
       "passed": true
     },
     {
@@ -301,7 +301,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 39432,
+      "triangles": 39756,
       "passed": true
     },
     {
@@ -311,7 +311,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 39440,
+      "triangles": 39764,
       "passed": true
     },
     {
@@ -321,7 +321,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 39992,
+      "triangles": 40316,
       "passed": true
     },
     {
@@ -331,7 +331,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 41104,
+      "triangles": 41428,
       "passed": true
     },
     {
@@ -341,7 +341,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 43252,
+      "triangles": 43576,
       "passed": true
     },
     {
@@ -351,7 +351,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 43288,
+      "triangles": 43612,
       "passed": true
     },
     {
@@ -361,7 +361,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 39604,
+      "triangles": 39928,
       "passed": true
     },
     {
@@ -371,7 +371,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 40244,
+      "triangles": 40568,
       "passed": true
     },
     {
@@ -381,7 +381,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 40252,
+      "triangles": 40576,
       "passed": true
     },
     {
@@ -391,7 +391,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 40804,
+      "triangles": 41128,
       "passed": true
     },
     {
@@ -401,7 +401,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 41916,
+      "triangles": 42240,
       "passed": true
     },
     {
@@ -411,7 +411,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 44064,
+      "triangles": 44388,
       "passed": true
     },
     {
@@ -421,7 +421,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 44100,
+      "triangles": 44424,
       "passed": true
     },
     {
@@ -431,7 +431,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 40416,
+      "triangles": 40740,
       "passed": true
     },
     {
@@ -441,7 +441,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 41056,
+      "triangles": 41380,
       "passed": true
     },
     {
@@ -451,7 +451,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 41064,
+      "triangles": 41388,
       "passed": true
     },
     {
@@ -461,7 +461,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 41616,
+      "triangles": 41940,
       "passed": true
     },
     {
@@ -471,7 +471,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 42728,
+      "triangles": 43052,
       "passed": true
     },
     {
@@ -481,7 +481,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 44876,
+      "triangles": 45200,
       "passed": true
     },
     {
@@ -491,7 +491,7 @@
       "side_clearance_m": 0.036,
       "core_to_radiator_m": 0.1485,
       "core_to_firewall_m": 0.214,
-      "triangles": 44912,
+      "triangles": 45236,
       "passed": true
     }
   ]

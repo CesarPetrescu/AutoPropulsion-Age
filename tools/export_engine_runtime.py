@@ -71,7 +71,11 @@ for part in manifest:
     if name in ['radiator','radiator_fan']:m['tier']=1
     root=bpy.data.objects[part['object']]
     for ob in scene.objects:
-        if ob.type in {'MESH','CURVE','FONT'} and owner(ob)==root:collect(ob,m)
+        if ob.type in {'MESH','CURVE','FONT'} and owner(ob)==root:
+            target=m
+            if name.startswith(('coilover_','sport_coilover_')):target=dict(m,name=('suspension_spring_' if 'spring' in ob.name.lower() else 'suspension_damper_')+name[-2:])
+            if name=='radiator_fan' and 'shroud' in ob.name.lower():target=dict(m,name='radiator_fan_shroud')
+            collect(ob,target)
 
 def material(name,color):
     mat=bpy.data.materials.get(name) or bpy.data.materials.new(name);mat.diffuse_color=(*color,1);return mat
@@ -105,8 +109,8 @@ exec(compile((repo/'tools/build_powertrain_hardware.py').read_text(),str(repo/'t
 for f in range(7):
     fam=1<<f;portz=[.87,.875,.78,.62,.62,.62,.62][f];portx=[.193,.29,.34,.285,.285,.285,.285][f]
     cm=meta('service_coolant_'+str(f),family=fam,slot=3)
-    pipe('coolant_feed_'+str(f),[(-.48,-1.90,.83),(-.50,-1.78,.78),(-portx,-1.68,.66)],.019,blue,cm)
-    pipe('coolant_return_'+str(f),[(portx,-1.12,.65),(.53,-1.12,.65),(.56,-1.78,.62),(.48,-1.93,.62)],.018,blue,cm)
+    pipe('coolant_feed_'+str(f),[(-.48,-1.90,.83),(-.50,-1.78,.78),(-portx,-1.68,.66)],.019,blue,dict(cm,name='coolant_upper_hose_'+str(f)))
+    pipe('coolant_return_'+str(f),[(portx,-1.12,.65),(.53,-1.12,.65),(.56,-1.78,.62),(.48,-1.93,.62)],.018,blue,dict(cm,name='coolant_lower_hose_'+str(f)))
     tm=meta('turbo_header_'+str(f),family=fam,slot=5,induction=26)
     pipe('turbo_feed_'+str(f),[(portx,-1.43,portz),(.405,-1.43,.75),(.47,-1.31,.81)],.023,metal,tm)
     pipe('turbo_downpipe_'+str(f),[(.47,-1.19,.81),(.54,-1.12,.69),(.50,-1.0,.45),(.35,-.90,.29)],.025,metal,tm)
@@ -123,19 +127,21 @@ for mode in range(1,7):
     is_turbo=mode in [1,3,4]
     m=meta('boost_plumbing_'+str(mode),cat=31 if is_turbo else 32,slot=5,tier=mode,induction=1<<mode)
     source=(.48,-1.25,.85) if is_turbo else (.48,-1.69,.86)
-    pipe('compressor_out_'+str(mode),[source,(.59,-1.62,.87),(.60,-1.83,.83),(.60,-2.04,.70),(.48,-2.04,.70)],.023,blue,m)
-    box('intercooler_'+str(mode),(0,-2.04,.70),(.98,.038,.25),metal,m)
-    for yy in [.61,.66,.71,.76,.81]:box('intercooler_fin_'+str(mode)+str(yy),(0,-2.066,yy),(.94,.01,.01),black,m)
-    pipe('charge_return_'+str(mode),[(-.48,-2.04,.70),(-.60,-2.04,.70),(-.61,-1.85,.91),(-.59,-1.56,.98),(-.51,-1.30,.98),(-.425,-1.30,.94)],.023,blue,m)
+    pipe('compressor_out_'+str(mode),[source,(.59,-1.62,.87),(.60,-1.83,.83),(.60,-2.04,.70),(.48,-2.04,.70)],.023,blue,dict(m,name='charge_pipe_'+str(mode)))
+    box('intercooler_'+str(mode),(0,-2.04,.70),(.98,.038,.25),metal,dict(m,name='service_intercooler_'+str(mode)))
+    for yy in [.61,.66,.71,.76,.81]:box('intercooler_fin_'+str(mode)+str(yy),(0,-2.066,yy),(.94,.01,.01),black,dict(m,name='service_intercooler_'+str(mode)))
+    pipe('charge_return_'+str(mode),[(-.48,-2.04,.70),(-.60,-2.04,.70),(-.61,-1.85,.91),(-.59,-1.56,.98),(-.51,-1.30,.98),(-.425,-1.30,.94)],.023,blue,dict(m,name='charge_pipe_'+str(mode)))
     inlet=[(-.45,-1.045,.88),(-.43,-.965,.95),(.43,-.965,.95),(.62,-1.07,.97)]
     if is_turbo:inlet.extend([(.62,-1.30,.97),(.48,-1.30,.93)])
     inlet.append(source)
-    pipe('filtered_inlet_'+str(mode),inlet,.019,black,m)
+    pipe('filtered_inlet_'+str(mode),inlet,.019,black,dict(m,name='filtered_inlet_'+str(mode)))
     if is_turbo:
-        box('wastegate',(.51,-1.40,.90),(.055,.06,.08),metal,m)
-        box('blowoff_valve',(-.60,-1.80,.95),(.045,.05,.055),metal,m)
-    else:pipe('supercharger_belt',[(0,-1.805,.55),(.48,-1.805,.89),(.50,-1.805,.84),(0,-1.805,.50),(0,-1.805,.55)],.005,black,m,sides=6)
+        box('wastegate',(.51,-1.40,.90),(.055,.06,.08),metal,dict(m,name='service_wastegate_'+str(mode)))
+        box('blowoff_valve',(-.60,-1.80,.95),(.045,.05,.055),metal,dict(m,name='service_bov_'+str(mode)))
+    else:pipe('supercharger_belt',[(0,-1.805,.55),(.48,-1.805,.89),(.50,-1.805,.84),(0,-1.805,.50),(0,-1.805,.55)],.005,black,dict(m,name='service_blower_belt_'+str(mode)),sides=6)
 
+# Individual service mounts and cockpit instruments share the existing car coordinate frame.
+exec(compile((repo/'tools/build_service_geometry.py').read_text(),str(repo/'tools/build_service_geometry.py'),'exec'))
 merged={}
 for c in chunks:
     key=(c['name'],c['cat'],c['group'],c['variant'],c['hinge'],*c['pivot'],c['angle'],c['family'],c['slot'],c['tier'],c['induction'],c['kind'])

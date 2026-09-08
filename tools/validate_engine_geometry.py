@@ -30,10 +30,10 @@ for family in range(7):
     for induction in range(7):
         engine=[c for c in chunks if c['group']==0 and c['family']&(1<<family) and c['induction']&(1<<induction)]
         allparts=bvh(engine);hood_hits=[len(allparts.overlap(h)) for h in hoods]
-        plumbing=[c for c in engine if c['name'].startswith('boost_plumbing_')]
+        plumbing=[c for c in engine if c['name'].startswith(('boost_plumbing_','charge_pipe_','service_intercooler_','filtered_inlet_','service_wastegate_','service_bov_','service_blower_belt_'))]
         interference={name:len(bvh(plumbing).overlap(tree)) if plumbing else 0 for name,tree in fixed.items()}
         compressor_names=['turbocharger','supercharger','large_turbo','twin_turbo','roots_blower','twin_screw']
-        cores=[c for c in engine if not c['name'].startswith(('hardware_','service_','turbo_header_','boost_plumbing_')) and c['name'] not in compressor_names+['battery','radiator','radiator_fan','coolant_reservoir']]
+        cores=[c for c in engine if not c['name'].startswith(('hardware_','service_','turbo_header_','boost_plumbing_','charge_pipe_','filtered_inlet_','coolant_','cooling_fan_','fan_shroud_')) and c['name'] not in compressor_names+['battery','radiator','radiator_fan','coolant_reservoir']]
         compressors=[c for c in engine if c['name'] in compressor_names]
         compressor_hits=len(bvh(cores).overlap(bvh(compressors))) if compressors else 0
         passed=not any(hood_hits) and not any(interference.values()) and compressor_hits==0

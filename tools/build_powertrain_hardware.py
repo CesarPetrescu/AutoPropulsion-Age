@@ -112,11 +112,12 @@ for choice in range(2,5):
     for z in [.565+i*.019 for i in range(22)]:box('radiator fin',(0,-1.977,z),(1.055,.006,.005),alloy,m)
     fans=[0] if choice==2 else [-.26,.26]
     for x in fans:
-        ring('fan shroud',(x,-1.878,.76),.18 if choice==2 else .16,.151 if choice==2 else .137,.023,(0,1,0),black,m,32)
-        pipe('fan hub',[(x,-1.895,.76),(x,-1.86,.76)],.033,metal,m,20)
+        ring('fan shroud',(x,-1.878,.76),.18 if choice==2 else .16,.151 if choice==2 else .137,.023,(0,1,0),black,dict(m,name=f'fan_shroud_{choice}_{x}'),32)
+        fm=dict(m,name=f'cooling_fan_{choice}_{x}',pivot=xyz((x,-1.88,.76)))
+        pipe('fan hub',[(x,-1.895,.76),(x,-1.86,.76)],.033,metal,fm,20)
         for j in range(8):
             a=j*math.tau/8;c=(x+math.cos(a)*.095,-1.88,.76+math.sin(a)*.095)
-            ob=box('electric fan blade',c,(.042,.008,.078),black,m)
+            ob=box('electric fan blade',c,(.042,.008,.078),black,fm)
     if choice==4:
         pipe('radiator cap',[(.45,-1.93,.993),(.45,-1.93,1.006)],.022,purple,m,16)
 

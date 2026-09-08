@@ -157,8 +157,8 @@ public final class GarageScreen extends Screen {
         int stats=y+h-83;
         g.drawString(font,car.ignition()?"ENGINE RUNNING":"ENGINE OFF",x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
         g.drawString(font,String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
-        g.drawString(font,tab==4?String.format(Locale.ROOT,"%.0f C  /  %.2f bar",car.temperature(),car.boost()):"Condition  "+Math.round(car.health())+"%",x+18,stats+29,INK,false);
-        g.fill(x+18,stats+43,x+previewWidth-10,stats+47,0xFF30424F);g.fill(x+18,stats+43,x+18+(int)((previewWidth-28)*car.health()/100),stats+47,ACCENT);
+        g.drawString(font,tab==4?String.format(Locale.ROOT,"%.0f C  /  %.2f bar",car.temperature(),car.boost()):"Installed parts: "+car.mechanics().parts().size(),x+18,stats+29,INK,false);
+        g.drawString(font,"Warnings: "+car.mechanics().faultHistory().size(),x+18,stats+43,MUTED,false);
         int top=y+82;
         switch(tab){
             case 0 -> {
@@ -200,7 +200,7 @@ public final class GarageScreen extends Screen {
                 g.drawString(font,"Slots "+(engineScroll+1)+"-"+(engineScroll+engineRows)+" / "+EnginePart.values().length+"  |  Arrows choose, Fit installs",rx,top+43,MUTED,false);
             }
             case 5 -> {
-                g.drawString(font,"LIVE ENGINE DIAGNOSTICS",rx,top,ACCENT,false);
+                g.drawString(font,"ASSISTED LIVE TELEMETRY",rx,top,ACCENT,false);
                 String[] labels={"Crank speed","Throttle / turbo speed","Boost / target","Air:fuel ratio","Coolant / oil","Oil pressure","Shaft torque","Blower drive load","Engine condition"};
                 String[] values={String.format(Locale.ROOT,"%.0f RPM",car.rpm()),String.format(Locale.ROOT,"%.0f%% / %.0f%%",car.throttle()*100,car.spool()*100),String.format(Locale.ROOT,"%.2f / %.2f bar",car.boost(),car.boostTarget()),String.format(Locale.ROOT,"%.2f : 1",car.afr()),String.format(Locale.ROOT,"%.0f / %.0f C",car.temperature(),car.oilTemperature()),String.format(Locale.ROOT,"%.2f bar",car.oilPressure()),String.format(Locale.ROOT,"%.0f Nm",car.shaftTorque()),String.format(Locale.ROOT,"%.1f kW",car.blowerKw()),String.format(Locale.ROOT,"%.1f%%",car.engineHealth())};
                 int spacing=Math.min(25,Math.max(12,(h-180)/labels.length));

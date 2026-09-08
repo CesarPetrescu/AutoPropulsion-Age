@@ -94,7 +94,9 @@ public final class ClientSmoke {
             PacketDistributor.sendToServer(new CarPackets.Input(carId,ticks<65?1:2,0));
             if(ticks==55){if(CarClient.activeAudioVoices()==0)throw new IllegalStateException("No actual engine/road sound channels active");pendingScreenshot="alpha-driving.png";}
             if(ticks==80)mc.options.setCameraType(CameraType.FIRST_PERSON);
-            if(ticks==95)pendingScreenshot="alpha-interior.png";
+            if(ticks==90){mc.player.setXRot(27);mc.player.xRotO=27;mc.options.hideGui=true;}
+            if(ticks==95)pendingScreenshot="mechanics-cockpit.png";
+            if(ticks==102){mc.options.hideGui=false;mc.player.setXRot(5);}
             if(ticks>120){
                 if(car.fuel()>=40||Math.abs(car.speed())>.3||maxSpeed<5){write(mc,"FAILED: driving/braking/fuel check; peak speed="+maxSpeed);mc.stop();return;}
                 CarClient.send(car,CarPackets.IGNITION,0,0);phase=10;ticks=0;
@@ -119,7 +121,12 @@ public final class ClientSmoke {
             if(ticks==625){if(!car.raised())throw new IllegalStateException("Jack did not synchronize");press(mc,"Remove part",0);}
             if(ticks==645){if(car.mechanics().get("wheel.fl.tire")!=null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")!=0)throw new IllegalStateException("Removed tire remains installed or visible");press(mc,"Underside",0);pendingScreenshot="mechanics-underside-service.png";}
             if(ticks==665)press(mc,"Install part",0);
-            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire removal and renderer visibility.");CarClient.stopSounds();if(CarClient.activeAudioVoices()!=0)throw new IllegalStateException("Audio voices survived cleanup");System.out.println("MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS");mc.stop();}
+            if(ticks==685){if(car.mechanics().get("wheel.fl.tire")==null||CarMesh.visibleComponentTriangles(car,"wheel.fl.tire")==0)throw new IllegalStateException("Fitted tire did not reappear");((ServiceScreen)mc.screen).select("cooling.upper_hose");press(mc,"Focus part",0);}
+            if(ticks==700){if(CarMesh.visibleComponentTriangles(car,"cooling.upper_hose")==0||CarMesh.visibleComponentTriangles(car,"cooling.lower_hose")==0)throw new IllegalStateException("Independent coolant hose geometry missing");pendingScreenshot="mechanics-focused-hose.png";}
+            if(ticks==715){var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.serverLevel().getEntity(carId);c.setMechanics(c.mechanics().with("cooling.sender",null));});}
+            if(ticks==740){if(!Double.isNaN(CockpitInstruments.read(car).coolant()))throw new IllegalStateException("Failed coolant sender still supplies a perfect cockpit reading");
+                write(mc,"PASS: mechanical workshop native GUI/network leak diagnosis, targeted hose replacement, conserved refill, timed verification, physical jack, tire visibility, focused separate hoses, and failed sender behavior.");
+                CarClient.stopSounds();if(CarClient.activeAudioVoices()!=0)throw new IllegalStateException("Audio voices survived cleanup");System.out.println("MECHANICS_CLIENT_PASS AUDIO_CHANNELS_AND_CLEANUP_PASS INSTRUMENT_SENDER_PASS");mc.stop();}
         }
     }
     private static void engineMatrix(Minecraft mc,CarEntity car){

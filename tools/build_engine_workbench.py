@@ -1,4 +1,4 @@
-"""Blender MCP: create an editable, derived inspection .blend with 21 open-hood scenes.
+"""Blender MCP: create an editable, derived inspection .blend with 49 open-hood scenes.
 The game's committed APA2 mesh is the source for this snapshot. Shared mesh data
 keeps this small. Authoring rebuilds still use the original kit + runtime exporter.
 """
@@ -47,6 +47,7 @@ for family in range(7):
         s=bpy.data.scenes.new(prefix+names[family]+'_'+modes[induction]);s.unit_settings.system='METRIC';s.unit_settings.scale_length=1
         s.render.engine='BLENDER_EEVEE';s.render.resolution_x=1200;s.render.resolution_y=900;s.render.resolution_percentage=100
         for c in chunks:
+            if c['name']=='service_jack':continue
             if c['group']>0 and c['variant']>1:continue
             if not c['family']&(1<<family) or not c['induction']&(1<<induction):continue
             if c['slot']==5 and (induction==0 or c['tier'] not in [0,induction]):continue

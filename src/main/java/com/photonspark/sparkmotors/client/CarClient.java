@@ -20,13 +20,14 @@ import org.lwjgl.glfw.GLFW;
 public final class CarClient {
     public static final KeyMapping IGNITION=key("ignition",GLFW.GLFW_KEY_R),GARAGE=key("garage",GLFW.GLFW_KEY_G),LIGHTS=key("lights",GLFW.GLFW_KEY_H),
         PANELS=key("panels",GLFW.GLFW_KEY_O),REVERSE=key("reverse",GLFW.GLFW_KEY_Z),HORN=key("horn",GLFW.GLFW_KEY_B),CLUTCH=key("clutch",GLFW.GLFW_KEY_C);
-    private static boolean reverse;
+    private static boolean reverse,performance;
+    public static final KeyMapping INSTRUMENTS=key("instruments",GLFW.GLFW_KEY_V);
     private static int lastCar=-1;
     private static float lastYaw;
     private static final java.util.Map<Integer,CarAudio> sounds=new java.util.HashMap<>();
     public CarClient(IEventBus bus){
         bus.addListener((EntityRenderersEvent.RegisterRenderers e)->e.registerEntityRenderer(AutoPropulsionAge.CAR.get(),CarRenderer::new));
-        bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN,CLUTCH})e.register(key);});
+        bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN,CLUTCH,INSTRUMENTS})e.register(key);});
         bus.addListener((RegisterClientReloadListenersEvent e)->e.registerReloadListener((ResourceManagerReloadListener)resources->{stopSounds();CarMesh.reload(resources);}));
         bus.addListener((RegisterGuiLayersEvent e)->e.registerAboveAll(AutoPropulsionAge.id("dashboard"),(graphics,delta)->hud(graphics)));
         NeoForge.EVENT_BUS.addListener(CarClient::tick);
@@ -46,6 +47,7 @@ public final class CarClient {
         CarEntity car=mc.player.getVehicle() instanceof CarEntity c?c:mc.hitResult instanceof EntityHitResult hit&&hit.getEntity() instanceof CarEntity c?c:null;
         if(car==null){lastCar=-1;reverse=false;return;}
         if(mc.screen==null){
+            while(INSTRUMENTS.consumeClick())performance=!performance;
             while(GARAGE.consumeClick())send(car,CarPackets.OPEN,0,0);
             while(IGNITION.consumeClick())send(car,CarPackets.IGNITION,0,0);
             while(LIGHTS.consumeClick())send(car,CarPackets.LIGHTS,0,0);
@@ -73,20 +75,13 @@ public final class CarClient {
     }
     private static void hud(GuiGraphics g){
         Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.options.hideGui||mc.screen!=null||!(mc.player.getVehicle() instanceof CarEntity car))return;
-        int w=250,x=(g.guiWidth()-w)/2,y=g.guiHeight()-109;
-        g.fill(x,y,x+w,y+68,0xE5101A23);g.fill(x,y,x+w,y+2,0xFF31C6C9);
-        g.drawString(mc.font,"AUTOPROPULSION / SEDAN",x+10,y+8,0xFF7ECED0,false);
-        g.pose().pushPose();g.pose().translate(x+10,y+23,0);g.pose().scale(2.2f,2.2f,1);
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03d",Math.round(Math.abs(car.speed())*3.6)),0,0,0xFFFFFFFF,false);g.pose().popPose();
-        g.drawString(mc.font,"km/h",x+62,y+37,0xFFA2B5C0,false);
-        g.drawString(mc.font,"GEAR "+(reverse?"R":car.gear()),x+102,y+24,0xFFFFFFFF,false);
-        g.drawString(mc.font,Math.round(car.rpm())+" RPM",x+167,y+24,0xFFFFFFFF,false);
-        g.fill(x+102,y+38,x+w-10,y+43,0xFF2A3C49);g.fill(x+102,y+38,x+102+(int)(128*Math.min(1,car.rpm()/car.limiter())),y+43,car.rpm()>car.limiter()*.9?0xFFF17C56:0xFF31C6C9);
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"FUEL %.1f L",car.fuel()),x+10,y+53,car.fuel()<5?0xFFFFA45C:0xFFD1E2E8,false);
-        String status=!Assembly.canDrive(car.config())||!car.engineProblem().isEmpty()?"MISSING PARTS":car.health()<=0?"REPAIR REQUIRED":car.temperature()>=125?"ENGINE TOO HOT":car.ignition()?"ENGINE ON":"R: START ENGINE";
-        g.drawString(mc.font,status,x+102,y+53,car.ignition()?0xFF73D8AA:0xFFFFC172,false);
-        g.fill(x,y+68,x+w,y+83,0xE5101A23);
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%.2f bar  AFR %.1f  Oil %.0f C",car.boost(),car.afr(),car.oilTemperature()),x+10,y+71,car.engineHealth()<50?0xFFFF8E60:0xFF7ECED0,false);
-        g.drawCenteredString(mc.font,"W drive  S brake  C clutch  Z reverse  G garage",g.guiWidth()/2,y+89,0xFFDAE6EC);
+        var r=CockpitInstruments.read(car);int w=290,x=(g.guiWidth()-w)/2,y=g.guiHeight()-(performance?88:73);
+        g.fill(x,y,x+w,y+(performance?61:46),0xD9101A23);g.fill(x,y,x+w,y+1,0xFF31C6C9);
+        if(!r.powered()){g.drawString(mc.font,"INSTRUMENT POWER UNAVAILABLE",x+9,y+10,0xFFFFBA70,false);return;}
+        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h   %s   %04.0f RPM",r.speed(),car.gear()<0?"R":"G"+car.gear(),r.rpm()),x+9,y+8,0xFFFFFFFF,false);
+        String coolant=Double.isFinite(r.coolant())?String.format(java.util.Locale.ROOT,"%.0f C",r.coolant()):"SENDER --";
+        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"Fuel %.1f L  Coolant %s  %s",r.fuel(),coolant,String.join(" ",r.warnings())),x+9,y+21,r.warnings().isEmpty()?0xFF97CDBE:0xFFFFA45C,false);
+        if(performance)g.drawString(mc.font,String.format(java.util.Locale.ROOT,"Oil %s bar / %.0f C  %.1f V  Boost %.2f",Double.isFinite(r.oilPressure())?String.format(java.util.Locale.ROOT,"%.1f",r.oilPressure()):"--",car.oilTemperature(),r.voltage(),r.boost()),x+9,y+35,0xFF9EC9D4,false);
+        g.drawString(mc.font,"R start  S brake  Space handbrake  V instruments",x+9,y+(performance?49:34),0xFF9FB1BE,false);
     }
 }

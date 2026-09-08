@@ -46,10 +46,32 @@ public final class CarMesh {
     private static String componentKey(Chunk c){return componentKeys.computeIfAbsent(c.name,name->{
         var match=java.util.regex.Pattern.compile("(?:^|_)(fl|fr|rl|rr)(?:_|$)").matcher(name);
         if(match.find()){
-            String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.contains("coilover")?"damper":name.contains("tie_rod")?"link":null;
+            String part=name.contains("tire")?"tire":name.contains("rim")?"rim":name.contains("brake_disc")?"disc":name.contains("brake_pad")?"pad":name.contains("caliper")?"caliper":name.contains("hub")||name.contains("bearing")?"bearing":name.startsWith("suspension_spring_")?"spring":name.contains("coilover")||name.startsWith("suspension_damper_")?"damper":name.startsWith("brake_hose_")?"brake_hose":name.contains("tie_rod")||name.contains("control_arm")?"link":null;
             if(part!=null)return "wheel."+match.group(1)+"."+part;
         }
-        if(name.equals("coolant_hoses"))return "cooling.upper_hose";
+        if(name.startsWith("coolant_upper_hose"))return "cooling.upper_hose";
+        if(name.startsWith("coolant_lower_hose"))return "cooling.lower_hose";
+        if(name.startsWith("cooling_fan_")||name.startsWith("fan_shroud_")||name.equals("radiator_fan_shroud"))return "cooling.fan";
+        if(name.startsWith("charge_pipe_"))return "induction.pipe";
+        if(name.startsWith("service_intercooler_"))return "induction.intercooler";
+        if(name.startsWith("service_wastegate_"))return "induction.wastegate";
+        if(name.startsWith("service_bov_"))return "induction.bov";
+        if(name.startsWith("service_blower_belt_"))return "induction.belt";
+        if(name.startsWith("filtered_inlet_"))return "engine.intake";
+        if(name.equals("oil_supply_line"))return "oil.feed";
+        if(name.equals("oil_sender"))return "oil.sender";
+        if(name.equals("coolant_sender"))return "cooling.sender";
+        if(name.equals("main_fuse"))return "electrical.fuse";
+        if(name.equals("essential_wiring"))return "electrical.wiring";
+        if(name.equals("accessory_belt"))return "electrical.belt";
+        if(name.equals("clutch_disc"))return "driveline.clutch";
+        if(name.equals("manual_5speed"))return "driveline.gearbox";
+        if(name.equals("rear_differential"))return "driveline.differential";
+        if(name.contains("driveshaft")||name.equals("propeller_shaft"))return "driveline.shaft";
+        if(name.equals("exhaust_system")||name.equals("exhaust_tip"))return "exhaust.pipe";
+        if(name.startsWith("gauge_")||name.startsWith("needle_")||name.equals("instrument_cluster"))return "body.instruments";
+        if(name.contains("bumper")||name.equals("hood"))return name.startsWith("rear")?"body.rear":"body.front";
+        if(c.kind==3&&c.category==6)return "body.lamps";
         if(name.equals("radiator_fan"))return "cooling.fan";
         if(name.equals("water_pump"))return "cooling.pump";
         if(name.equals("thermostat"))return "cooling.thermostat";
@@ -63,6 +85,7 @@ public final class CarMesh {
     });}
     public static int visibleComponentTriangles(CarEntity car,String key){return chunks.stream().filter(c->componentKey(c).equals(key)&&visible(c,car)).mapToInt(c->c.colors.length/3).sum();}
     private static boolean visible(Chunk c,CarEntity car){
+        if(c.name.equals("service_jack")&&!car.raised())return false;
         String component=componentKey(c);if(!component.isEmpty()&&car.mechanics().get(component)==null)return false;
         int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
         if(c.group>=0&&(selected==0||(c.variant>0&&selected!=c.variant)))return false;
@@ -82,11 +105,12 @@ public final class CarMesh {
         float hood=Mth.lerp(partial,car.oldHoodProgress,car.hoodProgress);
         float engine=Mth.lerp(partial,car.oldEngineAngle,car.engineAngle);
         float wheel=Mth.lerp(partial,car.oldWheelAngle,car.wheelAngle);
+        var readings=CockpitInstruments.read(car);
         for(Chunk c:chunks){
             int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
             if(!visible(c,car)||engineOnly&&c.group!=0)continue;
             if(c.group==0&&!preview&&hood<.05)continue;
-            if(engineOnly&&cutaway&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
+            if(cutaway&&c.group==0&&(c.category==18||c.category==19||c.category==21||c.category==24||c.category==28||c.name.contains("housing")||c.name.startsWith("rotary_")))continue;
             poses.pushPose();
             String component=componentKey(c);var part=component.isEmpty()?null:car.mechanics().get(component);
             int corner=component.startsWith("wheel.")?java.util.Arrays.asList(ComponentSlot.CORNERS).indexOf(component.split("\\.")[1]):-1;
@@ -96,9 +120,15 @@ public final class CarMesh {
                 poses.mulPose((c.hinge<=4?Axis.YP:Axis.XP).rotationDegrees(c.angle*(c.hinge==5?hood:panel)));
                 poses.translate(-c.px,-c.py,-c.pz);
             }
-            if(c.name.equals("radiator_fan")||c.name.equals("harmonic_damper")||engineOnly&&cutaway&&(c.name.startsWith("crankshaft")||c.name.startsWith("eccentric_shaft")||c.name.matches("rotor_[1-4]r_.*"))){
-                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotation((c.name.equals("radiator_fan")?car.fanAngle:engine)*(c.name.startsWith("rotor_")?1f/3:1)));poses.translate(-c.px,-c.py,-c.pz);
+            if(c.name.equals("radiator_fan")||c.name.startsWith("cooling_fan_")||c.name.equals("harmonic_damper")||engineOnly&&cutaway&&(c.name.startsWith("crankshaft")||c.name.startsWith("eccentric_shaft")||c.name.matches("rotor_[1-4]r_.*"))){
+                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotation(((c.name.equals("radiator_fan")||c.name.startsWith("cooling_fan_"))?car.fanAngle:engine)*(c.name.startsWith("rotor_")?1f/3:1)));poses.translate(-c.px,-c.py,-c.pz);
             }
+            if(c.name.startsWith("needle_")||c.name.startsWith("gauge_needle_")){
+                String gauge=c.name.startsWith("needle_")?(c.name.contains("0.57")?"speed":"rpm"):c.name.substring("gauge_needle_".length());
+                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees((float)(-140+readings.fraction(gauge)*280)));poses.translate(-c.px,-c.py,-c.pz);
+            }
+            if(c.name.equals("steering_wheel")){poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees(car.steer()*125));poses.translate(-c.px,-c.py,-c.pz);}
+            if(c.name.endsWith("_pedal")){float depressed=c.name.startsWith("throttle")?car.throttle():c.name.startsWith("brake")&&car.serviceBrake()?1:0;poses.translate(0,-depressed*.025,depressed*.02);}
             if(c.category==13||c.name.startsWith("brake_disc_")||c.name.startsWith("hub_")){
                 String tag=c.name.substring(c.name.length()-2);
                 if(tag.matches("[fr][lr]")){
@@ -112,7 +142,7 @@ public final class CarMesh {
                 }
             }
             VertexConsumer buffer=buffers.getBuffer(c.kind==2?RenderType.entityTranslucent(WHITE):RenderType.entityCutoutNoCull(WHITE));
-            var pose=poses.last();int brightness=c.kind==3&&car.lights()?LightTexture.FULL_BRIGHT:light;
+            var pose=poses.last();int brightness=c.kind==3&&car.lights()&&car.mechanics().capability("body.lamps")>.2&&CircuitPhysics.batteryCharge(car.mechanics())>.1?LightTexture.FULL_BRIGHT:light;
             for(int triangle=0;triangle<c.colors.length;triangle+=3){
                 for(int k=0;k<4;k++){
                     int i=triangle+Math.min(k,2),v=i*6;
@@ -122,11 +152,18 @@ public final class CarMesh {
                     if(c.kind==2)color=(color&0xFFFFFF)|0x30000000;
                     if(c.group==0&&selected==2&&(c.category==19||c.name.startsWith("rotor_housing")))color=0xFFDBAC4C;
                     if(c.group==3&&selected==2&&c.name.startsWith("brake_caliper"))color=0xFF3FA7F5;
-                    buffer.addVertex(pose,c.vertices[v],c.vertices[v+1],c.vertices[v+2]).setColor(color).setUv(.5f,.5f)
+                    float vy=c.vertices[v+1],vz=c.vertices[v+2];
+                    if(part!=null&&component.equals("body.front")){vy-=(float)(part.damage()*.08);vz-=(float)(part.damage()*.10);}
+                    buffer.addVertex(pose,c.vertices[v],vy,vz).setColor(color).setUv(.5f,.5f)
                         .setOverlay(OverlayTexture.NO_OVERLAY).setLight(brightness).setNormal(pose,c.vertices[v+3],c.vertices[v+4],c.vertices[v+5]);
                 }
             }
             poses.popPose();
         }
+        if(!engineOnly)CockpitInstruments.render(car,poses,buffers,light);
+    }
+    public static net.minecraft.world.phys.Vec3 componentCenter(CarEntity car,String key){
+        double x=0,y=0,z=0;int count=0;for(var c:chunks)if(componentKey(c).equals(key)&&visible(c,car)){for(int i=0;i<c.vertices.length;i+=6){x+=c.vertices[i];y+=c.vertices[i+1];z+=c.vertices[i+2];count++;}}
+        return count==0?new net.minecraft.world.phys.Vec3(0,.65,0):new net.minecraft.world.phys.Vec3(x/count,y/count,z/count);
     }
 }

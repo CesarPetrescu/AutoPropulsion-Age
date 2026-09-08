@@ -16,7 +16,8 @@ import java.util.*;
 public final class ServiceScreen extends Screen {
     private final CarEntity car;
     private int x,y,w,h,scroll,selected=10,rows;
-    private boolean tests;
+    private boolean tests,cutaway;
+    private net.minecraft.world.phys.Vec3 focus=new net.minecraft.world.phys.Vec3(0,.65,0);
     private float yaw=325,pitch=25,zoom=1,panX,panY;
     private static final int TEXT=0xFFE6F1F3, MUTED=0xFF9CB1BD, ACCENT=0xFF42D2C6;
     public ServiceScreen(CarEntity car){super(Component.literal("Component workshop"));this.car=car;}
@@ -29,10 +30,13 @@ public final class ServiceScreen extends Screen {
         clearWidgets();w=Math.min(800,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;int rx=x+w/2+10,rw=w/2-24;
         rows=Math.max(3,(h-220)/21);scroll=Math.clamp(scroll,0,ComponentSlot.ALL.size()-rows);
         button("Garage",x+w-80,y+9,68,()->minecraft.setScreen(new GarageScreen(car)));
+        button("Focus part",x+16,y+58,100,()->{focus=CarMesh.componentCenter(car,selectedKey());zoom=3;panX=panY=0;});
+        button("Cutaway view",x+122,y+58,108,()->cutaway=!cutaway);
+        button("Reset trip",x+236,y+58,91,()->send(CarPackets.TRIP_RESET,0,0));
         button("Hood",x+16,y+h-43,65,()->send(CarPackets.HOOD,0,0));
         button("Jack",x+85,y+h-43,65,()->send(CarPackets.JACK,0,0));
         button("Underside",x+154,y+h-43,84,()->{pitch=-70;zoom=1.2f;panX=panY=0;});
-        button("Reset view",x+242,y+h-43,85,()->{pitch=25;yaw=325;zoom=1;panX=panY=0;});
+        button("Reset view",x+242,y+h-43,85,()->{pitch=25;yaw=325;zoom=1;panX=panY=0;focus=new net.minecraft.world.phys.Vec3(0,.65,0);});
         button("Parts",rx,y+29,rw/2-3,()->{tests=false;init();});button("Tests / fluids",rx+rw/2+2,y+29,rw/2-2,()->{tests=true;init();});
         if(tests){
             button("Pressure test / 10s",rx,y+81,rw,()->send(CarPackets.DIAGNOSE,0,0));
@@ -63,10 +67,10 @@ public final class ServiceScreen extends Screen {
         g.fill(0,0,width,height,0x99101922);g.fill(x,y,x+w,y+h,0xFA101B25);g.fill(x,y,x+w,y+2,ACCENT);
         g.drawString(font,"COMPONENT WORKSHOP",x+16,y+14,ACCENT,false);g.drawString(font,"Orbit: drag / Pan: right drag / Zoom: scroll",x+16,y+36,MUTED,false);
         int rx=x+w/2+10,rw=w/2-24;
-        g.enableScissor(x+10,y+53,x+w/2-4,y+h-100);g.pose().pushPose();
+        g.enableScissor(x+10,y+82,x+w/2-4,y+h-100);g.pose().pushPose();
         g.pose().translate(x+w/4+panX,y+h/2+panY,150);float scale=Math.min((w/2-30)/5.5f,(h-130)/3.3f)*zoom;g.pose().scale(scale,-scale,scale);
-        g.pose().mulPose(Axis.XP.rotationDegrees(pitch));g.pose().mulPose(Axis.YP.rotationDegrees(yaw));g.pose().translate(0,-.65,0);
-        Lighting.setupForEntityInInventory();CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,false,false,selectedKey());g.flush();g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
+        g.pose().mulPose(Axis.XP.rotationDegrees(pitch));g.pose().mulPose(Axis.YP.rotationDegrees(yaw));g.pose().translate(-focus.x,-focus.y,-focus.z);
+        Lighting.setupForEntityInInventory();CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,false,cutaway,selectedKey());g.flush();g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
         var slot=ComponentSlot.ALL.get(selected);var part=car.mechanics().get(slot.key());int by=y+89+rows*21;
         if(tests){
             g.drawString(font,"TEST RESULTS",rx,y+267,ACCENT,false);g.drawWordWrap(font,Component.literal(car.diagnostic()),rx,y+284,rw,TEXT);
