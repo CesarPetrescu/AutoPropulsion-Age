@@ -6,10 +6,12 @@ The **Test and release** workflow runs on every branch push, pull request and ma
 
 | Required job | Fresh evidence |
 |---|---|
-| Workflow and release gate tests | actionlint, shell validation and 26 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
-| Build, simulation and dedicated server | Java 21 build; at least 52 JUnit cases with no skips; at least 31 native GameTests, including 294 engine/drivetrain driving layouts; simulation benchmark report; installable JAR inspection |
+| Workflow and release gate tests | actionlint, shell validation and 28 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
+| Build, simulation and dedicated server | Java 21 build; at least 65 JUnit cases with no skips; at least 38 native GameTests, including 294 combustion and 12 electric drivetrain cases; simulation benchmark report; installable JAR inspection |
 | Native client (ui) | Loaded Mods-list logo plus 156 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation and screenshots |
-| Resources, audio and geometry | Regeneration of 424 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions plus targeted non-mating intersections |
+| Resources, audio and geometry | Regeneration of 472 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions plus targeted non-mating intersections |
+| Native client (electric) | Four vehicle variants and chargers rendered; actual GUI charge-target packets, charging, cable interlocks, READY, electric driving and braking |
+| ElectricalAge compatibility | Pinned companion build and tests; 39 native GameTests including real cable/MNA power, energy accounting, overvoltage recovery and unload; combined-mod client charging and driving |
 | Native client (mechanics) | Actual GUI/network coolant diagnosis, targeted repair, fluid refill, timed verification, jack/tire service, failed sender, driving, active audio channels and cleanup |
 | Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, airborne contact loss and spring landing |
 | Native client (matrix) | All 49 engine/induction layouts and 42 hardware choices through native GUI buttons and packets, plus garage, driving, paint, tuning and parked rev test |

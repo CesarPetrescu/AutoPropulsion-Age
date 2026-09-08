@@ -46,7 +46,7 @@ $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
 .\gradlew.bat --version
 ```
 
-Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **6** requires matching client/server builds. Vehicle save schema **5** adds drivetrain routing and migrates older cars to the RWD road preset; mechanical components retain their separate typed schema.
+Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **7** requires matching client/server builds. Vehicle save schema **6** combines drivetrain routing, electric/hybrid state and persistent mechanical components. Older cars remain combustion cars with the RWD road preset; mechanical items retain their separate typed schema.
 
 ## Daily edit, run and debug loop
 
@@ -172,7 +172,7 @@ python tools/run_multiplayer_test.py --timeout 720
 
 | Suite | What it must prove |
 |---|---|
-| Simulation JUnit | At least 52 tests: existing mechanics plus traction/differentials, finite combined force, steering symmetry, brief handbrake/countersteer, unsupported suspension and world momentum in air |
+| Simulation JUnit | At least 65 tests: mechanics, traction/differentials, steering, airborne momentum, batteries, regeneration, every engine cold start and all hybrid generator families |
 | Simulation matrices | Existing 7,308 hardware cases plus 294 layout × family × grade × induction drive/brake cases |
 | Dedicated GameTests | At least 30 tests, including 294 actual in-world drive/brake builds, conversion transactions, permissions, condition retention, save migration and spring landing |
 | Native handling client | RWD/FWD/AWD garage buttons, differential/split packets, real key mapping steering/drift/braking, contact loss and landing; screenshots |
