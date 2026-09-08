@@ -42,6 +42,8 @@ public final class ElectricDynamics {
         double soc=battery.soc(type.battery);
         boolean engineAvailable=ready&&oldFuel>0&&engine.health()>5
             &&setup.temperature()<125&&Assembly.ENGINE.variant(setup.config())>0&&EnginePart.ready(setup.engineParts());
+        if(type.hybrid()&&mechanics!=null)engineAvailable&=MechanicalCapabilities.canRun(mechanics,setup.engineParts())
+            &&engine.mode()!=EnginePhysics.Mode.STALLED&&(engine.mode()==EnginePhysics.Mode.RUNNING||MechanicalCapabilities.canCrank(mechanics,setup.family()));
         double generator=0,fuelJ=0,engineLoad=0,assist=1,generatorCapability=detailed?mechanics.capability("traction.generator"):1;
         double[] mechanicalTorque=new double[4];
         boolean generate=false;

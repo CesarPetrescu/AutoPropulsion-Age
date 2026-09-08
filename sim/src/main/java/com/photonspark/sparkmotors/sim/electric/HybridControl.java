@@ -21,7 +21,7 @@ public final class HybridControl {
         boolean charging=on&&soc<high-.005;
         // High-speed wheel drive belongs to the engine. Smoothly taper assistance between
         // 50 and 80 km/h, retaining low-speed launch and shift-fill assistance above reserve.
-        double assist=on?clamp((22-velocity)/8,0,1):1;
+        double assist=on&&engine.mode()==EnginePhysics.Mode.RUNNING?clamp((22-velocity)/8,0,1):1;
         assist*=clamp((soc-reserve)/.08,0,1);
         boolean disconnect=!on||(velocity<3&&soc>reserve+.02)||input.brake()||input.clutch();
         double charge=charging?(type==Powertrain.HYBRID?8000:12000)*clamp((high-soc)/.06,0,1):0;

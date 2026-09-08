@@ -110,6 +110,12 @@ class ParallelHybridTest {
             assertTrue(c.pack.battery().energyJ()-before<c.fuelJ*.31,"Braking/charging round trip has no free energy");
         }
     }
+    @Test void failedIgnitionFallsBackToElectricEvenAboveTheNormalAssistCutoff(){
+        var c=new Car(Powertrain.PLUG_IN_HYBRID,DriveConfig.Layout.RWD,EngineFamily.I4,.60);c.moving(25);
+        c.setup=c.setup.withMechanics(c.setup.mechanics().with("engine.ignition",null));c.run(400,GO);
+        assertTrue(c.wheelJ>10000,"Working electric path supplies propulsion despite engine fault");
+        assertTrue(c.road.speed()>25);assertEquals(40,c.road.fuel());assertFalse(c.pack.generating());
+    }
     @Test void chargeSustainStopsAtItsBandAndElectricOnlyNeverStartsEngine(){
         var c=new Car(Powertrain.HYBRID,DriveConfig.Layout.FWD,EngineFamily.I4,.54);c.mode=ElectricDynamics.Mode.CHARGE_SUSTAIN;
         boolean stopped=false;
