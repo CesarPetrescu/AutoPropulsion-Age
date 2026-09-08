@@ -26,7 +26,7 @@ public final class CarClient {
     private static float lastYaw;
     private static final java.util.Map<Integer,CarAudio> sounds=new java.util.HashMap<>();
     public CarClient(IEventBus bus){
-        bus.addListener((EntityRenderersEvent.RegisterRenderers e)->e.registerEntityRenderer(AutoPropulsionAge.CAR.get(),CarRenderer::new));
+        bus.addListener((EntityRenderersEvent.RegisterRenderers e)->{e.registerEntityRenderer(AutoPropulsionAge.CAR.get(),CarRenderer::new);e.registerBlockEntityRenderer(com.photonspark.sparkmotors.charging.Electrification.CHARGER_ENTITY.get(),ChargerRenderer::new);});
         bus.addListener((RegisterKeyMappingsEvent e)->{for(var key:new KeyMapping[]{IGNITION,GARAGE,LIGHTS,PANELS,REVERSE,HORN,CLUTCH,INSTRUMENTS})e.register(key);});
         bus.addListener((RegisterClientReloadListenersEvent e)->e.registerReloadListener((ResourceManagerReloadListener)resources->{stopSounds();CarMesh.reload(resources);}));
         bus.addListener((RegisterGuiLayersEvent e)->e.registerAboveAll(AutoPropulsionAge.id("dashboard"),(graphics,delta)->hud(graphics)));
@@ -34,6 +34,7 @@ public final class CarClient {
         NeoForge.EVENT_BUS.addListener((RenderHandEvent e)->{if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.getVehicle() instanceof CarEntity)e.setCanceled(true);});
         AutoPropulsionAge.openGarage=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car));};
         AutoPropulsionAge.openEngine=id->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getEntity(id) instanceof CarEntity car)mc.setScreen(new GarageScreen(car,4));};
+        AutoPropulsionAge.openCharger=pos->{var mc=Minecraft.getInstance();if(mc.level!=null&&mc.level.getBlockEntity(pos) instanceof com.photonspark.sparkmotors.charging.ChargerBlockEntity charger)mc.setScreen(new ChargerScreen(charger));};
     }
     public static int activeAudioVoices(){return sounds.values().stream().mapToInt(CarAudio::voices).sum();}
     public static void stopSounds(){sounds.values().forEach(CarAudio::stop);sounds.clear();}

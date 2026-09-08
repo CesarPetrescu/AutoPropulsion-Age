@@ -18,7 +18,8 @@ public final class ChargingCableItem extends Item {
         if(context.getLevel().isClientSide)return InteractionResult.SUCCESS;
         var player=context.getPlayer();if(player==null)return InteractionResult.FAIL;
         if(!(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof ChargerBlockEntity charger)||!charger.mayUse(player))return InteractionResult.FAIL;
-        var tag=new CompoundTag();tag.putLong("Charger",context.getClickedPos().asLong());tag.putString("Dimension",context.getLevel().dimension().location().toString());
+        if(player.isShiftKeyDown()&&(charger.connected()||charger.hasCable())){charger.unplug(player);return InteractionResult.CONSUME;}
+        var tag=context.getItemInHand().getOrDefault(DataComponents.CUSTOM_DATA,CustomData.EMPTY).copyTag();tag.putLong("Charger",context.getClickedPos().asLong());tag.putString("Dimension",context.getLevel().dimension().location().toString());
         context.getItemInHand().set(DataComponents.CUSTOM_DATA,CustomData.of(tag));
         player.displayClientMessage(Component.literal("Charger selected. Right-click your EV or plug-in hybrid within 6 blocks. READY must be off."),false);
         return InteractionResult.CONSUME;
@@ -28,8 +29,12 @@ public final class ChargingCableItem extends Item {
         if(!data.contains("Charger")||!data.getString("Dimension").equals(player.level().dimension().location().toString())){message(player,"Select a charger with this cable first.");return;}
         var pos=BlockPos.of(data.getLong("Charger"));
         if(player.distanceToSqr(pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5)>100||!player.level().hasChunkAt(pos)){message(player,"Charger is too far away or unloaded.");return;}
-        if(player.level().getBlockEntity(pos) instanceof ChargerBlockEntity charger&&charger.connect(player,car))message(player,"Cable connected. Sneak-click the charger to unplug before driving.");
+        if(player.level().getBlockEntity(pos) instanceof ChargerBlockEntity charger&&charger.connectCable(player,car,cable))message(player,"Cable installed. Sneak-click either end with an empty hand to unplug and recover it.");
         else message(player,"Cannot connect: check ownership, cable occupancy, six-block reach, vehicle type and READY state.");
+    }
+    public static void clearPairing(ItemStack cable){
+        var tag=cable.getOrDefault(DataComponents.CUSTOM_DATA,CustomData.EMPTY).copyTag();tag.remove("Charger");tag.remove("Dimension");
+        if(tag.isEmpty())cable.remove(DataComponents.CUSTOM_DATA);else cable.set(DataComponents.CUSTOM_DATA,CustomData.of(tag));
     }
     private static void message(ServerPlayer player,String text){player.displayClientMessage(Component.literal(text),false);}
 }

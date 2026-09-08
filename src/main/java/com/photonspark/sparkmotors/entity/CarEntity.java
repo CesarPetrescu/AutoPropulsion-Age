@@ -400,6 +400,10 @@ public final class CarEntity extends Entity {
         if(!(player instanceof ServerPlayer sp))return InteractionResult.PASS;
         if(!mayModify(player)){message(player,"This car belongs to another player.");return InteractionResult.CONSUME;}
         if(entityData.get(OWNER).isEmpty())setOwner(player.getUUID());
+        if(plugged()&&player.isSecondaryUseActive()&&player.getItemInHand(hand).isEmpty()){
+            if(level().getBlockEntity(chargerPosition()) instanceof com.photonspark.sparkmotors.charging.ChargerBlockEntity charger)charger.unplug(player);
+            return InteractionResult.CONSUME;
+        }
         if(player.getItemInHand(hand).getItem() instanceof com.photonspark.sparkmotors.charging.ChargingCableItem){
             com.photonspark.sparkmotors.charging.ChargingCableItem.connect(sp,this,player.getItemInHand(hand));return InteractionResult.CONSUME;
         }
@@ -409,6 +413,7 @@ public final class CarEntity extends Entity {
         return InteractionResult.CONSUME;
     }
     @Override public InteractionResult interactAt(Player player,Vec3 hit,InteractionHand hand){
+        if(plugged()&&player.isSecondaryUseActive()&&player.getItemInHand(hand).isEmpty())return interact(player,hand);
         Vec3 local=hit.yRot((float)Math.toRadians(getYRot()));
         if(local.z>.55&&(player.isSecondaryUseActive()||player.getItemInHand(hand).is(AutoPropulsionAge.WRENCH.get()))){
             if(!level().isClientSide&&player instanceof ServerPlayer sp&&mayModify(player))CarPackets.openEngine(sp,this);

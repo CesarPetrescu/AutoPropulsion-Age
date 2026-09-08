@@ -36,6 +36,9 @@ public final class ElectricClientSmoke {
     private static volatile String failure;
     private static String screenshot;
     private static float beforeCharge,peak;
+    private static final BlockPos[] chargerPositions=new BlockPos[4];
+    private static int chargerCase;
+    private static final int[][] CHARGER_SIZES={{854,480,0},{1280,720,2},{1440,900,3},{1920,1080,4}};
     private static final List<AutoCloseable> fixtures=new ArrayList<>();
     @SubscribeEvent public static void tick(ClientTickEvent.Post event){
         if(!Boolean.getBoolean("sparkmotors.clientElectricSmoke"))return;
@@ -59,10 +62,11 @@ public final class ElectricClientSmoke {
                     p.teleportTo(car.getX()+2,car.getY(),car.getZ());car.action(p,CarPackets.HOOD,0,0);
                     var position=origin.offset(i*5+3,0,4);var tier=ChargingModel.Tier.values()[i];level.setBlock(position,Electrification.CHARGERS.get(tier).get().defaultBlockState().setValue(ChargerBlock.FACING,Direction.SOUTH),3);
                     var charger=(ChargerBlockEntity)level.getBlockEntity(position);
+                    chargerPositions[i]=position;
                     if(ModList.get().isLoaded("eln")){
                         Class<?> fixture=Class.forName("com.photonspark.sparkmotors.gametest.ElnCircuitFixture");fixtures.add((AutoCloseable)fixture.getMethod("power",Level.class,BlockPos.class,net.minecraft.server.level.ServerPlayer.class,double.class).invoke(null,level,position,p,tier.inputV));
                     }else{p.setShiftKeyDown(true);charger.interact(p);p.setShiftKeyDown(false);}
-                    if(types[i].plugIn()&&!charger.connect(p,car))throw new IllegalStateException("Failed to pair "+types[i]);
+                    if(types[i].plugIn()&&!charger.connectCable(p,car,Electrification.CABLE.toStack()))throw new IllegalStateException("Failed to pair "+types[i]);
                 }
                 for(var t:ChargingModel.Tier.values())level.setBlock(origin.offset(6+t.ordinal()*3,0,15),Electrification.CHARGERS.get(t).get().defaultBlockState().setValue(ChargerBlock.FACING,Direction.SOUTH),3);
                 ids=result;p.teleportTo(origin.getX()+19,origin.getY()+6,origin.getZ()+17);p.getAbilities().flying=true;p.onUpdateAbilities();
@@ -91,7 +95,47 @@ public final class ElectricClientSmoke {
         }else if(phase==12){
             if(ticks==55){press(mc,"100% limit");}
             if(ticks==70){if(car.chargeTarget()!=100){finish(mc,"FAILED: charge ceiling GUI packet");return;}screenshot="electric-diagnostics-native.png";}
-            if(ticks==90){mc.setScreen(null);var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);if(p.level().getBlockEntity(c.chargerPosition()) instanceof ChargerBlockEntity charger)charger.disconnect();c.tickCount+=4;c.action(p,CarPackets.HOOD,0,0);p.startRiding(c,true);});phase=3;ticks=0;}
+            if(ticks==90){
+                mc.setScreen(null);mc.options.hideGui=true;var id=mc.player.getUUID();
+                mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var pos=chargerPositions[3];p.teleportTo(pos.getX()+.5,pos.getY()+.05,pos.getZ()+2.1);});phase=19;ticks=0;
+            }
+        }else if(phase==19){
+            mc.player.setYRot(180);mc.player.setXRot(36);
+            if(ticks==25)screenshot="charger-live-display-native.png";
+            if(ticks==35){mc.options.hideGui=false;phase=20;ticks=0;}
+        }else if(phase==20){
+            try{
+                int tier=chargerCase/4;
+                if(ticks==1){
+                    var size=CHARGER_SIZES[chargerCase%4];GLFW.glfwSetWindowSize(mc.getWindow().getWindow(),size[0],size[1]);mc.options.guiScale().set(size[2]);mc.resizeDisplay();
+                    var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{
+                        var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var pos=chargerPositions[tier];p.teleportTo(pos.getX()+.5,pos.getY()+.5,pos.getZ()+2);
+                        var charger=(ChargerBlockEntity)p.level().getBlockEntity(pos);charger.interact(p);
+                    });
+                }
+                if(ticks==20){
+                    if(!(mc.screen instanceof ChargerScreen screen))throw new IllegalStateException("Charger interaction did not open native screen");
+                    var c=(ChargerBlockEntity)mc.level.getBlockEntity(chargerPositions[tier]);
+                    if(c==null||c.tier().ordinal()!=tier||tier>0&&(!c.connected()||c.soc()<.25||c.inputVoltage()<=0))throw new IllegalStateException("Missing live block telemetry "+tier);
+                    for(var child:screen.children())if(child instanceof net.minecraft.client.gui.components.Button b){
+                        if(b.getX()<0||b.getY()<0||b.getRight()>screen.width||b.getBottom()>screen.height||mc.font.width(b.getMessage())>b.getWidth()-4)throw new IllegalStateException("Clipped charger control");
+                    }
+                    screenshot="charger-screen-"+chargerCase+".png";System.out.println("CHARGER_UI_CASE_PASS "+chargerCase);
+                }
+                if(ticks==25){
+                    var screen=(ChargerScreen)mc.screen;clickCharger(mc,chargerCase==15?"Unplug / recover cable":"Close");
+                    if(chargerCase!=15){if(mc.screen==screen)throw new IllegalStateException("Scaled close missed");chargerCase++;ticks=0;}
+                }
+                if(chargerCase==15&&ticks==40){
+                    var c=(ChargerBlockEntity)mc.level.getBlockEntity(chargerPositions[3]);
+                    if(car.plugged()||c.hasCable()||mc.player.getInventory().countItem(Electrification.CABLE.get())!=1)throw new IllegalStateException("Unplug GUI packet did not return exactly one cable");
+                    screenshot="charger-recovered-native.png";System.out.println("CHARGER_UI_PASS 16 cable_return=1");
+                }
+                if(chargerCase==15&&ticks==45){
+                    mc.setScreen(null);GLFW.glfwSetWindowSize(mc.getWindow().getWindow(),1440,900);mc.options.guiScale().set(2);mc.resizeDisplay();
+                    var id=mc.player.getUUID();mc.getSingleplayerServer().execute(()->{var p=mc.getSingleplayerServer().getPlayerList().getPlayer(id);var c=(CarEntity)p.level().getEntity(ids[3]);c.tickCount+=4;c.action(p,CarPackets.HOOD,0,0);p.startRiding(c,true);});phase=3;ticks=0;
+                }
+            }catch(Exception e){finish(mc,"FAILED: charger screen case="+chargerCase+" "+e);return;}
         }else if(phase==3){
             if(ticks==20){CarClient.send(car,CarPackets.IGNITION,0,0);mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);}
             if(ticks>30){mc.options.keyUp.setDown(ticks<95);mc.options.keyDown.setDown(ticks>=95);peak=Math.max(peak,Math.abs(car.speed()));}
@@ -99,6 +143,10 @@ public final class ElectricClientSmoke {
             if(ticks==160){if(peak<5||Math.abs(car.speed())>.2||car.fuel()!=0||car.rpm()!=0){finish(mc,"FAILED: EV native driving/braking peak="+peak+" speed="+car.speed());return;}
                 finish(mc,"PASS: four electrified vehicle variants and four charger models rendered; charge energy and ceiling synchronized through real GUI packets; cable interlock/disconnect; battery-only driving and friction braking; screenshots captured. ELN="+ModList.get().isLoaded("eln")+" peak_mps="+peak);}
         }
+    }
+    private static void clickCharger(Minecraft mc,String label){
+        var screen=(ChargerScreen)mc.screen;var b=screen.children().stream().filter(c->c instanceof net.minecraft.client.gui.components.Button button&&button.active&&button.getMessage().getString().equals(label)).map(c->(net.minecraft.client.gui.components.Button)c).findFirst().orElseThrow();
+        double x=(b.getX()+b.getWidth()/2d)*screen.contentScale(),y=(b.getY()+b.getHeight()/2d)*screen.contentScale();screen.mouseClicked(x,y,0);screen.mouseReleased(x,y,0);
     }
     private static void press(Minecraft mc,String label){mc.screen.children().stream().filter(c->c instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().equals(label)&&b.active).map(c->(net.minecraft.client.gui.components.Button)c).findFirst().orElseThrow().onPress();}
     @SubscribeEvent public static void frame(RenderFrameEvent.Post event){if(screenshot!=null){var mc=Minecraft.getInstance();String name=screenshot;screenshot=null;Screenshot.grab(mc.gameDirectory,name,mc.getMainRenderTarget(),text->System.out.println("ELECTRIC_SCREENSHOT "+name));}}

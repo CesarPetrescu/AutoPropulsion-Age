@@ -48,9 +48,9 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        log='All 47 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
+        log='All 56 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
         log+='\n'+'\n'.join('CONFIGURED_COMPONENTS_SERVER_PASS '+case for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'))
-        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 47)
+        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 56)
         for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
             with self.assertRaises(ValueError):checks.server(log.replace(marker,''))
 
@@ -95,7 +95,10 @@ class ReleaseGates(unittest.TestCase):
         for log, result in [('BUILD SUCCESSFUL', 'PASS: ok'), ('ELECTRIC_CLIENT_SMOKE PASS:', 'FAILED: drive'), ('ELECTRIC_CLIENT_SMOKE FAILED\nELECTRIC_CLIENT_SMOKE PASS:', 'PASS: ok')]:
             with self.assertRaises(ValueError):
                 checks.client(log, result, 'electric')
-        self.assertTrue(checks.client('ELECTRIC_CLIENT_SMOKE PASS:', 'PASS: ok', 'electric')['native_electric_charging_driving'])
+        log='ELECTRIC_CLIENT_SMOKE PASS:\nCHARGER_UI_PASS 16 cable_return=1\n'+'\n'.join('CHARGER_UI_CASE_PASS '+str(i) for i in range(16))
+        self.assertTrue(checks.client(log, 'PASS: ok', 'electric')['native_electric_charging_driving'])
+        with self.assertRaises(ValueError):checks.client(log.replace('CHARGER_UI_CASE_PASS 4',''), 'PASS: ok', 'electric')
+        with self.assertRaises(ValueError):checks.client(log.replace('cable_return=1','cable_return=0'), 'PASS: ok', 'electric')
 
     def test_server_requires_electric_matrix(self):
         with self.assertRaises(ValueError):
@@ -138,6 +141,8 @@ class ReleaseGates(unittest.TestCase):
                          'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
                          'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
                          'com/photonspark/sparkmotors/client/ElectricScreen.class',
+                         'com/photonspark/sparkmotors/client/ChargerScreen.class',
+                         'com/photonspark/sparkmotors/client/ChargerRenderer.class',
                          'assets/sparkmotors/models/entity/sedan.mesh.gz',
                          'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
                          'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz',

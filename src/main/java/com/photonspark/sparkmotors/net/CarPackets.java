@@ -35,8 +35,22 @@ public final class CarPackets {
         };
         public Type<Open> type(){return TYPE;}
     }
+    public record Charger(net.minecraft.core.BlockPos pos,int action) implements CustomPacketPayload {
+        public static final Type<Charger> TYPE=new Type<>(AutoPropulsionAge.id("charger"));
+        public static final StreamCodec<RegistryFriendlyByteBuf,Charger> CODEC=new StreamCodec<>(){
+            public Charger decode(RegistryFriendlyByteBuf b){return new Charger(b.readBlockPos(),b.readUnsignedByte());}
+            public void encode(RegistryFriendlyByteBuf b,Charger p){b.writeBlockPos(p.pos);b.writeByte(p.action);}
+        };
+        public Type<Charger> type(){return TYPE;}
+    }
     public static void register(RegisterPayloadHandlersEvent event) {
-        var r=event.registrar("9");
+        var r=event.registrar("10");
+        r.playBidirectional(Charger.TYPE,Charger.CODEC,(p,ctx)->{
+            if(ctx.player() instanceof ServerPlayer sp){
+                if(p.action!=1||!sp.level().hasChunkAt(p.pos)||sp.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(p.pos))>64)return;
+                if(sp.level().getBlockEntity(p.pos) instanceof com.photonspark.sparkmotors.charging.ChargerBlockEntity charger)charger.unplug(sp);
+            }else if(p.action==0)AutoPropulsionAge.openCharger.accept(p.pos);
+        });
         r.playToServer(Input.TYPE,Input.CODEC,(p,ctx)->{
             if(ctx.player().level().getEntity(p.entity) instanceof CarEntity car && car.getControllingPassenger()==ctx.player())
                 car.receiveInput(p.keys,p.steer);
@@ -54,5 +68,10 @@ public final class CarPackets {
     }
     public static void openEngine(ServerPlayer player,CarEntity car){
         if(car.mayModify(player)&&car.distanceToSqr(player)<=100)PacketDistributor.sendToPlayer(player,new Open(car.getId(),true));
+    }
+    public static void openCharger(ServerPlayer player,com.photonspark.sparkmotors.charging.ChargerBlockEntity charger){
+        if(charger.mayUse(player)&&player.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(charger.getBlockPos()))<=64){
+            player.connection.send(charger.getUpdatePacket());PacketDistributor.sendToPlayer(player,new Charger(charger.getBlockPos(),0));
+        }
     }
 }

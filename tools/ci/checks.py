@@ -36,7 +36,7 @@ def junit(directory, minimum=99):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=47):
+def server(log, minimum=56):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -53,7 +53,9 @@ def client(log, result, mode):
     require(result.startswith('PASS:'), f'Client result is not PASS: {result[:200]}')
     if mode == 'electric':
         require('ELECTRIC_CLIENT_SMOKE PASS:' in log and 'ELECTRIC_CLIENT_SMOKE FAILED' not in log, 'Missing electric client PASS')
-        return {'native_electric_charging_driving': True}
+        cases=set(re.findall(r'CHARGER_UI_CASE_PASS (\d+)\b',log))
+        require(cases=={str(i) for i in range(16)} and 'CHARGER_UI_PASS 16 cable_return=1' in log,'Missing charger screen/scaled input/cable return coverage')
+        return {'native_electric_charging_driving': True,'charger_ui_cases':16,'cable_return':True}
     require('ALPHA_CLIENT_SMOKE PASS:' in log and 'ALPHA_CLIENT_SMOKE FAILED' not in log,
             'Missing native client PASS or explicit failure present')
     if mode == 'graphics':
@@ -120,6 +122,8 @@ def inspect_jar(path):
                      'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
                      'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
                      'com/photonspark/sparkmotors/client/ElectricScreen.class',
+                     'com/photonspark/sparkmotors/client/ChargerScreen.class',
+                     'com/photonspark/sparkmotors/client/ChargerRenderer.class',
                        'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
                        'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz', 'assets/sparkmotors/models/entity/lod-manifest.json', 'assets/sparkmotors/sounds.json'):
             require(name in names, f'Missing runtime entry: {name}')

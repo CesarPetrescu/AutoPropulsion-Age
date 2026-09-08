@@ -32,7 +32,7 @@ public final class ChargerBlock extends Block implements EntityBlock {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
     @Override protected void onRemove(BlockState state,Level level,BlockPos pos,BlockState next,boolean moving){
-        if(!state.is(next.getBlock())&&level.getBlockEntity(pos) instanceof ChargerBlockEntity charger)charger.disconnect();
+        if(!state.is(next.getBlock())&&level.getBlockEntity(pos) instanceof ChargerBlockEntity charger)charger.dropCable();
         super.onRemove(state,level,pos,next,moving);
     }
 }

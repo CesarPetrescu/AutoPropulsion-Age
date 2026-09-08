@@ -66,6 +66,7 @@ public final class AutoPropulsionAge {
     // Installed only by the client entry point. Dedicated servers never load UI classes.
     public static IntConsumer openGarage = id -> {};
     public static IntConsumer openEngine = id -> {};
+    public static java.util.function.Consumer<net.minecraft.core.BlockPos> openCharger = pos -> {};
     public AutoPropulsionAge(IEventBus bus) {
         com.photonspark.sparkmotors.charging.Electrification.init(bus);
         COMPONENTS.register(bus);ENTITIES.register(bus);ITEMS.register(bus);BLOCKS.register(bus);TABS.register(bus);SOUNDS.register(bus);RECIPES.register(bus);

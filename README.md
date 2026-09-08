@@ -56,11 +56,13 @@ Walls now collide with a set of oriented shapes fitted to the car's body, cabin,
 
 ## Electric and hybrid cars
 
-Version 0.8.0 integrates **400 V and 800 V EVs**, a **parallel hybrid** and a **plug-in parallel hybrid** with the same individual tire, brake, suspension and RWD/FWD/AWD systems as combustion cars. Each traction motor has its own torque/power rating, constant-torque and constant-power regions, thermal limits and regenerative braking. Seven combustion families use separate explicit torque maps, with installed hardware and component condition applied afterward.
+Version 0.8.1 integrates **400 V and 800 V EVs**, a **parallel hybrid** and a **plug-in parallel hybrid** with the same individual tire, brake, suspension and RWD/FWD/AWD systems as combustion cars. Each traction motor has its own torque/power rating, constant-torque and constant-power regions, thermal limits and regenerative braking. Seven combustion families use separate explicit torque maps, with installed hardware and component condition applied afterward.
 
 In Creative, use `electric_400_crate`, `electric_800_crate`, `hybrid_crate` or `plug_in_hybrid_crate` from the mod tab. Press **R** for READY, **W** to drive and **S** for service brakes/regen. **G → Electric** opens motor curves, battery measurements, generator RPM, charge targets and pack replacement. EV motors use fixed reduction. Hybrids also have a five-speed mechanical engine path with clutch slip. Park and switch READY off, then use **Hybrid mode** to select Auto, Electric Only or Charge Sustain. Auto preserves a propulsion reserve; at high speed the engine drives the wheels and spare output can charge the battery.
 
 Survival packs start empty. External survival charging requires the optional ElectricalAge companion; a non-plug-in hybrid can charge from its fuel-powered generator. Creative chargers have an explicitly labelled test supply. [Vehicles, charging, hybrid modes and limitations →](docs/ELECTRIFICATION.md)
+
+Chargers now have a **live front display and a readable status screen**. Click one to inspect charging or recover the installed cable. Sneak-clicking the car or charger with an empty hand also returns it; full inventories drop it, and unloaded connections retain it in the charger. [Charger controls, screenshots and cable recovery →](docs/CHARGER_AND_CABLE.md)
 
 | Electric motor, inverter and charging cable | Separate electric diagnostics |
 |---|---|

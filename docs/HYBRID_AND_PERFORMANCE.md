@@ -4,7 +4,7 @@ Hybrids now have a parallel mechanical path: the engine drives the selected whee
 
 ## Choosing a mode
 
-Park, press **R** to switch READY off, then **G → Electric → Hybrid mode**. It cycles **Auto → Electric Only → Charge Sustain**. Switch READY on to drive. Matching client/server 0.8.0 builds are required (network protocol 9).
+Park, press **R** to switch READY off, then **G → Electric → Hybrid mode**. It cycles **Auto → Electric Only → Charge Sustain**. Switch READY on to drive. Use matching client/server builds; the current charger update is 0.8.1 (network protocol 10).
 
 | Mode | Engine use | Propulsion reserve | Charging band |
 |---|---|---|---|
