@@ -15,6 +15,31 @@ public enum EngineFamily {
     EngineFamily(String title, String id, String model, double torque, double rpm, double fuel) {
         this.title=title;this.id=id;this.model=model;torqueScale=torque;rpmScale=rpm;fuelScale=fuel;
     }
+    /** Independent gameplay torque maps, Nm at crank before hardware/boost/condition modifiers.
+     * This keeps family shape explicit and reviewable; none is advertised as a measured OEM dyno. */
+    public double torque(double rpm,boolean sport){
+        double[] speeds=switch(this){
+            case I4->new double[]{0,800,1500,2500,3500,4500,5500,6000,6500,7200};
+            case V6->new double[]{0,750,1400,2200,3200,4100,5000,5700,6400,7200};
+            case FLAT4->new double[]{0,850,1600,2400,3300,4200,5100,5900,6600,7200};
+            case ROTOR1->new double[]{0,900,1800,2700,3600,4400,5300,6100,6700,7400};
+            case ROTOR2->new double[]{0,850,1700,2600,3500,4500,5400,6200,6800,7400};
+            case ROTOR3->new double[]{0,850,1800,2800,3700,4600,5500,6300,6900,7400};
+            case ROTOR4->new double[]{0,900,1900,2900,3800,4700,5600,6400,6950,7400};
+        };
+        double[] torque=switch(this){
+            case I4->new double[]{0,85,125,153,173,180,178,174,153,0};
+            case V6->new double[]{0,137,205,248,279,290,278,258,222,0};
+            case FLAT4->new double[]{0,94,138,167,192,203,201,186,157,0};
+            case ROTOR1->new double[]{0,42,65,82,99,111,122,129,120,0};
+            case ROTOR2->new double[]{0,77,110,139,168,197,218,232,216,0};
+            case ROTOR3->new double[]{0,103,151,198,239,281,314,338,313,0};
+            case ROTOR4->new double[]{0,133,195,257,313,370,417,446,410,0};
+        };
+        if(!Double.isFinite(rpm)||rpm<0)return 0;
+        for(int i=1;i<speeds.length;i++)if(rpm<=speeds[i])return (torque[i-1]+(torque[i]-torque[i-1])*(rpm-speeds[i-1])/(speeds[i]-speeds[i-1]))*(sport?1.38:1);
+        return 0;
+    }
     public boolean rotary(){return ordinal()>=3;}
     public static EngineFamily byId(int id){return id>=0&&id<values().length?values()[id]:I4;}
     public String itemName(int grade){return (grade==2?"sport_":"stock_")+(this==I4?"engine":id+"_engine");}

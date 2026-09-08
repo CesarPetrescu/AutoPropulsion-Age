@@ -29,8 +29,7 @@ public final class EngineBuild {
     public static double naturalTorque(double rpm,EngineFamily family,int grade,int parts,int limiter){
         if(grade==0||!MechanicalCapabilities.buildProblem(parts).isEmpty()||!Double.isFinite(rpm)||rpm>=limiter||rpm<0)return 0;
         double high=VehicleDynamics.clamp((rpm-2500)/3000,0,1);
-        double shape=switch(family){case I4->1;case V6->1.12-.18*high;case FLAT4->1.04+.05*Math.sin(high*Math.PI);case ROTOR1->.94+.20*high;case ROTOR2->.92+.24*high;case ROTOR3->.90+.27*high;case ROTOR4->.88+.30*high;};
-        double base=PistonEngine.torque(rpm*family.rpmScale,grade==2,7200)*family.torqueScale*shape;
+        double base=family.torque(rpm,grade==2);
         double intake=pick(EnginePart.INTAKE,parts,1,1.08,.97+.17*high,1.11-.07*high);
         double ignition=pick(EnginePart.IGNITION,parts,1,1.03,1.02+.025*high,1.035);
         double exhaust=pick(EnginePart.EXHAUST,parts,1,1.09-.04*high,1+.12*high,.94+.22*high);

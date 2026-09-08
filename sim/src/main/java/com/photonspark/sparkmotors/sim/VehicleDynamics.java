@@ -9,12 +9,14 @@ public final class VehicleDynamics {
         public Input(double throttle,double steer,boolean brake,boolean reverse){this(throttle,steer,brake,reverse,false);}
         public Input { throttle = clamp(throttle, 0, 1); steer = clamp(steer, -1, 1); }
     }
-    public record Setup(int config, int limiter, double finalDrive, EngineFamily family, int engineParts, double temperature, double boostTarget, MechanicalState mechanics, DriveConfig drive) {
+    public record Setup(int config, int limiter, double finalDrive, EngineFamily family, int engineParts, double temperature, double boostTarget, MechanicalState mechanics, DriveConfig drive, double mass) {
+        public Setup(int c,int l,double f,EngineFamily family,int parts,double t,double boost,MechanicalState m,DriveConfig drive){this(c,l,f,family,parts,t,boost,m,drive,MASS);}
+        public Setup withMass(double mass){return new Setup(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,mechanics,drive,mass);}
         public Setup(int c,int l,double f,EngineFamily family,int parts,double t,double boost,MechanicalState m){this(c,l,f,family,parts,t,boost,m,DriveConfig.stock());}
         public Setup(int config,int limiter,double finalDrive,EngineFamily family,int engineParts,double temperature,double boostTarget){this(config,limiter,finalDrive,family,engineParts,temperature,boostTarget,null);}
         public Setup(int config,int limiter,double finalDrive){this(config,limiter,finalDrive,EngineFamily.I4,EnginePart.stock(),90);}
         public Setup(int config,int limiter,double finalDrive,EngineFamily family,int engineParts,double temperature){this(config,limiter,finalDrive,family,engineParts,temperature,1.4);}
-        public Setup { config = Assembly.sanitize(config); limiter = Math.clamp(limiter, 4000, 7000); finalDrive = clamp(finalDrive, 2.8, 4.8); family=family==null?EngineFamily.I4:family;engineParts=EnginePart.sanitize(engineParts);temperature=clamp(temperature,20,150);boostTarget=clamp(boostTarget,.2,1.4);drive=drive==null?DriveConfig.stock():drive; }
+        public Setup { mass=clamp(mass,500,5000);config = Assembly.sanitize(config); limiter = Math.clamp(limiter, 4000, 7000); finalDrive = clamp(finalDrive, 2.8, 4.8); family=family==null?EngineFamily.I4:family;engineParts=EnginePart.sanitize(engineParts);temperature=clamp(temperature,20,150);boostTarget=clamp(boostTarget,.2,1.4);drive=drive==null?DriveConfig.stock():drive; }
     }
     public record State(double speed, double rpm, int gear, double fuel, double yawDelta, double fuelUsed, EnginePhysics.State engine, WheelDynamics.State wheels, TransmissionPhysics.State transmission, double load) {
         public double groundSpeed(){return Math.hypot(speed,transmission.lateralSpeed());}
@@ -75,13 +77,24 @@ public final class VehicleDynamics {
         }
         engine=EnginePhysics.step(engine,setup,running,in.throttle,clutchTorque,dt);
         double used=running&&engine.mode()==EnginePhysics.Mode.RUNNING?(.00022+Math.max(0,engine.shaftTorque())*engine.rpm()*1e-8)*setup.family.fuelScale*dt:0;
+        var road=chassis(speed,fuel,engine,wheels,trans,in,setup,grip,contacts,travel,clutchTorque*ratio*setup.drive.efficiency()*direction,1,dt);
+        wheels=road.wheels;trans=road.transmission;
+        double slipPower=Math.abs(clutchTorque*(engine.omega()-wheelOmega*ratio))/1000;
+        double heat=clamp(trans.clutchHeat()+(slipPower/3-(trans.clutchHeat()-20)*.025)*dt,20,1000);
+        trans=trans.heat(heat).clutch(Math.abs(engine.omega()-wheelOmega*ratio)*60/(2*Math.PI),clutchTorque,engagement);
+        double load=clamp(Math.max(0,clutchTorque)/Math.max(1,EngineBuild.naturalTorque(engine.rpm(),setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter)),0,1);
+        return new State(road.speed,engine.rpm(),gear,Math.max(0,fuel-used),road.yawDelta,used,engine,wheels,trans,load);
+    }
+    /** Shared rigid body and tire integration for combustion, battery and series-hybrid drives. */
+    public static State chassis(double speed,double fuel,EnginePhysics.State engine,WheelDynamics.State wheels,TransmissionPhysics.State trans,Input in,Setup setup,double[] grip,boolean[] contacts,double[] travel,double axleTorque,double serviceScale,double dt){
+        double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         double response=Assembly.SUSPENSION.variant(setup.config)==2?1.08:1;
         double target=in.steer*.55*response/(1+Math.abs(speed)*.025);
         double steering=trans.steering()+clamp(target-trans.steering(),-1.8*response*dt,1.8*response*dt);
-        var forces=WheelDynamics.step(wheels,setup,in,speed,lateral,yawRate,steering,clutchTorque*ratio*setup.drive.efficiency()*direction,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt);
+        var forces=WheelDynamics.step(wheels,setup,in,speed,lateral,yawRate,steering,axleTorque,grip,contacts,travel,trans.longitudinalAcceleration(),trans.lateralAcceleration(),dt,serviceScale);
         double magnitude=Math.hypot(speed,lateral),drag=Assembly.BODY.variant(setup.config)==2?.40:.43;
         double fx=forces.forward()-drag*speed*magnitude,fy=forces.lateral()-drag*lateral*magnitude;
-        double ax=fx/MASS,ay=fy/MASS,newYaw=clamp(yawRate+forces.yawMoment()/YAW_INERTIA*dt,-5,5);
+        double ax=fx/setup.mass,ay=fy/setup.mass,newYaw=clamp(yawRate+forces.yawMoment()/(YAW_INERTIA*setup.mass/MASS)*dt,-5,5);
         double deltaYaw=(yawRate+newYaw)*.5*dt,u=speed+ax*dt,v=lateral+ay*dt;
         // Rotate velocity into the new body frame without redirecting world momentum.
         double cosine=Math.cos(deltaYaw),sine=Math.sin(deltaYaw);
@@ -89,11 +102,8 @@ public final class VehicleDynamics {
         if(magnitude<.1&&Math.abs(yawRate)<.03&&Math.hypot(fx,fy)<=forces.holdingGrip()){next=0;lateral=0;newYaw=0;deltaYaw=0;ax=0;ay=0;}
         boolean supported=false;for(boolean c:contacts)supported|=c;
         if(supported&&in.throttle==0&&Math.hypot(next,lateral)<.035&&Math.abs(newYaw)<.02){next=0;lateral=0;newYaw=0;}
-        double slipPower=Math.abs(clutchTorque*(engine.omega()-wheelOmega*ratio))/1000;
-        double heat=clamp(trans.clutchHeat()+(slipPower/3-(trans.clutchHeat()-20)*.025)*dt,20,1000);
-        trans=trans.heat(heat).motion(lateral,newYaw,steering,ax,ay).clutch(Math.abs(engine.omega()-wheelOmega*ratio)*60/(2*Math.PI),clutchTorque,engagement);
-        double load=clamp(Math.max(0,clutchTorque)/Math.max(1,EngineBuild.naturalTorque(engine.rpm(),setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter)),0,1);
-        return new State(clamp(next,-65,65),engine.rpm(),gear,Math.max(0,fuel-used),deltaYaw,used,engine,forces.state(),trans,load);
+        trans=trans.motion(lateral,newYaw,steering,ax,ay);
+        return new State(clamp(next,-65,65),engine.rpm(),trans.gear(),fuel,deltaYaw,0,engine,forces.state(),trans,0);
     }
     public static double clamp(double v, double min, double max) { return Double.isFinite(v) ? Math.max(min, Math.min(max, v)) : min; }
 }

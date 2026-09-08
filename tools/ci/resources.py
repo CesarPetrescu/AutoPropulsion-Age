@@ -31,6 +31,7 @@ def snapshot():
 if __name__ == '__main__':
     before = snapshot()
     subprocess.run([sys.executable, 'tools/verify_mechanical_audio.py'], cwd=REPO, check=True)
+    subprocess.run([sys.executable, 'tools/generate_electric_resources.py'], cwd=REPO, check=True)
     after = snapshot()
     changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
     output = REPO / 'build/ci/resources'

@@ -35,7 +35,7 @@ java -version
 
 Development is integrated on `main`. Feature branches run the same required checks; automatic releases come from successful pushes to `main`. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
 
-The main output is `build/libs/autopropulsion-age-0.5.1-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
+The main output is `build/libs/autopropulsion-age-0.6.0-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
 
 If Java is not 21, set the JDK for the current PowerShell session, adapting the path to your installation:
 
@@ -234,8 +234,12 @@ For gameplay detail see [PLAYING.md](docs/PLAYING.md). For the original engine/r
 
 `WorkshopScreen` fits a minimum 760 × 460 logical canvas inside the current GUI viewport. It scales rendering, tooltips, scissor regions and mouse/drag/scroll input together, without changing the player's global GUI option. Garage, Service and Drive share this layout boundary. Page controls remain separated from selected-part details and footers. The driving HUD caps its physical scale independently.
 
-Run `.\gradlew.bat -PwithGameTests runClientUi` for the native UI suite. It checks all six garage tabs, engine pages, every component-list page, muffler operations, fluid/tests and Drive: 132 page/scale combinations across 1024 × 600, 1440 × 900 and 1920 × 1080, using explicit and Auto GUI scales. It checks widget bounds, overlapping controls, label widths and actual scaled mouse navigation, and captures screenshots under `run/screenshots/ui-*.png`. Inspect the images as well as the PASS marker: widget bounds alone do not validate text clipping or presentation. The same run opens NeoForge's Mods screen and checks the loaded logo texture.
+Run `.\gradlew.bat -PwithGameTests runClientUi` for the native UI suite. It checks all six garage tabs, engine pages, every component-list page, muffler operations, fluid/tests and Drive: 156 page/scale combinations across 1024 × 600, 1440 × 900 and 1920 × 1080, using explicit and Auto GUI scales. It checks widget bounds, overlapping controls, label widths and actual scaled mouse navigation, and captures screenshots under `run/screenshots/ui-*.png`. Inspect the images as well as the PASS marker: widget bounds alone do not validate text clipping or presentation. The same run opens NeoForge's Mods screen and checks the loaded logo texture.
 
 The canonical [mod logo](src/main/resources/autopropulsion-age.png) is also used by the README. [Branding provenance](docs/BRANDING.md) records its generation prompt. Run `python tools/ci/documentation.py` to validate the full galleries and local links without rebuilding the model ZIP.
 
 Minecraft yaw and the existing rig basis turn right for positive input. The client maps A to negative steer and D to positive steer. Preserve the existing lateral/world transform, wheel contact positions and wheel animation together; changing just the chassis basis can swap the relationship between a tire contact and its force. Native handling checks assert the world-space direction, not just a positive simulation yaw reading. Forward/reverse is driver-selected while stopped, never inferred from signed road speed. Clutch slip is crank/input-shaft speed difference; torque capacity, dissipated heat and installed clutch condition determine the mechanical result. The Live page displays synchronized measurements, not a decorative gauge.
+
+## Electric/hybrid development
+
+Use `sim/.../electric` for pack, charger and motor energy calculations. Both powertrain types call `VehicleDynamics.chassis` and `WheelDynamics`; do not reintroduce a separate road-speed-only solver. `ElectricScreen` shares workshop scaling and input. Run `./gradlew.bat -PwithGameTests runClientElectricSmoke` for the native electric harness; use CI on Linux to keep the Windows desktop available. The required companion job checks the pinned ElectricalAge API with its actual circuit solver. [Charging specification](docs/ELECTRIFICATION.md).

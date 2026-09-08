@@ -1,0 +1,30 @@
+{
+  "type": "sparkmotors:electric_crate_crafting",
+  "category": "misc",
+  "pattern": [
+    "CRQ",
+    " B ",
+    " P "
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:copper_block"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "B": {
+      "item": "sparkmotors:sedan_crate"
+    },
+    "P": {
+      "item": "sparkmotors:plug_in_hybrid_battery_pack"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:plug_in_hybrid_crate",
+    "count": 1
+  }
+}

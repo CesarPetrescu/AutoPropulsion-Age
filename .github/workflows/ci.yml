@@ -135,6 +135,8 @@ jobs:
             task: runClientSmoke
           - mode: ui
             task: runClientUi
+          - mode: electric
+            task: runClientElectricSmoke
           - mode: handling
             task: runClientHandling
     steps:
@@ -158,6 +160,7 @@ jobs:
           path: |
             build/ci/
             run/alpha-smoke-result.txt
+            run/electric-smoke-result.txt
             run/logs/
             run/screenshots/
             run/crash-reports/
@@ -190,10 +193,14 @@ jobs:
             run/multi-*/crash-reports/
           retention-days: 14
 
+  companion:
+    name: ElectricalAge compatibility
+    uses: ./.github/workflows/eln-compat.yml
+
   required:
     name: Required checks
     if: always()
-    needs: [workflow, build, resources, client, multiplayer]
+    needs: [workflow, build, resources, client, multiplayer, companion]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -274,7 +281,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 132 workshop page/scale cases with scaled input and the mod logo, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 156 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})

@@ -31,6 +31,10 @@ public final class WheelDynamics {
         return step(previous,new Setup(config,6800,3.7,EngineFamily.I4,EnginePart.stock(),90,1.4,m),in,speed,0,0,in.steer()*.45,driveForce*WHEEL_RADIUS,new double[]{grip,grip,grip,grip},contacts,travels,0,0,dt);
     }
     public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt){
+        return step(previous,setup,in,speed,lateral,yawRate,steering,driveTorque,grip,contacts,travels,ax,ay,dt,1);
+    }
+    public static Forces step(State previous,Setup setup,Input in,double speed,double lateral,double yawRate,double steering,double driveTorque,double[] grip,boolean[] contacts,double[] travels,double ax,double ay,double dt,double serviceScale){
+        double mass=setup.mass();
         var result=new ArrayList<Corner>();var m=setup.mechanics();int config=setup.config();
         double brakes=0,rolling=0,moment=0,forward=0,sideways=0,driveGrip=0,holding=0;
         double[] torques=setup.drive().wheelTorques(driveTorque,previous,dt);
@@ -49,12 +53,12 @@ public final class WheelDynamics {
             // Unloading an inside wheel redistributes the existing axle load;
             // clamping each corner independently would invent extra normal force.
             double fraction=axle*.5+(c%2==0?-1:1)*lateralTransfer;
-            double load=MASS*9.81*fraction*(.30+.70*spring);
+            double load=mass*9.81*fraction*(.30+.70*spring);
             // Suspension load variation is bounded separately from longitudinal/lateral transfer.
             load*=clamp(1+(travels[c]-old.travel)*damper*.25/Math.max(.005,dt),.7,1.3);
             double mu=clamp(grip[c],0,2)*tireGrip(m,c)*(Assembly.WHEELS.variant(config)==2?1.17:1);
-            double service=in.brake()&&Assembly.BRAKES.variant(config)>0?MASS*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true):0;
-            double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?MASS*3*brakeCapability(m,c,false):0;
+            double service=in.brake()&&Assembly.BRAKES.variant(config)>0?mass*(Assembly.BRAKES.variant(config)==2?10.8:8)*(c<2?.30:.20)*brakeCapability(m,c,true)*clamp(serviceScale,0,1):0;
+            double hand=in.handbrake()&&c>=2&&Assembly.BRAKES.variant(config)>0?mass*3*brakeCapability(m,c,false):0;
             double fade=clamp(1-(old.temperature-350)/500,.15,1),dragBrake=0;
             if(m!=null){var caliper=m.get("wheel."+ComponentSlot.CORNERS[c]+".caliper");if(caliper!=null&&(caliper.faults()&PartInstance.SEIZED)!=0)dragBrake=1000;}
             double request=Math.max(service*fade,hand)+dragBrake,brakeTorque=request*WHEEL_RADIUS;
@@ -65,7 +69,7 @@ public final class WheelDynamics {
             if(contact){
                 // Implicit longitudinal slip response prevents stiff wheel oscillation at 80 Hz.
                 double stiffness=load*11/Math.max(3,Math.abs(u));
-                fx=stiffness*(braked*WHEEL_RADIUS-u)/(1+dt*stiffness*(WHEEL_RADIUS*WHEEL_RADIUS/INERTIA+4/MASS));
+                fx=stiffness*(braked*WHEEL_RADIUS-u)/(1+dt*stiffness*(WHEEL_RADIUS*WHEEL_RADIUS/INERTIA+4/mass));
                 fy=-limit*Math.sin(1.35*Math.atan(9*alpha));
                 double predictedSlip=Math.abs(braked*WHEEL_RADIUS-u)/Math.max(3,Math.abs(u));
                 double sliding=1-.22*clamp((predictedSlip-.18)/1.2,0,1);
@@ -74,7 +78,7 @@ public final class WheelDynamics {
                 double combined=Math.hypot(fx,fy),scale=combined>limit?limit/Math.max(.001,combined):1;
                 fx*=scale;fy*=scale;
                 double rollingForce=35+(1-tireGrip(m,c))*140+(m==null?0:(1-m.capability("wheel."+ComponentSlot.CORNERS[c]+".bearing"))*220);
-                double rollingU=clamp(u*MASS/(4*dt),-rollingForce,rollingForce);
+                double rollingU=clamp(u*mass/(4*dt),-rollingForce,rollingForce);
                 // Rolling resistance is also contact-limited (zero friction means zero road force).
                 rollingU=clamp(rollingU,-Math.max(0,limit-Math.hypot(fx,fy)),Math.max(0,limit-Math.hypot(fx,fy)));
                 fx-=rollingU;rolling+=Math.abs(rollingU);

@@ -87,6 +87,7 @@ public final class CarMesh {
     private static boolean visible(Chunk c,CarEntity car){
         if(c.name.equals("service_jack")&&!car.raised())return false;
         String component=componentKey(c);if(!component.isEmpty()&&car.mechanics().get(component)==null)return false;
+        if(car.powertrain().electric()&&!car.powertrain().hybrid()&&(c.group==0||c.group==1||c.name.contains("exhaust")||c.name.contains("muffler")||c.name.contains("fuel_tank")))return false;
         int selected=c.group>=0?Assembly.values()[c.group].variant(car.config()):1;
         if(c.group>=0&&(selected==0||(c.variant>0&&selected!=c.variant)))return false;
         if((c.family&(1<<car.engineFamily().ordinal()))==0||(c.induction&(1<<EnginePart.INDUCTION.variant(car.engineParts())))==0)return false;
@@ -101,6 +102,7 @@ public final class CarMesh {
         render(car,partial,poses,buffers,light,preview,engineOnly,cutaway,"");
     }
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway,String highlight){
+        ElectricGeometry.render(car,poses,buffers,light,preview,engineOnly);
         float panel=Mth.lerp(partial,car.oldPanelProgress,car.panelProgress);
         float hood=Mth.lerp(partial,car.oldHoodProgress,car.hoodProgress);
         float engine=Mth.lerp(partial,car.oldEngineAngle,car.engineAngle);
@@ -125,7 +127,7 @@ public final class CarMesh {
             }
             if(c.name.startsWith("needle_")||c.name.startsWith("gauge_needle_")){
                 String gauge=c.name.startsWith("needle_")?(c.name.contains("0.57")?"speed":"rpm"):c.name.substring("gauge_needle_".length());
-                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees((float)(-140+readings.fraction(gauge)*280)));poses.translate(-c.px,-c.py,-c.pz);
+                poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees((float)(-140+CockpitInstruments.fraction(car,readings,gauge)*280)));poses.translate(-c.px,-c.py,-c.pz);
             }
             if(c.name.equals("steering_wheel")){poses.translate(c.px,c.py,c.pz);poses.mulPose(Axis.ZP.rotationDegrees(car.steer()*125));poses.translate(-c.px,-c.py,-c.pz);}
             if(c.name.endsWith("_pedal")){float depressed=c.name.startsWith("throttle")?car.throttle():c.name.startsWith("brake")&&car.serviceBrake()?1:0;poses.translate(0,-depressed*.025,depressed*.02);}

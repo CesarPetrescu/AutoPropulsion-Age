@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=52):
+def junit(directory, minimum=62):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,23 +36,27 @@ def junit(directory, minimum=52):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=31):
+def server(log, minimum=38):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
     require('DRIVETRAIN_SERVER_MATRIX_PASS 294' in log, 'Missing complete drivetrain/engine driving matrix')
+    require('ELECTRIC_SERVER_MATRIX_PASS 12' in log, 'Missing electric drivetrain matrix')
     return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
 
 
 def client(log, result, mode):
     require(result.startswith('PASS:'), f'Client result is not PASS: {result[:200]}')
+    if mode == 'electric':
+        require('ELECTRIC_CLIENT_SMOKE PASS:' in log and 'ELECTRIC_CLIENT_SMOKE FAILED' not in log, 'Missing electric client PASS')
+        return {'native_electric_charging_driving': True}
     require('ALPHA_CLIENT_SMOKE PASS:' in log and 'ALPHA_CLIENT_SMOKE FAILED' not in log,
             'Missing native client PASS or explicit failure present')
     if mode == 'ui':
         cases = set(re.findall(r'WORKSHOP_UI_CASE_PASS (\d+ [\w-]+)', log))
-        require(len(cases) == 132 and 'WORKSHOP_UI_PASS 132' in log, 'Incomplete workshop page/scale coverage')
+        require(len(cases) == 156 and 'WORKSHOP_UI_PASS 156' in log, 'Incomplete workshop page/scale coverage')
         require('MOD_LOGO_CLIENT_PASS' in log, 'Missing native loaded logo check')
-        return {'workshop_page_scale_cases': 132, 'native_mod_logo': True, 'scaled_navigation': True}
+        return {'workshop_page_scale_cases': 156, 'native_mod_logo': True, 'scaled_navigation': True}
     if mode == 'mechanics':
         for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS'):
             require(marker in log, f'Missing {marker}')
@@ -92,6 +96,9 @@ def inspect_jar(path):
                 'Development harness/test track leaked into release JAR')
         for name in ('META-INF/neoforge.mods.toml', 'com/photonspark/sparkmotors/entity/CarEntity.class',
                      'com/photonspark/sparkmotors/sim/MechanicalState.class',
+                     'com/photonspark/sparkmotors/sim/electric/ElectricDynamics.class',
+                     'com/photonspark/sparkmotors/charging/ChargerBlockEntity.class',
+                     'com/photonspark/sparkmotors/client/ElectricScreen.class',
                      'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/sounds.json'):
             require(name in names, f'Missing runtime entry: {name}')
         metadata = tomllib.loads(archive.read('META-INF/neoforge.mods.toml').decode())
@@ -149,7 +156,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'ui', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'ui', 'electric', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -162,8 +169,8 @@ def main():
         report = junit(args.directory or REPO / 'sim/build/test-results/test')
     elif args.mode == 'server':
         report = server(args.log.read_text(errors='replace'))
-    elif args.mode in ('mechanics', 'matrix', 'handling', 'ui'):
-        report = client(args.log.read_text(errors='replace'), args.result.read_text(), args.mode)
+    elif args.mode in ('mechanics', 'matrix', 'handling', 'ui', 'electric'):
+        report = client(args.log.read_text(errors='replace'), (REPO / "run/electric-smoke-result.txt" if args.mode == "electric" else args.result).read_text(), args.mode)
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)
     elif args.mode == 'package':

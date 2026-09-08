@@ -34,7 +34,7 @@ public final class GarageScreen extends WorkshopScreen {
     @Override public boolean isPauseScreen(){return false;}
     private void request(int action,int a,int b){CarClient.send(car,action,a,b);}
     private boolean serviceAllowed(){return car.horizontalSpeed()<.3&&!car.ignition();}
-    private boolean engineServiceAllowed(){return serviceAllowed()&&car.hoodOpen()&&car.hoodProgress>=.95;}
+    private boolean engineServiceAllowed(){return (!car.powertrain().electric()||car.powertrain().hybrid())&&serviceAllowed()&&car.hoodOpen()&&car.hoodProgress>=.95;}
     private Item assemblyItem(Assembly slot,int v){return slot==Assembly.ENGINE?AutoPropulsionAge.engineItem(car.engineFamily(),v):AutoPropulsionAge.partItem(slot,v);}
     private Button button(String label,int bx,int by,int bw,int bh,Runnable action,String tooltip,boolean service){
         Button b=Button.builder(Component.literal(label),ignored->action.run()).bounds(bx,by,bw,bh).build();
@@ -45,8 +45,9 @@ public final class GarageScreen extends WorkshopScreen {
         clearWidgets();serviceButtons.clear();w=Math.min(780,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;
         previewWidth=Math.max(120,(int)(w*.38));rx=x+previewWidth+20;rw=w-previewWidth-32;
         button("X",x+w-29,y+9,20,20,this::onClose,"Close garage",false);
+        if(car.powertrain().electric())button("Electric",x+w-125,y+9,88,20,()->minecraft.setScreen(new ElectricScreen(car)),"Motor, battery, charging and hybrid diagnostics",false);
         String[] names={"Garage","Paint","Tuner","Car","Engine","Live","Service","Drive"};
-        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{if(selected==6)minecraft.setScreen(new ServiceScreen(car));else if(selected==7)minecraft.setScreen(new DriveScreen(car));else{tab=selected;init();}},null,false).active=i!=tab;}
+        for(int i=0;i<names.length;i++){final int selected=i;button(names[i],rx+i*rw/names.length,y+43,rw/names.length-3,20,()->{if(car.powertrain().electric()&&!car.powertrain().hybrid()&&(selected==2||selected==4||selected==5))minecraft.setScreen(new ElectricScreen(car));else if(selected==6)minecraft.setScreen(new ServiceScreen(car));else if(selected==7)minecraft.setScreen(new DriveScreen(car));else{tab=selected;init();}},null,false).active=i!=tab;}
         int top=y+82;
         switch(tab){
             case 0 -> {
@@ -124,6 +125,7 @@ public final class GarageScreen extends WorkshopScreen {
                 var rebuild=button("Rebuild engine",rx+2*rw/3+2,y+h-49,rw/3-2,22,()->request(CarPackets.ENGINE_REBUILD,0,0),"Consumes 12 iron ingots to restore engine condition. Open the hood, park and stop the engine.",true);
                 serviceButtons.put(rebuild,()->engineServiceAllowed()&&car.needsEngineRebuild());
             }
+
         }
     }
     private int count(Item item){int count=0;if(minecraft.player!=null)for(var s:minecraft.player.getInventory().items)if(s.is(item))count+=s.getCount();return count;}
@@ -155,8 +157,8 @@ public final class GarageScreen extends WorkshopScreen {
         g.drawString(font,tab==4?"ENGINE / DRAG TO ORBIT":"LIVE VEHICLE",x+20,y+54,MUTED,false);
         drawPreview(g,partial);
         int stats=y+h-83;
-        g.drawString(font,car.ignition()?"ENGINE RUNNING":"ENGINE OFF",x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
-        g.drawString(font,String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
+        g.drawString(font,car.powertrain().electric()?(car.plugged()?"PLUGGED / DRIVE LOCKED":car.ignition()?"READY":"DRIVE OFF"):(car.engineRunning()?"ENGINE RUNNING":"ENGINE OFF"),x+18,stats,car.ignition()?ACCENT:0xFFFFC675,false);
+        g.drawString(font,car.powertrain().electric()?String.format(Locale.ROOT,"Battery  %.1f%%",car.stateOfCharge()*100):String.format(Locale.ROOT,"Fuel  %.1f / 50 L",car.fuel()),x+18,stats+15,INK,false);
         g.drawString(font,tab==4?String.format(Locale.ROOT,"%.0f C  /  %.2f bar",car.temperature(),car.boost()):"Installed parts: "+car.mechanics().parts().size(),x+18,stats+29,INK,false);
         g.drawString(font,"Warnings: "+car.mechanics().faultHistory().size(),x+18,stats+43,MUTED,false);
         int top=y+82;
@@ -207,8 +209,10 @@ public final class GarageScreen extends WorkshopScreen {
                 int spacing=Math.min(25,Math.max(12,(h-180)/labels.length));
                 for(int i=0;i<labels.length;i++){int by=top+22+i*spacing;g.drawString(font,labels[i],rx,by,MUTED,false);g.drawString(font,values[i],rx+rw-font.width(values[i]),by,i==3&&car.boost()>.1&&car.afr()>13.5?0xFFFF8E60:INK,false);}
             }
+
         }
         String footer=serviceAllowed()?"Changes save automatically. Survival uses items from your inventory.":"Park and switch off the engine to change parts, paint or tuning.";
+
         if(tab==4)footer=!engineServiceAllowed()?"Park, stop the engine and open the hood fully to work.":!car.engineProblem().isEmpty()?car.engineProblem():"42 hardware choices. Hover a Fit button for the part's behavior and requirements.";
         String clipped=font.plainSubstrByWidth(footer,w-26);
         g.drawString(font,clipped,x+13,y+h-15,serviceAllowed()?MUTED:0xFFFFC675,false);

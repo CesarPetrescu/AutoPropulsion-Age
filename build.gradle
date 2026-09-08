@@ -15,13 +15,24 @@ if (metadataHash != '211b1f95714cf1fb6f4a45612dd4bf731fb09795c30d4fb5f23c9fada61
     throw new GradleException('Pinned Minecraft 1.21.1 metadata checksum mismatch')
 }
 repositories.named('Mojang Meta') { url = uri('gradle/minecraft-metadata') }
-dependencies { implementation project(':sim') }
+repositories {
+    mavenCentral()
+    maven { url = 'https://thedarkcolour.github.io/KotlinForForge/' }
+}
+dependencies {
+    implementation project(':sim')
+    if (providers.gradleProperty('elnJar').isPresent()) {
+        runtimeOnly files(providers.gradleProperty('elnJar').get())
+        runtimeOnly 'thedarkcolour:kotlinforforge-neoforge:5.12.0'
+    }
+}
 // Include the pure simulation classes in the mod's development and release
 // outputs. FML does not load an ordinary project dependency as a mod module.
 sourceSets.main.output.dir([builtBy: ':sim:classes'], project(':sim').layout.buildDirectory.dir('classes/java/main'))
 if (providers.gradleProperty('withGameTests').isPresent()) {
     sourceSets.main.java.srcDir 'src/gametest/java'
     sourceSets.main.resources.srcDir 'src/gametest/resources'
+    if (providers.gradleProperty('elnJar').isPresent()) sourceSets.main.java.srcDir 'src/elnTest/java'
 }
 neoForge {
     version = project.neo_version
@@ -59,6 +70,11 @@ neoForge {
         multiServer { server(); gameDirectory=file('run/multi-server');programArgument '--nogui';systemProperty 'sparkmotors.multiServer','true' }
         multiClientA { client();gameDirectory=file('run/multi-client-a');programArguments.addAll '--username','MechanicA','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','A' }
         multiClientB { client();gameDirectory=file('run/multi-client-b');programArguments.addAll '--username','MechanicB','--width','960','--height','600';systemProperty 'sparkmotors.multiClient','B' }
+        clientElectricSmoke {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientElectricSmoke', 'true'
+        }
         server { server(); programArgument '--nogui' }
         gameTestServer {
             type = 'gameTestServer'

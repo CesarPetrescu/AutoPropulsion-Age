@@ -8,7 +8,7 @@ The **Test and release** workflow runs on every branch push, pull request and ma
 |---|---|
 | Workflow and release gate tests | actionlint, shell validation and 26 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
 | Build, simulation and dedicated server | Java 21 build; at least 52 JUnit cases with no skips; at least 31 native GameTests, including 294 engine/drivetrain driving layouts; simulation benchmark report; installable JAR inspection |
-| Native client (ui) | Loaded Mods-list logo plus 132 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation and screenshots |
+| Native client (ui) | Loaded Mods-list logo plus 156 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation and screenshots |
 | Resources, audio and geometry | Regeneration of 424 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions plus targeted non-mating intersections |
 | Native client (mechanics) | Actual GUI/network coolant diagnosis, targeted repair, fluid refill, timed verification, jack/tire service, failed sender, driving, active audio channels and cleanup |
 | Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, airborne contact loss and spring landing |

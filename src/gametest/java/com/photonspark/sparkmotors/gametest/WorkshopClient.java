@@ -22,6 +22,7 @@ final class WorkshopClient {
         for(int i=0;i<6;i++)pages.add("garage-"+i);
         pages.add("engine-more");pages.add("engine-last");
         for(int i=0;i<ComponentSlot.ALL.size();i+=8)pages.add("parts-"+i);
+        for(var type:com.photonspark.sparkmotors.sim.electric.Powertrain.values())if(type.electric())pages.add("electric-"+type.ordinal());
         pages.add("muffler");pages.add("tests");pages.add("drive");
     }
     private static void require(boolean ok,String text){if(!ok)throw new IllegalStateException(text);}
@@ -62,7 +63,11 @@ final class WorkshopClient {
         int step=(ticks-25)%8;
         if(step==0){
             String name=pages.get(page);
-            if(name.startsWith("garage-"))mc.setScreen(new GarageScreen(car,Integer.parseInt(name.substring(7))));
+            if(name.startsWith("electric-")){
+                var id=car.getUUID();var type=com.photonspark.sparkmotors.sim.electric.Powertrain.byId(Integer.parseInt(name.substring(9)));
+                mc.getSingleplayerServer().execute(()->{var serverCar=(CarEntity)mc.getSingleplayerServer().overworld().getEntity(id);if(serverCar!=null)serverCar.initializePowertrain(type,.5);});
+                mc.setScreen(new ElectricScreen(car));
+            }else if(name.startsWith("garage-"))mc.setScreen(new GarageScreen(car,Integer.parseInt(name.substring(7))));
             else if(name.startsWith("engine-")){
                 mc.setScreen(new GarageScreen(car,4));ClientSmoke.press(mc,"More parts",0);
                 if(name.endsWith("last"))ClientSmoke.press(mc,"More parts",0);

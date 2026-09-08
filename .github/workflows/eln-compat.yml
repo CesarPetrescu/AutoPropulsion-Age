@@ -1,0 +1,95 @@
+name: ElectricalAge companion verification
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: eln-compat-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  companion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: auto
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: CesarPetrescu/ElectricalAge
+          ref: cb11383d2d8266b6876ad1b1629cadde0d2c1706
+          path: eln
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c
+        with:
+          cache-read-only: false
+      - name: Record exact source commits
+        run: |
+          git -C eln rev-parse HEAD > electricalage-commit.txt
+          git -C auto rev-parse HEAD > autopropulsion-commit.txt
+      - name: Check official Minecraft dependency metadata
+        run: bash auto/tools/ci_minecraft_metadata.sh 2>&1 | tee metadata.log
+      - name: Compile Kotlin and run companion tests
+        working-directory: eln
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon compileKotlin test build 2>&1 | tee ../eln-build.log
+      - name: Select installable companion jar
+        run: |
+          python3 - <<'PY'
+          import os,pathlib,zipfile
+          jars=[p.resolve() for p in pathlib.Path('eln/build/libs').glob('*.jar') if not any(x in p.name for x in ('-sources','-javadoc','-dev'))]
+          jars=[p for p in jars if 'META-INF/neoforge.mods.toml' in zipfile.ZipFile(p).namelist()]
+          assert len(jars)==1,jars
+          with open(os.environ['GITHUB_ENV'],'a') as f:f.write('ELN_JAR='+str(jars[0])+'\n')
+          PY
+      - name: Build AutoPropulsion with companion and integration tests
+        id: auto_build
+        working-directory: auto
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" build :sim:test 2>&1 | tee ../auto-build.log
+      - name: Dedicated native ELN cable and charger integration
+        working-directory: auto
+        run: |
+          ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" runGameTestServer 2>&1 | tee ../eln-gametest.log
+          grep -q 'ELN_CHARGER_CIRCUIT_PASS' ../eln-gametest.log
+      - name: Install software graphics dependencies
+        if: ${{ !cancelled() && steps.auto_build.outcome == 'success' }}
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 pulseaudio
+      - name: Native Minecraft combined-mod client verification
+        if: ${{ !cancelled() && steps.auto_build.outcome == 'success' }}
+        working-directory: auto
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/electric-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" runClientElectricSmoke 2>&1 | tee ../eln-client.log
+          cat run/electric-smoke-result.txt
+          grep -q '^PASS' run/electric-smoke-result.txt
+          grep -q 'ELN=true' run/electric-smoke-result.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: evidence-electricalage-integration
+          path: |
+            *-commit.txt
+            *.log
+            eln/build/test-results/
+            eln/build/reports/
+            auto/build/reports/
+            auto/sim/build/test-results/
+            auto/sim/build/reports/
+            auto/run/*smoke-result.txt
+            auto/run/screenshots/
+            auto/run/logs/
+            auto/run/gametest/logs/
+          retention-days: 14

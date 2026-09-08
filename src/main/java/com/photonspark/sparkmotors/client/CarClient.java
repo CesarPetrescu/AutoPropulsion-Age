@@ -83,6 +83,14 @@ public final class CarClient {
         g.fill(x,y,x+w,y+(performance?61:46),0xD9101A23);g.fill(x,y,x+w,y+1,0xFF31C6C9);
         if(!r.powered()){g.drawString(mc.font,"INSTRUMENT POWER UNAVAILABLE",x+9,y+10,0xFFFFBA70,false);g.pose().popPose();return;}
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h   %s   %04.0f RPM",r.speed(),car.gear()<0?"R":"G"+car.gear(),r.rpm()),x+9,y+8,0xFFFFFFFF,false);
+        if(car.powertrain().electric()){
+            g.fill(x+1,y+2,x+w-1,y+(performance?61:46),0xFF101A23);
+            g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h  %s  %+.1f kW",car.horizontalSpeed()*3.6,car.reverseSelected()?"R":"D",car.packKw()),x+9,y+8,0xFFFFFFFF,false);
+            g.drawString(mc.font,String.format(java.util.Locale.ROOT,"SOC %.1f%%  %.0f C  %s",car.stateOfCharge()*100,car.packTemperature(),car.plugged()?"PLUGGED":car.ignition()?"READY":"OFF"),x+9,y+21,car.stateOfCharge()<.1?0xFFFFA45C:0xFF97CDBE,false);
+            if(performance)g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%.0f motor RPM  Regen %.1f kW",car.motorRpm(),car.regenKw()),x+9,y+35,0xFF9EC9D4,false);
+            g.drawString(mc.font,"R ready  S brake/regen  Space handbrake",x+9,y+(performance?49:34),0xFF9FB1BE,false);
+            g.pose().popPose();return;
+        }
         String coolant=Double.isFinite(r.coolant())?String.format(java.util.Locale.ROOT,"%.0f C",r.coolant()):"SENDER --";
         g.drawString(mc.font,mc.font.plainSubstrByWidth(String.format(java.util.Locale.ROOT,"Fuel %.1f L  Coolant %s  %s",r.fuel(),coolant,String.join(" ",r.warnings())),w-18),x+9,y+21,r.warnings().isEmpty()?0xFF97CDBE:0xFFFFA45C,false);
         if(performance)g.drawString(mc.font,String.format(java.util.Locale.ROOT,"Oil %s bar / %.0f C  %.1f V  Boost %.2f",Double.isFinite(r.oilPressure())?String.format(java.util.Locale.ROOT,"%.1f",r.oilPressure()):"--",car.oilTemperature(),r.voltage(),r.boost()),x+9,y+35,0xFF9EC9D4,false);

@@ -20,11 +20,19 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.5.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.6.0 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
 ![Opening hood and four-rotor twin-screw engine in the actual game](docs/screenshots/hood-rotor4-twin-screw.png)
+
+## Electric and hybrid cars
+
+Version 0.6.0 integrates **400 V and 800 V EVs**, a **series hybrid** and a **plug-in series hybrid** with the same individual tire, brake, suspension and RWD/FWD/AWD systems as combustion cars. Each traction motor has its own torque/power rating, constant-torque and constant-power regions, thermal limits and regenerative braking. Seven combustion families use separate explicit torque maps, with installed hardware and component condition applied afterward.
+
+In Creative, use `electric_400_crate`, `electric_800_crate`, `hybrid_crate` or `plug_in_hybrid_crate` from the mod tab. Press **R** for READY, **W** to drive and **S** for service brakes/regen. **G → Electric** opens motor curves, battery measurements, generator RPM, charge targets and pack replacement. EVs and series hybrids use fixed reduction and have no driver-operated clutch.
+
+Survival packs start empty. External survival charging requires the optional ElectricalAge companion; a non-plug-in hybrid can charge from its fuel-powered generator. Creative chargers have an explicitly labelled test supply. [Vehicles, charging, hybrid modes and limitations →](docs/ELECTRIFICATION.md)
 
 ## Get in and drive
 
@@ -33,7 +41,7 @@
 3. In Creative, take a **Sedan Crate** from the **AutoPropulsion Age** tab and place it on open, flat ground. With cheats: `/give @s sparkmotors:sedan_crate`.
 4. Right-click with an empty hand, press **R**, wait for the starter, then hold **W**. A new car includes stock parts and fuel.
 
-Players only need the mod JAR. Blender, Python and the separate simulation library are development tools.
+The base mod runs with its own JAR. ElectricalAge and Kotlin for Forge are optional dependencies for survival grid charging. Blender, Python and the separate simulation library are development tools.
 
 | Controls | Action |
 |---|---|
@@ -109,7 +117,7 @@ Set-Location AutoPropulsion-Age
 .\gradlew.bat runClient
 ```
 
-Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.5.1-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
+Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.6.0-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
 
 | What you need | Where to find it |
 |---|---|
@@ -121,7 +129,7 @@ Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-
 | Logo asset, JAR registration and generation record | [Branding](docs/BRANDING.md) |
 | Bug reports and feature requests | [GitHub issues](https://github.com/CesarPetrescu/AutoPropulsion-Age/issues) — include mod version, reproduction steps and `logs/latest.log` |
 
-CI runs simulation tests, dedicated GameTests with **294 engine/drivetrain driving combinations**, native client garage/handling/mechanics checks, **132 workshop page/scale combinations**, two-client trading, resource/audio validation and Blender geometry checks. A release is published **only after all required jobs pass**. Each release includes its source commit, SHA-256 checksums and fresh evidence. A failed run leaves the previous tested JAR available.
+CI runs simulation tests, dedicated GameTests with **294 engine/drivetrain driving combinations**, native client garage/handling/mechanics checks, **156 workshop page/scale combinations**, two-client trading, resource/audio validation and Blender geometry checks. A release is published **only after all required jobs pass**. Each release includes its source commit, SHA-256 checksums and fresh evidence. A failed run leaves the previous tested JAR available.
 
 This remains an alpha: handling includes lateral/yaw motion and vertical suspension, without full rollovers or soft-body crashes. Deeper engine internals, Expert fasteners, engine-stand procedures, complete glass/latch service, projected headlights and large-fleet optimization remain future work. Other modpacks, separate-machine latency and long-duration worlds need further testing.
 

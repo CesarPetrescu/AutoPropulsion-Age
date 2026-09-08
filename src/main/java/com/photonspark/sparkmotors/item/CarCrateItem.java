@@ -5,7 +5,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.network.chat.Component;
 public final class CarCrateItem extends Item {
-    public CarCrateItem(Properties properties) { super(properties); }
+    private final com.photonspark.sparkmotors.sim.electric.Powertrain powertrain;
+    public CarCrateItem(Properties properties) { this(properties,com.photonspark.sparkmotors.sim.electric.Powertrain.COMBUSTION); }
+    public CarCrateItem(Properties properties,com.photonspark.sparkmotors.sim.electric.Powertrain type) { super(properties);powertrain=type; }
     @Override public InteractionResult useOn(UseOnContext ctx) {
         if(ctx.getLevel().isClientSide) return InteractionResult.SUCCESS;
         var player=ctx.getPlayer();if(player==null)return InteractionResult.FAIL;
@@ -20,6 +22,14 @@ public final class CarCrateItem extends Item {
         var donor=MechanicalData.get(ctx.getItemInHand());if(donor!=null)car.setMechanics(donor);
         if(!ctx.getLevel().noCollision(car,car.getBoundingBox())) {
             player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
+        }
+        car.initializePowertrain(powertrain,player.isCreative()?.65:0);
+        var stored=ctx.getItemInHand().getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+        if(powertrain.electric()&&stored.contains("TractionBattery")){
+            // Crafting a vehicle with a used battery must not refill or rejuvenate it.
+            var battery=stored.getCompound("TractionBattery");var saved=new net.minecraft.nbt.CompoundTag();car.saveWithoutId(saved);
+            saved.putDouble("BatteryJ",battery.getDouble("EnergyJ"));saved.putDouble("BatteryC",battery.getDouble("TemperatureC"));
+            saved.putDouble("BatteryHealth",battery.getDouble("Health"));saved.putDouble("BatteryThroughputJ",battery.getDouble("ThroughputJ"));car.load(saved);
         }
         ctx.getLevel().addFreshEntity(car);
         if(!player.isCreative())ctx.getItemInHand().shrink(1);
