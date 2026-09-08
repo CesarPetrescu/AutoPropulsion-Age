@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=51):
+def junit(directory, minimum=52):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,7 +36,7 @@ def junit(directory, minimum=51):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=30):
+def server(log, minimum=31):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -48,6 +48,11 @@ def client(log, result, mode):
     require(result.startswith('PASS:'), f'Client result is not PASS: {result[:200]}')
     require('ALPHA_CLIENT_SMOKE PASS:' in log and 'ALPHA_CLIENT_SMOKE FAILED' not in log,
             'Missing native client PASS or explicit failure present')
+    if mode == 'ui':
+        cases = set(re.findall(r'WORKSHOP_UI_CASE_PASS (\d+ [\w-]+)', log))
+        require(len(cases) == 132 and 'WORKSHOP_UI_PASS 132' in log, 'Incomplete workshop page/scale coverage')
+        require('MOD_LOGO_CLIENT_PASS' in log, 'Missing native loaded logo check')
+        return {'workshop_page_scale_cases': 132, 'native_mod_logo': True, 'scaled_navigation': True}
     if mode == 'mechanics':
         for marker in ('MECHANICS_CLIENT_PASS', 'AUDIO_CHANNELS_AND_CLEANUP_PASS', 'INSTRUMENT_SENDER_PASS'):
             require(marker in log, f'Missing {marker}')
@@ -92,6 +97,9 @@ def inspect_jar(path):
         metadata = tomllib.loads(archive.read('META-INF/neoforge.mods.toml').decode())
         mod = next(m for m in metadata['mods'] if m['modId'] == 'sparkmotors')
         require('${' not in mod['version'], 'Unexpanded mod version')
+        logo = mod.get('logoFile', '')
+        require(logo in names and logo.endswith('.png'), 'Missing declared mod logo in JAR')
+        require(archive.read(logo).startswith(bytes.fromhex('89504e470d0a1a0a')), 'Packaged logo is not a PNG')
         sounds = json.loads(archive.read('assets/sparkmotors/sounds.json'))
         for event in sounds.values():
             for sound in event['sounds']:
@@ -141,7 +149,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'ui', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -154,7 +162,7 @@ def main():
         report = junit(args.directory or REPO / 'sim/build/test-results/test')
     elif args.mode == 'server':
         report = server(args.log.read_text(errors='replace'))
-    elif args.mode in ('mechanics', 'matrix', 'handling'):
+    elif args.mode in ('mechanics', 'matrix', 'handling', 'ui'):
         report = client(args.log.read_text(errors='replace'), args.result.read_text(), args.mode)
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)

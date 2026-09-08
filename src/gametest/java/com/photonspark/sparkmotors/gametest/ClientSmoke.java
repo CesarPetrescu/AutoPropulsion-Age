@@ -38,6 +38,7 @@ public final class ClientSmoke {
         mc.options.tutorialStep=net.minecraft.client.tutorial.TutorialSteps.NONE;
         if(mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen){mc.options.onboardAccessibility=false;mc.setScreen(new TitleScreen());}
         if((System.nanoTime()-started)/1e9>1000){write(mc,"FAILED: client smoke timed out at phase "+phase+", engine layout "+engineJob);mc.stop();return;}
+        if(Boolean.getBoolean("sparkmotors.clientUi")&&!WorkshopClient.branding(mc))return;
         if(!creating&&mc.screen instanceof TitleScreen){
             creating=true;mc.options.guiScale().set(2);mc.options.renderDistance().set(4);mc.options.simulationDistance().set(5);mc.options.framerateLimit().set(60);
             mc.createWorldOpenFlows().createFreshLevel("alpha-smoke-"+System.currentTimeMillis(),
@@ -65,6 +66,7 @@ public final class ClientSmoke {
             });
         }
         if(!(mc.level.getEntity(carId) instanceof CarEntity car))return;
+        if(Boolean.getBoolean("sparkmotors.clientUi")){WorkshopClient.tick(mc,car);return;}
         if(Boolean.getBoolean("sparkmotors.clientHandling")){HandlingClient.tick(mc,car);return;}
         if(phase>=10){if(Boolean.getBoolean("sparkmotors.clientMechanics"))componentFlow(mc,car);else engineMatrix(mc,car);return;}
         if(phase==4&&ticks==20)pendingScreenshot="alpha-paint.png";

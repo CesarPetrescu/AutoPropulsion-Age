@@ -21,6 +21,20 @@ public final class DrivingGameTests {
     private ServerPlayer owner(GameTestHelper h,CarEntity c){var p=FakePlayerFactory.get(h.getLevel(),new GameProfile(UUID.randomUUID(),"drive_mechanic"));p.setGameMode(GameType.SURVIVAL);p.moveTo(c.position().add(2,0,0));c.setOwner(p.getUUID());return p;}
     private void act(CarEntity c,ServerPlayer p,int op,int a,int b){c.tickCount+=4;c.action(p,op,a,b);}
     private void fit(CarEntity c,ServerPlayer p,DriveConfig next){act(c,p,CarPackets.DRIVE_SETUP,next.packed(),next.frontPercent());}
+    @GameTest(template="test_track") public void backwardSlideCannotChangeSelectedDirectionAndReverseSurvivesReload(GameTestHelper h)throws Exception{
+        var c=car(h);var player=owner(h,c);player.startRiding(c,true);
+        var speed=CarEntity.class.getDeclaredField("speed");speed.setAccessible(true);speed.setDouble(c,-9);
+        var transmission=CarEntity.class.getDeclaredField("transmissionState");transmission.setAccessible(true);
+        transmission.set(c,new TransmissionPhysics.State(3,3,0,20,0,0));
+        for(int i=0;i<8;i++){
+            c.tick();c.receiveInput(8|16,0);
+            h.assertTrue(c.speed()<-1&&!c.reverseSelected()&&c.gear()==3,"Backward drift or a moving reverse request must not select R");
+        }
+        var tag=new CompoundTag();c.saveWithoutId(tag);c.load(tag);
+        c.receiveInput(8|16,0);h.assertTrue(c.reverseSelected(),"Stopped driver can explicitly select reverse");
+        c.saveWithoutId(tag);c.load(tag);h.assertTrue(c.reverseSelected(),"Selected reverse survives entity save/load");
+        c.receiveInput(16,0);h.assertTrue(!c.reverseSelected(),"Stopped driver can select forward again");h.succeed();
+    }
     @GameTest(template="test_track") public void layoutDifferentialSplitAndUsedPartsSurviveSaveAndMigration(GameTestHelper h){
         var c=car(h);var used=c.mechanics().get("driveline.differential").condition(.37,.11,0);
         c.setMechanics(c.mechanics().with("driveline.differential",used));

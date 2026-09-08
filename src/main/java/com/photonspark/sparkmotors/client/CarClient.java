@@ -57,7 +57,7 @@ public final class CarClient {
         }
         if(mc.player.getVehicle()==car){
             if(lastCar!=car.getId()){
-                reverse=car.gear()==-1;lastCar=car.getId();lastYaw=car.getYRot();
+                reverse=car.reverseSelected();lastCar=car.getId();lastYaw=car.getYRot();
                 mc.player.setYRot(lastYaw);mc.player.yRotO=lastYaw;mc.player.setXRot(5);mc.player.xRotO=5;
             }
             float turn=net.minecraft.util.Mth.wrapDegrees(car.getYRot()-lastYaw);lastYaw=car.getYRot();
@@ -75,13 +75,17 @@ public final class CarClient {
     }
     private static void hud(GuiGraphics g){
         Minecraft mc=Minecraft.getInstance();if(mc.player==null||mc.options.hideGui||mc.screen!=null||!(mc.player.getVehicle() instanceof CarEntity car))return;
-        var r=CockpitInstruments.read(car);int w=290,x=(g.guiWidth()-w)/2,y=g.guiHeight()-(performance?88:73);
+        // Bound HUD size independently of a high global GUI scale; keep the driving view open.
+        float fit=(float)Math.min(1,2.0/mc.getWindow().getGuiScale());
+        g.pose().pushPose();g.pose().scale(fit,fit,1);
+        var r=CockpitInstruments.read(car);int w=290,x=((int)(g.guiWidth()/fit)-w)/2,y=(int)(g.guiHeight()/fit)-(performance?88:73);
         g.fill(x,y,x+w,y+(performance?61:46),0xD9101A23);g.fill(x,y,x+w,y+1,0xFF31C6C9);
-        if(!r.powered()){g.drawString(mc.font,"INSTRUMENT POWER UNAVAILABLE",x+9,y+10,0xFFFFBA70,false);return;}
+        if(!r.powered()){g.drawString(mc.font,"INSTRUMENT POWER UNAVAILABLE",x+9,y+10,0xFFFFBA70,false);g.pose().popPose();return;}
         g.drawString(mc.font,String.format(java.util.Locale.ROOT,"%03.0f km/h   %s   %04.0f RPM",r.speed(),car.gear()<0?"R":"G"+car.gear(),r.rpm()),x+9,y+8,0xFFFFFFFF,false);
         String coolant=Double.isFinite(r.coolant())?String.format(java.util.Locale.ROOT,"%.0f C",r.coolant()):"SENDER --";
-        g.drawString(mc.font,String.format(java.util.Locale.ROOT,"Fuel %.1f L  Coolant %s  %s",r.fuel(),coolant,String.join(" ",r.warnings())),x+9,y+21,r.warnings().isEmpty()?0xFF97CDBE:0xFFFFA45C,false);
+        g.drawString(mc.font,mc.font.plainSubstrByWidth(String.format(java.util.Locale.ROOT,"Fuel %.1f L  Coolant %s  %s",r.fuel(),coolant,String.join(" ",r.warnings())),w-18),x+9,y+21,r.warnings().isEmpty()?0xFF97CDBE:0xFFFFA45C,false);
         if(performance)g.drawString(mc.font,String.format(java.util.Locale.ROOT,"Oil %s bar / %.0f C  %.1f V  Boost %.2f",Double.isFinite(r.oilPressure())?String.format(java.util.Locale.ROOT,"%.1f",r.oilPressure()):"--",car.oilTemperature(),r.voltage(),r.boost()),x+9,y+35,0xFF9EC9D4,false);
         g.drawString(mc.font,"R start  S brake  Space handbrake  V instruments",x+9,y+(performance?49:34),0xFF9FB1BE,false);
+        g.pose().popPose();
     }
 }

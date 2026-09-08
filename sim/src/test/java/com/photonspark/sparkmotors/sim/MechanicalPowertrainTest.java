@@ -39,6 +39,8 @@ class MechanicalPowertrainTest {
         var a=new VehicleDynamics.State(0,850,1,30,0,0,start(healthy,parts));var b=new VehicleDynamics.State(0,850,1,30,0,0,start(worn,parts));
         for(int i=0;i<60;i++){a=VehicleDynamics.step(a,true,new VehicleDynamics.Input(1,0,false,false),setup(healthy,parts),1,true,.05);b=VehicleDynamics.step(b,true,new VehicleDynamics.Input(1,0,false,false),setup(worn,parts),1,true,.05);}
         assertTrue(a.speed()>b.speed()+2);assertTrue(b.rpm()>a.rpm());assertTrue(b.transmission().clutchHeat()>20);
+        assertTrue(b.transmission().clutchSlipRpm()>a.transmission().clutchSlipRpm()+500,"Worn plates slip measurably against the actual input shaft");
+        assertTrue(b.transmission().clutchTorque()>0,"Slipping plates still transmit limited torque");
     }
     @Test void pressureReleaseRequiresValvePressureAndTurboHardware(){
         int parts=EnginePart.boosted(1);var m=fresh(parts);var s=start(m,parts);for(int i=0;i<80;i++)s=EnginePhysics.step(s,setup(m,parts),true,1,i<20?0:80,.05);

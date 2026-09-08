@@ -6,8 +6,9 @@ The **Test and release** workflow runs on every branch push, pull request and ma
 
 | Required job | Fresh evidence |
 |---|---|
-| Workflow and release gate tests | actionlint, shell validation and 24 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
-| Build, simulation and dedicated server | Java 21 build; at least 51 JUnit cases with no skips; at least 30 native GameTests, including 294 engine/drivetrain driving layouts; simulation benchmark report; installable JAR inspection |
+| Workflow and release gate tests | actionlint, shell validation and 26 positive/negative gate tests, including missing results, partial coverage, test classes in the JAR, changed bytes and wrong commit provenance |
+| Build, simulation and dedicated server | Java 21 build; at least 52 JUnit cases with no skips; at least 31 native GameTests, including 294 engine/drivetrain driving layouts; simulation benchmark report; installable JAR inspection |
+| Native client (ui) | Loaded Mods-list logo plus 132 workshop page/scale cases, widget bounds/overlaps/labels, scaled mouse navigation and screenshots |
 | Resources, audio and geometry | Regeneration of 424 resources preserves JSON semantics, PNG pixels and exact audio/mesh bytes; all 48 mono OGG assets decoded; 294 hardware geometry identities; 49 engine envelopes; 49 layouts at five hood positions plus targeted non-mating intersections |
 | Native client (mechanics) | Actual GUI/network coolant diagnosis, targeted repair, fluid refill, timed verification, jack/tire service, failed sender, driving, active audio channels and cleanup |
 | Native client (handling) | Real RWD/FWD/AWD preset, differential and center-split controls; native steering keys, handbrake drift, service braking, airborne contact loss and spring landing |
@@ -21,7 +22,7 @@ These checks exercise implemented behavior. They do not establish subjective aud
 
 ## Release policy
 
-Automatic publication is limited to pushes to the repository variable **RELEASE_BRANCH**, currently `mechanical-components` (also the workflow's fallback). Other branches and pull requests test and produce downloadable Actions artifacts but cannot publish. When development moves to another branch, change that variable deliberately. This setup does not merge development branches or change the default branch.
+Automatic publication is limited to pushes to the repository variable **RELEASE_BRANCH**, currently `main` (also the workflow's fallback). Other branches and pull requests test and produce downloadable Actions artifacts but cannot publish. When development moves to another branch, change that variable deliberately. Feature branches are reviewed and integrated separately; their successful runs do not publish.
 
 Each successful release has a unique tag `ci-<version>-<run-id>-<attempt>` pointing to the exact tested commit. Tags are never moved. The publisher downloads the same run's build artifact, verifies commit provenance and SHA-256 values, attaches fresh test evidence, creates a draft release with all assets, then publishes it and marks it Latest. A superseded branch commit cannot replace Latest. A failed CI run leaves the previous working release available.
 
@@ -43,6 +44,8 @@ Use Python 3.13, Java 21, ffmpeg and Blender on PATH. Linux native runs also nee
 
 ```bash
 python -m unittest discover -s tools/ci/tests -v
+python tools/ci/documentation.py
+./gradlew -PwithGameTests runClientUi
 go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
 ./gradlew --no-daemon -PwithGameTests build :sim:test --rerun runGameTestServer
 python -m pip install -r tools/ci/requirements.txt

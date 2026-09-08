@@ -1,4 +1,4 @@
-# Playing AutoPropulsion Age 0.5.0-alpha
+# Playing AutoPropulsion Age 0.5.1-alpha
 
 Minecraft Java **1.21.1**, **NeoForge 21.1.249**, **Java 21**. Put [the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) in your instance's `mods` folder, replacing the older AutoPropulsion JAR. Install the same version on clients and servers. No Blender or separate simulation mod is needed. Keep a backup when upgrading an existing world.
 
@@ -25,7 +25,11 @@ Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it
 
 Keys can be rebound in Minecraft Controls. The normal HUD stays compact. Look down in first person to see the dashboard needles, gear and odometer. Coolant/oil sender failures remove their readings and produce a sender warning. The garage **Live** page is explicitly labeled assisted telemetry and can show values unavailable to a failed instrument.
 
+Garage screens fit themselves to the available window, including high/Auto GUI scales, without changing your global setting. The driving HUD remains compact.
+
 ## Drive layouts and drifting
+
+**A turns left and D turns right.** Sliding backward after a drift does not select reverse or kick down a forward ratio. Only **Z while stopped** changes direction.
 
 The car keeps sideways momentum and turns from independent tire forces. Too much power, braking or steering can use up grip. Ice and loose ground, pressure loss, worn tires and individual corner damage change the result. A short **Space** pull while turning initiates rear slip; release it, lift and countersteer promptly. Holding the handbrake can spin the car. Use **S** for a normal stop.
 
@@ -63,7 +67,7 @@ Select a corner before **Measure tire** or **Inflate tire**. These need a **Tire
 
 **Inspect fluids** needs the garage wrench. **Multimeter**, **Oil pressure test** and **Compression test** need their named tools. Compression is an explicitly grouped assembly estimate, with chamber/seal/port vocabulary for rotaries. The oil circuit holds 5 L and the brake reservoir 1 L. Oil/coolant bottles conserve their unused remainder. Clearing warning history never repairs an active cause; the condition is logged again.
 
-A worn clutch can slip while the engine runs. A broken gearbox, differential or shaft can interrupt drive while the car coasts. Oil-pump/feed faults cause measured pressure loss and internal/compressor wear. A failed alternator or belt discharges the battery, and a flat battery cannot crank. Replacing the affected part preserves damage elsewhere.
+A worn or overheated clutch transmits less torque and can slip while the engine revs. The speed difference generates heat, and sustained overheating wears the actual installed clutch. Hold **C** to disengage it; **G → Live** displays slip RPM, plate temperature, transmitted torque and engagement. Replace the clutch through raised underside service; an engine rebuild does not repair it. A broken gearbox, differential or shaft can interrupt drive while the car coasts. Oil-pump/feed faults cause measured pressure loss and internal/compressor wear. A failed alternator or belt discharges the battery, and a flat battery cannot crank. Replacing the affected part preserves damage elsewhere.
 
 ## Engine builds, sound and appearance
 

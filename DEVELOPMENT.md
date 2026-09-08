@@ -27,16 +27,15 @@ Back up player worlds before testing a new alpha. Keep personal worlds outside t
 ```powershell
 git clone https://github.com/CesarPetrescu/AutoPropulsion-Age.git
 Set-Location AutoPropulsion-Age
-git switch mechanical-components
 git status --short
 java -version
 .\gradlew.bat --version
 .\gradlew.bat build
 ```
 
-The development branch is currently `mechanical-components`; GitHub's default branch can lag behind it. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
+Development is integrated on `main`. Feature branches run the same required checks; automatic releases come from successful pushes to `main`. On an existing checkout, preserve local edits and review incoming changes; do not reset or force-push to get a clean build.
 
-The main output is `build/libs/autopropulsion-age-0.5.0-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
+The main output is `build/libs/autopropulsion-age-0.5.1-alpha.jar`. The version comes from `gradle.properties`. The JAR under `sim/build/libs/` is a development library, **not** another mod to install. Put exactly one main JAR into a separate NeoForge 1.21.1 instance's `mods` folder for installation testing.
 
 If Java is not 21, set the JDK for the current PowerShell session, adapting the path to your installation:
 
@@ -47,7 +46,7 @@ $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
 .\gradlew.bat --version
 ```
 
-Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **5** requires matching client/server builds. Vehicle save schema **5** adds drivetrain routing and migrates older cars to the RWD road preset; mechanical components retain their separate typed schema.
+Do not change Minecraft, NeoForge, mod IDs or protocol versions casually. Current network protocol **6** requires matching client/server builds. Vehicle save schema **5** adds drivetrain routing and migrates older cars to the RWD road preset; mechanical components retain their separate typed schema.
 
 ## Daily edit, run and debug loop
 
@@ -173,7 +172,7 @@ python tools/run_multiplayer_test.py --timeout 720
 
 | Suite | What it must prove |
 |---|---|
-| Simulation JUnit | At least 51 tests: existing mechanics plus traction/differentials, finite combined force, steering symmetry, brief handbrake/countersteer, unsupported suspension and world momentum in air |
+| Simulation JUnit | At least 52 tests: existing mechanics plus traction/differentials, finite combined force, steering symmetry, brief handbrake/countersteer, unsupported suspension and world momentum in air |
 | Simulation matrices | Existing 7,308 hardware cases plus 294 layout × family × grade × induction drive/brake cases |
 | Dedicated GameTests | At least 30 tests, including 294 actual in-world drive/brake builds, conversion transactions, permissions, condition retention, save migration and spring landing |
 | Native handling client | RWD/FWD/AWD garage buttons, differential/split packets, real key mapping steering/drift/braking, contact loss and landing; screenshots |
@@ -230,3 +229,13 @@ Every push/PR runs all required jobs. Only the configured release branch may pub
 - [Actions](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions)
 
 For gameplay detail see [PLAYING.md](docs/PLAYING.md). For the original engine/resource architecture and historical verification see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md); use fresh CI artifacts for the current commit's results.
+
+## Workshop sizing, branding and regression tests
+
+`WorkshopScreen` fits a minimum 760 × 460 logical canvas inside the current GUI viewport. It scales rendering, tooltips, scissor regions and mouse/drag/scroll input together, without changing the player's global GUI option. Garage, Service and Drive share this layout boundary. Page controls remain separated from selected-part details and footers. The driving HUD caps its physical scale independently.
+
+Run `.\gradlew.bat -PwithGameTests runClientUi` for the native UI suite. It checks all six garage tabs, engine pages, every component-list page, muffler operations, fluid/tests and Drive: 132 page/scale combinations across 1024 × 600, 1440 × 900 and 1920 × 1080, using explicit and Auto GUI scales. It checks widget bounds, overlapping controls, label widths and actual scaled mouse navigation, and captures screenshots under `run/screenshots/ui-*.png`. Inspect the images as well as the PASS marker: widget bounds alone do not validate text clipping or presentation. The same run opens NeoForge's Mods screen and checks the loaded logo texture.
+
+The canonical [mod logo](src/main/resources/autopropulsion-age.png) is also used by the README. [Branding provenance](docs/BRANDING.md) records its generation prompt. Run `python tools/ci/documentation.py` to validate the full galleries and local links without rebuilding the model ZIP.
+
+Steering uses positive driver-left simulation axes; Minecraft yaw increases to the right. Keep both the yaw sign and lateral/world velocity conversion consistent. Native handling checks assert the world-space direction, not just a positive simulation yaw reading. Forward/reverse is driver-selected while stopped, never inferred from signed road speed. Clutch slip is crank/input-shaft speed difference; torque capacity, dissipated heat and installed clutch condition determine the mechanical result. The Live page displays synchronized measurements, not a decorative gauge.

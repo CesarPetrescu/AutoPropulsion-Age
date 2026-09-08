@@ -54,8 +54,8 @@ for doc in [repo / 'README.md', kit / 'GALLERY.md', kit / 'README.md']:
         assert path.exists(), (str(doc), reference)
         checked += 1
     if doc.name in {'README.md', 'GALLERY.md'} and doc != kit / 'README.md':
-        assert len(parser.images) == 471
-        assert parser.details == 43
+        assert len([p for p in parser.images if 'previews/' in p]) == 471
+        assert len(re.findall(r'<a id="category-\d+"', text)) == 43 if doc == repo / 'README.md' else parser.details == 43
 
 manifest = json.loads((kit / 'parts_manifest.json').read_text(encoding='utf8'))['parts']
 gallery = json.loads((kit / 'gallery_index.json').read_text(encoding='utf8'))['parts']

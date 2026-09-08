@@ -105,6 +105,8 @@ jobs:
           sudo apt-get update -q
           sudo apt-get install -y --no-install-recommends ffmpeg blender
           python -m pip install -r tools/ci/requirements.txt
+      - name: Validate README previews, links and mod logo
+        run: python tools/ci/documentation.py
       - name: Regenerate resources and decode every mechanical sound
         run: python tools/ci/resources.py
       - name: Validate all hardware geometry, envelopes and hood intersections
@@ -131,6 +133,8 @@ jobs:
             task: runClientMechanics
           - mode: matrix
             task: runClientSmoke
+          - mode: ui
+            task: runClientUi
           - mode: handling
             task: runClientHandling
     steps:
@@ -209,7 +213,7 @@ jobs:
   release:
     name: Publish tested alpha JAR
     needs: [required, build]
-    if: github.event_name == 'push' && github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref_name == (vars.RELEASE_BRANCH || 'mechanical-components')
+    if: github.event_name == 'push' && github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref_name == (vars.RELEASE_BRANCH || 'main')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -253,7 +257,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_BRANCH: ${{ vars.RELEASE_BRANCH || 'mechanical-components' }}
+          RELEASE_BRANCH: ${{ vars.RELEASE_BRANCH || 'main' }}
         run: |
           head=$(gh api "repos/$GH_REPO/commits/$RELEASE_BRANCH" --jq .sha)
           if [[ "$head" != "$GITHUB_SHA" ]]; then
@@ -270,7 +274,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, 132 workshop page/scale cases with scaled input and the mod logo, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})

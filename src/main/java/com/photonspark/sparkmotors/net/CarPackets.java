@@ -36,7 +36,7 @@ public final class CarPackets {
         public Type<Open> type(){return TYPE;}
     }
     public static void register(RegisterPayloadHandlersEvent event) {
-        var r=event.registrar("5");
+        var r=event.registrar("6");
         r.playToServer(Input.TYPE,Input.CODEC,(p,ctx)->{
             if(ctx.player().level().getEntity(p.entity) instanceof CarEntity car && car.getControllingPassenger()==ctx.player())
                 car.receiveInput(p.keys,p.steer);

@@ -36,6 +36,12 @@ neoForge {
             systemProperty 'sparkmotors.clientSmoke', 'true'
             systemProperty 'sparkmotors.clientMechanics', 'true'
         }
+        clientUi {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientSmoke', 'true'
+            systemProperty 'sparkmotors.clientUi', 'true'
+        }
         clientHandling {
             client()
             programArguments.addAll '--width', '1440', '--height', '900'

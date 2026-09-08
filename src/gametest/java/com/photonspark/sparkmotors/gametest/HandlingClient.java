@@ -14,7 +14,7 @@ final class HandlingClient {
     private static int phase,ticks,job;
     private static boolean done,sawAir;
     private static Vec3 origin;
-    private static double peak,lateral,rearSlip,leftYaw,airY;
+    private static double peak,lateral,rearSlip,leftYaw,airY,entryYaw,worldLeft;
     static void tick(Minecraft mc,CarEntity car){
         if(done)return;
         try{step(mc,car);}catch(Exception e){
@@ -62,10 +62,13 @@ final class HandlingClient {
             keys(mc,ticks<100,ticks>=145,ticks>=100&&ticks<112,ticks>=112&&ticks<120,ticks>=108&&ticks<112,ticks>=100);
             peak=Math.max(peak,car.horizontalSpeed());
             if(ticks>=100&&ticks<145){lateral=Math.max(lateral,Math.abs(car.lateralSpeed()));rearSlip=Math.max(rearSlip,Math.max(car.wheelSlip(2),car.wheelSlip(3)));}
+            if(ticks==99){entryYaw=car.getYRot();worldLeft=0;}
+            if(ticks>=103&&ticks<110)worldLeft=Math.min(worldLeft,net.minecraft.util.Mth.wrapDegrees(car.getYRot()-(float)entryYaw));
             if(ticks>=103&&ticks<110)leftYaw=Math.max(leftYaw,car.yawRate());
             if(ticks==113)ClientSmoke.screenshot("handling-"+layout.name().toLowerCase(Locale.ROOT)+"-drift.png");
             if(ticks==265){
                 require(peak>5&&lateral>.3&&rearSlip>.5&&leftYaw>.05,"No physical drift/left steering: speed="+peak+" lateral="+lateral+" rearSlip="+rearSlip+" yaw="+leftYaw);
+                require(worldLeft<-.5,"A key must turn toward driver left in Minecraft world coordinates: "+worldLeft);
                 require(car.horizontalSpeed()<.3&&car.fuel()<40,"Service brakes/fuel failed: speed="+car.horizontalSpeed());
                 System.out.printf(Locale.ROOT,"DRIVE_LAYOUT_PASS %s peak=%.3f lateral=%.3f rearSlip=%.3f leftYaw=%.3f%n",layout,peak,lateral,rearSlip,leftYaw);
                 keys(mc,false,false,false,false,false,true);CarClient.send(car,CarPackets.IGNITION,0,0);phase=2;ticks=0;

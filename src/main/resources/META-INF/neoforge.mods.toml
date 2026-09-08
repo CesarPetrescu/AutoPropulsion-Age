@@ -1,13 +1,16 @@
 modLoader="javafml"
 loaderVersion="[4,)"
 license="All Rights Reserved"
+issueTrackerURL="https://github.com/CesarPetrescu/AutoPropulsion-Age/issues"
 [[mods]]
 modId="sparkmotors"
 version="${version}"
 displayName="AutoPropulsion Age"
+logoFile="autopropulsion-age.png"
+logoBlur=true
 authors="CesarPetrescu"
 displayURL="https://github.com/CesarPetrescu/AutoPropulsion-Age"
-description='''Drive and customize a modular sedan. Playable alpha with garage, paint, tuning and a driving HUD.'''
+description='''Build, drive and repair a modular sedan. Choose RWD, FWD or AWD, swap engine hardware, diagnose mechanical faults and service the actual parts. Includes opening panels, a garage, tuning and working cockpit instruments. Playable alpha for Minecraft 1.21.1.'''
 [[dependencies.sparkmotors]]
 modId="neoforge"
 type="required"

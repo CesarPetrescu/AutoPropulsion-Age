@@ -92,6 +92,18 @@ class HandlingTest {
         var held=run(drift,setup,new VehicleDynamics.Input(0,.65,false,false,true),1,.4);
         assertTrue(Math.abs(counter.transmission().yawRate())<Math.abs(held.transmission().yawRate()),"Countersteer yaw="+counter.transmission().yawRate()+" held="+held.transmission().yawRate()+" entry="+drift.transmission().yawRate()+" lateral="+drift.transmission().lateralSpeed());
     }
+    @Test void backwardDriftKeepsForwardGearAndClutchDisengagementTransmitsNoTorque(){
+        var setup=setup(DriveConfig.Layout.RWD,1,EnginePart.stock());
+        var start=rolling(-10);
+        var trans=new TransmissionPhysics.State(3,3,0,20,2,0);
+        for(int i=0;i<20;i++){
+            var next=VehicleDynamics.step(start.speed(),40,start.engine(),start.wheels(),trans,true,new VehicleDynamics.Input(1,0,false,false,true),setup,1,ROAD,new double[4],.05);
+            assertEquals(3,next.gear(),"Sliding backward must retain the selected forward ratio");
+            assertEquals(0,next.transmission().clutchTorque());assertEquals(0,next.transmission().clutchEngagement());
+            start=next;trans=next.transmission();
+        }
+        assertTrue(start.speed()<0);assertTrue(start.rpm()>1500,"Disengaged crank revs independently of backward wheels");
+    }
     @Test void steeringIsProgressiveAndMirrorSymmetric(){
         var setup=setup(DriveConfig.Layout.FWD,1,EnginePart.stock());
         var left=run(rolling(12),setup,new VehicleDynamics.Input(0,.5,false,false,true),1,2);

@@ -48,11 +48,11 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        self.assertEqual(checks.server('All 30 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294')['dedicated_gametests_passed'], 30)
+        self.assertEqual(checks.server('All 31 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294')['dedicated_gametests_passed'], 31)
 
     def test_server_missing_driving_matrix_blocks_release(self):
         with self.assertRaises(ValueError):
-            checks.server('All 30 required tests passed :)')
+            checks.server('All 31 required tests passed :)')
 
     def test_native_handling_missing_layout_or_landing_blocks_release(self):
         for log in ('HANDLING_CLIENT_PASS AIRBORNE_LANDING_PASS DRIVE_LAYOUT_PASS RWD',
@@ -95,11 +95,12 @@ class ReleaseGates(unittest.TestCase):
     def make_jar(self, extra=None):
         path = self.root / 'mod.jar'
         with zipfile.ZipFile(path, 'w') as archive:
-            archive.writestr('META-INF/neoforge.mods.toml', '[[mods]]\nmodId="sparkmotors"\nversion="0.4.0-alpha"\n')
+            archive.writestr('META-INF/neoforge.mods.toml', '[[mods]]\nmodId="sparkmotors"\nversion="0.4.0-alpha"\nlogoFile="logo.png"\n')
             for name in ('com/photonspark/sparkmotors/entity/CarEntity.class',
                          'com/photonspark/sparkmotors/sim/MechanicalState.class',
                          'assets/sparkmotors/models/entity/sedan.mesh.gz'):
                 archive.writestr(name, b'fixture')
+            archive.writestr('logo.png', bytes.fromhex('89504e470d0a1a0a'))
             sounds = {}
             for i in range(48):
                 archive.writestr(f'assets/sparkmotors/sounds/mechanical/layer{i}.ogg', b'fixture')
@@ -108,6 +109,25 @@ class ReleaseGates(unittest.TestCase):
             if extra:
                 archive.writestr(extra, b'fixture')
         return path
+
+    def test_incomplete_ui_or_missing_logo_blocks_release(self):
+        log = 'ALPHA_CLIENT_SMOKE PASS: WORKSHOP_UI_PASS 132\n'
+        log += '\n'.join(f'WORKSHOP_UI_CASE_PASS {i} page' for i in range(132))
+        with self.assertRaises(ValueError):
+            checks.client(log, 'PASS: ok', 'ui')
+        self.assertEqual(checks.client(log+' MOD_LOGO_CLIENT_PASS', 'PASS: ok', 'ui')['workshop_page_scale_cases'], 132)
+        with self.assertRaises(ValueError):
+            checks.client('ALPHA_CLIENT_SMOKE PASS: MOD_LOGO_CLIENT_PASS WORKSHOP_UI_PASS 132', 'PASS: ok', 'ui')
+
+    def test_missing_packaged_logo_blocks_release(self):
+        jar = self.make_jar()
+        broken = self.root / 'no-logo.jar'
+        with zipfile.ZipFile(jar) as source, zipfile.ZipFile(broken, 'w') as output:
+            for name in source.namelist():
+                if name != 'logo.png':
+                    output.writestr(name, source.read(name))
+        with self.assertRaises(ValueError):
+            checks.inspect_jar(broken)
 
     def test_harness_cannot_leak_into_jar(self):
         jar = self.make_jar('com/photonspark/sparkmotors/gametest/ClientSmoke.class')

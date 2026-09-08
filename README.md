@@ -1,99 +1,137 @@
-# AutoPropulsion Age
+<p align="center">
+  <img src="src/main/resources/autopropulsion-age.png" alt="AutoPropulsion Age — a teal workshop badge with a modular sedan" width="200" height="200">
+</p>
 
-**Playable alpha 0.5.0 — Minecraft Java 1.21.1 · NeoForge 21.1.249 · Java 21.**
+<h1 align="center">AutoPropulsion Age</h1>
 
-Drive a modular sedan and build its engine under an opening hood. Choose **42 hardware items across ten engine slots**, with **seven engine families and seven induction configurations**. Parts change the actual geometry and the simulated response: turbo lag, blower drive load, flywheel inertia, fuel capacity, cams/ports, cooling and oil systems all matter.
+<p align="center"><strong>Build it. Drive it. Diagnose it. Repair it.</strong><br>A modular car and mechanic workshop for Minecraft Java.</p>
 
-**[Download the latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar)** · [Releases and checksums](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest) · [Installation and controls](docs/PLAYING.md) · [Engine workshop](docs/ENGINE-WORKSHOP.md) · [CI and release policy](docs/CI.md)
+<p align="center">
+  <img src="https://img.shields.io/badge/Minecraft-1.21.1-42D2C6?labelColor=101B25" alt="Minecraft Java 1.21.1">
+  <img src="https://img.shields.io/badge/NeoForge-21.1.249-42D2C6?labelColor=101B25" alt="NeoForge 21.1.249">
+  <img src="https://img.shields.io/badge/Java-21-42D2C6?labelColor=101B25" alt="Java 21">
+  <a href="https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml/badge.svg?branch=main" alt="Development branch CI status"></a>
+</p>
 
-[![Test and release](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml/badge.svg?branch=mechanical-components)](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/workflows/ci.yml?query=branch%3Amechanical-components)
+<p align="center">
+  <strong><a href="https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar">Download the latest tested JAR</a></strong>
+  · <a href="https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest">Release notes &amp; checksums</a>
+  · <a href="docs/PLAYING.md">Player guide</a>
+  · <a href="DEVELOPMENT.md">Windows development</a>
+</p>
 
-The latest JAR is published automatically only after simulation, dedicated-server, native client, two-client trading, resource/audio and geometry checks pass. Each release includes checksums, the exact source commit and fresh test reports/screenshots. Failed builds leave the previous tested alpha available.
+**Playable alpha · 0.5.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
-Replace an older AutoPropulsion JAR in your NeoForge instance's `mods` folder. Take a **Sedan Crate** from the **AutoPropulsion Age** Creative tab and place it on open, flat ground. Right-click, press **R** to start, then **W** to drive. **A/D** steer, **S** brakes, **Z** selects reverse while stopped, **G** opens the garage and **Shift** exits. Hold **C** to disengage the clutch; **C + W** free-revs the engine. Existing 0.1–0.4 cars and engine items migrate their installed components and condition.
+> **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
-For Windows setup, Minecraft runs, Blender MCP, asset exports, debugging and tests, see the **[development guide](DEVELOPMENT.md)**.
+![Opening hood and four-rotor twin-screw engine in the actual game](docs/screenshots/hood-rotor4-twin-screw.png)
 
-## Traction, drifting and drive layouts
+## Get in and drive
 
-The sedan now has separate forward and lateral momentum, tire slip and force-driven yaw. It can lose rear or front grip, slide, spin and leave the road. Spring/damper support releases when the wheels lose contact; airborne steering does not redirect the chassis.
+1. Use **Minecraft Java 1.21.1**, **NeoForge 21.1.249** and **Java 21**.
+2. Download the JAR above into your instance's `mods` folder. Replace any older AutoPropulsion JAR; clients and servers need the same version. Back up existing worlds before updating.
+3. In Creative, take a **Sedan Crate** from the **AutoPropulsion Age** tab and place it on open, flat ground. With cheats: `/give @s sparkmotors:sedan_crate`.
+4. Right-click with an empty hand, press **R**, wait for the starter, then hold **W**. A new car includes stock parts and fuel.
 
-**G → Drive** fits RWD (rear limited slip), FWD (front open differential) or AWD (40% front / 60% rear limited slip). Choose open, limited-slip or locked axle differentials, and adjust AWD front torque from 20–80%. Stop, switch off, exit and raise the car on a service jack for conversions; Survival costs eight iron ingots and retains installed part condition.
+Players only need the mod JAR. Blender, Python and the separate simulation library are development tools.
 
-**Space** pulls the rear handbrake; **S** uses the service brakes. A short handbrake pull while turning initiates rotation. Release it and countersteer promptly. Tire pressure, wear, individual brake faults, road surface and engine torque affect the available grip. AWD can still slide.
-
-The release gate includes 294 in-world engine/drivetrain driving combinations plus native garage, drift and braking checks for all three presets and an airborne/landing check. This is planar handling with vertical suspension, not full rollover or soft-body crash physics. [Controls and limits](DEVELOPMENT.md#handling-and-drivetrain-work).
-
-| RWD road preset | FWD road preset | AWD road preset |
-|---|---|---|
-| ![RWD garage](docs/screenshots/handling-rwd-setup.png) | ![FWD garage](docs/screenshots/handling-fwd-setup.png) | ![AWD garage](docs/screenshots/handling-awd-setup.png) |
-
-## Diagnose and repair actual parts
-
-The car now has **81 stable mechanical mounts**, including independent parts at every wheel corner. Used components retain identity, wear, damage and faults through removal, trading, crafting and reinstallation. Coolant and oil quantities, starting/charging, braking and the drivetrain consume that installed state.
-
-**G → Service** opens the component workshop. A damaged coolant hose leaks; a ten-second pressure test detects the loss. Replacing that hose stops its leak, but you still need to refill the circuit and repair any damage caused by continuing to drive. A jack enables corner/underside work. Tire pressure, brake condition, clutch slip, oil supply and battery charge have mechanical consequences.
-
-![A focused, independently serviceable coolant hose](docs/screenshots/mechanics-focused-hose.png)
-![Timed verification after hose repair](docs/screenshots/mechanics-repair-verified.png)
-![Working cockpit instruments](docs/screenshots/mechanics-cockpit.png)
-
-The cockpit uses real sender state; **V** toggles optional performance readings. Engine audio is layered by family, RPM and load, with independent muffler, induction, wheel/contact and fault contributions. The 48 original synthesized assets have passed decoding and native channel tests; **subjective listening review is still pending**.
-
-[Complete repair walkthrough](docs/PLAYING.md#complete-a-coolant-leak-repair) · [Milestones and twenty acceptance scenarios](docs/mechanical-milestones.md) · [Audio listening reel](docs/mechanical-audio-preview.mp3)
-
-## Build the engine
-
-Open **G → Engine → Open hood** while parked with the engine off. Browse the ten service slots with **More parts**, **Previous parts**, or the mouse wheel. Arrows select a named part; **Fit** installs it. Hover the button for its effects and requirements. Whole-engine stock/sport grades remain available alongside the individual hardware choices.
-
-![Expanded workshop with a large-turbo inline-four](docs/screenshots/engine-i4-large-turbo.png)
-
-| Engine slot | Hardware choices |
+| Controls | Action |
 |---|---|
-| Intake | Airbox / Cold-air / Individual throttles / Ram plenum |
-| Fuel system | Port injection / High-flow rail / Return fuel rail / Race injection |
-| Ignition | Coil pack / Performance coils / CDI ignition / Multi-spark |
-| Cooling | OEM radiator / Aluminium radiator / Dual electric fans / Race radiator |
-| Rotating assembly | Cast assembly / Forged assembly / High compression / Billet assembly |
-| Forced induction | Street turbo / Centrifugal blower / Large turbo / Twin turbos / Roots blower / Twin-screw blower |
-| Exhaust | Cast manifold / 4-2-1 headers / Equal-length tubes / Race collector |
-| Flywheel | OEM flywheel / Light steel / Aluminium flywheel / Billet flywheel |
-| Cams / rotary ports | OEM cams / side ports / Street cams / ports / Race cams / bridge / High-lift / peripheral |
-| Oil system | Wet sump / Baffled sump / Oil cooler / Dry sump |
+| **W / S** | Accelerate / service brake |
+| **A / D** | Steer |
+| **Space** | Rear handbrake |
+| **R / Z** | Start or stop / select reverse while stopped |
+| **C / C + W** | Disengage clutch / free-rev |
+| **G** | Garage: car, engine, service, drive and tuning |
+| **H / B / O** | Lamps / horn / opening panels while stopped |
+| **V / F5 / Left Shift** | Performance instruments / camera / exit |
 
-The induction slot also supports natural aspiration. Street turbo, centrifugal, Roots and twin-screw kits require high-flow fuel and forged/billet internals. Large/twin turbos require return/race fuel, billet internals, upgraded cooling and ignition. High-compression internals are for naturally aspirated builds. Survival swaps consume the incoming item and return the old one; engines retain their parts, coolant/oil temperatures and wear through swaps, crafting and saves.
+Rebind keys in Minecraft Controls. From outside, **Shift + right-click** or the **Garage Wrench** opens the workshop. [Full controls, installation and repair walkthrough →](docs/PLAYING.md)
 
-![Four-rotor twin-screw build under the hood](docs/screenshots/hood-rotor4-twin-screw.png)
+Workshop pages fit the available screen without changing Minecraft's GUI setting. Previews, tooltips and mouse input use the same scale; the driving HUD stays compact.
 
-## Test and tune
+| Component workshop at 1024 × 600 / Auto GUI | Live engine and clutch readings |
+|---|---|
+| ![Readable service controls and results](docs/screenshots/workshop-small-tests.png) | ![Live clutch slip and plate heat](docs/screenshots/workshop-small-live.png) |
 
-The crank and flywheel store angular momentum. A slipping automatic clutch couples engine speed to the wheels; hold C to disengage it. Turbo shaft speed and manifold pressure build over time, and a blow-off valve vents pressure on throttle lift. Blowers consume crankshaft power. Fuel capacity limits power and can produce a lean mixture under boost; lean running and excessive coolant/oil heat wear the engine. Oil hardware changes pressure and heat rejection. Cams/ports and exhausts trade low-end torque for high-RPM flow.
+## Choose how it drives
 
-The **Live** page shows RPM, throttle, turbo speed, boost, AFR, coolant/oil temperatures, oil pressure, shaft torque, blower load and engine condition. Start the engine with its hood open and press **Rev test / 2s** to watch a timed test while the car remains parked. **Rebuild engine** restores the internal assembly for twelve iron ingots; fluids and external causes remain unchanged. The Live page is explicitly assisted telemetry.
+**A turns left, D turns right.** A backward slide keeps the selected drive direction and forward ratio; only **Z while stopped** selects reverse. Sideways momentum, independent tire forces and suspension allow the car to slide, lose grip and leave the ground. Engine torque, tire pressure, wear, surface and individual brake faults affect the result. **S** operates the service brakes; **Space** pulls the rear handbrake.
 
-![Live diagnostics during a native engine rev test](docs/screenshots/powertrain-live.png)
+| RWD | FWD | AWD |
+|---|---|---|
+| Rear drive, limited-slip differential | Front drive, open differential | 40% front / 60% rear, limited slip |
+| Power can break rear traction | Front tires share steering and propulsion grip | Extra traction; still capable of sliding |
+| ![RWD garage preset](docs/screenshots/handling-rwd-setup.png) | ![FWD garage preset](docs/screenshots/handling-fwd-setup.png) | ![AWD garage preset](docs/screenshots/handling-awd-setup.png) |
 
-The **Tuner** sets rev limiter, final drive and boost target. Hardware limits still apply. The graph estimates warm, healthy, steady-state output; the running engine additionally responds to lag, throttle, temperature and wear.
+Open **G → Drive**. Stop, switch off, exit and raise the car on a **Service Jack** before a conversion. In Survival it costs **eight iron ingots** and preserves installed part condition. Open, limited-slip and locked axle differentials are available; AWD front torque adjusts from 20–80%.
 
-![Boost target and calculated power curve](docs/screenshots/powertrain-tuner.png)
+For a first slide, briefly pull **Space** while turning, release it and countersteer. Holding the handbrake can spin the car. [Drive layouts, drifting and limits →](docs/PLAYING.md#drive-layouts-and-drifting)
 
-## Drive and customize the car
+## Build an engine. Repair its actual parts.
 
-The alpha includes automatic gears, reverse, collision handling, fuel, repairs, engine sound, eight paint colors, stock/sport car assemblies, opening doors/hood/trunk, one driving seat, 122 recipes and persistent ownership/configurations.
+| Build and tune | Diagnose and service |
+|---|---|
+| **I4, V6, flat-four and one to four rotors.** Natural aspiration, street/large/twin turbos, centrifugal, Roots and twin-screw blowers give 49 engine layouts. | **81 stable component mounts**, including individual wheel corners. A removed used part keeps its identity, wear, damage and faults through storage, trading and reinstallation. |
+| **42 hardware choices across ten slots.** Intake, fuel, ignition, cooling, internals, induction, exhaust, flywheel, cams/ports and oil hardware affect geometry and simulation. | **Cooling, oil, electrical, braking and driveline state** produce useful symptoms. Instruments read their senders; inspection and tools help identify the cause. |
+| **G → Engine** opens the hood and fits compatible parts. The tuner adjusts limiter, final drive and boost; Live provides assisted telemetry and a parked rev test. | **G → Service** exposes parts, orbit/zoom/focus, tests, fluids and jack access. Survival consumes the replacement and returns the actual removed part. |
+| ![Engine tuning and boost target](docs/screenshots/powertrain-tuner.png) | ![Targeted coolant-hose inspection](docs/screenshots/mechanics-focused-hose.png) |
 
-![Driving HUD with boost, AFR and oil temperature](docs/screenshots/alpha-driving.png)
+A damaged coolant hose leaks. A timed pressure test shows the loss. Replacing the hose stops that leak; **refilling the circuit and repairing overheating damage are separate operations**. Repeat the test and verify temperature under load.
 
-![Garage with live car preview](docs/screenshots/alpha-garage.png)
+[Engine compatibility and workshop guide →](docs/ENGINE-WORKSHOP.md) · [Complete coolant-leak repair →](docs/PLAYING.md#complete-a-coolant-leak-repair)
 
-![Paint customization](docs/screenshots/alpha-paint.png)
+The clutch transmits limited torque when worn or overheated. Slip raises RPM relative to the input shaft, generates plate heat and reduces acceleration; **C** fully disengages it. **G → Live** shows measured slip RPM, torque, engagement and plate temperature. Replacing the actual clutch is separate from engine rebuilding.
 
-![Opening panels and car controls](docs/screenshots/alpha-car-controls.png)
+Opening doors, hood and trunk, eight paint colors, configurable assemblies and working cockpit needles make the build visible. Layered engine, exhaust, induction, road and fault audio follows the installed components and simulation. The sounds are original synthesis; subjective listening review remains pending.
 
-## Verification and scope
+<details>
+<summary><strong>More in-game views: cockpit, paint, panels and live diagnostics</strong></summary>
 
-[The CI release gate](docs/CI.md) covers JUnit, native server/client, two-client trading, persistence, audio regeneration and Blender checks. The latest release carries the exact tested commit, checksums and fresh test evidence. [The mechanics milestone record](docs/mechanical-milestones.md) and [verification.json](docs/verification.json) describe the earlier mechanics baseline. The model galleries remain below; native screenshots are refreshed by the full client matrix.
+| Cockpit instruments | Paint customization |
+|---|---|
+| ![Working cockpit instruments](docs/screenshots/mechanics-cockpit.png) | ![Garage paint controls](docs/screenshots/alpha-paint.png) |
 
-This is a playable component-simulation alpha. Deeper individual engine internals, Expert fasteners, engine-stand procedures, complete glass/latch service, projected headlights and large-fleet rendering remain future work. Sound assets are original synthesis, not recordings. Native active-channel tests cannot establish subjective audio quality.
+| Opening panels | Live engine diagnostics |
+|---|---|
+| ![Opening car panels](docs/screenshots/alpha-car-controls.png) | ![Engine telemetry and rev test](docs/screenshots/powertrain-live.png) |
+
+</details>
+
+## Develop and contribute
+
+The [Windows development guide](DEVELOPMENT.md) covers Java and Minecraft setup, debugging, Blender MCP without desktop input, background exports, audio, tests and releases.
+
+```powershell
+git clone https://github.com/CesarPetrescu/AutoPropulsion-Age.git
+Set-Location AutoPropulsion-Age
+.\gradlew.bat build
+.\gradlew.bat runClient
+```
+
+Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.5.1-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
+
+| What you need | Where to find it |
+|---|---|
+| Installation, controls, diagnosis and repairs | [Player guide](docs/PLAYING.md) |
+| Parts, engine compatibility and tuning | [Engine workshop](docs/ENGINE-WORKSHOP.md) |
+| Windows tools, Blender/MCP, development client and tests | [Development guide](DEVELOPMENT.md) |
+| Build gates, evidence, release branch and publishing | [CI and release policy](docs/CI.md) |
+| Mechanical scope and unfinished acceptance scenarios | [Milestone record](docs/mechanical-milestones.md) |
+| Logo asset, JAR registration and generation record | [Branding](docs/BRANDING.md) |
+| Bug reports and feature requests | [GitHub issues](https://github.com/CesarPetrescu/AutoPropulsion-Age/issues) — include mod version, reproduction steps and `logs/latest.log` |
+
+CI runs simulation tests, dedicated GameTests with **294 engine/drivetrain driving combinations**, native client garage/handling/mechanics checks, **132 workshop page/scale combinations**, two-client trading, resource/audio validation and Blender geometry checks. A release is published **only after all required jobs pass**. Each release includes its source commit, SHA-256 checksums and fresh evidence. A failed run leaves the previous tested JAR available.
+
+This remains an alpha: handling includes lateral/yaw motion and vertical suspension, without full rollovers or soft-body crashes. Deeper engine internals, Expert fasteners, engine-stand procedures, complete glass/latch service, projected headlights and large-fleet optimization remain future work. Other modpacks, separate-machine latency and long-duration worlds need further testing.
+
+## Model galleries
+
+The images below include **all 471 source-kit parts and assemblies**, **49 engine layouts** and **42 engine hardware previews**. Source-kit objects include repeated components and workshop assets beyond the playable subset; model count is not the number of independent gameplay features.
+
+
+<details>
+<summary><strong>View all 49 engine layouts</strong></summary>
 
 <!-- ENGINE-GALLERY-START -->
 ## Engine configuration gallery
@@ -123,6 +161,11 @@ Native game previews. Click an engine to see it installed under the open hood. [
 
 <!-- ENGINE-GALLERY-END -->
 
+</details>
+
+
+<details>
+<summary><strong>View all 42 engine hardware models</strong></summary>
 
 <!-- HARDWARE-GALLERY-START -->
 ## Every new engine hardware model
@@ -245,13 +288,15 @@ Native game previews. Click an engine to see it installed under the open hood. [
 
 <!-- HARDWARE-GALLERY-END -->
 
+</details>
+
 ## Editable model kit
 
 The complete Blender kit remains available, including **471 named parts and assemblies across 43 categories**. These include repeated components and workshop/upgrade assets beyond the playable alpha's implemented subset. Every model preview is in the expandable gallery below.
 
 | File | Contents |
 |---|---|
-| [Playable mod JAR](downloads/autopropulsion-age-0.4.0-alpha.jar) | Install this in Minecraft with NeoForge. |
+| [Latest tested mod JAR](https://github.com/CesarPetrescu/AutoPropulsion-Age/releases/latest/download/autopropulsion-age-latest.jar) | Install this in Minecraft with NeoForge. |
 | [Complete model kit ZIP](downloads/modular-car-kit.zip) | Blender source, GLB, previews, scripts, manifests, fit report and portable gallery. |
 | [Engine workshop Blender file](assets/engine_workshop.blend) | Editable derived runtime snapshots: 49 open-hood layouts plus 42 isolated hardware scenes. |
 | [Blender project](assets/modular_car_kit/sparkmotors_modular.blend) | Editable stock car, engine, upgrade catalog, workshop and service scenes. |
@@ -260,6 +305,9 @@ The complete Blender kit remains available, including **471 named parts and asse
 | [Parts manifest](assets/modular_car_kit/parts_manifest.json) / [gallery index](assets/modular_car_kit/gallery_index.json) | IDs, previews, bounds and mounting metadata. |
 | [Original requirements](docs/modular-car-requirements.md) | Full design and longer-term architecture. |
 | [Early studies](assets/early_studies) | Original square and simple car Blender files and first render. |
+
+<details>
+<summary><strong>Blender renders: assembled car, cutaway, engine, upgrades and workshop</strong></summary>
 
 ### Assembled car
 
@@ -280,6 +328,8 @@ The complete Blender kit remains available, including **471 named parts and asse
 ### Workshop equipment
 
 ![Garage equipment and service items](assets/modular_car_kit/workshop.png)
+
+</details>
 
 The original asset delivery passed **22 selected geometric checks** and a fresh Blender rebuild. The car is 4.5 m long, 1.9 m wide excluding mirrors, with a 2.65 m wheelbase. Authoring axes are +X right, -Y front, +Z up. Fit checks cover selected relationships, not every possible combination. See the [fit report](assets/modular_car_kit/fit_report.json) and [runtime conversion report](docs/runtime-assets.json).
 

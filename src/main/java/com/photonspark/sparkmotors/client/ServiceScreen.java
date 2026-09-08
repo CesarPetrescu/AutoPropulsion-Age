@@ -13,7 +13,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import java.util.*;
 
 /** Physical service operations use the same server component objects as driving and inventory. */
-public final class ServiceScreen extends Screen {
+public final class ServiceScreen extends WorkshopScreen {
     private final CarEntity car;
     private int x,y,w,h,scroll,selected=10,rows;
     private boolean tests,cutaway;
@@ -26,9 +26,9 @@ public final class ServiceScreen extends Screen {
     @Override public boolean isPauseScreen(){return false;}
     private void send(int action,int a,int b){CarClient.send(car,action,a,b);}
     private void button(String label,int bx,int by,int bw,Runnable callback){addRenderableWidget(Button.builder(Component.literal(label),b->callback.run()).bounds(bx,by,bw,20).build());}
-    @Override protected void init(){
+    @Override protected void initWorkshop(){
         clearWidgets();w=Math.min(800,width-16);h=Math.min(430,height-16);x=(width-w)/2;y=(height-h)/2;int rx=x+w/2+10,rw=w/2-24;
-        rows=Math.max(3,(h-220)/21);scroll=Math.clamp(scroll,0,ComponentSlot.ALL.size()-rows);
+        rows=Math.max(3,(h-250)/21);scroll=Math.clamp(scroll,0,ComponentSlot.ALL.size()-rows);
         button("Garage",x+w-80,y+9,68,()->minecraft.setScreen(new GarageScreen(car)));
         button("Focus part",x+16,y+58,100,()->{focus=CarMesh.componentCenter(car,selectedKey());zoom=3;panX=panY=0;});
         button("Cutaway view",x+122,y+58,108,()->cutaway=!cutaway);
@@ -60,31 +60,32 @@ public final class ServiceScreen extends Screen {
         if(slot.key().equals("exhaust.muffler"))button("Fit sport muffler",rx,y+h-44,rw,()->send(CarPackets.COMPONENT_SWAP,selected,2));
     }
     @Override public void tick(){if(car.isRemoved()||minecraft.player==null||car.distanceToSqr(minecraft.player)>160)onClose();}
-    @Override public boolean mouseScrolled(double mx,double my,double hx,double vy){if(mx<x+w/2){zoom=(float)Math.clamp(zoom*Math.pow(1.13,vy),.35,4);return true;}scroll=Math.clamp(scroll-(int)Math.signum(vy),0,ComponentSlot.ALL.size()-rows);init();return true;}
-    @Override public boolean mouseDragged(double mx,double my,int b,double dx,double dy){if(mx<x+w/2){if(b==0){yaw+=dx;pitch=(float)Math.clamp(pitch+dy,-89,89);}else{panX+=dx;panY+=dy;}return true;}return super.mouseDragged(mx,my,b,dx,dy);}
+    @Override protected boolean scrollWorkshop(double mx,double my,double hx,double vy){if(mx<x+w/2){zoom=(float)Math.clamp(zoom*Math.pow(1.13,vy),.35,4);return true;}scroll=Math.clamp(scroll-(int)Math.signum(vy),0,ComponentSlot.ALL.size()-rows);init();return true;}
+    @Override protected boolean dragWorkshop(double mx,double my,int b,double dx,double dy){if(mx<x+w/2){if(b==0){yaw+=dx;pitch=(float)Math.clamp(pitch+dy,-89,89);}else{panX+=dx;panY+=dy;}return true;}return super.dragWorkshop(mx,my,b,dx,dy);}
     @Override public void renderBackground(GuiGraphics g,int mx,int my,float partial){}
-    @Override public void render(GuiGraphics g,int mx,int my,float partial){
+    @Override protected void renderWorkshop(GuiGraphics g,int mx,int my,float partial){
         g.fill(0,0,width,height,0x99101922);g.fill(x,y,x+w,y+h,0xFA101B25);g.fill(x,y,x+w,y+2,ACCENT);
-        g.drawString(font,"COMPONENT WORKSHOP",x+16,y+14,ACCENT,false);g.drawString(font,"Orbit: drag / Pan: right drag / Zoom: scroll",x+16,y+36,MUTED,false);
+        g.drawString(font,"COMPONENT WORKSHOP",x+16,y+14,ACCENT,false);g.drawString(font,"Drag: orbit / Right drag: pan / Scroll: zoom",x+16,y+36,MUTED,false);
         int rx=x+w/2+10,rw=w/2-24;
-        g.enableScissor(x+10,y+82,x+w/2-4,y+h-100);g.pose().pushPose();
+        clip(g,x+10,y+82,x+w/2-4,y+h-100);g.pose().pushPose();
         g.pose().translate(x+w/4+panX,y+h/2+panY,150);float scale=Math.min((w/2-30)/5.5f,(h-130)/3.3f)*zoom;g.pose().scale(scale,-scale,scale);
         g.pose().mulPose(Axis.XP.rotationDegrees(pitch));g.pose().mulPose(Axis.YP.rotationDegrees(yaw));g.pose().translate(-focus.x,-focus.y,-focus.z);
         Lighting.setupForEntityInInventory();CarMesh.render(car,partial,g.pose(),g.bufferSource(),LightTexture.FULL_BRIGHT,true,false,cutaway,selectedKey());g.flush();g.pose().popPose();Lighting.setupFor3DItems();g.disableScissor();
         var slot=ComponentSlot.ALL.get(selected);var part=car.mechanics().get(slot.key());int by=y+89+rows*21;
         if(tests){
-            g.drawString(font,"TEST RESULTS",rx,y+267,ACCENT,false);g.drawWordWrap(font,Component.literal(car.diagnostic()),rx,y+284,rw,TEXT);
-            g.drawWordWrap(font,Component.literal("Stored warnings: "+String.join(", ",car.mechanics().faultHistory())),rx,y+h-82,rw,MUTED);
+            g.drawString(font,"TEST RESULTS",rx,y+267,ACCENT,false);clip(g,rx,y+282,rx+rw,y+h-100);g.drawWordWrap(font,Component.literal(car.diagnostic()),rx,y+284,rw,TEXT);g.disableScissor();
+            g.drawString(font,"Stored warnings: "+car.mechanics().faultHistory().size()+" (clearing does not repair)",rx,y+h-82,MUTED,false);
         }else{
-        g.drawString(font,font.plainSubstrByWidth(slot.key(),rw),rx,by,ACCENT,false);
-        g.drawString(font,part==null?"Empty mount":"Installed: "+font.plainSubstrByWidth(part.item(),rw-65),rx,by+15,TEXT,false);
+        g.drawString(font,font.plainSubstrByWidth(slot.title(),rw),rx,by,ACCENT,false);
+        g.drawString(font,part==null?"Empty mount":"Installed: "+font.plainSubstrByWidth(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(com.photonspark.sparkmotors.AutoPropulsionAge.id(part.item())).getDescription().getString(),rw-65),rx,by+15,TEXT,false);
         g.drawString(font,"Access: "+slot.access().name().toLowerCase(Locale.ROOT),rx,by+30,MUTED,false);
-        g.drawString(font,slot.hardware()!=null?"Change this assembly in the Engine tab.":"Removed parts retain wear, faults and serial.",rx,y+h-90,MUTED,false);
+        if(part!=null)g.drawString(font,String.format(Locale.ROOT,"Wear %.0f%% / Damage %.0f%%",part.wear()*100,part.damage()*100),rx,by+60,TEXT,false);
+        g.drawString(font,slot.hardware()!=null?"Assembly options: Engine tab":"Used parts keep their condition",rx,y+h-90,MUTED,false);
         if(part!=null&&CircuitPhysics.leak(part,1)>.05&&(slot.key().contains("hose")||slot.key().equals("engine.cooling")))g.drawString(font,"Observation: wet residue at this component",rx,by+45,0xFFFFC675,false);
         }
         g.drawString(font,car.raised()?"SERVICE JACK RAISED":"CAR ON GROUND",x+16,y+h-90,ACCENT,false);
         g.drawString(font,String.format(Locale.ROOT,"Coolant %.1f L / %.0f C",car.coolant(),car.temperature()),x+16,y+h-75,TEXT,false);
         g.drawString(font,"Park and stop the engine before service. Fluids are retained separately.",x+16,y+h-15,MUTED,false);
-        super.render(g,mx,my,partial);
+        super.renderWorkshop(g,mx,my,partial);
     }
 }

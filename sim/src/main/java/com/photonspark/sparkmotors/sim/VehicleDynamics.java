@@ -53,14 +53,17 @@ public final class VehicleDynamics {
         double lateral=clamp(trans.lateralSpeed(),-65,65),yawRate=clamp(trans.yawRate(),-5,5);
         int gear=in.reverse?-1:1;double finalRatio=setup.finalDrive*(Assembly.TRANSMISSION.variant(setup.config)==2?1.10:1);
         if(!in.reverse)while(gear<5&&Math.abs(speed)/WHEEL_RADIUS*GEARS[gear-1]*finalRatio*60/(2*Math.PI)>Math.min(5800,setup.limiter-250))gear++;
+        // Sliding opposite the selected direction cannot select reverse or kick down.
+        if(speed*(in.reverse?-1:1)<-.5&&(trans.target()<0)==in.reverse)gear=trans.target();
         trans=TransmissionPhysics.shift(trans,gear,dt);gear=trans.gear();
         double ratio=(gear<0?3.4:GEARS[gear-1])*finalRatio,direction=gear<0?-1:1;
         double wheelOmega=(wheels.initialized()?setup.drive.drivenOmega(wheels):speed/WHEEL_RADIUS)*direction;
         boolean running=ignition&&fuel>0&&engine.health()>5&&Assembly.ENGINE.variant(setup.config)>0&&(setup.mechanics==null?EnginePart.ready(setup.engineParts):MechanicalCapabilities.buildProblem(setup.engineParts).isEmpty());
         boolean drive=running&&(setup.mechanics==null||engine.mode()==EnginePhysics.Mode.RUNNING)&&Assembly.TRANSMISSION.variant(setup.config)>0&&Assembly.WHEELS.variant(setup.config)>0;
-        double clutchTorque=0;
+        double clutchTorque=0,engagement=0;
         if(drive&&!in.clutch&&trans.remaining()==0){
-            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*clamp((engine.rpm()-950)/850,0,1)*MechanicalCapabilities.clutch(setup.mechanics)*MechanicalCapabilities.transmission(setup.mechanics);
+            engagement=clamp((engine.rpm()-950)/850,0,1);
+            double capacity=(Assembly.TRANSMISSION.variant(setup.config)==2?680:460)*engagement*MechanicalCapabilities.clutch(setup.mechanics)*MechanicalCapabilities.transmission(setup.mechanics);
             // Couple the crank to the driven wheels, including airborne spin. Tire forces,
             // rather than an engine-side grip clamp, determine how much reaches the road.
             double roadCoupling=0;
@@ -86,7 +89,7 @@ public final class VehicleDynamics {
         if(supported&&in.throttle==0&&Math.hypot(next,lateral)<.035&&Math.abs(newYaw)<.02){next=0;lateral=0;newYaw=0;}
         double slipPower=Math.abs(clutchTorque*(engine.omega()-wheelOmega*ratio))/1000;
         double heat=clamp(trans.clutchHeat()+(slipPower/3-(trans.clutchHeat()-20)*.025)*dt,20,1000);
-        trans=trans.heat(heat).motion(lateral,newYaw,steering,ax,ay);
+        trans=trans.heat(heat).motion(lateral,newYaw,steering,ax,ay).clutch(Math.abs(engine.omega()-wheelOmega*ratio)*60/(2*Math.PI),clutchTorque,engagement);
         double load=clamp(Math.max(0,clutchTorque)/Math.max(1,EngineBuild.naturalTorque(engine.rpm(),setup.family,Assembly.ENGINE.variant(setup.config),setup.engineParts,setup.limiter)),0,1);
         return new State(clamp(next,-65,65),engine.rpm(),gear,Math.max(0,fuel-used),deltaYaw,used,engine,forces.state(),trans,load);
     }

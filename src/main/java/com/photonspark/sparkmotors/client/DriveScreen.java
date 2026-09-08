@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import java.util.*;
 
 /** The diagram, wheel readings and conversion controls all use synchronized vehicle state. */
-public final class DriveScreen extends Screen {
+public final class DriveScreen extends WorkshopScreen {
     private final CarEntity car;
     private final Map<Button,java.util.function.BooleanSupplier> enabled=new LinkedHashMap<>();
     private int x,y,w,h,rx,rw,scroll;
@@ -25,7 +25,7 @@ public final class DriveScreen extends Screen {
         var b=Button.builder(Component.literal(label),ignored->action.run()).bounds(bx,by,width,22).build();
         b.setTooltip(Tooltip.create(Component.literal(tip)));addRenderableWidget(b);enabled.put(b,available);return b;
     }
-    @Override protected void init(){
+    @Override protected void initWorkshop(){
         clearWidgets();enabled.clear();w=Math.min(790,width-16);h=420;
         int view=Math.min(h,height-16);scroll=Math.clamp(scroll,0,h-view);x=(width-w)/2;y=(height-view)/2-scroll;rx=x+w/2+10;rw=w/2-28;
         button("Garage",x+w-88,y+10,76,()->minecraft.setScreen(new GarageScreen(car)),()->true,"Return to the garage");
@@ -51,8 +51,8 @@ public final class DriveScreen extends Screen {
         if(car.isRemoved()||minecraft.player==null||car.distanceToSqr(minecraft.player)>160){onClose();return;}
         enabled.forEach((button,available)->button.active=available.getAsBoolean());
     }
-    @Override public void render(GuiGraphics g,int mx,int my,float partial){
-        g.enableScissor(0,8,width,height-8);
+    @Override protected void renderWorkshop(GuiGraphics g,int mx,int my,float partial){
+        clip(g,0,8,width,height-8);
         g.fill(0,0,width,height,0x99101922);g.fill(x,y,x+w,y+h,0xFA101B25);g.fill(x,y,x+w,y+2,ACCENT);
         g.drawString(font,"DRIVELINE / HANDLING",x+16,y+15,ACCENT,false);
         var drive=car.driveConfig();g.drawString(font,"INSTALLED: "+drive.layout()+" / "+drive.differential().name().replace('_',' '),x+16,y+42,TEXT,false);
@@ -84,10 +84,10 @@ public final class DriveScreen extends Screen {
             g.drawString(font,"Space: rear handbrake  |  C: clutch",x+16,y+h-59,MUTED,false);
         }
         g.drawString(font,"Conversions: park, engine off, leave car, jack up. 8 iron ingots; part condition retained.",x+14,y+h-20,MUTED,false);
-        super.render(g,mx,my,partial);
+        super.renderWorkshop(g,mx,my,partial);
         g.disableScissor();
     }
-    @Override public boolean mouseScrolled(double mx,double my,double dx,double dy){scroll=Math.clamp(scroll-(int)(dy*24),0,Math.max(0,436-height));init();return true;}
-    @Override public boolean mouseClicked(double mx,double my,int button){return my>=8&&my<height-8&&super.mouseClicked(mx,my,button);}
+    @Override protected boolean scrollWorkshop(double mx,double my,double dx,double dy){scroll=Math.clamp(scroll-(int)(dy*24),0,Math.max(0,436-height));init();return true;}
+    @Override protected boolean clickWorkshop(double mx,double my,int button){return my>=8&&my<height-8&&super.clickWorkshop(mx,my,button);}
     @Override public void renderBackground(GuiGraphics g,int mx,int my,float partial){}
 }
