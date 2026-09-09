@@ -1,0 +1,17 @@
+{
+  "type": "sparkmotors:body_crating",
+  "category": "misc",
+  "group": "sparkmotors_body_combustion",
+  "ingredients": [
+    {
+      "tag": "sparkmotors:crates/combustion"
+    },
+    {
+      "item": "sparkmotors:hatchback_body_kit"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:hatchback_crate",
+    "count": 1
+  }
+}

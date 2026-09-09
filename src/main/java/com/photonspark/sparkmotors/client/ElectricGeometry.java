@@ -33,14 +33,17 @@ public final class ElectricGeometry {
                 box(out,poses,-.68,.27,center-length/2-.025,.68,.30,center+length/2+.025,ALLOY,light);
                 for(int i=0;i<6;i++)box(out,poses,-.62+i*.21,.30,center-length/2+.03,-.60+i*.21,.40,center+length/2-.03,ALLOY,light);
             }
-            box(out,poses,.963,.72,-1.53,.987,.88,-1.34,DARK,light);
-            box(out,poses,.988,.76,-1.49,1.005,.84,-1.38,car.plugged()?TEAL:ALLOY,light);
+            if(type.plugIn()){
+                var body=car.bodyStyle();double x=body.chargeX(),y=body.chargeY(),z=body.chargeZ();
+                box(out,poses,x-.025,y-.08,z-.095,x-.001,y+.08,z+.095,DARK,light);
+                box(out,poses,x,y-.04,z-.055,x+.017,y+.04,z+.055,car.plugged()?TEAL:ALLOY,light);
+            }
         }
     }
     /** Cable is rendered in world-relative axes, independently of body pitch/roll. */
     public static void cable(CarEntity car,PoseStack poses,MultiBufferSource buffers,int light){
         if(!car.plugged())return;
-        Vec3 start=new Vec3(1,.8,-1.44).yRot((float)-Math.toRadians(car.getYRot()));
+        var body=car.bodyStyle();Vec3 start=new Vec3(body.chargeX()+.012,body.chargeY(),body.chargeZ()).yRot((float)-Math.toRadians(car.getYRot()));
         Vec3 end=Vec3.atCenterOf(car.chargerPosition()).subtract(car.position()).add(0,.15,0);
         if(start.distanceTo(end)>8)return;
         var out=buffers.getBuffer(RenderType.entityCutoutNoCull(WHITE));Vec3 old=start;

@@ -44,7 +44,7 @@ public final class CarPackets {
         public Type<Charger> type(){return TYPE;}
     }
     public static void register(RegisterPayloadHandlersEvent event) {
-        var r=event.registrar("10");
+        var r=event.registrar("11");
         r.playBidirectional(Charger.TYPE,Charger.CODEC,(p,ctx)->{
             if(ctx.player() instanceof ServerPlayer sp){
                 if(p.action!=1||!sp.level().hasChunkAt(p.pos)||sp.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(p.pos))>64)return;

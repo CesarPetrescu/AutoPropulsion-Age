@@ -67,7 +67,7 @@ def make(name,vertices,faces,color=PAINT,category=3,group=-1,variant=0,hinge=0,p
     me=bpy.data.meshes.new(name);me.from_pydata([native(v) for v in vertices],[],faces);me.update()
     bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
     ob=bpy.data.objects.new(name,me);bpy.context.scene.collection.children['Coachwork'].objects.link(ob);me.materials.append(mat(color,kind))
-    ob['apa_metadata']=json.dumps(md,sort_keys=True);ob['apa_color']=int(color);body_objects.append(ob)
+    ob['apa_metadata']=json.dumps(md,sort_keys=True);ob['apa_color']=f'{color:08x}';ob.hide_render=variant>1;body_objects.append(ob)
     me.calc_loop_triangles();data=[]
     for tri in me.loop_triangles:
         n=runtime(tri.normal)
@@ -122,7 +122,7 @@ def import_chunk(c,collection,reference=False):
     for color in dict.fromkeys(face_colors):lookup[color]=len(me.materials);me.materials.append(mat(color,c['kind']))
     for poly,color in zip(me.polygons,face_colors):poly.material_index=lookup[color]
     ob['apa_metadata']=json.dumps({k:v for k,v in c.items() if k!='vertices'},sort_keys=True)
-    ob['apa_reference_only']=reference
+    ob['apa_reference_only']=reference;ob.hide_render=c['variant']>1
     return ob
 
 

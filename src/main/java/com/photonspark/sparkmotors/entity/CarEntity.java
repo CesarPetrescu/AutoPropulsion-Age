@@ -104,8 +104,26 @@ public final class CarEntity extends Entity {
     public float wheelAngle,oldWheelAngle,panelProgress,oldPanelProgress;
     public float hoodProgress,oldHoodProgress,engineAngle,oldEngineAngle;
 
+    private static final EntityDataAccessor<Integer> BODY_STYLE=data(EntityDataSerializers.INT);
+    public BodyStyle bodyStyle(){return entityData==null?BodyStyle.CLASSIC_SEDAN:BodyStyle.byNetworkId(entityData.get(BODY_STYLE));}
+    /** Factory/load initialization; only cosmetic identity, no mechanical reinitialization. */
+    public void initializeBodyStyle(BodyStyle style){
+        if(level().isClientSide)return;
+        entityData.set(BODY_STYLE,Objects.requireNonNull(style).networkId());setBoundingBox(makeBoundingBox());
+    }
+    /** Caller validates ownership/service state. Obstructed swaps restore the previous shell. */
+    public boolean trySetBodyStyle(BodyStyle style){
+        if(level().isClientSide)return false;
+        var previous=bodyStyle();initializeBodyStyle(style);
+        if(hasBodyClearance())return true;
+        initializeBodyStyle(previous);return false;
+    }
+    @Override public net.minecraft.network.chat.Component getName(){
+        return hasCustomName()?getCustomName():net.minecraft.network.chat.Component.translatable("body.sparkmotors."+bodyStyle().id());
+    }
     public CarEntity(EntityType<? extends CarEntity> type,Level level){super(type,level);blocksBuilding=true;if(!level.isClientSide)setMechanics(PowertrainTopology.fresh(Powertrain.COMBUSTION,driveConfig(),engineFamily(),config(),engineParts()));}
     @Override protected void defineSynchedData(SynchedEntityData.Builder b){
+        b.define(BODY_STYLE,0);
         b.define(DRIVE_SETUP,DriveConfig.stock().packed());b.define(FRONT_SPLIT,0);b.define(LATERAL_SPEED,0f);b.define(YAW_RATE,0f);b.define(STEERING_ANGLE,0f);
         b.define(CLUTCH_STATE,new org.joml.Vector3f());b.define(TRIP_START,0f);b.define(ENGINE_LOAD,0f);b.define(VENT_EVENTS,0);b.define(DIAGNOSTIC,"No test performed.");b.define(COOLANT,8f);b.define(OIL_QUANTITY,5f);b.define(BRAKE_FLUID,1f);b.define(CONTACTS,0);b.define(ENGINE_MODE,0);for(var wheel:WHEELS)b.define(wheel,new org.joml.Vector3f());b.define(MECHANICS,new CompoundTag());b.define(SPEED,0f);b.define(RPM,0f);b.define(FUEL,40f);b.define(HEALTH,100f);b.define(STEER,0f);b.define(PITCH,0f);b.define(ROLL,0f);
         b.define(CHARGER_POSITION,BlockPos.ZERO);b.define(POWERTRAIN,0);b.define(EV_MODE,0);b.define(CHARGE_TARGET,80);b.define(PLUGGED,false);b.define(GENERATOR,false);
@@ -195,7 +213,7 @@ public final class CarEntity extends Entity {
         inputKeys=(keys&23)|(reverseSelected()?8:0);inputSteer=Mth.clamp(steer,-1,1);lastInputTick=tickCount;
     }
     @Override public void tick(){
-        super.tick();oldWheelAngle=wheelAngle;oldPanelProgress=panelProgress;oldHoodProgress=hoodProgress;oldEngineAngle=engineAngle;
+        super.tick();if(level().isClientSide)setBoundingBox(makeBoundingBox());oldWheelAngle=wheelAngle;oldPanelProgress=panelProgress;oldHoodProgress=hoodProgress;oldEngineAngle=engineAngle;
         wheelAngle+=speed()*.05f/.34f;for(int c=0;c<4;c++){
             oldWheelAngles[c]=wheelAngles[c];wheelAngles[c]+=wheelOmega(c)*.05f;
             float offset=(float)(Math.floor(wheelAngles[c]/(Math.PI*2))*Math.PI*2);wheelAngles[c]-=offset;oldWheelAngles[c]-=offset;
@@ -345,7 +363,7 @@ public final class CarEntity extends Entity {
     }
     public List<VehicleCollision.Box> collisionHull(){
         double[] travels=new double[4];for(int c=0;c<4;c++)travels[c]=wheelState==null?0:level().isClientSide?wheelTravel(c):wheelState.corners().get(c).travel();
-        return CarGeometry.hull(Assembly.BODY.variant(config())==2,Assembly.WHEELS.variant(config())>0,travels,level().isClientSide?steeringAngle():transmissionState.steering());
+        return bodyStyle().hull(Assembly.BODY.variant(config())==2,Assembly.WHEELS.variant(config())>0,travels,level().isClientSide?steeringAngle():transmissionState.steering());
     }
     private void rebaseHeading(){float offset=getYRot()-Mth.wrapDegrees(getYRot());setYRot(getYRot()-offset);yRotO-=offset;}
     public boolean hasBodyClearance(){return VehicleCollision.clear(collisionHull(),collisionObstacles(makeBoundingBox()),getX(),getY(),getZ(),Math.toRadians(getYRot()));}
@@ -366,9 +384,10 @@ public final class CarEntity extends Entity {
     }
     @Override protected AABB makeBoundingBox(){
         double yaw=Math.toRadians(getYRot()),c=Math.abs(Math.cos(yaw)),s=Math.abs(Math.sin(yaw));
-        double x=1.12*c+2.37*s,z=2.37*c+1.12*s;
+        var body=bodyStyle();double w=body.broadHalfWidth(),l=body.broadHalfLength();
+        double x=w*c+l*s,z=l*c+w*s;
         // Broad phase and entity queries only. Movement uses the oriented component hull.
-        return new AABB(getX()-x,getY(),getZ()-z,getX()+x,getY()+1.52,getZ()+z);
+        return new AABB(getX()-x,getY(),getZ()-z,getX()+x,getY()+bodyStyle().roof()+.15,getZ()+z);
     }
     @Override public float maxUpStep(){return horizontalSpeed()<4?.3f:0;}
     @Override public boolean isPickable(){return true;}
@@ -379,7 +398,7 @@ public final class CarEntity extends Entity {
     @Override public LivingEntity getControllingPassenger(){return getFirstPassenger() instanceof LivingEntity l?l:null;}
     @Override protected boolean canAddPassenger(Entity p){return getPassengers().isEmpty()&&horizontalSpeed()<1;}
     @Override protected Vec3 getPassengerAttachmentPoint(Entity p,EntityDimensions dimensions,float scale){
-        return new Vec3(-.40,.18,.12).yRot((float)-Math.toRadians(getYRot()));
+        return new Vec3(-.40,bodyStyle().seatY(),bodyStyle().seatZ()).yRot((float)-Math.toRadians(getYRot()));
     }
     @Override protected void positionRider(Entity p,MoveFunction move){
         super.positionRider(p,move);
@@ -400,6 +419,7 @@ public final class CarEntity extends Entity {
         if(!(player instanceof ServerPlayer sp))return InteractionResult.PASS;
         if(!mayModify(player)){message(player,"This car belongs to another player.");return InteractionResult.CONSUME;}
         if(entityData.get(OWNER).isEmpty())setOwner(player.getUUID());
+        if(player.getItemInHand(hand).getItem() instanceof com.photonspark.sparkmotors.item.CarBodyKitItem kit)return kit.install(sp,this,hand);
         if(plugged()&&player.isSecondaryUseActive()&&player.getItemInHand(hand).isEmpty()){
             if(level().getBlockEntity(chargerPosition()) instanceof com.photonspark.sparkmotors.charging.ChargerBlockEntity charger)charger.unplug(player);
             return InteractionResult.CONSUME;
@@ -413,6 +433,7 @@ public final class CarEntity extends Entity {
         return InteractionResult.CONSUME;
     }
     @Override public InteractionResult interactAt(Player player,Vec3 hit,InteractionHand hand){
+        if(player.getItemInHand(hand).getItem() instanceof com.photonspark.sparkmotors.item.CarBodyKitItem)return interact(player,hand);
         if(plugged()&&player.isSecondaryUseActive()&&player.getItemInHand(hand).isEmpty())return interact(player,hand);
         Vec3 local=hit.yRot((float)Math.toRadians(getYRot()));
         if(local.z>.55&&(player.isSecondaryUseActive()||player.getItemInHand(hand).is(AutoPropulsionAge.WRENCH.get()))){
@@ -705,7 +726,8 @@ public final class CarEntity extends Entity {
     @Override public float lerpTargetYRot(){return lerpSteps>0?lerpYaw:getYRot();}
     @Override public float lerpTargetXRot(){return lerpSteps>0?lerpPitch:getXRot();}
     @Override protected void addAdditionalSaveData(CompoundTag tag){
-        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",7);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
+        tag.putString("BodyStyle",bodyStyle().id());
+        tag.putDouble("TripStart",tripStart);tag.put("Mechanics",MechanicalData.write(mechanics()));tag.putInt("DataVersion",8);tag.putInt("DriveSetup",driveConfig().packed());tag.putInt("FrontSplit",driveConfig().frontPercent());tag.putInt("Assemblies",config());tag.putInt("Paint",paint());tag.putFloat("Fuel",fuel());tag.putFloat("Health",health());
         tag.putInt("EngineFamily",engineFamily().ordinal());tag.putInt("EngineParts",engineParts());tag.putFloat("EngineTemperature",temperature());tag.putBoolean("HoodOpen",hoodOpen());tag.putBoolean("Raised",raised());
         tag.putString("Powertrain",powertrain().id());tag.putInt("ElectricMode",entityData.get(EV_MODE));tag.putInt("ChargeTarget",chargeTarget());
         if(electricState!=null){var e=electricState;var b=e.battery();tag.putDouble("BatteryJ",b.energyJ());tag.putDouble("BatteryC",b.temperatureC());tag.putDouble("BatteryHealth",b.health());tag.putDouble("BatteryThroughputJ",b.throughputJ());tag.putDouble("MotorC",e.motorC());tag.putDouble("InverterC",e.inverterC());}
@@ -713,6 +735,7 @@ public final class CarEntity extends Entity {
         tag.putInt("Limiter",limiter());tag.putFloat("FinalDrive",finalDrive());tag.putBoolean("Lights",lights());tag.putBoolean("ReverseSelected",reverseSelected());entityData.get(OWNER).ifPresent(id->tag.putUUID("Owner",id));
     }
     @Override protected void readAdditionalSaveData(CompoundTag tag){
+        entityData.set(BODY_STYLE,BodyStyle.byId(tag.getString("BodyStyle")).networkId());
         setDriveConfig(tag.contains("DriveSetup")?DriveConfig.decode(tag.getInt("DriveSetup"),tag.getInt("FrontSplit")):DriveConfig.stock());
         entityData.set(LATERAL_SPEED,0f);entityData.set(YAW_RATE,0f);entityData.set(STEERING_ANGLE,0f);
         if(tag.contains("Assemblies"))setConfiguration(tag.getInt("Assemblies"));

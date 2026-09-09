@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "sparkmotors:sedan_crate",
+    "sparkmotors:hatchback_crate",
+    "sparkmotors:sports_car_crate",
+    "sparkmotors:suv_crate",
+    "sparkmotors:van_crate",
+    "sparkmotors:touring_sedan_crate"
+  ]
+}

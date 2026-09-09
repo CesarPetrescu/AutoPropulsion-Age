@@ -17,6 +17,31 @@ import java.util.zip.GZIPInputStream;
 public final class CarMesh {
     private static final net.minecraft.resources.ResourceLocation WHITE=AutoPropulsionAge.id("textures/entity/white.png");
     private static List<Chunk> chunks=List.of();
+    private static final Map<BodyStyle,List<Chunk>> bodyChunks=new EnumMap<>(BodyStyle.class);
+    private static List<Chunk> chunks(CarEntity car){return bodyChunks.getOrDefault(car.bodyStyle(),chunks);}
+    private static boolean shared(Chunk c){
+        if(c.category>=13)return !(c.category==39||c.group<0&&(c.category==26||c.category==30));
+        return c.category==1&&(c.name.startsWith("strut_tower_")||c.name.startsWith("wheel_tub_")||c.name.startsWith("wheel_well_")||c.name.startsWith("engine_inner_wing_")||c.name.equals("front_undertray"));
+    }
+    private static List<Chunk> readBody(ResourceManager resources,BodyStyle body){
+        var result=new ArrayList<Chunk>();
+        try(var in=new DataInputStream(new GZIPInputStream(resources.open(AutoPropulsionAge.id("models/entity/bodies/"+body.id()+".mesh.gz"))))){
+            if(in.readInt()!=0x41504132)throw new IOException("Unknown body mesh format");
+            int count=in.readInt();if(count<1||count>10000)throw new IOException("Invalid body chunk count");
+            for(int i=0;i<count;i++){
+                String name=in.readUTF();int category=in.readInt(),group=in.readInt(),variant=in.readInt(),hinge=in.readInt();
+                float px=in.readFloat(),py=in.readFloat(),pz=in.readFloat(),angle=in.readFloat();
+                int family=in.readInt(),slot=in.readInt(),tier=in.readInt(),induction=in.readInt(),kind=in.readInt(),n=in.readInt();
+                if(group< -1||group>=Assembly.values().length||slot< -1||slot>=EnginePart.values().length||tier<0||tier>7||hinge<0||hinge>10||kind<0||kind>3||n<3||n>2000000||n%3!=0)throw new IOException("Invalid body metadata: "+name);
+                float[] v=new float[n*6];int[] colors=new int[n];
+                for(int j=0;j<n;j++){for(int k=0;k<6;k++){float value=in.readFloat();if(!Float.isFinite(value))throw new IOException("Non-finite body geometry");v[j*6+k]=value;}colors[j]=in.readInt();}
+                var chunk=new Chunk(name,category,group,variant,hinge,px,py,pz,angle,family,slot,tier,induction,kind,v,colors);
+                result.add(chunk);levels.put(chunk,new Mesh[]{new Mesh(v,colors),new Mesh(v,colors)});
+            }
+            if(in.read()!=-1)throw new IOException("Trailing body mesh data");
+        }catch(IOException error){throw new IllegalStateException("Could not load body "+body.id(),error);}
+        return result;
+    }
     private static final boolean PROFILE=Boolean.getBoolean("sparkmotors.profileCars");
     private static final long[] profileTimes=new long[8192];
     private static int profileCount;
@@ -27,15 +52,15 @@ public final class CarMesh {
     }
     private static final Assembly[] ASSEMBLIES=Assembly.values();
     private static final EnginePart[] ENGINE_PARTS=EnginePart.values();
-    private record Selection(int config,int parts,EngineFamily family,DriveConfig drive,
+    private record Selection(BodyStyle body,int config,int parts,EngineFamily family,DriveConfig drive,
                              com.photonspark.sparkmotors.sim.electric.Powertrain type,boolean raised,MechanicalState mechanics) {}
     private record Visible(Selection selection,List<Chunk> chunks) {}
     private static final Map<CarEntity,Visible> visibleCars=new WeakHashMap<>();
     private static List<Chunk> selected(CarEntity car){
-        var key=new Selection(car.config(),car.engineParts(),car.engineFamily(),car.driveConfig(),car.powertrain(),car.raised(),car.mechanics());
+        var key=new Selection(car.bodyStyle(),car.config(),car.engineParts(),car.engineFamily(),car.driveConfig(),car.powertrain(),car.raised(),car.mechanics());
         var cached=visibleCars.get(car);
         if(cached!=null&&cached.selection.equals(key))return cached.chunks;
-        var selected=chunks.stream().filter(c->visible(c,car)).toList();
+        var selected=chunks(car).stream().filter(c->visible(c,car)).toList();
         visibleCars.put(car,new Visible(key,selected));return selected;
     }
     private static Map<String,String> authoredComponents=Map.of();
@@ -63,6 +88,11 @@ public final class CarMesh {
         }catch(IOException e){throw new IllegalStateException("Could not load AutoPropulsion car geometry",e);}
         chunks=List.copyOf(result);componentKeys.clear();visibleCars.clear();levels.clear();
         for(int level=0;level<2;level++)readLod(resources,level);
+        bodyChunks.clear();bodyChunks.put(BodyStyle.CLASSIC_SEDAN,chunks);
+        for(var body:BodyStyle.values())if(body!=BodyStyle.CLASSIC_SEDAN){
+            var combined=new ArrayList<>(chunks.stream().filter(CarMesh::shared).toList());
+            combined.addAll(readBody(resources,body));bodyChunks.put(body,List.copyOf(combined));
+        }
     }
     private static void readLod(ResourceManager resources,int level){
         try(var in=new DataInputStream(new GZIPInputStream(resources.open(AutoPropulsionAge.id("models/entity/sedan-lod"+(level+1)+".mesh.gz"))))){
@@ -131,7 +161,7 @@ public final class CarMesh {
         if(c.slot>=0)return ComponentSlot.engine(ENGINE_PARTS[c.slot]).key();
         return "";
     });}
-    public static int visibleComponentTriangles(CarEntity car,String key){return chunks.stream().filter(c->componentKey(c).equals(key)&&visible(c,car)).mapToInt(c->c.colors.length/3).sum();}
+    public static int visibleComponentTriangles(CarEntity car,String key){return chunks(car).stream().filter(c->componentKey(c).equals(key)&&visible(c,car)).mapToInt(c->c.colors.length/3).sum();}
     public static int visibleWorldComponentTriangles(CarEntity car,String key,int level){return selected(car).stream().filter(c->componentKey(c).equals(key)).mapToInt(c->levels.get(c)[level].colors.length/3).sum();}
     private static boolean visible(Chunk c,CarEntity car){
         if(c.name.equals("service_jack")&&!car.raised())return false;
@@ -148,9 +178,9 @@ public final class CarMesh {
         return true;
     }
     public static Map<String,Integer> visibleEngineParts(CarEntity car){
-        var result=new LinkedHashMap<String,Integer>();for(var c:chunks)if(c.group==0&&visible(c,car))result.merge(c.name,c.colors.length/3,Integer::sum);return result;
+        var result=new LinkedHashMap<String,Integer>();for(var c:chunks(car))if(c.group==0&&visible(c,car))result.merge(c.name,c.colors.length/3,Integer::sum);return result;
     }
-    public static int visibleEngineFamilies(CarEntity car){int mask=0;for(var c:chunks)if(c.group==0&&c.family!=127&&visible(c,car))mask|=c.family;return mask;}
+    public static int visibleEngineFamilies(CarEntity car){int mask=0;for(var c:chunks(car))if(c.group==0&&c.family!=127&&visible(c,car))mask|=c.family;return mask;}
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway){
         render(car,partial,poses,buffers,light,preview,engineOnly,cutaway,"");
     }
@@ -184,9 +214,11 @@ public final class CarMesh {
                 // Unsprung parts stay on the tire contact frame while the shell pitches/rolls.
                 poses.mulPose(inverseBody);poses.translate(0,travel,0);
             }
-            if(c.hinge>0){
+            if(c.hinge==7||c.hinge==8){
+                poses.translate((c.hinge==7?-.115:.115)*panel,0,-.70*panel);
+            }else if(c.hinge>0){
                 poses.translate(c.px,c.py,c.pz);
-                poses.mulPose((c.hinge<=4?Axis.YP:Axis.XP).rotationDegrees(c.angle*(c.hinge==5?hood:panel)));
+                poses.mulPose((c.hinge<=4||c.hinge>=9?Axis.YP:Axis.XP).rotationDegrees(c.angle*(c.hinge==5?hood:panel)));
                 poses.translate(-c.px,-c.py,-c.pz);
             }
             if(c.name.equals("radiator_fan")||c.name.startsWith("cooling_fan_")||c.name.equals("harmonic_damper")||engineOnly&&cutaway&&(c.name.startsWith("crankshaft")||c.name.startsWith("eccentric_shaft")||c.name.matches("rotor_[1-4]r_.*"))){
@@ -235,11 +267,11 @@ public final class CarMesh {
             }
             poses.popPose();
         }
-        if(!engineOnly)CockpitInstruments.render(car,poses,buffers,light);
+        if(!engineOnly){poses.pushPose();poses.translate(0,car.bodyStyle().cabinY(),car.bodyStyle().cabinZ());CockpitInstruments.render(car,poses,buffers,light);poses.popPose();}
         if(started!=0&&profileCount<profileTimes.length){profileTimes[profileCount++]=System.nanoTime()-started;profileTriangles+=submitted;}
     }
     public static net.minecraft.world.phys.Vec3 componentCenter(CarEntity car,String key){
-        double x=0,y=0,z=0;int count=0;for(var c:chunks)if(componentKey(c).equals(key)&&visible(c,car)){for(int i=0;i<c.vertices.length;i+=6){x+=c.vertices[i];y+=c.vertices[i+1];z+=c.vertices[i+2];count++;}}
+        double x=0,y=0,z=0;int count=0;for(var c:chunks(car))if(componentKey(c).equals(key)&&visible(c,car)){for(int i=0;i<c.vertices.length;i+=6){x+=c.vertices[i];y+=c.vertices[i+1];z+=c.vertices[i+2];count++;}}
         return count==0?new net.minecraft.world.phys.Vec3(0,.65,0):new net.minecraft.world.phys.Vec3(x/count,y/count,z/count);
     }
 }

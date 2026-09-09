@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "IMI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "minecraft:tripwire_hook"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:hatchback_body_kit",
+    "count": 1
+  }
+}

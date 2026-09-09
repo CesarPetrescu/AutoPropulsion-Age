@@ -11,7 +11,7 @@ import java.util.List;
 public enum BodyStyle {
     CLASSIC_SEDAN(0,"classic_sedan","Classic Sedan",2.275,2.275,.970,1.040,1.510,.775,.255,-.950,-1.345,0,0),
     HATCHBACK(1,"hatchback","Hatchback",2.190,1.940,.955,1.060,1.610,.775,.270,-1.340,-1.800,.040,0),
-    SPORTS_CAR(2,"sports_car","Sports Coupe",2.330,2.160,.980,1.040,1.390,.775,.180,-.780,-1.440,-.075,-.090),
+    SPORTS_CAR(2,"sports_car","Sports Coupe",2.330,2.160,.980,1.040,1.390,.775,.180,-.780,-1.440,-.025,-.090),
     SUV(3,"suv","Utility SUV",2.275,2.270,.995,1.240,1.880,.775,.300,-1.430,-1.960,.200,0),
     VAN(4,"van","Panel Van",2.185,2.570,1.010,1.390,2.170,.775,.440,-2.100,-2.435,.330,.090),
     TOURING_SEDAN(5,"touring_sedan","Touring Sedan",2.310,2.420,.975,1.105,1.560,.775,.250,-.960,-1.460,.035,-.020);
@@ -52,8 +52,8 @@ public enum BodyStyle {
     /** Stretch only the exhaust behind the rear axle; never move the driven wheel mounts. */
     public double exhaustZ(double z){return z>=CarGeometry.REAR_AXLE?z:CarGeometry.REAR_AXLE+(z-CarGeometry.REAR_AXLE)*(tail+.025+CarGeometry.REAR_AXLE)/(2.30+CarGeometry.REAR_AXLE);}
     public double chargeX(){return halfWidth+.018;}
-    public double chargeY(){return Math.max(.83,belt-.155);}
-    public double chargeZ(){return -Math.min(tail-.31,1.73);}
+    public double chargeY(){return this==CLASSIC_SEDAN?.8:Math.max(.83,belt-.155);}
+    public double chargeZ(){return this==CLASSIC_SEDAN?-1.44:-Math.min(tail-.31,1.73);}
 
     public List<VehicleCollision.Box> hull(boolean sport,boolean wheels,double[] travel,double steering){
         if(this==CLASSIC_SEDAN)return CarGeometry.hull(sport,wheels,travel,steering);
