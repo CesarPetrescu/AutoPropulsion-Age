@@ -35,7 +35,7 @@ jobs:
           import re
           def edit(path,old,new):
               p=Path(path);s=p.read_text()
-              if new in s and old not in s:return
+              if new in s:return
               assert s.count(old)==1,(path,old,s.count(old))
               p.write_text(s.replace(old,new))
           model='tools/body_styles/build_models.py'
@@ -44,20 +44,17 @@ jobs:
           edit(model,"if cabin:y+=dy;z+=dz","if cabin:y+=local_dy;z+=dz")
           edit(model,"if cabin:c['py']+=dy;c['pz']+=dz","if cabin:c['py']+=local_dy;c['pz']+=dz")
           edit(model,'hood_front=nose-.085','hood_front=nose-.032')
-          style='sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java'
-          edit(style,'public double seatY(){return .18+cabinY;}','public double seatY(){return .18+Math.max(0,cabinY);}')
+          edit('sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java','public double seatY(){return .18+cabinY;}','public double seatY(){return .18+Math.max(0,cabinY);}')
           smoke='src/gametest/java/com/photonspark/sparkmotors/gametest/BodyStyleClientSmoke.java'
           edit(smoke,'private static boolean creating,spawnPending,prepared,done;','private static boolean creating,prepared,done;\n    private static volatile boolean spawnPending;')
           edit(smoke,'require(mc.screen!=null&&!(mc.screen instanceof TitleScreen),"Garage preview not opened through native packet");','require(mc.screen instanceof GarageScreen,"Garage preview not opened through native packet");')
-          pipeline='tools/ci/resources.py'
-          edit(pipeline,"('generate_resources.py','generate_electric_resources.py')","('generate_resources.py','generate_electric_resources.py','body_styles/generate_resources.py')")
+          needle="    subprocess.run([sys.executable, 'tools/generate_electric_resources.py'], cwd=REPO, check=True)"
+          edit('tools/ci/resources.py',needle,needle+"\n    subprocess.run([sys.executable, 'tools/body_styles/generate_resources.py'], cwd=REPO, check=True)")
           p=Path('.github/workflows/body-verify.yml');s=p.read_text()
           s=re.sub(r'  pull_request:\n    paths:.*\n','',s)
-          s=s.replace('cancel-in-progress: true','cancel-in-progress: false')
-          p.write_text(s)
+          p.write_text(s.replace('cancel-in-progress: true','cancel-in-progress: false'))
           p=Path('.github/workflows/body-delivery.yml');s=p.read_text()
-          s=re.sub(r'on:\n.*?permissions:', 'on:\n  workflow_dispatch:\npermissions:',s,count=1,flags=re.S)
-          p.write_text(s)
+          p.write_text(re.sub(r'on:\n.*?permissions:', 'on:\n  workflow_dispatch:\npermissions:',s,count=1,flags=re.S))
           print('Visual fitting and test lifecycle updated; no engine/battery/tire specification modified')
           PY
           python3 -m pip install Pillow==11.3.0
