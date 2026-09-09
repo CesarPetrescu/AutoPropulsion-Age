@@ -34,6 +34,20 @@ jobs:
             python3 tools/body_styles/apply_integration.py
             git rm tools/body_styles/apply_integration.py
           fi
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tools/body_styles/build_models.py')
+          text=p.read_text()
+          old="ob['apa_color']=int(color)"
+          if old in text:
+              assert text.count(old)==1
+              text=text.replace(old,"ob['apa_color']=f'{color:08x}';ob.hide_render=variant>1")
+          old="ob['apa_reference_only']=reference"
+          if old in text and "ob.hide_render=c['variant']>1" not in text:
+              assert text.count(old)==1
+              text=text.replace(old,old+";ob.hide_render=c['variant']>1")
+          p.write_text(text)
+          PY
           python3 -m pip install Pillow==11.3.0
           python3 tools/body_styles/generate_resources.py
       - name: Install verified Blender and native graphics dependencies
@@ -50,7 +64,7 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: |
-          /tmp/blender-4.2.3-linux-x64/blender --background --threads 4 --python tools/body_styles/build_models.py 2>&1 | tee body-authoring.log
+          /tmp/blender-4.2.3-linux-x64/blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee body-authoring.log
           test -f assets/body_styles/profiles.json
           find assets/body_styles -name '*.blend1' -delete
       - name: Commit authored source and generated assets to the feature branch only
