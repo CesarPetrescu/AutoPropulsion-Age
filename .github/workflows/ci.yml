@@ -2,7 +2,7 @@ name: Test and release
 
 on:
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -115,6 +115,14 @@ jobs:
         run: python tools/ci/documentation.py
       - name: Regenerate resources and decode every mechanical sound
         run: python tools/ci/resources.py
+      - name: Validate selectable bodies and editable Blender sources
+        run: |
+          python tools/body_review/validate.py --report
+          mkdir -p build/ci/resources/body-roundtrip
+          for body in hatchback sports_car suv van touring_sedan; do
+            blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "build/ci/resources/body-roundtrip/$body.mesh.gz" --check
+          done
+          cp build/reports/body-styles/geometry.json build/ci/resources/body-geometry.json
       - name: Validate world detail meshes and preserved body topology
         run: python tools/verify_car_lods.py
       - name: Validate all hardware geometry, envelopes and hood intersections
@@ -151,6 +159,8 @@ jobs:
             task: runClientHandling
           - mode: graphics
             task: runClientGraphics
+          - mode: body
+            task: runClientBodySmoke
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -173,6 +183,8 @@ jobs:
             build/ci/
             run/alpha-smoke-result.txt
             run/electric-smoke-result.txt
+            run/body-smoke-result.txt
+            run/body-smoke-result.json
             run/logs/
             run/screenshots/
             run/crash-reports/

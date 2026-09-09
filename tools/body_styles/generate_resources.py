@@ -5,7 +5,7 @@ from PIL import Image,ImageDraw
 ROOT=Path(__file__).resolve().parents[2]
 RES=ROOT/'src/main/resources'
 ASSET=RES/'assets/sparkmotors';DATA=RES/'data/sparkmotors'
-source=(ROOT/'sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java').read_text()
+source=(ROOT/'sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java').read_text(encoding='utf-8')
 fields=('nose','tail','halfWidth','belt','roof','cabinFront','roofFront','roofRear','cabinRear','cabinY','cabinZ')
 styles=[]
 for enum,num,key,title,values in re.findall(r'^\s*([A-Z_]+)\((\d+),"([^"]+)","([^"]+)",([^)]*)\)',source,re.M):
@@ -13,8 +13,8 @@ for enum,num,key,title,values in re.findall(r'^\s*([A-Z_]+)\((\d+),"([^"]+)","([
 assert len(styles)==6
 powertrains={'combustion':'Combustion','hybrid':'Parallel Hybrid','plug_in_hybrid':'Plug-in Hybrid','electric_400':'400 V Electric','electric_800':'800 V Electric'}
 def crate(s,p):return ('sedan_crate' if p=='combustion' else p+'_crate') if s['id']=='classic_sedan' else s['id']+('' if p=='combustion' else '_'+p)+'_crate'
-def save(path,data):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')
-lang=json.loads((ASSET/'lang/en_us.json').read_text())
+def save(path,data):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+lang=json.loads((ASSET/'lang/en_us.json').read_text(encoding='utf-8'))
 markers=['glass_bottle','tripwire_hook','redstone','chest','oak_door','clock']
 for s,marker in zip(styles,markers):
     key=s['id']+'_body_kit';lang['item.sparkmotors.'+key]=s['title']+' Coachwork Kit';lang['body.sparkmotors.'+s['id']]=s['title']

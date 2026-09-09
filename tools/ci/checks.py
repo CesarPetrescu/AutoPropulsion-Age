@@ -22,7 +22,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def junit(directory, minimum=99):
+def junit(directory, minimum=105):
     files = sorted(directory.glob('TEST-*.xml'))
     require(files, 'Missing JUnit XML reports')
     cases = [case for file in files for case in ET.parse(file).iter('testcase')]
@@ -36,7 +36,7 @@ def junit(directory, minimum=99):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=56):
+def server(log, minimum=62):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -46,6 +46,8 @@ def server(log, minimum=56):
         require(marker in log,f'Missing {marker}')
     for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'):
         require('CONFIGURED_COMPONENTS_SERVER_PASS '+case in log, 'Missing native configured component test: '+case)
+    for marker in ('BODY_CRATE_CONVERSION_SERVER_PASS 150','BODY_PERSISTENCE_SERVER_PASS 30','BODY_DRIVING_SERVER_MATRIX_PASS 30'):
+        require(marker in log,'Missing '+marker)
     return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
 
 
@@ -127,6 +129,9 @@ def inspect_jar(path):
                        'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
                        'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz', 'assets/sparkmotors/models/entity/lod-manifest.json', 'assets/sparkmotors/sounds.json'):
             require(name in names, f'Missing runtime entry: {name}')
+        for body in ('hatchback','sports_car','suv','van','touring_sedan'):
+            require(f'assets/sparkmotors/models/entity/bodies/{body}.mesh.gz' in names, 'Missing body mesh: '+body)
+        require('com/photonspark/sparkmotors/sim/BodyStyle.class' in names,'Missing body state')
         metadata = tomllib.loads(archive.read('META-INF/neoforge.mods.toml').decode())
         mod = next(m for m in metadata['mods'] if m['modId'] == 'sparkmotors')
         require('${' not in mod['version'], 'Unexpanded mod version')
@@ -182,7 +187,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric', 'body', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -197,6 +202,9 @@ def main():
         report = server(args.log.read_text(errors='replace'))
     elif args.mode in ('mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric'):
         report = client(args.log.read_text(errors='replace'), (REPO / "run/electric-smoke-result.txt" if args.mode == "electric" else args.result).read_text(), args.mode)
+    elif args.mode == 'body':
+        from body_checks import validate
+        report = validate(args.log.read_text(errors='replace'), REPO / 'run')
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)
     elif args.mode == 'package':

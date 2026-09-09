@@ -20,11 +20,37 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.7.1 source.** Build a sedan around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.9.0 source.** Build any of six body styles around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
 ![Opening hood and four-rotor twin-screw engine in the actual game](docs/screenshots/hood-rotor4-twin-screw.png)
+
+## All six chassis / body styles
+
+Choose **Classic Sedan, Hatchback, Sports Coupe, Utility SUV, Panel Van or Touring Sedan**. All support combustion, hybrid, plug-in hybrid and 400/800 V electric builds. These are selectable bodies on the shared 2.65 m wheelbase; the installed components determine performance.
+
+### Blender previews
+
+Click any image to enlarge it. These are Blender reference renders; actual Minecraft captures follow below.
+
+| Classic Sedan | Hatchback | Sports Coupe |
+|---|---|---|
+| ![Classic Sedan](docs/body-review/stock-front.png) | ![Hatchback](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe](docs/body-styles/blender/sports_car-front.png) |
+| Utility SUV | Panel Van | Touring Sedan |
+| ![Utility SUV](docs/body-styles/blender/suv-front.png) | ![Panel Van](docs/body-styles/blender/van-front.png) | ![Touring Sedan](docs/body-styles/blender/touring_sedan-front.png) |
+
+### Actual Minecraft views
+
+| Hatchback | Sports Coupe |
+|---|---|
+| ![Hatchback in Minecraft](docs/body-styles/native/hatchback-front.png) | ![Sports Coupe in Minecraft](docs/body-styles/native/sports_car-front.png) |
+| Utility SUV | Panel Van |
+| ![Utility SUV in Minecraft](docs/body-styles/native/suv-front.png) | ![Panel Van in Minecraft](docs/body-styles/native/van-front.png) |
+| Touring Sedan | Classic Sedan |
+| ![Touring Sedan in Minecraft](docs/body-styles/native/touring_sedan-front.png) | ![Classic Sedan in Minecraft](docs/screenshots/hood-rotor4-twin-screw.png) |
+
+In Creative, select the named vehicle crate from the mod tab. In Survival, combine your vehicle crate with a coachwork kit, or fit a kit to your parked, switched-off, unplugged and jacked-up car. The old body kit is returned, and installed parts, wear, fuel and battery charge are retained. **[All front/rear/side/open/underbody views, recipes and installation instructions](docs/BODY_STYLES.md)**.
 
 ## Connected powertrain components
 
@@ -36,7 +62,7 @@ Piston engines have individual piston/ring/bearing/valve assemblies; rotary engi
 
 Regen follows the electrical drive path and wheel contact independently of brake pads. Motor/inverter heat belongs to the removable part and feeds the cooling circuit. The HV harness and contactor gate READY and charging. These remain calibrated component simulations; hybrids now combine mechanical engine drive, electric assistance and surplus charging. See [hybrid behavior and measured performance](docs/HYBRID_AND_PERFORMANCE.md).
 
-| Combustion AWD | Electric AWD | Series hybrid AWD |
+| Combustion AWD | Electric AWD | Parallel hybrid AWD |
 |---|---|---|
 | ![AWD gearbox, transfer case, differentials and CV shafts](docs/drivetrain-review/combustion-awd.png) | ![Independent front and rear electric drive units](docs/drivetrain-review/electric-awd.png) | ![Parallel hybrid engine drive and electric axles](docs/drivetrain-review/parallel-hybrid-awd.png) |
 
