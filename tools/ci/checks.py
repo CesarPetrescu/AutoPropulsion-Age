@@ -36,7 +36,7 @@ def junit(directory, minimum=105):
     return {'junit_passed': len(cases), 'suites': len(files)}
 
 
-def server(log, minimum=62):
+def server(log, minimum=64):
     counts = re.findall(r'All (\d+) required tests passed', log)
     require(counts and int(counts[-1]) >= minimum, 'Missing complete dedicated GameTest PASS')
     require(not re.search(r'\d+ required tests failed|GameTest.*FAILED', log, re.I), 'Dedicated GameTest failure')
@@ -48,7 +48,9 @@ def server(log, minimum=62):
         require('CONFIGURED_COMPONENTS_SERVER_PASS '+case in log, 'Missing native configured component test: '+case)
     for marker in ('BODY_CRATE_CONVERSION_SERVER_PASS 150','BODY_PERSISTENCE_SERVER_PASS 30','BODY_DRIVING_SERVER_MATRIX_PASS 30'):
         require(marker in log,'Missing '+marker)
-    return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294}
+    for marker in ('CHARGER_NEIGHBOR_VISIBILITY_PASS 96','CHARGER_MODEL_SHAPE_PASS 16'):
+        require(marker in log, 'Missing '+marker)
+    return {'dedicated_gametests_passed': int(counts[-1]), 'drivetrain_engine_cases': 294,'charger_neighbor_faces':96,'charger_shape_rotations':16}
 
 
 def client(log, result, mode):
@@ -126,6 +128,8 @@ def inspect_jar(path):
                      'com/photonspark/sparkmotors/client/ElectricScreen.class',
                      'com/photonspark/sparkmotors/client/ChargerScreen.class',
                      'com/photonspark/sparkmotors/client/ChargerRenderer.class',
+                     'com/photonspark/sparkmotors/client/CarGlass.class',
+                     'com/photonspark/sparkmotors/charging/ChargerShapes.class',
                        'assets/sparkmotors/models/entity/sedan.mesh.gz', 'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
                        'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz', 'assets/sparkmotors/models/entity/lod-manifest.json', 'assets/sparkmotors/sounds.json'):
             require(name in names, f'Missing runtime entry: {name}')

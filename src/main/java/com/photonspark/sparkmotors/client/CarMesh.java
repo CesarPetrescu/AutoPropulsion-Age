@@ -199,6 +199,7 @@ public final class CarMesh {
     }
     public static void render(CarEntity car,float partial,PoseStack poses,MultiBufferSource buffers,int light,boolean preview,boolean engineOnly,boolean cutaway,String highlight){
         long started=PROFILE&&!preview?System.nanoTime():0;int submitted=0;
+        try(var glass=CarGlass.begin(preview,buffers)){
         ElectricGeometry.render(car,poses,buffers,light,preview,engineOnly);
         float panel=Mth.lerp(partial,car.oldPanelProgress,car.panelProgress);
         float hood=Mth.lerp(partial,car.oldHoodProgress,car.hoodProgress);
@@ -254,11 +255,11 @@ public final class CarMesh {
                     poses.translate(-x,-.34,-z);
             }
             boolean closed=closedShells.contains(c);
-            VertexConsumer buffer=buffers.getBuffer(c.kind==2
-                ?(closed?RenderType.entityTranslucentCull(WHITE):RenderType.entityTranslucent(WHITE))
-                :(closed?RenderType.entityCutout(WHITE):RenderType.entityCutoutNoCull(WHITE)));
+            VertexConsumer buffer=c.kind==2?glass.buffer(closed)
+                :buffers.getBuffer(closed?RenderType.entityCutout(WHITE):RenderType.entityCutoutNoCull(WHITE));
             var pose=poses.last();int brightness=c.kind==3&&car.lights()&&car.mechanics().capability("body.lamps")>.2&&CircuitPhysics.batteryCharge(car.mechanics())>.1?LightTexture.FULL_BRIGHT:light;
             for(int triangle=0;triangle<colors.length;triangle+=3){
+                if(c.kind==2&&closed&&!preview&&!CarGlass.frontFacing(pose.pose(),vertices,triangle))continue;
                 for(int k=0;k<4;k++){
                     int i=triangle+Math.min(k,2),v=i*6;
                     int color=c.kind==1?0xFF000000|car.paint():colors[i];
@@ -284,6 +285,7 @@ public final class CarMesh {
             poses.popPose();
         }
         if(!engineOnly){poses.pushPose();poses.translate(0,car.bodyStyle().cabinY(),car.bodyStyle().cabinZ());CockpitInstruments.render(car,poses,buffers,light);poses.popPose();}
+        } // Flush preview glass only after the complete opaque model and cockpit instruments.
         if(started!=0&&profileCount<profileTimes.length){profileTimes[profileCount++]=System.nanoTime()-started;profileTriangles+=submitted;}
     }
     public static net.minecraft.world.phys.Vec3 componentCenter(CarEntity car,String key){

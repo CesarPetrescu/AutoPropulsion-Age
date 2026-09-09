@@ -82,6 +82,12 @@ neoForge {
             programArguments.addAll '--width', '1440', '--height', '900'
             systemProperty 'sparkmotors.clientElectricSmoke', 'true'
         }
+        clientVisibility {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientVisibility', 'true'
+            systemProperty 'sparkmotors.visibilityGraphics', providers.gradleProperty('visibilityGraphics').getOrElse('fancy')
+        }
         clientShellSmoke {
             client()
             programArguments.addAll '--width', '1440', '--height', '900'

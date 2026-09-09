@@ -1,0 +1,79 @@
+name: Glass and charger visibility
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  native:
+    name: Visibility (${{ matrix.profile }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [fast, fancy, fabulous, baseline]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-test-runtime
+        with:
+          native: 'true'
+      - name: Record exact source and apply the baseline negative control
+        env:
+          PROFILE: ${{ matrix.profile }}
+        run: |
+          mkdir -p build/ci/visibility
+          git rev-parse HEAD > build/ci/visibility/source.txt
+          if [ "$PROFILE" = baseline ]; then
+            git show b83ba89e67c73f130df9b35dcb6a2c901e076e5e:src/main/java/com/photonspark/sparkmotors/client/CarMesh.java > src/main/java/com/photonspark/sparkmotors/client/CarMesh.java
+            git show b83ba89e67c73f130df9b35dcb6a2c901e076e5e:src/main/java/com/photonspark/sparkmotors/charging/ChargerBlock.java > src/main/java/com/photonspark/sparkmotors/charging/ChargerBlock.java
+            echo 'Negative control: original rendering/occlusion; current identical test harness' > build/ci/visibility/baseline.txt
+          fi
+      - name: Run real Minecraft visibility probes and close camera views
+        env:
+          PROFILE: ${{ matrix.profile }}
+          LIBGL_ALWAYS_SOFTWARE: 'true'
+          LP_NUM_THREADS: '2'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          graphics="$PROFILE"
+          if [ "$PROFILE" = baseline ]; then graphics=fancy; fi
+          rm -f run/visibility-*.json
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon --max-workers=2 -PwithGameTests -PvisibilityGraphics="$graphics" runClientVisibility 2>&1 | tee build/ci/visibility/client.log
+          python3 - "$graphics" "$PROFILE" <<'PY'
+          import json,sys,pathlib
+          mode,profile=sys.argv[1:]
+          data=json.loads(pathlib.Path(f'run/visibility-{mode}.json').read_text())
+          assert len(data['captures'])==140,('Incomplete capture matrix',len(data['captures']),data['failures'])
+          probes=[c for c in data['captures'] if c['witness']]
+          assert len(probes)==72
+          for c in probes:
+              assert c['controlLimePixels']>=25 and c['glassChangedPixels']>=50 and c['tintedWitnessPixels']>=10,c
+              assert pathlib.Path('run/screenshots',c['control']).is_file(),c['control']
+          chargers=[c for c in data['captures'] if c.get('charger')]
+          assert len(chargers)==32
+          if profile=='baseline':
+              assert data['result']=='FAIL' and any(c['limePixels']<25 for c in probes),'Negative control must reproduce hidden objects'
+              assert any(c['baseSkyPixels']>8 for c in chargers),'Negative control must reproduce the terrain hole'
+          else:
+              assert data['result']=='PASS' and not data['failures'],data['failures']
+          print(profile, data['result'],len(probes),'witness probes',len(data['failures']),'failures')
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: evidence-visibility-${{ matrix.profile }}
+          path: |
+            build/ci/visibility/
+            build/ci/graphics.txt
+            run/visibility-*.json
+            run/screenshots/visibility-*.png
+            run/logs/
+            run/crash-reports/
+          retention-days: 14

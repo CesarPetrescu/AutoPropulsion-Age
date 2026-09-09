@@ -48,11 +48,12 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        log='All 62 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
+        log='All 64 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
         log+='\n'+'\n'.join('CONFIGURED_COMPONENTS_SERVER_PASS '+case for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'))
         log+='\nBODY_CRATE_CONVERSION_SERVER_PASS 150\nBODY_PERSISTENCE_SERVER_PASS 30\nBODY_DRIVING_SERVER_MATRIX_PASS 30'
-        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 62)
-        for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
+        log+='\nCHARGER_NEIGHBOR_VISIBILITY_PASS 96\nCHARGER_MODEL_SHAPE_PASS 16'
+        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 64)
+        for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin','CHARGER_NEIGHBOR_VISIBILITY_PASS 96','CHARGER_MODEL_SHAPE_PASS 16'):
             with self.assertRaises(ValueError):checks.server(log.replace(marker,''))
 
     def test_server_missing_driving_matrix_blocks_release(self):
@@ -144,6 +145,8 @@ class ReleaseGates(unittest.TestCase):
                          'com/photonspark/sparkmotors/client/ElectricScreen.class',
                          'com/photonspark/sparkmotors/client/ChargerScreen.class',
                          'com/photonspark/sparkmotors/client/ChargerRenderer.class',
+                         'com/photonspark/sparkmotors/client/CarGlass.class',
+                         'com/photonspark/sparkmotors/charging/ChargerShapes.class',
                          'assets/sparkmotors/models/entity/sedan.mesh.gz',
                          'assets/sparkmotors/models/entity/sedan-lod1.mesh.gz',
                          'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz',
