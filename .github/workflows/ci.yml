@@ -118,6 +118,8 @@ jobs:
       - name: Validate selectable bodies and editable Blender sources
         run: |
           python tools/body_review/validate.py --report
+          python -m unittest discover -s tools/body_review/tests -v
+          python tools/body_review/topology.py --report build/ci/resources/body-topology.json
           mkdir -p build/ci/resources/body-roundtrip
           for body in hatchback sports_car suv van touring_sedan; do
             blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "build/ci/resources/body-roundtrip/$body.mesh.gz" --check
@@ -161,6 +163,8 @@ jobs:
             task: runClientGraphics
           - mode: body
             task: runClientBodySmoke
+          - mode: shell
+            task: runClientShellSmoke
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -173,6 +177,7 @@ jobs:
           TEST_TASK: ${{ matrix.task }}
           TEST_MODE: ${{ matrix.mode }}
         run: |
+          rm -f run/shell-smoke-result.* run/screenshots/seams-*.png
           xvfb-run -a -s '-screen 0 1600x1000x24' ./gradlew --no-daemon --max-workers=2 -PwithGameTests "$TEST_TASK" 2>&1 | tee build/ci/client.log
           python tools/ci/checks.py "$TEST_MODE" --log build/ci/client.log --report build/ci/client.json
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -185,6 +190,8 @@ jobs:
             run/electric-smoke-result.txt
             run/body-smoke-result.txt
             run/body-smoke-result.json
+            run/shell-smoke-result.txt
+            run/shell-smoke-result.json
             run/logs/
             run/screenshots/
             run/crash-reports/
