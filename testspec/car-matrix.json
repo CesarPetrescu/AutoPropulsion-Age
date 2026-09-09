@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "description": "Generated car-system test matrix policy. Production enums are the source of truth; CI fails if any expected layer is incomplete.",
+  "coverage_strategy": {
+    "engine_hardware": "exhaustive",
+    "composed_simulation": "full cross-product",
+    "native_world": "full body x powertrain x layout x differential cross-product",
+    "stateful_actions": "deterministic seeded fuzz"
+  },
+  "expected": {
+    "engine_compatibility_combinations": 1835008,
+    "engine_drive_cases_min": 7308,
+    "composed_sim_cases": 15984,
+    "native_world_cases": 270
+  },
+  "fuzz": {
+    "pull_request_sequences": 1000,
+    "max_actions_per_sequence": 32,
+    "seed": 424242
+  },
+  "invariants": [
+    "finite_state",
+    "no_negative_energy",
+    "no_negative_fuel",
+    "configuration_roundtrip",
+    "powertrain_topology_available",
+    "drive_brake_progress",
+    "component_identity_preserved",
+    "pre_and_post_drive_persistence"
+  ]
+}

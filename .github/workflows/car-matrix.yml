@@ -1,0 +1,91 @@
+name: Generated car matrix
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: car-matrix-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  linux-native:
+    name: Full generated matrix + native world
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CI: 'true'
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      LP_NUM_THREADS: '2'
+      ALSOFT_DRIVERS: 'null'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-test-runtime
+      - name: Run exhaustive/composed simulation and real Minecraft matrix
+        run: |
+          mkdir -p build/ci/car-matrix
+          ./gradlew --no-daemon --max-workers=2 -PwithGameTests :sim:test --rerun runGameTestServer 2>&1 | tee build/ci/car-matrix/server.log
+      - name: Merge and fail-close the matrix evidence
+        run: |
+          python tools/matrix/report.py \
+            --server-log build/ci/car-matrix/server.log \
+            --output-dir build/ci/car-matrix/report \
+            | tee build/ci/car-matrix/report-console.txt
+          cat build/ci/car-matrix/report/matrix-report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: generated-car-matrix-linux
+          path: |
+            build/ci/car-matrix/
+            sim/build/reports/generated-car-matrix.json
+            sim/build/reports/engine-states.json
+            sim/build/reports/engine-driving-matrix.json
+            sim/build/test-results/
+            run/gametest/logs/
+            run/gametest/crash-reports/
+          retention-days: 14
+
+  macos-m1:
+    name: macOS M1 composed simulation matrix
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require Apple Silicon runner
+        run: |
+          uname -a
+          test "$(uname -m)" = arm64
+          sysctl -n machdep.cpu.brand_string
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5
+        with:
+          validate-wrappers: true
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: Run the same composed matrix and deterministic fuzz on M1
+        run: ./gradlew --no-daemon --max-workers=2 :sim:test --tests 'com.photonspark.sparkmotors.sim.GeneratedCarMatrixTest'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: generated-car-matrix-macos-m1
+          path: |
+            sim/build/reports/generated-car-matrix.json
+            sim/build/test-results/
+            sim/build/reports/tests/
+          retention-days: 14
