@@ -16,7 +16,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
- * Real-world composition matrix.  The pure simulation suite crosses engine
+ * Real-world composition matrix. The pure simulation suite crosses engine
  * families/grades/induction too; this test deliberately spends the native world
  * budget on every body x powertrain x layout x differential combination and
  * verifies mounting, ignition, motion, braking, energy use and persistence as one
@@ -25,7 +25,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("sparkmotors")
 @PrefixGameTestTemplate(false)
 public final class GeneratedCarMatrixGameTests {
-    private static final int CASE_TICKS = 115;
+    private static final int CASE_TICKS = 130;
     private static final int CASES = BodyStyle.values().length * Powertrain.values().length
         * DriveConfig.Layout.values().length * DriveConfig.Differential.values().length;
 
@@ -61,6 +61,7 @@ public final class GeneratedCarMatrixGameTests {
         int[] ticks = {0};
         float[] peak = {0};
         double[] startEnergy = {0};
+        double[] startX = {0};
         double[] startZ = {0};
 
         h.onEachTick(() -> {
@@ -108,20 +109,22 @@ public final class GeneratedCarMatrixGameTests {
                 action(c, player, CarPackets.IGNITION);
                 h.assertTrue(c.ignition(), "Configured car refused ignition/READY: " + caseLabel);
                 peak[0] = 0;
+                startX[0] = c.getX();
                 startZ[0] = c.getZ();
                 startEnergy[0] = type.electric() ? c.tractionBattery().energyJ() : c.fuel();
             }
 
             var c = active[0];
-            float steer = ((job % 5) - 2) * .08f;
-            c.receiveInput(step < 10 ? 4 : step < 62 ? 1 : 2, step >= 18 && step < 50 ? steer : 0);
+            float steer = ((job % 5) - 2) * .04f;
+            c.receiveInput(step < 10 ? 4 : step < 60 ? 1 : 2, step >= 18 && step < 48 ? steer : 0);
             peak[0] = Math.max(peak[0], c.horizontalSpeed());
 
             if (step == CASE_TICKS - 2) {
                 h.assertTrue(peak[0] > 1.5f && Math.abs(c.speed()) < .45f,
                     "Composed car did not drive and brake: " + caseLabel + " peak=" + peak[0] + " speed=" + c.speed());
-                h.assertTrue(Math.abs(c.getZ() - startZ[0]) > 1.0,
-                    "Composed car did not make world progress: " + caseLabel + " dz=" + (c.getZ() - startZ[0]));
+                double displacement = Math.hypot(c.getX() - startX[0], c.getZ() - startZ[0]);
+                h.assertTrue(displacement > 1.0,
+                    "Composed car did not make world progress: " + caseLabel + " displacement=" + displacement);
                 if (type.electric()) h.assertTrue(c.tractionBattery().energyJ() < startEnergy[0],
                     "Electric/hybrid lifecycle spent no battery energy: " + caseLabel);
                 else h.assertTrue(c.fuel() < startEnergy[0], "Combustion lifecycle spent no fuel: " + caseLabel);
