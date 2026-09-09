@@ -1,0 +1,41 @@
+name: Shell repair workspace
+on:
+  push:
+    branches: [fix/body-shell-topology]
+    paths: [.github/workflows/shell-workspace.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive exact source
+        run: |
+          git rev-parse HEAD > source-commit.txt
+          git archive --format=tar HEAD | gzip -1 > source.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shell-source
+          path: |
+            source.tar.gz
+            source-commit.txt
+          retention-days: 3
+      - name: Fetch and verify official Blender
+        run: |
+          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz -o blender.tar.xz
+          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3.sha256 -o blender.sha256
+          python3 - <<'PY'
+          import hashlib,pathlib
+          line=next(x for x in pathlib.Path('blender.sha256').read_text().splitlines() if x.split()[-1].lstrip('*')=='blender-4.2.3-linux-x64.tar.xz')
+          with open('blender.tar.xz','rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==line.split()[0]
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shell-blender
+          path: |
+            blender.tar.xz
+            blender.sha256
+          compression-level: 0
+          retention-days: 2
