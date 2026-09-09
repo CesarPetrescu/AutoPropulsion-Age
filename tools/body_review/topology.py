@@ -34,14 +34,30 @@ class SurfaceRays:
     def __init__(self,chunks):
         self.p=np.array([v[:3] for c in chunks for v in c['vertices']],dtype=float).reshape(-1,3,3)
         self.e1=self.p[:,1]-self.p[:,0];self.e2=self.p[:,2]-self.p[:,0]
-    def hit(self,origin,direction,limit=.25):
+    def first_hit(self,origin,direction,limit=.25):
         d=np.asarray(direction,dtype=float);h=np.cross(d,self.e2);det=np.einsum('ij,ij->i',self.e1,h)
         # Positive determinant only: strict BACKFACE CULLING, including inside-to-outside rays.
         valid=det>1e-9;inv=np.zeros_like(det);inv[valid]=1/det[valid]
         s=np.asarray(origin)-self.p[:,0];u=inv*np.einsum('ij,ij->i',s,h)
         q=np.cross(s,self.e1);v=inv*np.einsum('j,ij->i',d,q);t=inv*np.einsum('ij,ij->i',self.e2,q)
         valid &= (u>=-1e-7)&(v>=-1e-7)&(u+v<=1+1e-7)&(t>1e-6)&(t<=limit)
-        return bool(valid.any())
+        return float(t[valid].min()) if valid.any() else float('inf')
+    def hit(self,origin,direction,limit=.25):
+        return bool(np.isfinite(self.first_hit(origin,direction,limit)))
+
+
+def rear_plate_visible(chunks):
+    """The registration plate must be the first opaque surface from behind, not inside a bumper."""
+    target=[c for c in chunks if c['name']=='rear_plate']
+    if len(target)!=1:return False
+    others=[c for c in chunks if c['name']!='rear_plate' and c['kind']!=2 and c['variant']<=1]
+    points=np.array([v[:3] for v in target[0]['vertices']])
+    center=(points.min(axis=0)+points.max(axis=0))*.5
+    near=min(v[2] for c in [*target,*others] for v in c['vertices'])-.10
+    origin=(float(center[0]),float(center[1]),near)
+    plate=SurfaceRays(target).first_hit(origin,(0,0,1),10)
+    obstruction=SurfaceRays(others).first_hit(origin,(0,0,1),10) if others else float('inf')
+    return bool(np.isfinite(plate) and plate<=obstruction+1e-6)
 
 
 def probes(b):
@@ -105,6 +121,7 @@ def analyze(root):
             related=[d for d in chunks if d['name'] in ('window_'+side+'_front','window_'+side+'_front_frame','door_card_'+side+'_front')]
             same=lambda d:all(d[k]==c[k] for k in ('hinge','px','py','pz','angle'))
             checks.append({'test':'door-assembly-pivot:'+side,'passed':len(related)==3 and all(same(d) for d in related)})
+        checks.append({'test':'rear-registration-plate-not-occluded','passed':rear_plate_visible(candidates)})
         if solids:
             required_manifest=all(c['name'] in solids for c in candidates)
             checks.append({'test':'every-body-surface-declared-closed','passed':required_manifest})
