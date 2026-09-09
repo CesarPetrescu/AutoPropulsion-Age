@@ -71,7 +71,8 @@ jobs:
       - name: Commit real repaired files and remove the one-shot transport
         run: |
           git rm .ci/closed-shell-0.txt .ci/closed-shell-1.txt .ci/closed-shell-2.txt .github/workflows/deliver-closed-shell.yml
-          git add src sim tools docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md docs/body-styles/blender assets/body_styles build.gradle gradle.properties .github/workflows/ci.yml
+          git add src sim tools docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md assets/body_styles build.gradle gradle.properties .github/workflows/ci.yml
+          git add -f docs/body-styles/blender/*.png
           python - <<'PY'
           import subprocess
           changed=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
