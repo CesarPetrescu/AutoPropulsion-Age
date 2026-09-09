@@ -56,7 +56,7 @@ class BodyStyleTest {
             assertEquals(-body.tail()-.025,body.exhaustZ(-2.30),1e-10);
         }
     }
-    @Test voidChargingAndSeatMountsRemainInsideTheirOwnBodyEnvelope(){
+    @Test void chargingAndSeatMountsRemainInsideTheirOwnBodyEnvelope(){
         for(var body:BodyStyle.values()){
             assertTrue(body.chargeX()>body.halfWidth());
             assertTrue(body.chargeX()<body.broadHalfWidth());
