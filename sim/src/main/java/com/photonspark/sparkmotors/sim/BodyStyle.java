@@ -42,7 +42,7 @@ public enum BodyStyle {
     public double roofRear(){return roofRear;}
     public double cabinY(){return cabinY;}
     public double cabinZ(){return cabinZ;}
-    public double seatY(){return .18+cabinY;}
+    public double seatY(){return .18+Math.max(0,cabinY);}
     public double seatZ(){return .12+cabinZ;}
     public double broadHalfWidth(){return halfWidth+.17;}
     public double broadHalfLength(){return Math.max(nose,tail)+.10;}

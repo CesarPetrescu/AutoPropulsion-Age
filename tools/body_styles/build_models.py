@@ -61,16 +61,26 @@ def metadata(name,category=3,group=-1,variant=0,hinge=0,pivot=(0,0,0),angle=0,ki
     return dict(name=name,category=category,group=group,variant=variant,hinge=hinge,px=pivot[0],py=pivot[1],pz=pivot[2],angle=angle,family=127,slot=-1,tier=0,induction=127,kind=kind)
 
 
-def make(name,vertices,faces,color=PAINT,category=3,group=-1,variant=0,hinge=0,pivot=(0,0,0),angle=0,kind=None):
+def make(name,vertices,faces,color=PAINT,category=3,group=-1,variant=0,hinge=0,pivot=(0,0,0),angle=0,kind=None,bevel=0.0):
     kind=(1 if color==PAINT else 2 if color==GLASS else 0) if kind is None else kind
     md=metadata(name,category,group,variant,hinge,pivot,angle,kind)
     me=bpy.data.meshes.new(name);me.from_pydata([native(v) for v in vertices],[],faces);me.update()
-    bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
+    bm=bmesh.new();bm.from_mesh(me)
+    if bevel:
+        bmesh.ops.bevel(bm,geom=list(bm.edges),offset=bevel,segments=1,affect='EDGES')
+    bmesh.ops.triangulate(bm,faces=list(bm.faces))
+    degenerate=[face for face in bm.faces if face.calc_area()<1e-12]
+    if degenerate:bmesh.ops.delete(bm,geom=degenerate,context='FACES_ONLY')
+    bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.normal_update()
+    bm.to_mesh(me);bm.free()
     ob=bpy.data.objects.new(name,me);bpy.context.scene.collection.children['Coachwork'].objects.link(ob);me.materials.append(mat(color,kind))
     ob['apa_metadata']=json.dumps(md,sort_keys=True);ob['apa_color']=f'{color:08x}';ob.hide_render=variant>1;body_objects.append(ob)
     me.calc_loop_triangles();data=[]
     for tri in me.loop_triangles:
-        n=runtime(tri.normal)
+        a,b,c=(me.vertices[i].co for i in tri.vertices)
+        normal=(b-a).cross(c-a)
+        if normal.length_squared<4e-24:continue
+        n=runtime(normal.normalized())
         for vi in tri.vertices:data.append((*runtime(me.vertices[vi].co),*n,color))
     body_chunks.append(dict(md,vertices=data))
     return ob
@@ -145,15 +155,16 @@ def copy_fitted(s):
         if name.startswith('door_card_'):continue # Reauthored with the correct new door pivots.
         if s['id'] in ('van','sports_car') and name=='rear_bench':continue
         c=dict(original);verts=[]
+        local_dy=max(0,dy) if name.startswith(('front_seat_','floor_mat_')) or name.endswith('_pedal') else dy
         factor=(s['tail']+.025-1.30)/(2.30-1.30)
         for x,y,z,nx,ny,nz,color in c['vertices']:
-            if cabin:y+=dy;z+=dz
+            if cabin:y+=local_dy;z+=dz
             elif z< -1.30:
                 z=-1.30+(z+1.30)*factor
                 normal=Vector((nx,ny,nz/factor));normal.normalize();nx,ny,nz=normal
             verts.append((x,y,z,nx,ny,nz,color))
         c['vertices']=verts
-        if cabin:c['py']+=dy;c['pz']+=dz
+        if cabin:c['py']+=local_dy;c['pz']+=dz
         elif c['pz']< -1.30:c['pz']=-1.30+(c['pz']+1.30)*factor
         body_chunks.append(c)
         import_chunk(c,bpy.context.scene.collection.children['Coachwork'])
@@ -161,7 +172,7 @@ def copy_fitted(s):
 
 def author(s):
     name=s['id'];w=s['halfWidth'];nose=s['nose'];tail=s['tail'];belt=s['belt'];roof=s['roof']
-    cf=s['cabinFront'];cr=s['cabinRear'];rf=s['roofFront'];rr=s['roofRear'];floor=.43+s['cabinY']
+    cf=s['cabinFront'];cr=s['cabinRear'];rf=s['roofFront'];rr=s['roofRear'];floor=max(.43,.43+s['cabinY'])
     # Open-center floor keeps the gearbox/shaft tunnel and every traction pack unobstructed.
     for side in (-1,1):
         x0,x1=(.23,w-.06) if side>0 else (-w+.06,-.23)
@@ -257,7 +268,7 @@ def author(s):
     tube('windshield_seal',windshield+[windshield[0]],.014,BLACK,category=5)
     for x in (-.42,.13):tube('wiper_'+str(x),[(x,belt+.033,cf+.005),(x+.27,belt+.075,cf-.055)],.009,BLACK,category=5)
     # Bonnet is kept above the tallest of all existing cylinder heads and induction kits.
-    hood_back=cf-.005;hood_front=nose-.085
+    hood_back=cf-.005;hood_front=nose-.032
     hood_y=max(belt+.015,1.057);pivot=(0,hood_y,hood_back)
     hood_vertices=[]
     for z in (hood_back,1.62,hood_front):
@@ -271,7 +282,7 @@ def author(s):
     for variant in (1,2):
         # Chamfered bumper cheek shape; the sports coupe receives a wider low grille.
         low=.395 if variant==2 else .44
-        box('front_bumper',(-w+.012,low,nose-.12),(w-.012,.765,nose),PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant)
+        box('front_bumper',(-w+.012,low,nose-.12),(w-.012,.765,nose),PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant,bevel=.04)
         box('front_lower_grille',(-.51,.49,nose+.001),(.51,.675,nose+.015),BLACK,group=5,variant=variant)
         for zline in (.515,.55,.585,.62,.655):box('grille_slat_'+str(zline),(-.485,zline,nose+.014),(.485,zline+.007,nose+.019),PLASTIC,group=5,variant=variant)
         if variant==2:box('front_splitter',(-w-.02,.389,nose-.07),(w+.02,.413,nose+.041),BLACK,group=5,variant=2)
@@ -285,7 +296,7 @@ def author(s):
         box('front_indicator_'+str(side),(xx-.14,yy-height*.55,nose+.024),(xx+.14,yy-height*.43,nose+.027),AMBER,category=6,kind=3)
     box('front_badge',(-.036,.94,nose+.022),(.036,1.002,nose+.03),CHROME,category=5)
     box('front_plate',(-.24,.685,nose+.018),(.24,.755,nose+.025),WHITE,category=5)
-    box('rear_bumper',(-w+.02,.43,-tail),(w-.02,.78,-tail+.10),PLASTIC if name in ('suv','van') else PAINT)
+    box('rear_bumper',(-w+.02,.43,-tail),(w-.02,.78,-tail+.10),PLASTIC if name in ('suv','van') else PAINT,bevel=.035)
     box('rear_plate_recess',(-.28,.79,-tail-.007),(.28,.91,-tail+.019),BLACK,category=5)
     box('rear_plate',(-.23,.815,-tail-.013),(.23,.89,-tail-.008),WHITE,category=5)
     for side in (-1,1):

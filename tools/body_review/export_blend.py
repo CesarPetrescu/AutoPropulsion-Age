@@ -25,7 +25,7 @@ def export() -> tuple[dict,list[dict]]:
     assert profile['id'] in ('hatchback','sports_car','suv','van','touring_sedan')
     collection=bpy.context.scene.collection.children.get('Coachwork');assert collection is not None
     chunks=[];deps=bpy.context.evaluated_depsgraph_get()
-    for ob in collection.all_objects:
+    for ob in list(collection.all_objects):
         if ob.type!='MESH' or ob.get('apa_reference_only',False):continue
         if 'apa_metadata' not in ob:raise ValueError('Mesh lacks service/export metadata: '+ob.name)
         md=json.loads(ob['apa_metadata'])
@@ -33,10 +33,12 @@ def export() -> tuple[dict,list[dict]]:
         try:
             mesh.transform(ob.matrix_world);mesh.calc_loop_triangles();vertices=[]
             for tri in mesh.loop_triangles:
-                if tri.area<1e-14:continue
+                if tri.area<1e-12:continue
                 if tri.material_index>=len(mesh.materials) or mesh.materials[tri.material_index] is None:
                     raise ValueError('Missing material: '+ob.name)
-                rgba=color(mesh.materials[tri.material_index]);n=runtime(tri.normal)
+                rgba=color(mesh.materials[tri.material_index])
+                a,b,c=(mesh.vertices[i].co for i in tri.vertices)
+                n=runtime((b-a).cross(c-a).normalized())
                 for i in tri.vertices:
                     xyz=runtime(mesh.vertices[i].co)
                     if not all(math.isfinite(v) for v in (*xyz,*n)):raise ValueError('Non-finite edited geometry: '+ob.name)
