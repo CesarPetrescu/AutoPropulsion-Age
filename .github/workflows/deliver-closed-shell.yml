@@ -61,6 +61,8 @@ jobs:
           tar -xJf /tmp/blender.tar.xz -C /tmp
           echo /tmp/blender-4.2.3-linux-x64 >> "$GITHUB_PATH"
       - name: Regenerate actual Blender projects, game meshes and preview renders
+        env:
+          APA_BODY_RENDER: '1'
         run: |
           mkdir -p build/ci/delivery
           blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee build/ci/delivery/blender.log
@@ -86,19 +88,26 @@ jobs:
             blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "/tmp/$body.mesh.gz" --check 2>&1 | tee "build/ci/delivery/roundtrip-$body.log"
             grep -q BODY_BLENDER_ROUNDTRIP_PASS "build/ci/delivery/roundtrip-$body.log"
           done
+      - name: Preserve generated repairs independently of Git staging
+        run: |
+          tar -czf build/ci/delivery/repaired-files.tar.gz src sim tools assets/body_styles docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md build.gradle gradle.properties .github/workflows/ci.yml
       - name: Commit real repaired files and remove the one-shot transport
         run: |
           git rm .ci/closed-shell-0.txt .ci/closed-shell-1.txt .ci/closed-shell-2.txt .github/workflows/deliver-closed-shell.yml
           git add src sim tools docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md assets/body_styles build.gradle gradle.properties .github/workflows/ci.yml
-          git add -f docs/body-styles/blender/*.png
+          git add -u
           python - <<'PY'
-          import subprocess
+          import pathlib,subprocess
+          previews=pathlib.Path('docs/body-styles/blender')
+          for image in sorted(previews.glob('*.png')):
+              subprocess.run(['git','add','-f','--',str(image)],check=True)
           changed=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
           for body in ('hatchback','sports_car','suv','van','touring_sedan'):
               assert f'assets/body_styles/{body}.blend' in changed,body+' Blender file missing from commit'
               assert f'src/main/resources/assets/sparkmotors/models/entity/bodies/{body}.mesh.gz' in changed,body+' game mesh missing from commit'
           for name in ('tools/body_styles/shell_geometry.py','tools/body_review/topology.py','src/main/java/com/photonspark/sparkmotors/client/CarMesh.java'):
               assert name in changed,name+' missing from commit'
+          print('ACTUAL_REPAIR_FILES_STAGED',len(changed))
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
