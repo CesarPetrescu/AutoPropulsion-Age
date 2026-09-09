@@ -27,25 +27,27 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
-      - name: Apply bounded export corrections
+      - name: Apply bounded export and clearance corrections
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          def replace(s,old,new):
+              if new in s:return s
+              assert s.count(old)==1,(old,s.count(old))
+              return s.replace(old,new)
           p=Path('tools/body_styles/build_models.py');s=p.read_text()
           if 'degenerate=[face for face in bm.faces' not in s:
-              s=s.replace('angle=0,kind=None):','angle=0,kind=None,bevel=0.0):',1)
+              s=replace(s,'angle=0,kind=None):','angle=0,kind=None,bevel=0.0):')
               old='bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()'
               new='''bm=bmesh.new();bm.from_mesh(me)
               if bevel:
                   bmesh.ops.bevel(bm,geom=list(bm.edges),offset=bevel,segments=1,affect='EDGES')
-              # Freeze triangulation in the editable source, discarding collinear door-edge faces.
               bmesh.ops.triangulate(bm,faces=list(bm.faces))
               degenerate=[face for face in bm.faces if face.calc_area()<1e-12]
               if degenerate:bmesh.ops.delete(bm,geom=degenerate,context='FACES_ONLY')
               bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.normal_update()
               bm.to_mesh(me);bm.free()'''
-              assert s.count(old)==1,'Generator changed; review patch before applying'
-              s=s.replace(old,new)
+              s=replace(s,old,new)
               old='''    for tri in me.loop_triangles:
                   n=runtime(tri.normal)
                   for vi in tri.vertices:data.append((*runtime(me.vertices[vi].co),*n,color))'''
@@ -55,22 +57,25 @@ jobs:
                   if normal.length_squared<4e-24:continue
                   n=runtime(normal.normalized())
                   for vi in tri.vertices:data.append((*runtime(me.vertices[vi].co),*n,color))'''
-              assert s.count(old)==1,'Triangle export changed'
-              s=s.replace(old,new)
-              old="PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant)"
-              assert s.count(old)==1;s=s.replace(old,"PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant,bevel=.04)")
+              s=replace(s,old,new)
+              s=replace(s,"PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant)","PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant,bevel=.04)")
               old="box('rear_bumper',(-w+.02,.43,-tail),(w-.02,.78,-tail+.10),PLASTIC if name in ('suv','van') else PAINT)"
-              assert s.count(old)==1;s=s.replace(old,old[:-1]+',bevel=.035)')
-              p.write_text(s)
+              s=replace(s,old,old[:-1]+',bevel=.035)')
+          s=replace(s,"floor=.43+s['cabinY']","floor=max(.43,.43+s['cabinY'])")
+          s=replace(s,'c=dict(original);verts=[]',"c=dict(original);verts=[]\n        local_dy=max(0,dy) if name.startswith(('front_seat_','floor_mat_')) or name.endswith('_pedal') else dy")
+          s=replace(s,'if cabin:y+=dy;z+=dz','if cabin:y+=local_dy;z+=dz')
+          s=replace(s,"if cabin:c['py']+=dy;c['pz']+=dz","if cabin:c['py']+=local_dy;c['pz']+=dz")
+          s=replace(s,'hood_front=nose-.085','hood_front=nose-.032')
+          compile(s,str(p),'exec');p.write_text(s)
+          p=Path('sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java');s=p.read_text()
+          p.write_text(replace(s,'public double seatY(){return .18+cabinY;}','public double seatY(){return .18+Math.max(0,cabinY);}'))
           p=Path('tools/body_review/export_blend.py');s=p.read_text()
           s=s.replace('for ob in collection.all_objects:', 'for ob in list(collection.all_objects):')
           s=s.replace('if tri.area<1e-14:continue','if tri.area<1e-12:continue')
           s=s.replace('rgba=color(mesh.materials[tri.material_index]);n=runtime(tri.normal)', '''rgba=color(mesh.materials[tri.material_index])
                           a,b,c=(mesh.vertices[i].co for i in tri.vertices)
                           n=runtime((b-a).cross(c-a).normalized())''')
-          p.write_text(s)
-          compile(Path('tools/body_styles/build_models.py').read_text(),'build_models.py','exec')
-          compile(s,'export_blend.py','exec')
+          compile(s,str(p),'exec');p.write_text(s)
           PY
       - name: Install pinned Blender and software graphics
         run: |
@@ -81,11 +86,11 @@ jobs:
           python3 - <<'PY'
           import hashlib,pathlib
           line=next(x for x in pathlib.Path('/tmp/blender.sha256').read_text().splitlines() if x.split()[-1].lstrip('*')=='blender-4.2.3-linux-x64.tar.xz')
-          assert hashlib.file_digest(open('/tmp/blender.tar.xz','rb'),'sha256').hexdigest()==line.split()[0]
+          with open('/tmp/blender.tar.xz','rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==line.split()[0]
           PY
           tar -xJf /tmp/blender.tar.xz -C /tmp
           echo /tmp/blender-4.2.3-linux-x64 >> "$GITHUB_PATH"
-          python3 -m pip install Pillow
+          python3 -m pip install Pillow==11.3.0
       - name: Rebuild editable bodies, runtime meshes and review renders
         run: blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee body-authoring.log
       - name: Require all body envelopes and shared mechanical fits
@@ -98,18 +103,22 @@ jobs:
           done
       - name: Commit exact validated assets to the feature branch only
         run: |
-          git add tools/body_styles/build_models.py tools/body_review/export_blend.py assets/body_styles src/main/resources/assets/sparkmotors/models/entity/bodies docs/body-styles
+          find assets/body_styles -name '*.blend1' -delete
+          git add tools/body_styles/build_models.py tools/body_review/export_blend.py sim/src/main/java/com/photonspark/sparkmotors/sim/BodyStyle.java assets/body_styles src/main/resources/assets/sparkmotors/models/entity/bodies docs/body-styles
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --cached --quiet; then
-            git commit -m 'fix: triangulate editable body panels, preserve normals and chamfer bumper edges'
+            git commit -m 'fix: triangulate editable panels, preserve normals and clear coupe traction-pack fins'
             git push origin HEAD:feat/five-body-styles
           fi
           git rev-parse HEAD > body-tested-commit.txt
       - name: Compile and test all simulation and native test sources
         run: ./gradlew --no-daemon -PwithGameTests build :sim:test 2>&1 | tee body-build.log
       - name: Run dedicated Minecraft tests
-        run: ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee body-gametest.log
+        run: |
+          ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee body-gametest.log
+          grep -q 'BODY_CRATE_CONVERSION_SERVER_PASS 150' body-gametest.log
+          grep -q 'BODY_DRIVING_SERVER_MATRIX_PASS 30' body-gametest.log
       - name: Capture all 25 body and powertrain combinations in Minecraft
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
@@ -123,8 +132,15 @@ jobs:
           grep -q '^PASS' run/body-smoke-result.txt
           python3 - <<'PY'
           from pathlib import Path
-          shots=list(Path('run/screenshots').glob('body-*.png'))
-          assert len(shots)==125,(len(shots),'Expected all 125 views, not a partial gallery')
+          import json,struct
+          root=Path('run');data=json.loads((root/'body-smoke-result.json').read_text())
+          assert len(data['cases'])==len(set(data['cases']))==25
+          assert len(data['screenshots'])==len(set(data['screenshots']))==125
+          for name in data['screenshots']:
+              b=(root/'screenshots'/name).read_bytes()
+              assert len(b)>1000 and b[:8]==b'\x89PNG\r\n\x1a\n',name
+              assert struct.unpack('>II',b[16:24])==(1440,900),name
+          print('BODY_SCREENSHOT_FILES_PASS 125; not an automatic visual approval')
           PY
       - name: Existing combustion client regression
         env:
@@ -145,6 +161,7 @@ jobs:
             assets/body_styles/
             docs/body-styles/blender/
             tools/body_review/
+            tools/body_styles/
             build/reports/body-styles/
             sim/build/test-results/
             build/libs/*.jar
