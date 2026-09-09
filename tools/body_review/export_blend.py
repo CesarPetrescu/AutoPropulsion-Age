@@ -50,13 +50,17 @@ def export() -> tuple[dict,list[dict]]:
 
 
 def fingerprint(chunks):
+    # Flat export normals may differ from copied smooth normals. The topology validator
+    # checks generated shell normals against oriented faces; compare winding here.
     # Vertex/triangle order may change when a .blend is reloaded. Compare actual positions and
-    # per-face colors, plus all filtering/hinge metadata, rather than gzip byte order.
+    # winding and per-face colors, plus all filtering/hinge metadata, rather than gzip byte order.
     result=Counter()
     for c in chunks:
         metadata=tuple((k,round(v,5) if isinstance(v,float) else v) for k,v in sorted(c.items()) if k!='vertices')
         for start in range(0,len(c['vertices']),3):
-            triangle=tuple(sorted(tuple(round(v,5) for v in x[:3])+(x[6],) for x in c['vertices'][start:start+3]))
+            vertices=tuple(tuple(round(v,5) for v in x[:3])+(x[6],) for x in c['vertices'][start:start+3])
+            # Cyclic permutations preserve winding; reversing a face MUST fail the roundtrip.
+            triangle=min(vertices[i:]+vertices[:i] for i in range(3))
             result[(metadata,triangle)]+=1
     return result
 

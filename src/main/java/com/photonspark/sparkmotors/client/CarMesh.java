@@ -17,9 +17,15 @@ import java.util.zip.GZIPInputStream;
 public final class CarMesh {
     private static final net.minecraft.resources.ResourceLocation WHITE=AutoPropulsionAge.id("textures/entity/white.png");
     private static List<Chunk> chunks=List.of();
+    // Only independently validated closed shell solids use culling. Legacy component rendering
+    // remains unchanged; this is not a global no-cull workaround for missing body surfaces.
+    private static final Set<Chunk> closedShells=Collections.newSetFromMap(new IdentityHashMap<>());
+    private static final Map<String,Set<String>> shellSurfaces=new HashMap<>();
+    private static final Set<String> REPLACED_WHEELHOUSES=Set.of("wheel_well_rl","wheel_well_rr","wheel_tub_rl","wheel_tub_rr");
     private static final Map<BodyStyle,List<Chunk>> bodyChunks=new EnumMap<>(BodyStyle.class);
     private static List<Chunk> chunks(CarEntity car){return bodyChunks.getOrDefault(car.bodyStyle(),chunks);}
     private static boolean shared(Chunk c){
+        if(REPLACED_WHEELHOUSES.contains(c.name))return false;
         if(c.category>=13)return !(c.category==39||c.group<0&&(c.category==26||c.category==30));
         return c.category==1&&(c.name.startsWith("strut_tower_")||c.name.startsWith("wheel_tub_")||c.name.startsWith("wheel_well_")||c.name.startsWith("engine_inner_wing_")||c.name.equals("front_undertray"));
     }
@@ -36,7 +42,7 @@ public final class CarMesh {
                 float[] v=new float[n*6];int[] colors=new int[n];
                 for(int j=0;j<n;j++){for(int k=0;k<6;k++){float value=in.readFloat();if(!Float.isFinite(value))throw new IOException("Non-finite body geometry");v[j*6+k]=value;}colors[j]=in.readInt();}
                 var chunk=new Chunk(name,category,group,variant,hinge,px,py,pz,angle,family,slot,tier,induction,kind,v,colors);
-                result.add(chunk);levels.put(chunk,new Mesh[]{new Mesh(v,colors),new Mesh(v,colors)});
+                result.add(chunk);if(shellSurfaces.getOrDefault(body.id(),Set.of()).contains(name))closedShells.add(chunk);levels.put(chunk,new Mesh[]{new Mesh(v,colors),new Mesh(v,colors)});
             }
             if(in.read()!=-1)throw new IOException("Trailing body mesh data");
         }catch(IOException error){throw new IllegalStateException("Could not load body "+body.id(),error);}
@@ -68,6 +74,13 @@ public final class CarMesh {
     private static final Map<Chunk,Mesh[]> levels=new IdentityHashMap<>();
     private record Chunk(String name,int category,int group,int variant,int hinge,float px,float py,float pz,float angle,int family,int slot,int tier,int induction,int kind,float[] vertices,int[] colors){}
     public static void reload(ResourceManager resources){
+        closedShells.clear();shellSurfaces.clear();
+        try(var reader=resources.openAsReader(AutoPropulsionAge.id("models/entity/bodies/shell-surfaces.json"))){
+            net.minecraft.util.GsonHelper.parse(reader).entrySet().forEach(e->{
+                var names=new HashSet<String>();e.getValue().getAsJsonArray().forEach(v->names.add(v.getAsString()));
+                shellSurfaces.put(e.getKey(),Set.copyOf(names));
+            });
+        }catch(IOException e){throw new IllegalStateException("Missing closed coachwork surface manifest",e);}
         var result=new ArrayList<Chunk>();
         try(var reader=resources.openAsReader(AutoPropulsionAge.id("models/entity/mechanical-models.json"))){
             var map=new HashMap<String,String>();net.minecraft.util.GsonHelper.parse(reader).entrySet().forEach(e->map.put(e.getKey(),e.getValue().getAsString()));authoredComponents=Map.copyOf(map);
@@ -240,7 +253,10 @@ public final class CarMesh {
                     if(part!=null&&component.endsWith(".rim")&&(part.faults()&PartInstance.BENT)!=0)poses.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(individual*2)*part.damage()*8)));
                     poses.translate(-x,-.34,-z);
             }
-            VertexConsumer buffer=buffers.getBuffer(c.kind==2?RenderType.entityTranslucent(WHITE):RenderType.entityCutoutNoCull(WHITE));
+            boolean closed=closedShells.contains(c);
+            VertexConsumer buffer=buffers.getBuffer(c.kind==2
+                ?(closed?RenderType.entityTranslucentCull(WHITE):RenderType.entityTranslucent(WHITE))
+                :(closed?RenderType.entityCutout(WHITE):RenderType.entityCutoutNoCull(WHITE)));
             var pose=poses.last();int brightness=c.kind==3&&car.lights()&&car.mechanics().capability("body.lamps")>.2&&CircuitPhysics.batteryCharge(car.mechanics())>.1?LightTexture.FULL_BRIGHT:light;
             for(int triangle=0;triangle<colors.length;triangle+=3){
                 for(int k=0;k<4;k++){

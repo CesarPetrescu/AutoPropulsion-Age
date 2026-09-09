@@ -152,6 +152,7 @@ class ReleaseGates(unittest.TestCase):
             archive.writestr('com/photonspark/sparkmotors/sim/BodyStyle.class',b'fixture')
             for body in ('hatchback','sports_car','suv','van','touring_sedan'):
                 archive.writestr(f'assets/sparkmotors/models/entity/bodies/{body}.mesh.gz',b'fixture')
+            archive.writestr('assets/sparkmotors/models/entity/bodies/shell-surfaces.json', '{}')
             archive.writestr('logo.png', bytes.fromhex('89504e470d0a1a0a'))
             sounds = {}
             for i in range(48):
