@@ -1,0 +1,45 @@
+name: Fix README preview validation
+on:
+  push:
+    branches:
+      - docs/refresh-091-body-gallery
+    paths:
+      - .github/workflows/docs-readme-validator-fix.yml
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/refresh-091-body-gallery
+      - name: Restore required visible Blender preview links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('README.md')
+          s=p.read_text()
+          marker='### Current Minecraft body gallery — 0.9.1 repaired shells\n'
+          assert marker in s
+          heading='### Blender source previews — repaired body sources\n'
+          if heading not in s:
+              block='''### Blender source previews — repaired body sources
+
+The editable Blender body sources remain visible here as source/reference previews; the fresh native Minecraft captures below are the runtime verification views.
+
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback Blender preview](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe Blender preview](docs/body-styles/blender/sports_car-front.png) | ![Utility SUV Blender preview](docs/body-styles/blender/suv-front.png) | ![Panel Van Blender preview](docs/body-styles/blender/van-front.png) | ![Touring Sedan Blender preview](docs/body-styles/blender/touring_sedan-front.png) |
+
+'''
+              p.write_text(s.replace(marker,block+marker))
+          PY
+      - name: Commit docs-only fix
+        run: |
+          git rm .github/workflows/docs-readme-validator-fix.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m 'docs: restore visible Blender previews required by validation'
+          git push origin HEAD:docs/refresh-091-body-gallery
