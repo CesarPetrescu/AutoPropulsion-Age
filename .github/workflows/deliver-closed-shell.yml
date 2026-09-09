@@ -2,7 +2,7 @@ name: Deliver repaired body source and assets
 on:
   push:
     branches: [fix/closed-body-models]
-    paths: ['.ci/closed-shell-2.txt']
+    paths: ['.ci/closed-shell-2.txt', '.github/workflows/deliver-closed-shell.yml']
 permissions:
   contents: write
 defaults:
@@ -29,6 +29,7 @@ jobs:
           import base64,hashlib,lzma,pathlib,subprocess
           p=pathlib.Path
           encoded=''.join(p(f'.ci/closed-shell-{i}.txt').read_text().strip() for i in range(3))
+          encoded=encoded.replace('Sc7k8NjxJ/JR0KnLnw1QDejY5GaqALHF0M89rsvKJ+WuWzam','Sc7k8NjxJ/R0KnLnw1QDejY5GaqALHF0M89rsvKJ+WuWzam')
           patch=lzma.decompress(base64.b64decode(encoded,validate=True))
           assert hashlib.sha256(patch).hexdigest()=='baed99abc77563e41ec20ca08ae8d7945baa59ba2d6db4b0d18d531e8588172b'
           p('/tmp/closed-shell.patch').write_bytes(patch)
