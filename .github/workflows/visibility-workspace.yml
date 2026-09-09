@@ -1,0 +1,55 @@
+name: Visibility investigation workspace
+on:
+  push:
+    branches: [fix/glass-and-charger-visibility]
+    paths: [.github/workflows/visibility-workspace.yml]
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive exact development source
+        run: |
+          git rev-parse HEAD > source-commit.txt
+          tar -czf visibility-source.tar.gz src sim tools build.gradle settings.gradle gradle.properties gradle gradlew .github docs/CI.md docs/DEVELOPMENT.md docs/BODY_SHELL_REPAIR.md assets/body_styles/profiles.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: visibility-source
+          path: |
+            visibility-source.tar.gz
+            source-commit.txt
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      - name: Compile baseline and inspect upstream mapped rendering sources
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon -PwithGameTests compileJava
+          python3 - <<'PY'
+          import pathlib,zipfile
+          wanted=('net/minecraft/client/renderer/MultiBufferSource.java','net/minecraft/client/renderer/RenderType.java','net/minecraft/client/renderer/RenderStateShard.java','net/minecraft/client/renderer/LevelRenderer.java','net/minecraft/world/level/block/state/BlockBehaviour.java','net/minecraft/world/level/block/Block.java')
+          out=pathlib.Path('mapped-render-source');out.mkdir()
+          for jar in pathlib.Path.home().joinpath('.gradle').rglob('*.jar'):
+              if not any(word in jar.name for word in ('sources','merged','minecraft','client','joined')):continue
+              try:
+                  with zipfile.ZipFile(jar) as z:
+                      for name in wanted:
+                          if name in z.namelist():
+                              dest=out/pathlib.Path(name).name;dest.write_bytes(z.read(name));print(jar,name)
+              except zipfile.BadZipFile:pass
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mapped-render-source
+          path: mapped-render-source/
