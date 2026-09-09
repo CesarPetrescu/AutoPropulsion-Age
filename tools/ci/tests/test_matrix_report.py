@@ -66,11 +66,9 @@ class MatrixReportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             log = self.fixture(root)
-            text = log.read_text().replace(
-                "GENERATED_CAR_MATRIX_CASE_PASS case=269 body=touring_sedan powertrain=electric_800 layout=AWD diff=LOCKED split=80\n",
-                "",
-            )
-            log.write_text(text)
+            lines = [line for line in log.read_text().splitlines()
+                     if not line.startswith("GENERATED_CAR_MATRIX_CASE_PASS case=269 ")]
+            log.write_text("\n".join(lines) + "\n")
             with self.assertRaisesRegex(ValueError, "Expected 270 native matrix cases"):
                 report.build_report(log, root / "out", repo=root)
 
