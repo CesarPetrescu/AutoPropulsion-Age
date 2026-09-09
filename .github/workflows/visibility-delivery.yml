@@ -2,7 +2,7 @@ name: Apply reviewed visibility fix
 on:
   push:
     branches: [fix/glass-and-charger-visibility]
-    paths: [.ci/visibility.patch.b64]
+    paths: [.ci/visibility.patch.b64, .github/workflows/visibility-delivery.yml]
 permissions:
   contents: write
 defaults:
@@ -24,8 +24,8 @@ jobs:
           data=lzma.decompress(base64.b64decode(pathlib.Path('.ci/visibility.patch.b64').read_text().strip(),validate=True))
           assert hashlib.sha256(data).hexdigest()=='94821700d19aa8b0f7585b5b352a3f5db6fd0c33f8d38bc5a99f87aa03017f13'
           pathlib.Path('/tmp/visibility.patch').write_bytes(data)
-          subprocess.run(['git','apply','--check','/tmp/visibility.patch'],check=True)
-          subprocess.run(['git','apply','--index','/tmp/visibility.patch'],check=True)
+          subprocess.run(['git','apply','--check','--exclude=**/__pycache__/*','/tmp/visibility.patch'],check=True)
+          subprocess.run(['git','apply','--index','--exclude=**/__pycache__/*','/tmp/visibility.patch'],check=True)
           PY
           git rm .ci/visibility.patch.b64 .github/workflows/visibility-delivery.yml
           git config user.name 'github-actions[bot]'
