@@ -67,7 +67,8 @@ jobs:
         run: |
           mkdir -p build/qa/classes
           find sim/src/main/java -name '*.java' > build/qa/sources.txt
-          javac -d build/qa/classes @build/qa/sources.txt tools/qa/IndependentAudit.java
+          javac -d build/qa/classes @build/qa/sources.txt
+          javac -cp build/qa/classes -d build/qa/classes tools/qa/IndependentAudit.java
           java -cp build/qa/classes IndependentAudit 2>&1 | tee build/ci/independent-audit.log
       - name: Inspect and checksum the installable JAR from this run
         env:
@@ -228,10 +229,14 @@ jobs:
     name: ElectricalAge compatibility
     uses: ./.github/workflows/eln-compat.yml
 
+  visibility:
+    name: Glass and charger rendering
+    uses: ./.github/workflows/visibility.yml
+
   required:
     name: Required checks
     if: always()
-    needs: [workflow, build, resources, client, multiplayer, companion]
+    needs: [workflow, build, resources, client, multiplayer, companion, visibility]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -312,7 +317,7 @@ jobs:
 
           Install **autopropulsion-age-latest.jar** (or the identical versioned JAR) in your instance's `mods` folder. Replace older copies; install only one of the two JARs.
 
-          All required jobs passed: simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, eight heading resets and partial-packet interpolation regressions, Fabulous startup and native graphics-menu transitions, 192 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
+          All required jobs passed: through-glass witness/paired controls on Fast/Fancy/Fabulous, charger base neighbor-face and model/shape checks, simulation/JUnit, 294 dedicated engine/drivetrain driving cases, native RWD/FWD/AWD drift and suspension checks, eight heading resets and partial-packet interpolation regressions, Fabulous startup and native graphics-menu transitions, 192 workshop page/scale cases with scaled input and the mod logo, electric/hybrid charging and driving, ElectricalAge native integration, full 49-layout and 42-hardware native client matrix, coolant repair/instruments/audio-channel workflow, two-client ownership/trading, audio regeneration, and geometry fit/intersections.
 
           Commit: {info['commit']}
           [CI run and individual test results]({info['run_url']})
