@@ -1,9 +1,10 @@
-name: Deliver repaired body source and assets
+name: Commit verified repaired body source and assets
 on:
   push:
     branches: [fix/closed-body-models]
 permissions:
   contents: write
+  actions: read
 defaults:
   run:
     shell: bash
@@ -14,112 +15,79 @@ jobs:
   deliver:
     if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/fix/closed-body-models'
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: fix/closed-body-models
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+          fetch-depth: 0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          python-version: '3.13'
-      - name: Decode and apply the checked local source diff
+          name: closed-shell-delivery-evidence
+          run-id: 34351040306
+          github-token: ${{ github.token }}
+          path: /tmp/closed-shell-recovery
+      - name: Recover the exact generated models that passed Blender and topology validation
         run: |
-          python - <<'PY'
-          import base64,hashlib,lzma,pathlib,subprocess
-          p=pathlib.Path
-          encoded=''.join(p(f'.ci/closed-shell-{i}.txt').read_text().strip() for i in range(3))
-          encoded=encoded.replace('Sc7k8NjxJ/JR0KnLnw1QDejY5GaqALHF0M89rsvKJ+WuWzam','Sc7k8NjxJ/R0KnLnw1QDejY5GaqALHF0M89rsvKJ+WuWzam')
-          patch=lzma.decompress(base64.b64decode(encoded,validate=True))
-          assert hashlib.sha256(patch).hexdigest()=='baed99abc77563e41ec20ca08ae8d7945baa59ba2d6db4b0d18d531e8588172b'
-          p('/tmp/closed-shell.patch').write_bytes(patch)
-          for entry in subprocess.check_output(['git','apply','--numstat','/tmp/closed-shell.patch'],text=True).splitlines():
-              name=entry.split('\t')[-1]
-              assert name.startswith(('src/','sim/','tools/','docs/')) or name in ('build.gradle','gradle.properties','.github/workflows/ci.yml'),name
-          subprocess.run(['git','apply','--check','/tmp/closed-shell.patch'],check=True)
-          subprocess.run(['git','apply','--index','/tmp/closed-shell.patch'],check=True)
-          model=p('tools/body_styles/shell_geometry.py');text=model.read_text()
-          old="    plate_y=.60 if name=='van' else .82"
-          assert text.count(old)==1
-          text=text.replace(old,"    # The van plate sits on the bumper face, not inside its opaque volume.\n    plate_y=.60 if name=='van' else .82\n    plate_z=-tail-.002 if name=='van' else rear_z")
-          for old,new in [("rear_z-.025),(.28,plate_y+.12,rear_z+.008)","plate_z-.025),(.28,plate_y+.12,plate_z+.008)"),("rear_z-.031),(.23,plate_y+.095,rear_z-.026)","plate_z-.031),(.23,plate_y+.095,plate_z-.026)")]:
-              assert text.count(old)==1,old
-              text=text.replace(old,new)
-          compile(text,str(model),'exec');model.write_text(text)
+          python3 - <<'PY'
+          import hashlib,pathlib,tarfile
+          matches=list(pathlib.Path('/tmp/closed-shell-recovery').rglob('repaired-files.tar.gz'))
+          assert len(matches)==1,matches
+          archive=matches[0]
+          with archive.open('rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()=='c7edb9841c1ca5757ee1bdc092925c529479600b409becda8e23d042610d7bf1'
+          root=pathlib.Path.cwd()
+          with tarfile.open(archive,'r:gz') as tar:
+              for member in tar.getmembers():
+                  path=pathlib.PurePosixPath(member.name)
+                  assert not path.is_absolute() and '..' not in path.parts,member.name
+                  assert member.isdir() or member.isfile(),member.name
+                  if member.isdir():continue
+                  name=str(path)
+                  assert name.startswith(('src/','sim/','tools/','assets/body_styles/','docs/')) or name in ('build.gradle','gradle.properties','.github/workflows/ci.yml'),name
+                  dest=root/name;dest.parent.mkdir(parents=True,exist_ok=True)
+                  data=tar.extractfile(member).read();dest.write_bytes(data)
+                  if member.mode&0o111:dest.chmod(0o755)
+          print('RECOVERED_EXACT_VALIDATED_ASSETS',archive)
           PY
-      - name: Install checksum-verified Blender and asset tools
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y --no-install-recommends libxi6 libxrender1 libxkbcommon0 libgl1 libsm6
-          python -m pip install -r tools/ci/requirements.txt
-          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz -o /tmp/blender.tar.xz
-          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3.sha256 -o /tmp/blender.sha256
-          python - <<'PY'
-          import hashlib,pathlib
-          line=next(x for x in pathlib.Path('/tmp/blender.sha256').read_text().splitlines() if x.split()[-1].lstrip('*')=='blender-4.2.3-linux-x64.tar.xz')
-          with open('/tmp/blender.tar.xz','rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==line.split()[0]
-          PY
-          tar -xJf /tmp/blender.tar.xz -C /tmp
-          echo /tmp/blender-4.2.3-linux-x64 >> "$GITHUB_PATH"
-      - name: Regenerate actual Blender projects, game meshes and preview renders
-        env:
-          APA_BODY_RENDER: '1'
-        run: |
-          mkdir -p build/ci/delivery
-          blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee build/ci/delivery/blender.log
-          python tools/body_styles/generate_resources.py
-          find assets/body_styles -name '*.blend1' -delete
-      - name: Require topology, seam, envelope and checker regressions
-        run: |
-          python -m unittest discover -s tools/body_review/tests -v 2>&1 | tee build/ci/delivery/topology-unit.log
-          python -m unittest discover -s tools/ci/tests -v 2>&1 | tee build/ci/delivery/ci-gates.log
-          python tools/body_review/topology.py --report build/ci/delivery/topology.json
-          python tools/body_review/validate.py --report
-          python - <<'PY'
-          import sys,pathlib
-          sys.path.insert(0,'tools/body_styles')
-          from mesh_io import read,bounds
-          chunks=read(pathlib.Path('src/main/resources/assets/sparkmotors/models/entity/bodies/van.mesh.gz'))
-          plate=next(c for c in chunks if c['name']=='rear_plate')
-          bumper=next(c for c in chunks if c['name']=='rear_bumper')
-          assert bounds([plate])[1][2]<bounds([bumper])[0][2],'Van plate hidden inside bumper'
-          print('VAN_PLATE_VISIBLE_ENVELOPE_PASS')
-          PY
-          for body in hatchback sports_car suv van touring_sedan; do
-            blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "/tmp/$body.mesh.gz" --check 2>&1 | tee "build/ci/delivery/roundtrip-$body.log"
-            grep -q BODY_BLENDER_ROUNDTRIP_PASS "build/ci/delivery/roundtrip-$body.log"
-          done
-      - name: Preserve generated repairs independently of Git staging
-        run: |
-          tar -czf build/ci/delivery/repaired-files.tar.gz src sim tools assets/body_styles docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md build.gradle gradle.properties .github/workflows/ci.yml
-      - name: Commit real repaired files and remove the one-shot transport
+      - name: Stage actual source and each regenerated binary explicitly
         run: |
           git rm .ci/closed-shell-0.txt .ci/closed-shell-1.txt .ci/closed-shell-2.txt .github/workflows/deliver-closed-shell.yml
           git add src sim tools docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md assets/body_styles build.gradle gradle.properties .github/workflows/ci.yml
-          git add -u
-          python - <<'PY'
-          import pathlib,subprocess
-          previews=pathlib.Path('docs/body-styles/blender')
-          for image in sorted(previews.glob('*.png')):
-              subprocess.run(['git','add','-f','--',str(image)],check=True)
-          changed=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          python3 - <<'PY'
+          import pathlib,subprocess,json,hashlib
+          required=[]
           for body in ('hatchback','sports_car','suv','van','touring_sedan'):
-              assert f'assets/body_styles/{body}.blend' in changed,body+' Blender file missing from commit'
-              assert f'src/main/resources/assets/sparkmotors/models/entity/bodies/{body}.mesh.gz' in changed,body+' game mesh missing from commit'
-          for name in ('tools/body_styles/shell_geometry.py','tools/body_review/topology.py','src/main/java/com/photonspark/sparkmotors/client/CarMesh.java'):
-              assert name in changed,name+' missing from commit'
-          print('ACTUAL_REPAIR_FILES_STAGED',len(changed))
+              required += [f'assets/body_styles/{body}.blend',f'src/main/resources/assets/sparkmotors/models/entity/bodies/{body}.mesh.gz']
+          manifest=[]
+          for name in required:
+              path=pathlib.Path(name);assert path.is_file(),name
+              subprocess.run(['git','update-index','--no-assume-unchanged','--no-skip-worktree','--',name],check=True)
+              subprocess.run(['git','add','-f','--',name],check=True)
+              before=subprocess.check_output(['git','rev-parse','cf74a3d8b599929e090ebd1076c229b9f2c12b67:'+name],text=True).strip()
+              after=subprocess.check_output(['git','rev-parse',':'+name],text=True).strip()
+              actual=subprocess.check_output(['git','hash-object',name],text=True).strip()
+              print(name,'base='+before,'index='+after,'actual='+actual,flush=True)
+              assert actual==after and before!=after,'Repaired binary absent or unchanged: '+name
+              manifest.append({'path':name,'baseBlob':before,'newBlob':after,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size})
+          changed=set(subprocess.check_output(['git','diff','--cached','--name-only','--no-renames'],text=True).splitlines())
+          print('STAGED_FILES',json.dumps(sorted(changed)),flush=True)
+          for name in required+['tools/body_styles/shell_geometry.py','tools/body_review/topology.py','src/main/java/com/photonspark/sparkmotors/client/CarMesh.java']:
+              assert name in changed,name
+          out=pathlib.Path('build/ci/delivery');out.mkdir(parents=True,exist_ok=True)
+          (out/'delivered-assets.json').write_text(json.dumps(manifest,indent=2)+'\n')
           PY
+          git diff --cached --stat
+      - name: Commit actual repaired files to the review branch only
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'fix: ship closed body shells, shaped rear quarters, editable models and seam regression tests'
+          git commit -m 'fix: deliver closed body shells, shaped rear quarters, five editable models and seam tests'
           git push origin HEAD:fix/closed-body-models
           git rev-parse HEAD > build/ci/delivery/source-commit.txt
           git diff --stat cf74a3d8b599929e090ebd1076c229b9f2c12b67 HEAD > build/ci/delivery/delivered-files.txt
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: closed-shell-delivery-evidence
-          path: |
-            build/ci/delivery/
-            build/reports/body-styles/
+          name: committed-closed-shell-evidence
+          path: build/ci/delivery/
           retention-days: 14
