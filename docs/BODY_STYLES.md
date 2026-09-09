@@ -2,7 +2,9 @@
 
 For the 0.9.1-alpha closed-shell geometry repair, validation and release boundaries, see [BODY_SHELL_REPAIR.md](BODY_SHELL_REPAIR.md).
 
-Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.0. Use matching client/server versions (network protocol 11). The original Classic Sedan remains the default for older saves.
+Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.1-alpha. Use matching client/server versions (network protocol 11). The original Classic Sedan remains the default for older saves.
+
+The README intentionally keeps both a Blender source preview and a native Minecraft runtime preview visible for every selectable body; the documentation gate validates both sets.
 
 ## 1. Design
 
@@ -81,70 +83,38 @@ The refinement corrects the coupe floor's clearance over the unchanged traction-
 
 ## Full body gallery
 
-The native images below are unedited captures from tested source `876c0bf6`, the asset revision included in this feature. [Source run and full 125-frame evidence](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34306618116). The normal release CI now reruns the body matrix on each exact candidate commit.
+The images below are **fresh native Minecraft captures from repaired-shell source `e382dd61f9f4c836596c5b1315fdfd69ba53236e`**, verified in [CI run 34353228991](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34353228991). They supersede the older `876c0bf6` body gallery. The shell harness also captured open-panel, underbody, interior, seam and night views; those remain in the CI evidence archive rather than bloating the README.
 
 ### Classic Sedan
 
 ![Classic front](body-review/stock-front.png)
 
-![Classic underbody](body-review/stock-under.png)
-
 ### Hatchback
 
-| Blender front | Blender rear | Blender side |
-|---|---|---|
-| ![Hatchback front](body-styles/blender/hatchback-front.png) | ![Hatchback rear](body-styles/blender/hatchback-rear.png) | ![Hatchback side](body-styles/blender/hatchback-side.png) |
-
-| Minecraft front | Minecraft rear |
+| Front | Rear |
 |---|---|
 | ![Hatchback front](body-styles/native/hatchback-front.png) | ![Hatchback rear](body-styles/native/hatchback-rear.png) |
-| Open panels | Underbody |
-| ![Hatchback open](body-styles/native/hatchback-open.png) | ![Hatchback underbody](body-styles/native/hatchback-underbody.png) |
 
 ### Sports Coupe
 
-| Blender front | Blender rear | Blender side |
-|---|---|---|
-| ![Sports Coupe front](body-styles/blender/sports_car-front.png) | ![Sports Coupe rear](body-styles/blender/sports_car-rear.png) | ![Sports Coupe side](body-styles/blender/sports_car-side.png) |
-
-| Minecraft front | Minecraft rear |
+| Front | Rear |
 |---|---|
 | ![Sports Coupe front](body-styles/native/sports_car-front.png) | ![Sports Coupe rear](body-styles/native/sports_car-rear.png) |
-| Open panels | Underbody |
-| ![Sports Coupe open](body-styles/native/sports_car-open.png) | ![Sports Coupe underbody](body-styles/native/sports_car-underbody.png) |
 
 ### Utility SUV
 
-| Blender front | Blender rear | Blender side |
-|---|---|---|
-| ![Utility SUV front](body-styles/blender/suv-front.png) | ![Utility SUV rear](body-styles/blender/suv-rear.png) | ![Utility SUV side](body-styles/blender/suv-side.png) |
-
-| Minecraft front | Minecraft rear |
+| Front | Rear |
 |---|---|
 | ![Utility SUV front](body-styles/native/suv-front.png) | ![Utility SUV rear](body-styles/native/suv-rear.png) |
-| Open panels | Underbody |
-| ![Utility SUV open](body-styles/native/suv-open.png) | ![Utility SUV underbody](body-styles/native/suv-underbody.png) |
 
 ### Panel Van
 
-| Blender front | Blender rear | Blender side |
-|---|---|---|
-| ![Panel Van front](body-styles/blender/van-front.png) | ![Panel Van rear](body-styles/blender/van-rear.png) | ![Panel Van side](body-styles/blender/van-side.png) |
-
-| Minecraft front | Minecraft rear |
+| Front | Rear |
 |---|---|
 | ![Panel Van front](body-styles/native/van-front.png) | ![Panel Van rear](body-styles/native/van-rear.png) |
-| Open panels | Underbody |
-| ![Panel Van open](body-styles/native/van-open.png) | ![Panel Van underbody](body-styles/native/van-underbody.png) |
 
 ### Touring Sedan
 
-| Blender front | Blender rear | Blender side |
-|---|---|---|
-| ![Touring Sedan front](body-styles/blender/touring_sedan-front.png) | ![Touring Sedan rear](body-styles/blender/touring_sedan-rear.png) | ![Touring Sedan side](body-styles/blender/touring_sedan-side.png) |
-
-| Minecraft front | Minecraft rear |
+| Front | Rear |
 |---|---|
 | ![Touring Sedan front](body-styles/native/touring_sedan-front.png) | ![Touring Sedan rear](body-styles/native/touring_sedan-rear.png) |
-| Open panels | Underbody |
-| ![Touring Sedan open](body-styles/native/touring_sedan-open.png) | ![Touring Sedan underbody](body-styles/native/touring_sedan-underbody.png) |

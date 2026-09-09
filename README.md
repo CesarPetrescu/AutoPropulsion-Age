@@ -20,7 +20,7 @@
   · <a href="DEVELOPMENT.md">Windows development</a>
 </p>
 
-**Playable alpha · 0.9.0 source.** Build any of six body styles around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
+**Playable alpha · 0.9.1-alpha source.** Build any of six body styles around seven engine families, 42 engine hardware choices and independently serviceable parts. Change its power, grip, sound and appearance; investigate the cause when something goes wrong.
 
 > **Tested downloads.** The download points to the latest successful CI build of `main`. A new commit can be visible here while its tests are still running; failed builds leave the previous tested JAR available.
 
@@ -30,25 +30,29 @@
 
 Choose **Classic Sedan, Hatchback, Sports Coupe, Utility SUV, Panel Van or Touring Sedan**. All support combustion, hybrid, plug-in hybrid and 400/800 V electric builds. These are selectable bodies on the shared 2.65 m wheelbase; the installed components determine performance.
 
-### Blender previews
+### Blender source previews — repaired body sources
 
-Click any image to enlarge it. These are Blender reference renders; actual Minecraft captures follow below.
+The editable Blender body sources remain visible here as source/reference previews; the fresh native Minecraft captures below are the runtime verification views.
+
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback Blender preview](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe Blender preview](docs/body-styles/blender/sports_car-front.png) | ![Utility SUV Blender preview](docs/body-styles/blender/suv-front.png) | ![Panel Van Blender preview](docs/body-styles/blender/van-front.png) | ![Touring Sedan Blender preview](docs/body-styles/blender/touring_sedan-front.png) |
+
+### Current Minecraft body gallery — 0.9.1 repaired shells
+
+These are **fresh native Minecraft captures** from repaired-shell source `e382dd61`, the exact body-model revision merged by PR #7. They replace the older pre-repair gallery that showed disconnected rear quarters and cargo panels. [Full repaired-shell CI evidence (204 close-up frames)](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34353228991).
 
 | Classic Sedan | Hatchback | Sports Coupe |
 |---|---|---|
-| ![Classic Sedan](docs/body-review/stock-front.png) | ![Hatchback](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe](docs/body-styles/blender/sports_car-front.png) |
+| ![Classic Sedan](docs/body-review/stock-front.png) | ![Hatchback repaired shell](docs/body-styles/native/hatchback-front.png) | ![Sports Coupe repaired shell](docs/body-styles/native/sports_car-front.png) |
 | Utility SUV | Panel Van | Touring Sedan |
-| ![Utility SUV](docs/body-styles/blender/suv-front.png) | ![Panel Van](docs/body-styles/blender/van-front.png) | ![Touring Sedan](docs/body-styles/blender/touring_sedan-front.png) |
+| ![Utility SUV repaired shell](docs/body-styles/native/suv-front.png) | ![Panel Van repaired shell](docs/body-styles/native/van-front.png) | ![Touring Sedan repaired shell](docs/body-styles/native/touring_sedan-front.png) |
 
-### Actual Minecraft views
+### Rear-shell checks
 
-| Hatchback | Sports Coupe |
-|---|---|
-| ![Hatchback in Minecraft](docs/body-styles/native/hatchback-front.png) | ![Sports Coupe in Minecraft](docs/body-styles/native/sports_car-front.png) |
-| Utility SUV | Panel Van |
-| ![Utility SUV in Minecraft](docs/body-styles/native/suv-front.png) | ![Panel Van in Minecraft](docs/body-styles/native/van-front.png) |
-| Touring Sedan | Classic Sedan |
-| ![Touring Sedan in Minecraft](docs/body-styles/native/touring_sedan-front.png) | ![Classic Sedan in Minecraft](docs/screenshots/hood-rotor4-twin-screw.png) |
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback repaired rear](docs/body-styles/native/hatchback-rear.png) | ![Sports Coupe repaired rear](docs/body-styles/native/sports_car-rear.png) | ![SUV repaired rear](docs/body-styles/native/suv-rear.png) | ![Panel Van repaired rear](docs/body-styles/native/van-rear.png) | ![Touring Sedan repaired rear](docs/body-styles/native/touring_sedan-rear.png) |
 
 In Creative, select the named vehicle crate from the mod tab. In Survival, combine your vehicle crate with a coachwork kit, or fit a kit to your parked, switched-off, unplugged and jacked-up car. The old body kit is returned, and installed parts, wear, fuel and battery charge are retained. **[All front/rear/side/open/underbody views, recipes and installation instructions](docs/BODY_STYLES.md)**.
 
@@ -177,7 +181,7 @@ Set-Location AutoPropulsion-Age
 .\gradlew.bat runClient
 ```
 
-Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.6.1-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
+Use a **Java 21 JDK**. The installable output is `build/libs/autopropulsion-age-0.9.1-alpha.jar`. Normal Java builds use the committed assets and do not require Blender.
 
 | What you need | Where to find it |
 |---|---|
