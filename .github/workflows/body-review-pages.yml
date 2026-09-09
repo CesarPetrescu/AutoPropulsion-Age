@@ -1,0 +1,33 @@
+name: Body review pages
+on:
+  push:
+    branches: [feat/five-body-styles]
+    paths: ['.github/workflows/body-review-pages.yml']
+permissions:
+  contents: write
+jobs:
+  review:
+    if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/feat/five-body-styles'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/five-body-styles
+      - run: |
+          python3 -m pip install Pillow==11.3.0
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          names=['hatchback','sports_car','suv','van','touring_sedan']
+          root=Path('docs/body-styles/blender')
+          pages=[Image.open(root/(n+'-'+v+'.png')).convert('RGB') for n in names for v in ('front','rear','side')]
+          pages[0].save('docs/body-styles/blender-review.pdf',save_all=True,append_images=pages[1:],resolution=110)
+          print('15 Blender reference frames; not native Minecraft screenshots and not visual approval')
+          PY
+          git add docs/body-styles/blender-review.pdf
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: retain Blender reference review pages separately from native Minecraft evidence'
+          git pull --rebase origin feat/five-body-styles
+          git push origin HEAD:feat/five-body-styles
