@@ -19,9 +19,4 @@ runs:
         validate-wrappers: true
         cache-read-only: ${{ github.event_name == 'pull_request' }}
     - if: inputs.native == 'true'
-      shell: bash
-      run: |
-        sudo apt-get update -q
-        sudo apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 mesa-utils libopenal1 libasound2t64
-        mkdir -p build/ci
-        xvfb-run -a glxinfo -B | tee build/ci/graphics.txt
+      uses: ./.github/actions/setup-native-runtime

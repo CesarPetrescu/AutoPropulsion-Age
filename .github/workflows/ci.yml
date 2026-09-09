@@ -41,6 +41,10 @@ jobs:
         run: |
           mkdir -p build/ci
           python -m unittest discover -s tools/ci/tests -v 2>&1 | tee build/ci/release-gates.log
+      - name: Exercise real APT with signed corrupt-repository negative controls
+        run: |
+          mkdir -p build/ci/apt-smoke
+          sudo -n python3 tools/ci/apt_smoke.py --report build/ci/apt-smoke
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -109,8 +113,8 @@ jobs:
           python-version: '3.13'
       - name: Install asset validation tools
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y --no-install-recommends ffmpeg blender
+          mkdir -p build/ci/resources/apt
+          sudo -n python3 tools/ci/install_packages.py assets --report build/ci/resources/apt
           python -m pip install -r tools/ci/requirements.txt
       - name: Validate README previews, links and mod logo
         run: python tools/ci/documentation.py

@@ -11,7 +11,7 @@ defaults:
     shell: bash
 jobs:
   native:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     strategy:
       fail-fast: false
@@ -72,11 +72,23 @@ jobs:
           printf 'online-mode=false\nserver-ip=127.0.0.1\n' > mod/run/gametest/server.properties
           timeout 600 ./gradlew --no-daemon --max-workers=2 -PwithGameTests "$GAMETEST_TASK" 2>&1 | tee audit/gametest.log
           grep -Eq 'All [0-9]+ required tests passed' audit/gametest.log
+      - name: Check out shared CI bootstrap separately from historical code
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: ci-bootstrap
+          persist-credentials: false
+          sparse-checkout: |
+            .github/actions/setup-native-runtime
+            tools/ci
       - name: Install software graphical runtime
+        id: native_setup
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: sudo apt-get update -qq && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libopenal1 libasound2t64
+        uses: ./ci-bootstrap/.github/actions/setup-native-runtime
+        with:
+          report-directory: old/audit/native-setup
       - name: Execute actual historical client harness
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.native_setup.outcome == 'success' }}
         working-directory: old
         run: |
           if test "$AUDIT_LABEL" = damage-audio; then

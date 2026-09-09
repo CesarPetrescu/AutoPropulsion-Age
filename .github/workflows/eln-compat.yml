@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   companion:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
       APA_METADATA_REPO: ${{ github.workspace }}/auto/gradle/minecraft-metadata
@@ -62,10 +62,13 @@ jobs:
           ./gradlew --no-daemon -PwithGameTests -PelnJar="$ELN_JAR" runGameTestServer 2>&1 | tee ../eln-gametest.log
           grep -q 'ELN_CHARGER_CIRCUIT_PASS' ../eln-gametest.log
       - name: Install software graphics dependencies
+        id: native_setup
         if: ${{ !cancelled() && steps.auto_build.outcome == 'success' }}
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 pulseaudio
+        uses: ./auto/.github/actions/setup-native-runtime
+        with:
+          report-directory: auto/build/ci
       - name: Native Minecraft combined-mod client verification
-        if: ${{ !cancelled() && steps.auto_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.auto_build.outcome == 'success' && steps.native_setup.outcome == 'success' }}
         working-directory: auto
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
@@ -85,6 +88,7 @@ jobs:
             *.log
             eln/build/test-results/
             eln/build/reports/
+            auto/build/ci/
             auto/build/reports/
             auto/sim/build/test-results/
             auto/sim/build/reports/
