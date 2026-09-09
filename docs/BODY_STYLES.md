@@ -4,6 +4,8 @@ For the 0.9.1-alpha closed-shell geometry repair, validation and release boundar
 
 Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.1-alpha. Use matching client/server versions (network protocol 11). The original Classic Sedan remains the default for older saves.
 
+The README intentionally keeps both a Blender source preview and a native Minecraft runtime preview visible for every selectable body; the documentation gate validates both sets.
+
 ## 1. Design
 
 Body identity is independent of powertrain and serviceable parts. These are five distinct low-poly coachworks on the existing **2.65 m wheelbase**, not five paint presets and not five new physics implementations.
