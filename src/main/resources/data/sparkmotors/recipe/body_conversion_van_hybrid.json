@@ -1,0 +1,17 @@
+{
+  "type": "sparkmotors:body_crating",
+  "category": "misc",
+  "group": "sparkmotors_body_hybrid",
+  "ingredients": [
+    {
+      "tag": "sparkmotors:crates/hybrid"
+    },
+    {
+      "item": "sparkmotors:van_body_kit"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:van_hybrid_crate",
+    "count": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "sparkmotors:plug_in_hybrid_crate",
+    "sparkmotors:hatchback_plug_in_hybrid_crate",
+    "sparkmotors:sports_car_plug_in_hybrid_crate",
+    "sparkmotors:suv_plug_in_hybrid_crate",
+    "sparkmotors:van_plug_in_hybrid_crate",
+    "sparkmotors:touring_sedan_plug_in_hybrid_crate"
+  ]
+}

@@ -27,7 +27,7 @@ class Links(HTMLParser):
 
 def validate():
     checked = 0
-    for name in ('README.md', 'DEVELOPMENT.md', 'docs/PLAYING.md', 'docs/CI.md', 'docs/BRANDING.md', 'docs/BODY_AND_COLLISION.md', 'docs/CONFIGURED_POWERTRAINS.md'):
+    for name in ('README.md', 'DEVELOPMENT.md', 'docs/PLAYING.md', 'docs/CI.md', 'docs/BRANDING.md', 'docs/BODY_AND_COLLISION.md', 'docs/CONFIGURED_POWERTRAINS.md', 'docs/BODY_STYLES.md'):
         path = REPO / name
         text = path.read_text(encoding='utf-8')
         parser = Links()
@@ -45,6 +45,10 @@ def validate():
                 actual = {p for p in images if p.startswith(prefix)}
                 assert len(actual) == count, f'{prefix}: {len(actual)} of {count} previews'
             assert 'src/main/resources/autopropulsion-age.png' in images
+            assert 'docs/body-review/stock-front.png' in images, 'Missing Classic Sedan preview'
+            for body in ('hatchback','sports_car','suv','van','touring_sedan'):
+                for kind in ('blender','native'):
+                    assert f'docs/body-styles/{kind}/{body}-front.png' in images, f'Missing visible {body} {kind} preview'
             for marker in ('ENGINE', 'HARDWARE'):
                 assert text.count(f'<!-- {marker}-GALLERY-START -->') == 1
                 assert text.count(f'<!-- {marker}-GALLERY-END -->') == 1

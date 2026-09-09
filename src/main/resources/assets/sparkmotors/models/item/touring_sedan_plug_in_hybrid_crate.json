@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sparkmotors:item/touring_sedan_plug_in_hybrid_crate"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "coordinateFrame": "runtime +Z forward, +Y up",
+  "commonWheelbaseM": 2.65,
+  "bodies": [
+    {
+      "nose": 2.19,
+      "tail": 1.94,
+      "halfWidth": 0.955,
+      "belt": 1.06,
+      "roof": 1.61,
+      "cabinFront": 0.775,
+      "roofFront": 0.27,
+      "roofRear": -1.34,
+      "cabinRear": -1.8,
+      "cabinY": 0.04,
+      "cabinZ": 0.0,
+      "id": "hatchback",
+      "title": "Hatchback",
+      "networkId": 1,
+      "bodyChunks": 157,
+      "bodyTriangles": 19870,
+      "closedBounds": [
+        [
+          -1.0980000495910645,
+          0.22499999403953552,
+          -1.9570000171661377
+        ],
+        [
+          1.0980000495910645,
+          1.6519999504089355,
+          2.2309999465942383
+        ]
+      ],
+      "sha256": "d0296908153ca3e4154f52c69b0089a5ebf8141a01d92e972039cdb72ef643e3"
+    },
+    {
+      "nose": 2.33,
+      "tail": 2.16,
+      "halfWidth": 0.98,
+      "belt": 1.04,
+      "roof": 1.39,
+      "cabinFront": 0.775,
+      "roofFront": 0.18,
+      "roofRear": -0.78,
+      "cabinRear": -1.44,
+      "cabinY": -0.025,
+      "cabinZ": -0.09,
+      "id": "sports_car",
+      "title": "Sports Coupe",
+      "networkId": 2,
+      "bodyChunks": 140,
+      "bodyTriangles": 19392,
+      "closedBounds": [
+        [
+          -1.1230000257492065,
+          0.22499999403953552,
+          -2.177000045776367
+        ],
+        [
+          1.1230000257492065,
+          1.4187372922897339,
+          2.371000051498413
+        ]
+      ],
+      "sha256": "07021e2d4e85edea8887be46746293d60f195716467fd5c7eeb6e72d13ccdf0d"
+    },
+    {
+      "nose": 2.275,
+      "tail": 2.27,
+      "halfWidth": 0.995,
+      "belt": 1.24,
+      "roof": 1.88,
+      "cabinFront": 0.775,
+      "roofFront": 0.3,
+      "roofRear": -1.43,
+      "cabinRear": -1.96,
+      "cabinY": 0.2,
+      "cabinZ": 0.0,
+      "id": "suv",
+      "title": "Utility SUV",
+      "networkId": 3,
+      "bodyChunks": 161,
+      "bodyTriangles": 20246,
+      "closedBounds": [
+        [
+          -1.1380000114440918,
+          0.22499999403953552,
+          -2.2869999408721924
+        ],
+        [
+          1.1380000114440918,
+          2.007999897003174,
+          2.315999984741211
+        ]
+      ],
+      "sha256": "c7952c51202a2cf7528a151cfdbcb816f8cd8201147971fd7e21aa6ff025dc38"
+    },
+    {
+      "nose": 2.185,
+      "tail": 2.57,
+      "halfWidth": 1.01,
+      "belt": 1.39,
+      "roof": 2.17,
+      "cabinFront": 0.775,
+      "roofFront": 0.44,
+      "roofRear": -2.1,
+      "cabinRear": -2.435,
+      "cabinY": 0.33,
+      "cabinZ": 0.09,
+      "id": "van",
+      "title": "Panel Van",
+      "networkId": 4,
+      "bodyChunks": 156,
+      "bodyTriangles": 19474,
+      "closedBounds": [
+        [
+          -1.152999997138977,
+          0.22499999403953552,
+          -2.5869998931884766
+        ],
+        [
+          1.152999997138977,
+          2.203000068664551,
+          2.2260000705718994
+        ]
+      ],
+      "sha256": "7767e601e90f383e3f87449e30eed1a94e15df73548f1445d853d235423ebb01"
+    },
+    {
+      "nose": 2.31,
+      "tail": 2.42,
+      "halfWidth": 0.975,
+      "belt": 1.105,
+      "roof": 1.56,
+      "cabinFront": 0.775,
+      "roofFront": 0.25,
+      "roofRear": -0.96,
+      "cabinRear": -1.46,
+      "cabinY": 0.035,
+      "cabinZ": -0.02,
+      "id": "touring_sedan",
+      "title": "Touring Sedan",
+      "networkId": 5,
+      "bodyChunks": 155,
+      "bodyTriangles": 20120,
+      "closedBounds": [
+        [
+          -1.1180000305175781,
+          0.22499999403953552,
+          -2.437000036239624
+        ],
+        [
+          1.1180000305175781,
+          1.5839999914169312,
+          2.3510000705718994
+        ]
+      ],
+      "sha256": "0e9a84f369119358a10d238a63fbe2afb86def40d8ba7ba7a637a225aa87e28c"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "sparkmotors:body_crating",
+  "category": "misc",
+  "group": "sparkmotors_body_plug_in_hybrid",
+  "ingredients": [
+    {
+      "tag": "sparkmotors:crates/plug_in_hybrid"
+    },
+    {
+      "item": "sparkmotors:touring_sedan_body_kit"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:touring_sedan_plug_in_hybrid_crate",
+    "count": 1
+  }
+}

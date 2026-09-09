@@ -82,6 +82,11 @@ neoForge {
             programArguments.addAll '--width', '1440', '--height', '900'
             systemProperty 'sparkmotors.clientElectricSmoke', 'true'
         }
+        clientBodySmoke {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientBodySmoke', 'true'
+        }
         server { server(); programArgument '--nogui' }
         gameTestServer {
             type = 'gameTestServer'

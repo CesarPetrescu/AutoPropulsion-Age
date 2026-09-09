@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "IMI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "minecraft:clock"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:touring_sedan_body_kit",
+    "count": 1
+  }
+}

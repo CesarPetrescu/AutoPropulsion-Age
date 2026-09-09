@@ -1,0 +1,17 @@
+{
+  "type": "sparkmotors:body_crating",
+  "category": "misc",
+  "group": "sparkmotors_body_hybrid",
+  "ingredients": [
+    {
+      "tag": "sparkmotors:crates/hybrid"
+    },
+    {
+      "item": "sparkmotors:classic_sedan_body_kit"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:hybrid_crate",
+    "count": 1
+  }
+}

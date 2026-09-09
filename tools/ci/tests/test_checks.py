@@ -48,9 +48,10 @@ class ReleaseGates(unittest.TestCase):
             checks.server('2 required tests failed\nAll 26 required tests passed :)')
 
     def test_server_complete_pass(self):
-        log='All 56 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
+        log='All 62 required tests passed :)\nDRIVETRAIN_SERVER_MATRIX_PASS 294\nELECTRIC_SERVER_MATRIX_PASS 12\nORIENTED_COLLISION_SERVER_PASS empty_corner\nHEADING_RECOVERY_SERVER_PASS crash\nHEADING_RECOVERY_SERVER_PASS spin'
         log+='\n'+'\n'.join('CONFIGURED_COMPONENTS_SERVER_PASS '+case for case in ('motor_transfer','internals_transfer','hv_interlock','crate_transfer','service_recipes'))
-        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 56)
+        log+='\nBODY_CRATE_CONVERSION_SERVER_PASS 150\nBODY_PERSISTENCE_SERVER_PASS 30\nBODY_DRIVING_SERVER_MATRIX_PASS 30'
+        self.assertEqual(checks.server(log)['dedicated_gametests_passed'], 62)
         for marker in ('ORIENTED_COLLISION_SERVER_PASS empty_corner','HEADING_RECOVERY_SERVER_PASS crash','HEADING_RECOVERY_SERVER_PASS spin'):
             with self.assertRaises(ValueError):checks.server(log.replace(marker,''))
 
@@ -148,6 +149,9 @@ class ReleaseGates(unittest.TestCase):
                          'assets/sparkmotors/models/entity/sedan-lod2.mesh.gz',
                          'assets/sparkmotors/models/entity/lod-manifest.json'):
                 archive.writestr(name, b'fixture')
+            archive.writestr('com/photonspark/sparkmotors/sim/BodyStyle.class',b'fixture')
+            for body in ('hatchback','sports_car','suv','van','touring_sedan'):
+                archive.writestr(f'assets/sparkmotors/models/entity/bodies/{body}.mesh.gz',b'fixture')
             archive.writestr('logo.png', bytes.fromhex('89504e470d0a1a0a'))
             sounds = {}
             for i in range(48):

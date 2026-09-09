@@ -1,0 +1,17 @@
+{
+  "type": "sparkmotors:body_crating",
+  "category": "misc",
+  "group": "sparkmotors_body_electric_800",
+  "ingredients": [
+    {
+      "tag": "sparkmotors:crates/electric_800"
+    },
+    {
+      "item": "sparkmotors:hatchback_body_kit"
+    }
+  ],
+  "result": {
+    "id": "sparkmotors:hatchback_electric_800_crate",
+    "count": 1
+  }
+}

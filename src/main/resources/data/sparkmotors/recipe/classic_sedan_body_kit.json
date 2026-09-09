@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "IMI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "result": {
+    "id": "sparkmotors:classic_sedan_body_kit",
+    "count": 1
+  }
+}

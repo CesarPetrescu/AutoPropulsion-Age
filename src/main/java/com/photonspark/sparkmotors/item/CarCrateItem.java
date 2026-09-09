@@ -6,8 +6,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.network.chat.Component;
 public final class CarCrateItem extends Item {
     private final com.photonspark.sparkmotors.sim.electric.Powertrain powertrain;
+    private final com.photonspark.sparkmotors.sim.BodyStyle bodyStyle;
     public CarCrateItem(Properties properties) { this(properties,com.photonspark.sparkmotors.sim.electric.Powertrain.COMBUSTION); }
-    public CarCrateItem(Properties properties,com.photonspark.sparkmotors.sim.electric.Powertrain type) { super(properties);powertrain=type; }
+    public CarCrateItem(Properties properties,com.photonspark.sparkmotors.sim.electric.Powertrain type) { this(properties,type,com.photonspark.sparkmotors.sim.BodyStyle.CLASSIC_SEDAN); }
+    public CarCrateItem(Properties properties,com.photonspark.sparkmotors.sim.electric.Powertrain type,com.photonspark.sparkmotors.sim.BodyStyle style) { super(properties);powertrain=type;bodyStyle=style; }
+    public com.photonspark.sparkmotors.sim.BodyStyle bodyStyle(){return bodyStyle;}
     public com.photonspark.sparkmotors.sim.electric.Powertrain powertrain(){return powertrain;}
     @Override public InteractionResult useOn(UseOnContext ctx) {
         if(ctx.getLevel().isClientSide) return InteractionResult.SUCCESS;
@@ -16,13 +19,13 @@ public final class CarCrateItem extends Item {
         var car=AutoPropulsionAge.CAR.get().create(ctx.getLevel());
         if(car==null)return InteractionResult.FAIL;
         car.moveTo(pos.getX()+.5,pos.getY()+.05,pos.getZ()+.5,player.getYRot(),0);
-        car.setOwner(player.getUUID());
+        car.setOwner(player.getUUID());car.initializeBodyStyle(bodyStyle);
         var state=new net.minecraft.nbt.CompoundTag();car.saveWithoutId(state);
         state.putInt("EngineParts",EngineItem.parts(ctx.getItemInHand()));state.putFloat("EngineTemperature",EngineItem.temperature(ctx.getItemInHand()));
         state.putFloat("OilTemperature",EngineItem.oilTemperature(ctx.getItemInHand()));state.putFloat("EngineHealth",EngineItem.health(ctx.getItemInHand()));state.remove("Mechanics");car.load(state);
         var donor=MechanicalData.get(ctx.getItemInHand());
         if(!car.hasBodyClearance()) {
-            player.displayClientMessage(Component.literal("Clear a space about 5 x 5 blocks for the sedan."),true);return InteractionResult.FAIL;
+            player.displayClientMessage(Component.translatable("message.sparkmotors.body_obstructed"),true);return InteractionResult.FAIL;
         }
         car.initializePowertrain(powertrain,player.isCreative()?.65:0);
         if(donor!=null)car.setMechanics(com.photonspark.sparkmotors.sim.PowertrainTopology.migrate(donor,powertrain,car.driveConfig(),car.engineFamily(),car.config(),car.engineParts()));
