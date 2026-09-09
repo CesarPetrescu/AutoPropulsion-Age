@@ -51,7 +51,8 @@ public record BodyCratingRecipe(ShapelessRecipe delegate) implements CraftingRec
     @Override public String getGroup(){return delegate.getGroup();}
     @Override public RecipeSerializer<?> getSerializer(){return BodyStyles.RECIPE.get();}
     public static final class Serializer implements RecipeSerializer<BodyCratingRecipe>{
-        @Override public MapCodec<BodyCratingRecipe> codec(){return ShapelessRecipe.Serializer.CODEC.xmap(BodyCratingRecipe::new,BodyCratingRecipe::delegate);}
-        @Override public StreamCodec<RegistryFriendlyByteBuf,BodyCratingRecipe> streamCodec(){return ShapelessRecipe.Serializer.STREAM_CODEC.map(BodyCratingRecipe::new,BodyCratingRecipe::delegate);}
+        private static final ShapelessRecipe.Serializer VANILLA=new ShapelessRecipe.Serializer();
+        @Override public MapCodec<BodyCratingRecipe> codec(){return VANILLA.codec().xmap(BodyCratingRecipe::new,BodyCratingRecipe::delegate);}
+        @Override public StreamCodec<RegistryFriendlyByteBuf,BodyCratingRecipe> streamCodec(){return VANILLA.streamCodec().map(BodyCratingRecipe::new,BodyCratingRecipe::delegate);}
     }
 }
