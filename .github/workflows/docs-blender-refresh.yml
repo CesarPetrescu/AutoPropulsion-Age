@@ -34,6 +34,26 @@ jobs:
               test -s "docs/body-styles/blender/${body}-${view}.png"
             done
           done
+      - name: Restore required visible Blender previews in README
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('README.md');s=p.read_text()
+          marker='### Current Minecraft body gallery — 0.9.1 repaired shells\n'
+          assert marker in s
+          if '### Blender source previews — current repaired meshes' not in s:
+              block='''### Blender source previews — current repaired meshes
+
+These are regenerated from the current repaired `.blend` sources using Blender 4.2.3. The native Minecraft captures below are still the runtime proof; these renders are the editable-source reference views.
+
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback Blender preview](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe Blender preview](docs/body-styles/blender/sports_car-front.png) | ![Utility SUV Blender preview](docs/body-styles/blender/suv-front.png) | ![Panel Van Blender preview](docs/body-styles/blender/van-front.png) | ![Touring Sedan Blender preview](docs/body-styles/blender/touring_sedan-front.png) |
+
+'''
+              s=s.replace(marker,block+marker)
+              p.write_text(s)
+          PY
       - name: Keep documentation renders only
         run: |
           git checkout HEAD -- assets/body_styles src/main/resources/assets/sparkmotors/models/entity/bodies
@@ -41,6 +61,6 @@ jobs:
           git status --short
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/body-styles/blender
+          git add README.md docs/body-styles/blender
           git commit -m 'docs: refresh repaired Blender body previews'
           git push origin HEAD:docs/refresh-091-body-gallery
