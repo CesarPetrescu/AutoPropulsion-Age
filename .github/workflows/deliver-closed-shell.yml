@@ -37,6 +37,14 @@ jobs:
               assert name.startswith(('src/','sim/','tools/','docs/')) or name in ('build.gradle','gradle.properties','.github/workflows/ci.yml'),name
           subprocess.run(['git','apply','--check','/tmp/closed-shell.patch'],check=True)
           subprocess.run(['git','apply','--index','/tmp/closed-shell.patch'],check=True)
+          model=p('tools/body_styles/shell_geometry.py');text=model.read_text()
+          old="    plate_y=.60 if name=='van' else .82"
+          assert text.count(old)==1
+          text=text.replace(old,"    # The van plate sits on the bumper face, not inside its opaque volume.\n    plate_y=.60 if name=='van' else .82\n    plate_z=-tail-.002 if name=='van' else rear_z")
+          for old,new in [("rear_z-.025),(.28,plate_y+.12,rear_z+.008)","plate_z-.025),(.28,plate_y+.12,plate_z+.008)"),("rear_z-.031),(.23,plate_y+.095,rear_z-.026)","plate_z-.031),(.23,plate_y+.095,plate_z-.026)")]:
+              assert text.count(old)==1,old
+              text=text.replace(old,new)
+          compile(text,str(model),'exec');model.write_text(text)
           PY
       - name: Install checksum-verified Blender and asset tools
         run: |
@@ -64,6 +72,16 @@ jobs:
           python -m unittest discover -s tools/ci/tests -v 2>&1 | tee build/ci/delivery/ci-gates.log
           python tools/body_review/topology.py --report build/ci/delivery/topology.json
           python tools/body_review/validate.py --report
+          python - <<'PY'
+          import sys,pathlib
+          sys.path.insert(0,'tools/body_styles')
+          from mesh_io import read,bounds
+          chunks=read(pathlib.Path('src/main/resources/assets/sparkmotors/models/entity/bodies/van.mesh.gz'))
+          plate=next(c for c in chunks if c['name']=='rear_plate')
+          bumper=next(c for c in chunks if c['name']=='rear_bumper')
+          assert bounds([plate])[1][2]<bounds([bumper])[0][2],'Van plate hidden inside bumper'
+          print('VAN_PLATE_VISIBLE_ENVELOPE_PASS')
+          PY
           for body in hatchback sports_car suv van touring_sedan; do
             blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "/tmp/$body.mesh.gz" --check 2>&1 | tee "build/ci/delivery/roundtrip-$body.log"
             grep -q BODY_BLENDER_ROUNDTRIP_PASS "build/ci/delivery/roundtrip-$body.log"
