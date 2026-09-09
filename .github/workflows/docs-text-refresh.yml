@@ -1,0 +1,25 @@
+name: Apply final body-gallery documentation text
+on:
+  push:
+    branches: [docs/refresh-091-body-gallery]
+    paths: ['.github/workflows/docs-text-refresh.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/refresh-091-body-gallery
+      - name: Apply checked documentation update
+        run: python3 tools/ci/stage_docs_refresh.py
+      - name: Commit clean docs-only result
+        run: |
+          git rm .github/workflows/docs-text-refresh.yml tools/ci/stage_docs_refresh.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md docs/BODY_STYLES.md
+          git commit -m 'docs: update README for 0.9.1 repaired body gallery'
+          git push origin HEAD:docs/refresh-091-body-gallery
