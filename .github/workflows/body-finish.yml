@@ -1,0 +1,154 @@
+name: Final body asset and native verification
+on:
+  push:
+    branches: [feat/five-body-styles]
+    paths: ['.github/workflows/body-finish.yml']
+permissions:
+  contents: write
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: body-final-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/feat/five-body-styles'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/five-body-styles
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      - name: Apply bounded export corrections
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tools/body_styles/build_models.py');s=p.read_text()
+          if 'degenerate=[face for face in bm.faces' not in s:
+              s=s.replace('angle=0,kind=None):','angle=0,kind=None,bevel=0.0):',1)
+              old='bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()'
+              new='''bm=bmesh.new();bm.from_mesh(me)
+              if bevel:
+                  bmesh.ops.bevel(bm,geom=list(bm.edges),offset=bevel,segments=1,affect='EDGES')
+              # Freeze triangulation in the editable source, discarding collinear door-edge faces.
+              bmesh.ops.triangulate(bm,faces=list(bm.faces))
+              degenerate=[face for face in bm.faces if face.calc_area()<1e-12]
+              if degenerate:bmesh.ops.delete(bm,geom=degenerate,context='FACES_ONLY')
+              bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.normal_update()
+              bm.to_mesh(me);bm.free()'''
+              assert s.count(old)==1,'Generator changed; review patch before applying'
+              s=s.replace(old,new)
+              old='''    for tri in me.loop_triangles:
+                  n=runtime(tri.normal)
+                  for vi in tri.vertices:data.append((*runtime(me.vertices[vi].co),*n,color))'''
+              new='''    for tri in me.loop_triangles:
+                  a,b,c=(me.vertices[i].co for i in tri.vertices)
+                  normal=(b-a).cross(c-a)
+                  if normal.length_squared<4e-24:continue
+                  n=runtime(normal.normalized())
+                  for vi in tri.vertices:data.append((*runtime(me.vertices[vi].co),*n,color))'''
+              assert s.count(old)==1,'Triangle export changed'
+              s=s.replace(old,new)
+              old="PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant)"
+              assert s.count(old)==1;s=s.replace(old,"PLASTIC if name in ('suv','van') else PAINT,group=5,variant=variant,bevel=.04)")
+              old="box('rear_bumper',(-w+.02,.43,-tail),(w-.02,.78,-tail+.10),PLASTIC if name in ('suv','van') else PAINT)"
+              assert s.count(old)==1;s=s.replace(old,old[:-1]+',bevel=.035)')
+              p.write_text(s)
+          p=Path('tools/body_review/export_blend.py');s=p.read_text()
+          s=s.replace('for ob in collection.all_objects:', 'for ob in list(collection.all_objects):')
+          s=s.replace('if tri.area<1e-14:continue','if tri.area<1e-12:continue')
+          s=s.replace('rgba=color(mesh.materials[tri.material_index]);n=runtime(tri.normal)', '''rgba=color(mesh.materials[tri.material_index])
+                          a,b,c=(mesh.vertices[i].co for i in tri.vertices)
+                          n=runtime((b-a).cross(c-a).normalized())''')
+          p.write_text(s)
+          compile(Path('tools/body_styles/build_models.py').read_text(),'build_models.py','exec')
+          compile(s,'export_blend.py','exec')
+          PY
+      - name: Install pinned Blender and software graphics
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1 libxi6 libxrender1 libxkbcommon0
+          curl --fail --location --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          curl --fail --location --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3.sha256 -o /tmp/blender.sha256
+          python3 - <<'PY'
+          import hashlib,pathlib
+          line=next(x for x in pathlib.Path('/tmp/blender.sha256').read_text().splitlines() if x.split()[-1].lstrip('*')=='blender-4.2.3-linux-x64.tar.xz')
+          assert hashlib.file_digest(open('/tmp/blender.tar.xz','rb'),'sha256').hexdigest()==line.split()[0]
+          PY
+          tar -xJf /tmp/blender.tar.xz -C /tmp
+          echo /tmp/blender-4.2.3-linux-x64 >> "$GITHUB_PATH"
+          python3 -m pip install Pillow
+      - name: Rebuild editable bodies, runtime meshes and review renders
+        run: blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee body-authoring.log
+      - name: Require all body envelopes and shared mechanical fits
+        run: python3 tools/body_review/validate.py --report 2>&1 | tee body-geometry.log
+      - name: Require each editable Blender file to re-export faithfully
+        run: |
+          for body in hatchback sports_car suv van touring_sedan; do
+            blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "/tmp/$body.mesh.gz" --check 2>&1 | tee "body-roundtrip-$body.log"
+            grep -q BODY_BLENDER_ROUNDTRIP_PASS "body-roundtrip-$body.log"
+          done
+      - name: Commit exact validated assets to the feature branch only
+        run: |
+          git add tools/body_styles/build_models.py tools/body_review/export_blend.py assets/body_styles src/main/resources/assets/sparkmotors/models/entity/bodies docs/body-styles
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git diff --cached --quiet; then
+            git commit -m 'fix: triangulate editable body panels, preserve normals and chamfer bumper edges'
+            git push origin HEAD:feat/five-body-styles
+          fi
+          git rev-parse HEAD > body-tested-commit.txt
+      - name: Compile and test all simulation and native test sources
+        run: ./gradlew --no-daemon -PwithGameTests build :sim:test 2>&1 | tee body-build.log
+      - name: Run dedicated Minecraft tests
+        run: ./gradlew --no-daemon -PwithGameTests runGameTestServer 2>&1 | tee body-gametest.log
+      - name: Capture all 25 body and powertrain combinations in Minecraft
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/body-smoke-result.txt run/body-smoke-result.json
+          mkdir -p run/screenshots
+          rm -f run/screenshots/body-*.png
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientBodySmoke 2>&1 | tee body-client.log
+          cat run/body-smoke-result.txt
+          grep -q '^PASS' run/body-smoke-result.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          shots=list(Path('run/screenshots').glob('body-*.png'))
+          assert len(shots)==125,(len(shots),'Expected all 125 views, not a partial gallery')
+          PY
+      - name: Existing combustion client regression
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          rm -f run/alpha-smoke-result.txt
+          xvfb-run -a -s '-screen 0 1440x900x24' ./gradlew --no-daemon -PwithGameTests runClientSmokeQuick 2>&1 | tee body-combustion-regression.log
+          grep -q '^PASS' run/alpha-smoke-result.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: final-body-evidence
+          retention-days: 14
+          path: |
+            body-*.log
+            body-tested-commit.txt
+            assets/body_styles/
+            docs/body-styles/blender/
+            tools/body_review/
+            build/reports/body-styles/
+            sim/build/test-results/
+            build/libs/*.jar
+            run/*smoke-result.*
+            run/screenshots/
+            run/logs/
+            run/gametest/logs/
