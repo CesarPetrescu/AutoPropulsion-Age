@@ -37,10 +37,19 @@ def run(output, timeout):
     def start(name):
         spec = launches[name]
         Path(spec['workingDirectory']).mkdir(parents=True, exist_ok=True)
+        # Concurrent LWJGL clients must not race while extracting the same native
+        # library into the default shared temp directory. A real CI failure showed
+        # client B losing liblwjgl_stb.so while client A was starting. Give each
+        # client a private extraction root while preserving the real native jars.
+        native_args = []
+        if name.startswith('runMultiClient'):
+            native_dir = output / 'lwjgl-native' / name
+            native_dir.mkdir(parents=True, exist_ok=True)
+            native_args.append(java_quote('-Dorg.lwjgl.system.SharedLibraryExtractPath=' + str(native_dir)))
         # Java @argfiles cannot nest. Merge ModDev's VM and program files with its
         # argument providers (including FML mod folders), using Java's own quoting.
         args = [Path(spec['vmArgs']).read_text(), *map(java_quote, spec['jvmArguments']),
-                java_quote('-Dsparkmotors.multiRoot=' + str(output)), '-Xmx2G', '-classpath',
+                *native_args, java_quote('-Dsparkmotors.multiRoot=' + str(output)), '-Xmx2G', '-classpath',
                 java_quote(spec['classpath']), Path(spec['programArgs']).read_text()]
         argfile = output / f'{name}.args'
         argfile.write_text('\n'.join(args) + '\n', encoding='utf-8')
