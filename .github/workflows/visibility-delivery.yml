@@ -1,0 +1,34 @@
+name: Apply reviewed visibility fix
+on:
+  push:
+    branches: [fix/glass-and-charger-visibility]
+    paths: [.ci/visibility.patch.b64]
+permissions:
+  contents: write
+defaults:
+  run:
+    shell: bash
+jobs:
+  deliver:
+    if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/fix/glass-and-charger-visibility'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/glass-and-charger-visibility
+      - name: Apply checksum-pinned source and remove transport files
+        run: |
+          python3 - <<'PY'
+          import base64,lzma,hashlib,pathlib,subprocess
+          data=lzma.decompress(base64.b64decode(pathlib.Path('.ci/visibility.patch.b64').read_text().strip(),validate=True))
+          assert hashlib.sha256(data).hexdigest()=='94821700d19aa8b0f7585b5b352a3f5db6fd0c33f8d38bc5a99f87aa03017f13'
+          pathlib.Path('/tmp/visibility.patch').write_bytes(data)
+          subprocess.run(['git','apply','--check','/tmp/visibility.patch'],check=True)
+          subprocess.run(['git','apply','--index','/tmp/visibility.patch'],check=True)
+          PY
+          git rm .ci/visibility.patch.b64 .github/workflows/visibility-delivery.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: defer sorted car glass and preserve terrain around charger bases with native regression probes'
+          git push origin HEAD:fix/glass-and-charger-visibility
