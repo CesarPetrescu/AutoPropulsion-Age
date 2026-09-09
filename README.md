@@ -30,6 +30,14 @@
 
 Choose **Classic Sedan, Hatchback, Sports Coupe, Utility SUV, Panel Van or Touring Sedan**. All support combustion, hybrid, plug-in hybrid and 400/800 V electric builds. These are selectable bodies on the shared 2.65 m wheelbase; the installed components determine performance.
 
+### Blender source previews — repaired body sources
+
+The editable Blender body sources remain visible here as source/reference previews; the fresh native Minecraft captures below are the runtime verification views.
+
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback Blender preview](docs/body-styles/blender/hatchback-front.png) | ![Sports Coupe Blender preview](docs/body-styles/blender/sports_car-front.png) | ![Utility SUV Blender preview](docs/body-styles/blender/suv-front.png) | ![Panel Van Blender preview](docs/body-styles/blender/van-front.png) | ![Touring Sedan Blender preview](docs/body-styles/blender/touring_sedan-front.png) |
+
 ### Current Minecraft body gallery — 0.9.1 repaired shells
 
 These are **fresh native Minecraft captures** from repaired-shell source `e382dd61`, the exact body-model revision merged by PR #7. They replace the older pre-repair gallery that showed disconnected rear quarters and cargo panels. [Full repaired-shell CI evidence (204 close-up frames)](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34353228991).
