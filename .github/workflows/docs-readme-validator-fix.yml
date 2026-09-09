@@ -39,7 +39,9 @@ jobs:
               p.write_text(s.replace(marker, block + marker))
           PY
       - name: Verify documentation validator locally
-        run: python tools/ci/documentation.py
+        run: |
+          python3 -m pip install Pillow==12.3.0
+          python tools/ci/documentation.py
       - name: Commit docs-only fix and remove temporary helpers
         run: |
           git rm .github/workflows/docs-readme-validator-fix.yml
