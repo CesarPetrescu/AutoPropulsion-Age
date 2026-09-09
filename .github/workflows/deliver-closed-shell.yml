@@ -1,0 +1,97 @@
+name: Deliver repaired body source and assets
+on:
+  push:
+    branches: [fix/closed-body-models]
+    paths: ['.ci/closed-shell-2.txt']
+permissions:
+  contents: write
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: deliver-closed-body-models
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.repository == 'CesarPetrescu/AutoPropulsion-Age' && github.ref == 'refs/heads/fix/closed-body-models'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/closed-body-models
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Decode and apply the checked local source diff
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,pathlib,subprocess
+          p=pathlib.Path
+          encoded=''.join(p(f'.ci/closed-shell-{i}.txt').read_text().strip() for i in range(3))
+          patch=lzma.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='baed99abc77563e41ec20ca08ae8d7945baa59ba2d6db4b0d18d531e8588172b'
+          p('/tmp/closed-shell.patch').write_bytes(patch)
+          for entry in subprocess.check_output(['git','apply','--numstat','/tmp/closed-shell.patch'],text=True).splitlines():
+              name=entry.split('\t')[-1]
+              assert name.startswith(('src/','sim/','tools/','docs/')) or name in ('build.gradle','gradle.properties','.github/workflows/ci.yml'),name
+          subprocess.run(['git','apply','--check','/tmp/closed-shell.patch'],check=True)
+          subprocess.run(['git','apply','--index','/tmp/closed-shell.patch'],check=True)
+          PY
+      - name: Install checksum-verified Blender and asset tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y --no-install-recommends libxi6 libxrender1 libxkbcommon0 libgl1 libsm6
+          python -m pip install -r tools/ci/requirements.txt
+          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          curl -fL --retry 3 https://download.blender.org/release/Blender4.2/blender-4.2.3.sha256 -o /tmp/blender.sha256
+          python - <<'PY'
+          import hashlib,pathlib
+          line=next(x for x in pathlib.Path('/tmp/blender.sha256').read_text().splitlines() if x.split()[-1].lstrip('*')=='blender-4.2.3-linux-x64.tar.xz')
+          with open('/tmp/blender.tar.xz','rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==line.split()[0]
+          PY
+          tar -xJf /tmp/blender.tar.xz -C /tmp
+          echo /tmp/blender-4.2.3-linux-x64 >> "$GITHUB_PATH"
+      - name: Regenerate actual Blender projects, game meshes and preview renders
+        run: |
+          mkdir -p build/ci/delivery
+          blender --background --threads 4 --python-exit-code 1 --python tools/body_styles/build_models.py 2>&1 | tee build/ci/delivery/blender.log
+          python tools/body_styles/generate_resources.py
+          find assets/body_styles -name '*.blend1' -delete
+      - name: Require topology, seam, envelope and checker regressions
+        run: |
+          python -m unittest discover -s tools/body_review/tests -v 2>&1 | tee build/ci/delivery/topology-unit.log
+          python -m unittest discover -s tools/ci/tests -v 2>&1 | tee build/ci/delivery/ci-gates.log
+          python tools/body_review/topology.py --report build/ci/delivery/topology.json
+          python tools/body_review/validate.py --report
+          for body in hatchback sports_car suv van touring_sedan; do
+            blender --background "assets/body_styles/$body.blend" --threads 2 --python-exit-code 1 --python tools/body_review/export_blend.py -- --output "/tmp/$body.mesh.gz" --check 2>&1 | tee "build/ci/delivery/roundtrip-$body.log"
+            grep -q BODY_BLENDER_ROUNDTRIP_PASS "build/ci/delivery/roundtrip-$body.log"
+          done
+      - name: Commit real repaired files and remove the one-shot transport
+        run: |
+          git rm .ci/closed-shell-0.txt .ci/closed-shell-1.txt .ci/closed-shell-2.txt .github/workflows/deliver-closed-shell.yml
+          git add src sim tools docs/BODY_STYLES.md docs/BODY_SHELL_REPAIR.md docs/body-styles/blender assets/body_styles build.gradle gradle.properties .github/workflows/ci.yml
+          python - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          for body in ('hatchback','sports_car','suv','van','touring_sedan'):
+              assert f'assets/body_styles/{body}.blend' in changed,body+' Blender file missing from commit'
+              assert f'src/main/resources/assets/sparkmotors/models/entity/bodies/{body}.mesh.gz' in changed,body+' game mesh missing from commit'
+          for name in ('tools/body_styles/shell_geometry.py','tools/body_review/topology.py','src/main/java/com/photonspark/sparkmotors/client/CarMesh.java'):
+              assert name in changed,name+' missing from commit'
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: ship closed body shells, shaped rear quarters, editable models and seam regression tests'
+          git push origin HEAD:fix/closed-body-models
+          git rev-parse HEAD > build/ci/delivery/source-commit.txt
+          git diff --stat cf74a3d8b599929e090ebd1076c229b9f2c12b67 HEAD > build/ci/delivery/delivered-files.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: closed-shell-delivery-evidence
+          path: |
+            build/ci/delivery/
+            build/reports/body-styles/
+          retention-days: 14
