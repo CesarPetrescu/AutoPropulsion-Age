@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Generated integration matrix for the pure simulation/state layer.
  *
- * The expensive Minecraft GameTest layer has a companion generated matrix.  This
+ * The expensive Minecraft GameTest layer has a companion generated matrix. This
  * layer can afford to cross every body, powertrain, drive layout, differential,
  * engine family, engine grade and induction mode while advancing the same physics
- * classes used by CarEntity.  Failures include a deterministic case id so a CI
+ * classes used by CarEntity. Failures include a deterministic case id so a CI
  * failure can be reproduced without guessing which generated combination failed.
  */
 class GeneratedCarMatrixTest {
@@ -185,23 +185,25 @@ class GeneratedCarMatrixTest {
                         new VehicleDynamics.Input(random.nextDouble(), random.nextDouble(-.35, .35), false, random.nextInt(12) == 0, false, false), 4);
                     case 1 -> state = advance(c, state, new VehicleDynamics.Input(0, 0, true, false, false, random.nextBoolean()), 4);
                     case 2 -> {
+                        var current = state.mechanics();
                         var installed = PowertrainTopology.slots(c.type(), c.drive(), c.family()).stream()
-                            .filter(slot -> state.mechanics().get(slot.key()) != null).toList();
+                            .filter(slot -> current.get(slot.key()) != null).toList();
                         if (!installed.isEmpty()) {
                             var slot = installed.get(random.nextInt(installed.size()));
-                            var original = state.mechanics().get(slot.key());
+                            var original = current.get(slot.key());
                             var damaged = original.condition(Math.min(.8, original.wear() + random.nextDouble() * .08),
                                 Math.min(.7, original.damage() + random.nextDouble() * .06), original.faults());
-                            state = new SimState(state.road(), state.electric(), state.mechanics().with(slot.key(), damaged), state.peakSpeed());
+                            state = new SimState(state.road(), state.electric(), current.with(slot.key(), damaged), state.peakSpeed());
                         }
                     }
                     case 3 -> {
+                        var current = state.mechanics();
                         var installed = PowertrainTopology.slots(c.type(), c.drive(), c.family()).stream()
-                            .filter(slot -> state.mechanics().get(slot.key()) != null).toList();
+                            .filter(slot -> current.get(slot.key()) != null).toList();
                         if (!installed.isEmpty()) {
                             var slot = installed.get(random.nextInt(installed.size()));
-                            var original = state.mechanics().get(slot.key());
-                            var removed = state.mechanics().with(slot.key(), null);
+                            var original = current.get(slot.key());
+                            var removed = current.with(slot.key(), null);
                             assertNull(removed.get(slot.key()), "Removal failed " + where + " slot=" + slot.key());
                             var restored = removed.with(slot.key(), original);
                             assertEquals(original.id(), restored.get(slot.key()).id(), "Part identity changed " + where + " slot=" + slot.key());
