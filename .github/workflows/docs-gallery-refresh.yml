@@ -1,0 +1,145 @@
+name: Stage repaired-shell documentation gallery
+on:
+  push:
+    branches: [docs/refresh-091-body-gallery]
+    paths: ['.github/workflows/docs-gallery-refresh.yml']
+permissions:
+  actions: read
+  contents: write
+defaults:
+  run:
+    shell: bash
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/refresh-091-body-gallery
+      - name: Download the successful PR #7 shell evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api /repos/${GITHUB_REPOSITORY}/actions/artifacts/10104832682/zip > /tmp/shell.zip
+          mkdir -p /tmp/shell
+          unzip -q /tmp/shell.zip -d /tmp/shell
+          grep -q '^PASS ' /tmp/shell/run/shell-smoke-result.txt
+          python3 - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('/tmp/shell/run/shell-smoke-result.json')
+          data=json.loads(p.read_text())
+          assert data['result'].startswith('PASS'),data['result']
+          assert len(data['screenshots'])==204,len(data['screenshots'])
+          print('Verified repaired-shell source evidence:',data['result'])
+          PY
+      - name: Replace the committed gallery with fresh repaired native captures
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil,struct
+          src=Path('/tmp/shell/run/screenshots')
+          dst=Path('docs/body-styles/native');dst.mkdir(parents=True,exist_ok=True)
+          bodies=['hatchback','sports_car','suv','van','touring_sedan']
+          for body in bodies:
+              mapping={
+                'front':f'seams-{body}-combustion-closed-front-left.png',
+                'rear':f'seams-{body}-combustion-closed-rear-left.png',
+              }
+              for view,name in mapping.items():
+                  source=src/name;target=dst/f'{body}-{view}.png'
+                  assert source.is_file(),source
+                  b=source.read_bytes();assert b[:8]==b'\x89PNG\r\n\x1a\n'
+                  assert struct.unpack('>II',b[16:24])==(1440,900),(name,struct.unpack('>II',b[16:24]))
+                  shutil.copyfile(source,target)
+                  print(target,len(b))
+          PY
+      - name: Update README and body-style documentation to 0.9.1
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('README.md');s=p.read_text()
+          old='**Playable alpha · 0.9.0 source.**'
+          assert s.count(old)==1,s.count(old)
+          s=s.replace(old,'**Playable alpha · 0.9.1-alpha source.**')
+          start=s.index('### Blender previews')
+          end=s.index('In Creative, select the named vehicle crate from the mod tab.')
+          gallery='''### Current Minecraft body gallery — 0.9.1 repaired shells
+
+These are **fresh native Minecraft captures** from repaired-shell source `e382dd61`, the exact body-model revision merged by PR #7. They replace the older pre-repair gallery that showed disconnected rear quarters and cargo panels. [Full repaired-shell CI evidence (204 close-up frames)](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34353228991).
+
+| Classic Sedan | Hatchback | Sports Coupe |
+|---|---|---|
+| ![Classic Sedan](docs/body-review/stock-front.png) | ![Hatchback repaired shell](docs/body-styles/native/hatchback-front.png) | ![Sports Coupe repaired shell](docs/body-styles/native/sports_car-front.png) |
+| Utility SUV | Panel Van | Touring Sedan |
+| ![Utility SUV repaired shell](docs/body-styles/native/suv-front.png) | ![Panel Van repaired shell](docs/body-styles/native/van-front.png) | ![Touring Sedan repaired shell](docs/body-styles/native/touring_sedan-front.png) |
+
+### Rear-shell checks
+
+| Hatchback | Sports Coupe | Utility SUV | Panel Van | Touring Sedan |
+|---|---|---|---|---|
+| ![Hatchback repaired rear](docs/body-styles/native/hatchback-rear.png) | ![Sports Coupe repaired rear](docs/body-styles/native/sports_car-rear.png) | ![SUV repaired rear](docs/body-styles/native/suv-rear.png) | ![Panel Van repaired rear](docs/body-styles/native/van-rear.png) | ![Touring Sedan repaired rear](docs/body-styles/native/touring_sedan-rear.png) |
+
+'''
+          s=s[:start]+gallery+s[end:]
+          s=s.replace('The installable output is `build/libs/autopropulsion-age-0.6.1-alpha.jar`.','The installable output is `build/libs/autopropulsion-age-0.9.1-alpha.jar`.')
+          p.write_text(s)
+
+          p=Path('docs/BODY_STYLES.md');s=p.read_text()
+          old='Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.0.'
+          assert s.count(old)==1,s.count(old)
+          s=s.replace(old,'Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.1-alpha.')
+          start=s.index('## Full body gallery')
+          gallery='''## Full body gallery
+
+The images below are **fresh native Minecraft captures from repaired-shell source `e382dd61f9f4c836596c5b1315fdfd69ba53236e`**, verified in [CI run 34353228991](https://github.com/CesarPetrescu/AutoPropulsion-Age/actions/runs/34353228991). They supersede the older `876c0bf6` body gallery. The shell harness also captured open-panel, underbody, interior, seam and night views; those remain in the CI evidence archive rather than bloating the README.
+
+### Classic Sedan
+
+![Classic front](body-review/stock-front.png)
+
+### Hatchback
+
+| Front | Rear |
+|---|---|
+| ![Hatchback front](body-styles/native/hatchback-front.png) | ![Hatchback rear](body-styles/native/hatchback-rear.png) |
+
+### Sports Coupe
+
+| Front | Rear |
+|---|---|
+| ![Sports Coupe front](body-styles/native/sports_car-front.png) | ![Sports Coupe rear](body-styles/native/sports_car-rear.png) |
+
+### Utility SUV
+
+| Front | Rear |
+|---|---|
+| ![Utility SUV front](body-styles/native/suv-front.png) | ![Utility SUV rear](body-styles/native/suv-rear.png) |
+
+### Panel Van
+
+| Front | Rear |
+|---|---|
+| ![Panel Van front](body-styles/native/van-front.png) | ![Panel Van rear](body-styles/native/van-rear.png) |
+
+### Touring Sedan
+
+| Front | Rear |
+|---|---|
+| ![Touring Sedan front](body-styles/native/touring_sedan-front.png) | ![Touring Sedan rear](body-styles/native/touring_sedan-rear.png) |
+'''
+          p.write_text(s[:start]+gallery)
+          PY
+      - name: Verify final docs-only diff and push it to the review branch
+        run: |
+          grep -q 'Playable alpha · 0.9.1-alpha source' README.md
+          grep -q 'Included in 0.9.1-alpha' docs/BODY_STYLES.md
+          ! grep -q 'docs/body-styles/blender/' README.md
+          test $(find docs/body-styles/native -maxdepth 1 \( -name '*-front.png' -o -name '*-rear.png' \) | wc -l) -ge 10
+          git rm .github/workflows/docs-gallery-refresh.yml
+          git status --short
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md docs/BODY_STYLES.md docs/body-styles/native
+          git commit -m 'docs: refresh 0.9.1 body gallery with repaired native captures'
+          git push origin HEAD:docs/refresh-091-body-gallery
