@@ -2,7 +2,6 @@ name: Deliver repaired body source and assets
 on:
   push:
     branches: [fix/closed-body-models]
-    paths: ['.ci/closed-shell-2.txt', '.github/workflows/deliver-closed-shell.yml']
 permissions:
   contents: write
 defaults:
