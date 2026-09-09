@@ -3,7 +3,7 @@ import sys,unittest
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from topology import topology,SurfaceRays,probes
+from topology import topology,SurfaceRays,probes,rear_plate_visible
 
 
 def cube():
@@ -34,6 +34,16 @@ class TopologyTests(unittest.TestCase):
         rays=SurfaceRays([cube()]);self.assertTrue(rays.hit((.5,.5,-.1),(0,0,1),.2));self.assertFalse(rays.hit((.5,.5,.1),(0,0,-1),.2))
     def test_broad_bounds_do_not_hide_a_gap(self):
         c=cube();c['vertices']=c['vertices'][6:];rays=SurfaceRays([c]);self.assertFalse(rays.hit((.5,.5,-.1),(0,0,1),.2))
+    def test_rear_plate_on_visible_surface_passes(self):
+        plate=dict(cube(),name='rear_plate',kind=0,variant=0)
+        bumper=dict(cube(),name='rear_bumper',kind=0,variant=0)
+        bumper['vertices']=[(x,y,z+.5,nx,ny,nz,c) for x,y,z,nx,ny,nz,c in bumper['vertices']]
+        self.assertTrue(rear_plate_visible([plate,bumper]))
+    def test_plate_hidden_by_bumper_fails(self):
+        plate=dict(cube(),name='rear_plate',kind=0,variant=0)
+        plate['vertices']=[(x,y,z+.5,nx,ny,nz,c) for x,y,z,nx,ny,nz,c in plate['vertices']]
+        bumper=dict(cube(),name='rear_bumper',kind=0,variant=0)
+        self.assertFalse(rear_plate_visible([plate,bumper]))
     def test_both_sides_of_seams_are_sampled(self):
         b=dict(id='suv',halfWidth=.995,roof=1.88,belt=1.24,roofFront=.3,roofRear=-1.9,cabinFront=.775,cabinRear=-2.23,cabinY=.2)
         names=[p[0] for p in probes(b)];self.assertTrue(any(n.endswith('True') for n in names));self.assertTrue(any(n.endswith('False') for n in names));self.assertTrue(any('floor' in n for n in names))
