@@ -82,6 +82,11 @@ neoForge {
             programArguments.addAll '--width', '1440', '--height', '900'
             systemProperty 'sparkmotors.clientElectricSmoke', 'true'
         }
+        clientShellSmoke {
+            client()
+            programArguments.addAll '--width', '1440', '--height', '900'
+            systemProperty 'sparkmotors.clientShellSmoke', 'true'
+        }
         clientBodySmoke {
             client()
             programArguments.addAll '--width', '1440', '--height', '900'

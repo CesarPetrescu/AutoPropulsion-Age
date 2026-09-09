@@ -131,6 +131,7 @@ def inspect_jar(path):
             require(name in names, f'Missing runtime entry: {name}')
         for body in ('hatchback','sports_car','suv','van','touring_sedan'):
             require(f'assets/sparkmotors/models/entity/bodies/{body}.mesh.gz' in names, 'Missing body mesh: '+body)
+        require('assets/sparkmotors/models/entity/bodies/shell-surfaces.json' in names, 'Missing closed shell manifest')
         require('com/photonspark/sparkmotors/sim/BodyStyle.class' in names,'Missing body state')
         metadata = tomllib.loads(archive.read('META-INF/neoforge.mods.toml').decode())
         mod = next(m for m in metadata['mods'] if m['modId'] == 'sparkmotors')
@@ -187,7 +188,7 @@ def verify_package(directory, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric', 'body', 'multiplayer', 'package', 'verify-package'])
+    parser.add_argument('mode', choices=['junit', 'server', 'mechanics', 'matrix', 'handling', 'graphics', 'ui', 'electric', 'body', 'shell', 'multiplayer', 'package', 'verify-package'])
     parser.add_argument('--log', type=Path)
     parser.add_argument('--directory', type=Path)
     parser.add_argument('--result', type=Path, default=REPO / 'run/alpha-smoke-result.txt')
@@ -204,6 +205,9 @@ def main():
         report = client(args.log.read_text(errors='replace'), (REPO / "run/electric-smoke-result.txt" if args.mode == "electric" else args.result).read_text(), args.mode)
     elif args.mode == 'body':
         from body_checks import validate
+        report = validate(args.log.read_text(errors='replace'), REPO / 'run')
+    elif args.mode == 'shell':
+        from shell_checks import validate
         report = validate(args.log.read_text(errors='replace'), REPO / 'run')
     elif args.mode == 'multiplayer':
         report = multiplayer(args.directory)

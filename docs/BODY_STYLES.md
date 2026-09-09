@@ -1,5 +1,7 @@
 # Selectable body styles
 
+For the 0.9.1-alpha closed-shell geometry repair, validation and release boundaries, see [BODY_SHELL_REPAIR.md](BODY_SHELL_REPAIR.md).
+
 Minecraft 1.21.1 / NeoForge 21.1.249 / Java 21. Included in 0.9.0. Use matching client/server versions (network protocol 11). The original Classic Sedan remains the default for older saves.
 
 ## 1. Design
