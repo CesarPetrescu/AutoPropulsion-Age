@@ -1,0 +1,20 @@
+name: Body rig inspection
+on:
+  push:
+    branches: [feat/five-body-styles]
+    paths: ['.github/workflows/body-inspect.yml', 'tools/body_styles/mesh_io.py']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect canonical chunk categories and bounds
+        run: python3 tools/body_styles/mesh_io.py
+      - name: Inspect body and electrical integration sites
+        run: |
+          grep -n -E 'makeBoundingBox|addAdditionalSaveData|readAdditionalSaveData|interact\(|isOwner|setOwner|AttachmentPoint|collisionHull' src/main/java/com/photonspark/sparkmotors/entity/CarEntity.java
+          cat src/main/java/com/photonspark/sparkmotors/client/ElectricGeometry.java
+          cat src/main/java/com/photonspark/sparkmotors/client/CockpitInstruments.java
