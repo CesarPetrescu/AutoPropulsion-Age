@@ -1,17 +1,12 @@
 name: Glass and charger visibility
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read
 defaults:
   run:
     shell: bash
-concurrency:
-  group: visibility-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   native:
     name: Visibility (${{ matrix.profile }})
@@ -20,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profile: [fancy, fabulous, baseline]
+        profile: [fast, fancy, fabulous, baseline]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -58,8 +53,14 @@ jobs:
           assert len(data['captures'])==140,('Incomplete capture matrix',len(data['captures']),data['failures'])
           probes=[c for c in data['captures'] if c['witness']]
           assert len(probes)==72
+          for c in probes:
+              assert c['controlLimePixels']>=25 and c['glassChangedPixels']>=50 and c['tintedWitnessPixels']>=10,c
+              assert pathlib.Path('run/screenshots',c['control']).is_file(),c['control']
+          chargers=[c for c in data['captures'] if c.get('charger')]
+          assert len(chargers)==32
           if profile=='baseline':
               assert data['result']=='FAIL' and any(c['limePixels']<25 for c in probes),'Negative control must reproduce hidden objects'
+              assert any(c['baseSkyPixels']>8 for c in chargers),'Negative control must reproduce the terrain hole'
           else:
               assert data['result']=='PASS' and not data['failures'],data['failures']
           print(profile, data['result'],len(probes),'witness probes',len(data['failures']),'failures')
