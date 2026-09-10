@@ -11,7 +11,7 @@ defaults:
     shell: bash
 jobs:
   boundaries:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
             build/qa/tested-commit.txt
           retention-days: 14
   legacy-retry:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -77,11 +77,23 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: old
         run: ./gradlew --no-daemon --max-workers=2 -I ../metadata/gradle/companion-metadata.init.gradle -PwithGameTests runGameTestServer 2>&1 | tee audit/gametest.log
+      - name: Check out shared CI bootstrap separately from historical code
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: ci-bootstrap
+          persist-credentials: false
+          sparse-checkout: |
+            .github/actions/setup-native-runtime
+            tools/ci
       - name: Install display
+        id: native_setup
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: sudo apt-get update -qq && sudo apt-get install -y xvfb libgl1-mesa-dri libopenal1
+        uses: ./ci-bootstrap/.github/actions/setup-native-runtime
+        with:
+          report-directory: old/audit/native-setup
       - name: Native client
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.native_setup.outcome == 'success' }}
         working-directory: old
         env:
           CLIENT_TASK: ${{ matrix.client }}
