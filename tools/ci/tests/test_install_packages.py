@@ -202,7 +202,18 @@ class WorkflowBootstrapTests(unittest.TestCase):
         text = (self.ROOT / '.github/workflows/ci.yml').read_text()
         self.assertIn('python3 tools/ci/apt_smoke.py', text)
         self.assertIn('workflow, build, resources, client, multiplayer, companion, visibility', text)
-        self.assertIn("if job['result'] != 'success'", text)
+        self.assertIn('run: python3 tools/ci/required_checks.py', text)
+        # The gate moved out of YAML: exercise it instead of requiring its old
+        # source expression to remain inside the workflow file.
+        import required_checks as gate
+        needs = {name: {'result': 'success'} for name in gate.REQUIRED_JOBS}
+        env = {'GITHUB_REPOSITORY': 'CesarPetrescu/AutoPropulsion-Age',
+               'GITHUB_SHA': 'a' * 40, 'GITHUB_RUN_ID': '123456'}
+        with patch('builtins.print'):
+            self.assertEqual(gate.main(env | {'RESULTS': json.dumps(needs)}), 0)
+            for result in ('failure', 'cancelled', 'skipped'):
+                needs['workflow']['result'] = result
+                self.assertEqual(gate.main(env | {'RESULTS': json.dumps(needs)}), 1)
 
 
 if __name__ == '__main__':
